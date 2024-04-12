@@ -19,3 +19,8 @@
 
 # Go workspace file
 go.work
+
+# Wails
+build
+node_modules
+frontend/dist

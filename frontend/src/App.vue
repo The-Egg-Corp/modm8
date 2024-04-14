@@ -6,9 +6,8 @@ import PackageInfo from './components/PackageInfo.vue'
   
 <div class="container">
   <img id="logo" alt="modm8 icon" src="./assets/images/modm8-logo-transparent-white-donut.png"/>
+  <PackageInfo/>
 </div>
-
-<PackageInfo/>
 </template>
 
 <style>
@@ -32,5 +31,8 @@ import PackageInfo from './components/PackageInfo.vue'
 
 .container {
   user-select: none;
+  position: absolute;
+  left: 0;
+  right: 0;
 }
 </style>

@@ -16,9 +16,8 @@ type IList []interface{}
 
 var windowsOpts = &windows.Options{
 	WindowIsTranslucent:  true,
-	WebviewIsTransparent: false,
+	WebviewIsTransparent: true,
 	BackdropType:         windows.Mica,
-	Theme:                windows.Dark,
 	ResizeDebounceMS:     1,
 }
 
@@ -36,7 +35,6 @@ func main() {
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
-		BackgroundColour:         options.NewRGBA(19, 21, 23, 1),
 		EnableDefaultContextMenu: false,
 		Windows:                  windowsOpts,
 		OnStartup:                app.startup,

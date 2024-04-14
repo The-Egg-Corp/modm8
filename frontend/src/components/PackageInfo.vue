@@ -1,15 +1,15 @@
 <script lang="ts" setup>
 import { reactive } from 'vue'
-import { Greet } from '../../wailsjs/go/main/App'
+import { GetUserPackages } from '../../wailsjs/go/main/App'
 
 const data = reactive({
   name: "",
-  resultText: "Enter name:",
+  resultText: "",
 })
 
-function greet() {
-  Greet(data.name).then(result => {
-    data.resultText = result
+function getUserPkgs() {
+  GetUserPackages(data.name).then((res: string) => {
+    data.resultText = res
   })
 }
 
@@ -17,11 +17,11 @@ function greet() {
 
 <template>
   <main>
-    <div id="result" class="result">{{ data.resultText }}</div>
     <div id="input" class="input-box">
       <input id="name" v-model="data.name" autocomplete="off" class="input" type="text"/>
-      <button class="btn" @click="greet">Submit</button>
+      <button class="btn" @click="getUserPkgs">Get</button>
     </div>
+    <div id="result" class="result">{{ data.resultText }}</div>
   </main>
 </template>
 
@@ -30,26 +30,26 @@ function greet() {
   height: 20px;
   line-height: 20px;
   margin: 1.5rem auto;
+  size-adjust: auto;
 }
 
 .input-box .btn {
-  width: 60px;
-  height: 30px;
+  width: 70px;
+  height: 32px;
   line-height: 30px;
-  border-radius: 3px;
-  border: solid;
-  margin: 0 0 0 20px;
+  margin: 2rem 0 0 20px;
   padding: 0 8px;
-  cursor: pointer;
+  cursor:auto;
+  user-select: none;
 }
 
 .input-box .btn:hover {
   background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
-  color: #9f3f3f;
+  color: #363636;
 }
 
 .input-box .input {
-  border: none;
+  border: inset;
   border-radius: 3px;
   outline: none;
   height: 30px;
@@ -60,12 +60,11 @@ function greet() {
 }
 
 .input-box .input:hover {
-  border: none;
   background-color: rgba(255, 255, 255, 1);
 }
 
 .input-box .input:focus {
-  border: none;
   background-color: rgba(255, 255, 255, 1);
 }
+
 </style>

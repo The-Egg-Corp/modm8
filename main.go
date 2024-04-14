@@ -15,10 +15,11 @@ var assets embed.FS
 type IList []interface{}
 
 var windowsOpts = &windows.Options{
-	WindowIsTranslucent: true,
-	BackdropType:        windows.Mica,
-	Theme:               windows.Dark,
-	ResizeDebounceMS:    1,
+	WindowIsTranslucent:  true,
+	WebviewIsTransparent: false,
+	BackdropType:         windows.Mica,
+	Theme:                windows.Dark,
+	ResizeDebounceMS:     1,
 }
 
 func main() {
@@ -28,19 +29,21 @@ func main() {
 	// Create application with options
 	err := wails.Run(&options.App{
 		Title:     "modm8",
-		Width:     1024,
-		Height:    768,
-		MinWidth:  550,
-		MinHeight: 450,
+		Width:     1380,
+		Height:    930,
+		MinWidth:  800,
+		MinHeight: 600,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
-		//BackgroundColour: options.NewRGBA(19, 21, 23, 1),
-		Windows:   windowsOpts,
-		OnStartup: app.startup,
+		BackgroundColour:         options.NewRGBA(19, 21, 23, 1),
+		EnableDefaultContextMenu: false,
+		Windows:                  windowsOpts,
+		OnStartup:                app.startup,
 		SingleInstanceLock: &options.SingleInstanceLock{
 			UniqueId: "7465fe36-08e3-478b-853b-0f8676f724b7",
 		},
+		Fullscreen: false,
 		Bind: IList{
 			app,
 		},

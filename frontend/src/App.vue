@@ -1,26 +1,36 @@
 <script lang="ts" setup>
-import HelloWorld from './components/HelloWorld.vue'
+import PackageInfo from './components/PackageInfo.vue'
 </script>
 
 <template>
-  <img id="logo" alt="Wails logo" src="./assets/images/logo-universal.png"/>
-  <HelloWorld/>
+  
+<div class="container">
+  <img id="logo" alt="modm8 icon" src="./assets/images/modm8-logo-transparent-white-donut.png"/>
+</div>
+
+<PackageInfo/>
 </template>
 
 <style>
 #logo {
   display: block;
-  width: 45%;
-  height: 45%;
-  min-width: 30%;
-  min-height: 30%;
+  width: 25%;
+  height: 25%;
+  max-width: 50%;
+  max-height: 50%;
   align-self: center;
   object-fit: contain;
   margin: auto;
-  padding: 8% 0 0;
+  padding: 3% 0 0;
   background-position: center;
   background-repeat: no-repeat;
   background-size: 100% 100%;
   background-origin: content-box;
+  user-select: none;
+  pointer-events: none;
+}
+
+.container {
+  user-select: none;
 }
 </style>

@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import {reactive} from 'vue'
-import {Greet} from '../../wailsjs/go/main/App'
+import { reactive } from 'vue'
+import { Greet } from '../../wailsjs/go/main/App'
 
 const data = reactive({
   name: "",
-  resultText: "Please enter your name below 👇",
+  resultText: "Enter name:",
 })
 
 function greet() {
@@ -20,7 +20,7 @@ function greet() {
     <div id="result" class="result">{{ data.resultText }}</div>
     <div id="input" class="input-box">
       <input id="name" v-model="data.name" autocomplete="off" class="input" type="text"/>
-      <button class="btn" @click="greet">Greet</button>
+      <button class="btn" @click="greet">Submit</button>
     </div>
   </main>
 </template>
@@ -37,7 +37,7 @@ function greet() {
   height: 30px;
   line-height: 30px;
   border-radius: 3px;
-  border: none;
+  border: solid;
   margin: 0 0 0 20px;
   padding: 0 8px;
   cursor: pointer;
@@ -45,7 +45,7 @@ function greet() {
 
 .input-box .btn:hover {
   background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
-  color: #333333;
+  color: #9f3f3f;
 }
 
 .input-box .input {

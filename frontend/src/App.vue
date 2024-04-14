@@ -9,15 +9,15 @@ import HelloWorld from './components/HelloWorld.vue'
 
 <style>
 #logo {
-  display: flex;
-  width: 40%;
-  height: 40%;
-  max-width: 90%;
-  max-height: 90%;
+  display: block;
+  width: 45%;
+  height: 45%;
+  min-width: 30%;
+  min-height: 30%;
   align-self: center;
-  object-fit: cover;
+  object-fit: contain;
   margin: auto;
-  padding: 12% 0 0;
+  padding: 8% 0 0;
   background-position: center;
   background-repeat: no-repeat;
   background-size: 100% 100%;

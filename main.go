@@ -6,10 +6,20 @@ import (
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
+	"github.com/wailsapp/wails/v2/pkg/options/windows"
 )
 
 //go:embed all:frontend/dist
 var assets embed.FS
+
+type IList []interface{}
+
+var windowsOpts = &windows.Options{
+	WindowIsTranslucent: true,
+	BackdropType:        windows.Mica,
+	Theme:               windows.Dark,
+	ResizeDebounceMS:    1,
+}
 
 func main() {
 	// Create an instance of the app structure
@@ -17,20 +27,21 @@ func main() {
 
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title:  "modm8",
-		Width:  1024,
-		Height: 768,
+		Title:     "modm8",
+		Width:     1024,
+		Height:    768,
+		MinWidth:  550,
+		MinHeight: 450,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
-		BackgroundColour: &options.RGBA{
-			R: 19,
-			G: 21,
-			B: 23,
-			A: 1,
-		},
+		//BackgroundColour: options.NewRGBA(19, 21, 23, 1),
+		Windows:   windowsOpts,
 		OnStartup: app.startup,
-		Bind: []interface{}{
+		SingleInstanceLock: &options.SingleInstanceLock{
+			UniqueId: "7465fe36-08e3-478b-853b-0f8676f724b7",
+		},
+		Bind: IList{
 			app,
 		},
 	})

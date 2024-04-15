@@ -29,6 +29,15 @@ function getUserPkgs() {
 
 <!-- #region Style -->
 <style scoped>
+.container {
+  user-select: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: center;
+  display: block;
+}
+
 .result {
   height: 20px;
   line-height: 20px;
@@ -58,16 +67,8 @@ function getUserPkgs() {
   height: 30px;
   line-height: 30px;
   padding: 0 10px;
-  background-color: rgba(240, 240, 240, 1);
+  background-color: rgb(43, 43, 43);
   -webkit-font-smoothing: antialiased;
-}
-
-.input-box .input:hover {
-  background-color: rgba(255, 255, 255, 1);
-}
-
-.input-box .input:focus {
-  background-color: rgba(255, 255, 255, 1);
 }
 </style>
 <!-- #endregion -->

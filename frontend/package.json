@@ -10,9 +10,10 @@
     "reinstall": "rimraf node_modules && bun i"
   },
   "dependencies": {
+    "@mdi/font": "^7.4.47",
     "@types/node": "^20.12.7",
-    "buefy": "npm:@ntohq/buefy-next",
-    "vue": "^3.2.37"
+    "vue": "^3.2.37",
+    "vuetify": "^3.5.15"
   },
   "devDependencies": {
     "rimraf": "latest",

@@ -1,11 +1,13 @@
 <script lang="ts" setup>
-import Home from './views/Home.vue'
+import Dashboard from './views/Dashboard.vue'
+import Settings from './views/Settings.vue'
 import Sidebar from './components/Sidebar.vue'
 </script>
 
 <template>
-<Home/>
-<Sidebar/>
+  <Sidebar/>
+  <Dashboard/>
+  <Settings/>
 </template>
 
 <style>
@@ -25,12 +27,5 @@ import Sidebar from './components/Sidebar.vue'
   background-origin: content-box;
   user-select: none;
   pointer-events: none;
-}
-
-.container {
-  user-select: none;
-  position: absolute;
-  left: 0;
-  right: 0;
 }
 </style>

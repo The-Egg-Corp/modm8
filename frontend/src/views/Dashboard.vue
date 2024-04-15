@@ -2,13 +2,17 @@
 import { reactive } from 'vue'
 import { GetUserPackages } from '../../wailsjs/go/main/App'
 
-const data = reactive({
-  name: "",
-  resultText: "",
+interface PackageInfo {
+  name: string
+  resultText?: string
+}
+
+const data: PackageInfo = reactive({
+  name: ""
 })
 
 function getUserPkgs() {
-  GetUserPackages(data.name).then((res: string) => {
+  GetUserPackages(data.name).then(res => {
     data.resultText = res
   })
 }

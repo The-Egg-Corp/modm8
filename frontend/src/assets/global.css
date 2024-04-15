@@ -1,5 +1,5 @@
 html {
-    background-color: rgba(9, 10, 11, 0.93) !important;
+    background-color: rgba(9, 11, 15, 0.99) !important;
     background-size: cover;
     overflow-y: hidden !important; 
 }
@@ -8,3 +8,4 @@ body {
     color: white;
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
+

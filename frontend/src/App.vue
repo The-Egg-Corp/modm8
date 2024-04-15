@@ -1,13 +1,11 @@
 <script lang="ts" setup>
-import PackageInfo from './components/PackageInfo.vue'
+import Home from './views/Home.vue'
+import Sidebar from './components/Sidebar.vue'
 </script>
 
 <template>
-  
-<div class="container">
-  <img id="logo" alt="modm8 icon" src="./assets/images/modm8-logo-transparent-white-donut.png"/>
-  <PackageInfo/>
-</div>
+<Home/>
+<Sidebar/>
 </template>
 
 <style>

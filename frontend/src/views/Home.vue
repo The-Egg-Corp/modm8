@@ -12,19 +12,22 @@ function getUserPkgs() {
     data.resultText = res
   })
 }
-
 </script>
 
 <template>
   <main>
-    <div id="input" class="input-box">
-      <input id="name" v-model="data.name" autocomplete="off" class="input" type="text"/>
-      <button class="btn" @click="getUserPkgs">Get</button>
+    <div class="container">
+      <img id="logo" alt="modm8 icon" src="../assets/images/modm8-logo-transparent-white-donut.png"/>
+      <div id="input" class="input-box">
+        <input id="name" v-model="data.name" autocomplete="off" class="input" type="text"/>
+        <button class="btn" @click="getUserPkgs">Get</button>
+      </div>
+      <div id="result" class="result">{{ data.resultText }}</div>
     </div>
-    <div id="result" class="result">{{ data.resultText }}</div>
   </main>
 </template>
 
+<!-- #region Style -->
 <style scoped>
 .result {
   height: 20px;
@@ -66,5 +69,5 @@ function getUserPkgs() {
 .input-box .input:focus {
   background-color: rgba(255, 255, 255, 1);
 }
-
 </style>
+<!-- #endregion -->

@@ -3,4 +3,11 @@ import App from './App.vue'
 
 import './style.css';
 
-createApp(App).mount('#app')
+import Buefy from 'buefy'
+//import 'buefy/dist/buefy.css'
+
+const app = createApp(App)
+
+//@ts-ignore
+app.use(Buefy)
+app.mount('#app')

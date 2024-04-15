@@ -1,17 +1,21 @@
 {
   "name": "frontend",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "reinstall": "rimraf node_modules && bun i"
   },
   "dependencies": {
+    "@types/node": "^20.12.7",
+    "buefy": "npm:@ntohq/buefy-next",
     "vue": "^3.2.37"
   },
   "devDependencies": {
+    "rimraf": "latest",
     "@vitejs/plugin-vue": "^3.0.3",
     "typescript": "^4.6.4",
     "vite": "^3.0.7",

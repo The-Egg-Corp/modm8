@@ -4,18 +4,18 @@
 
 <template>
 <v-layout>
-    <v-navigation-drawer disable-resize-watcher floating permanent width="95">
-    <v-list density="compact">
-        <v-list-item>
-            <v-btn flat flex icon="mdi-view-dashboard"></v-btn>
-        </v-list-item>
-        <v-list-item>
-            <v-btn flat icon="mdi-palette"></v-btn>
-        </v-list-item>
-        <v-list-item>
+    <v-navigation-drawer disable-resize-watcher floating permanent width="90">
+        <v-list>
+            <v-list-item class="item-content">
+                <v-btn flat icon="mdi-view-dashboard"></v-btn>
+            </v-list-item>
+            <v-list-item class="item-content">
+                <v-btn flat icon="mdi-palette"></v-btn>
+            </v-list-item>
+        </v-list>
+        <v-list-item class="item-content bottom-pad">
             <v-btn flat icon="mdi-cog"></v-btn>
         </v-list-item>
-    </v-list>
     </v-navigation-drawer>
 </v-layout>
 </template>
@@ -23,20 +23,28 @@
 <style scoped>
 .v-navigation-drawer {
     background-color: rgba(255, 255, 255, 0.09);
+    justify-items: center;
 }
 
-.v-list-item {
-    background-color: rgb(39, 41, 50);
+.item-content :deep(.v-list-item__content) {
+    justify-self: center;
+}
+
+.bottom-pad {
+    position: absolute;
+    bottom: 15px;
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
 }
 
 .v-list-item .v-btn {
     color: rgba(223, 223, 223, 0.962);
-    display: inline-flex;
+    border-color: rgba(225, 225, 225, 0.421);
+    border-width: 1px;
     border-radius: 8px;
-    border-color: rgba(173, 58, 255, 0.421);
-    border-width: 0.1px;
-    width: 50px;
-    height: 45px;
+    width: 55px;
+    height: 50px;
 }
 </style>
-

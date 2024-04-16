@@ -18,4 +18,4 @@ These bring the following benefits:
 3. Run the installer and continue with the setup.
 
 ## Contact
-Help or suggestions are welcome over at my [discord](https://discord.gg/psBXpXF2JZ)!
+Feel free to join the [discord](https://discord.gg/psBXpXF2JZ) for support, suggestions or anything mod related!

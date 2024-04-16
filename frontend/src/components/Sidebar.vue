@@ -3,21 +3,21 @@
 </script>
 
 <template>
-<v-layout>
+<!-- <v-layout>
     <v-navigation-drawer disable-resize-watcher floating permanent width="90">
         <v-list>
             <v-list-item class="item-content">
                 <v-btn flat icon="mdi-view-dashboard"></v-btn>
             </v-list-item>
             <v-list-item class="item-content">
-                <v-btn flat icon="mdi-palette"></v-btn>
+                <v-btn flat icon="mdi-cube"></v-btn>
             </v-list-item>
         </v-list>
         <v-list-item class="item-content bottom-pad">
             <v-btn flat icon="mdi-cog"></v-btn>
         </v-list-item>
     </v-navigation-drawer>
-</v-layout>
+</v-layout> -->
 </template>
 
 <style scoped>

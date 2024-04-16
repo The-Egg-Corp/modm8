@@ -1,35 +1,22 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 
-//#region Import Vuetify
-import { createVuetify } from 'vuetify'
-import { aliases, mdi } from 'vuetify/iconsets/mdi'
+import i18n from "./i18n/index"
 
-import * as components from 'vuetify/components'
-import * as directives from 'vuetify/directives'
+//#region Import framework
+import PrimeVue from 'primevue/config'
 //#endregion
 
 //#region Import styles
-import 'vuetify/styles'
-import "@mdi/font/css/materialdesignicons.css";
+//import "@mdi/font/css/materialdesignicons.css";
+import "primevue/resources/themes/aura-dark-amber/theme.css"
 
 import './assets/global.css';
 //#endregion
 
 const app = createApp(App)
-app.use(createVuetify({
-    components,
-    directives,
-    icons: {
-        defaultSet: 'mdi',
-        aliases,
-        sets: {
-            mdi
-        }
-    },
-    theme: {
-        defaultTheme: "dark"
-    }
-}))
+
+app.use(i18n)
+app.use(PrimeVue)
 
 app.mount('#app')

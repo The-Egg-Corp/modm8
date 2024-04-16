@@ -1,0 +1,10 @@
+{
+    "sidebar": {
+        "dashboard": "Tableau de bord",
+        "settings": "Paramètres"
+    },
+    "languages": {
+        "en": "Anglais",
+        "fr": "Français"
+    }
+}

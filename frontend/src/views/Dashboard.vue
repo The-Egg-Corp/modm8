@@ -74,5 +74,21 @@ function getUserPkgs() {
   background-color: rgb(43, 43, 43);
   -webkit-font-smoothing: antialiased;
 }
+
+#logo {
+  display: block;
+  width: 25%;
+  height: 25%;
+  max-width: 50%;
+  max-height: 50%;
+  align-self: center;
+  object-fit: contain;
+  margin: auto;
+  padding: 2% 0 0;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-origin: content-box;
+}
 </style>
 <!-- #endregion -->

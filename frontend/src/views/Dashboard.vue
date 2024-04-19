@@ -19,16 +19,21 @@ function getUserPkgs() {
 </script>
 
 <template>
-  <main>
-    <div class="container">
+  <div class="container">
+    <div>
       <img id="logo" alt="modm8 icon" src="../assets/images/modm8-logo-transparent-white-donut.png"/>
-      <div id="input" class="input-box">
-        <input id="name" v-model="data.name" autocomplete="off" class="input" type="text"/>
-        <button class="btn" @click="getUserPkgs">Get</button>
-      </div>
-      <div id="result" class="result">{{ data.resultText }}</div>
     </div>
-  </main>
+    
+    <div id="input" class="input-box no-drag">
+      <FloatLabel>
+        <InputText id="name" v-model="data.name" autocomplete="off"/>
+        <!-- <label for="name">Owner</label> -->
+        
+        <button class="btn" @click="getUserPkgs">Get</button>
+      </FloatLabel>
+    </div>
+    <div id="result" class="result no-drag">{{ data.resultText }}</div>
+  </div>
 </template>
 
 <!-- #region Style -->
@@ -36,10 +41,14 @@ function getUserPkgs() {
 .container {
   user-select: none;
   position: absolute;
-  left: 0;
+  top: 0;
+  bottom: 150px;
   right: 0;
+  left: 0;
   text-align: center;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .result {
@@ -47,6 +56,7 @@ function getUserPkgs() {
   line-height: 20px;
   margin: 1.5rem auto;
   size-adjust: auto;
+  user-select: all;
 }
 
 .input-box .btn {
@@ -55,8 +65,7 @@ function getUserPkgs() {
   line-height: 30px;
   margin: 2rem 0 0 20px;
   padding: 0 8px;
-  cursor:auto;
-  user-select: none;
+  cursor: auto;
 }
 
 .input-box .btn:hover {
@@ -76,15 +85,11 @@ function getUserPkgs() {
 }
 
 #logo {
-  display: block;
-  width: 25%;
-  height: 25%;
-  max-width: 50%;
-  max-height: 50%;
+  display: inline-block;
+  min-width: 37%;
+  max-width: 40%;
   align-self: center;
   object-fit: contain;
-  margin: auto;
-  padding: 2% 0 0;
   background-position: center;
   background-repeat: no-repeat;
   background-size: 100% 100%;

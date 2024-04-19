@@ -10,13 +10,21 @@ import Topbar from './components/Topbar.vue'
   <Dashboard/>
   <Settings/>
 
-  <Sidebar/>
   <Topbar/>
+  <Sidebar/>
 </template>
 
 <style>
 #logo {
   user-select: none;
   pointer-events: none;
+}
+
+.drag {
+  --wails-draggable: drag;
+}
+
+.no-drag {
+  --wails-draggable: no-drag;
 }
 </style>

@@ -58,5 +58,6 @@ const CustomMinimise = async() => {
 .topbar :deep(.p-toolbar) {
     background: none;
     border: none;
+    border-radius: 0;
 }
 </style>

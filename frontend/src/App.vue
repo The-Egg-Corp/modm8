@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import Dashboard from './views/Dashboard.vue'
+import GameSelection from './views/GameSelection.vue'
 import Settings from './views/Settings.vue'
 
 import Sidebar from './components/Sidebar.vue'
@@ -7,7 +7,7 @@ import Topbar from './components/Topbar.vue'
 </script>
 
 <template>
-  <Dashboard/>
+  <GameSelection/>
   <Settings/>
 
   <Topbar/>

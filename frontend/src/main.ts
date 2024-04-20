@@ -10,14 +10,15 @@ import Button from 'primevue/button'
 import ButtonGroup from 'primevue/buttongroup'
 import Card from 'primevue/card'
 import Toolbar from 'primevue/toolbar'
-import FloatLabel from 'primevue/floatlabel';
-import InputText from 'primevue/inputtext';
+import FloatLabel from 'primevue/floatlabel'
+import InputText from 'primevue/inputtext'
+import DataView from 'primevue/dataview'
 //#endregion
 
 //#region Import styles
-//import "@mdi/font/css/materialdesignicons.css";
 import "primevue/resources/themes/aura-dark-amber/theme.css"
 import "primeicons/primeicons.css";
+//import "@mdi/font/css/materialdesignicons.css";
 
 import './assets/global.css';
 //#endregion
@@ -33,5 +34,6 @@ app.component('Card', Card)
 app.component('Toolbar', Toolbar)
 app.component('FloatLabel', FloatLabel)
 app.component('InputText', InputText)
+app.component('DataView', DataView)
 
 app.mount('#app')

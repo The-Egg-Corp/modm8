@@ -20,9 +20,7 @@ function getUserPkgs() {
 
 <template>
   <div class="container">
-    <div>
-      <img id="logo" alt="modm8 icon" src="../assets/images/modm8-logo-transparent-white-donut.png"/>
-    </div>
+    <img id="logo" alt="modm8 icon" src="../assets/images/modm8-logo-transparent-white-donut.png"/>
     
     <div id="input" class="input-box no-drag">
       <FloatLabel>
@@ -86,8 +84,8 @@ function getUserPkgs() {
 
 #logo {
   display: inline-block;
-  min-width: 37%;
-  max-width: 40%;
+  max-width: 30%;
+  min-width: 400px;
   align-self: center;
   object-fit: contain;
   background-position: center;

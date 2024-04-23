@@ -1,3 +1,21 @@
+<script lang="ts" setup>
+import { 
+    WindowMinimise,
+    WindowUnmaximise, WindowMaximise,
+    WindowIsMaximised, Quit
+} from '../../wailsjs/runtime/runtime'
+
+import router from "../router"
+
+const CustomMinimise = async() => {
+    if (await WindowIsMaximised()) WindowUnmaximise()
+    else WindowMinimise()
+}
+
+const ToDashboard = () => router.push('/')
+const ToGameSelection = () => router.push('/game-selection')
+</script>
+
 <template>
 <div class="topbar">
     <Toolbar class="no-drag">
@@ -20,25 +38,6 @@
 </div>
 
 </template>
-
-<script lang="ts" setup>
-import { 
-    WindowMinimise,
-    WindowUnmaximise, WindowMaximise,
-    WindowIsMaximised, Quit
-} from '../../wailsjs/runtime/runtime'
-
-import router from "../router"
-
-const CustomMinimise = async() => {
-    if (await WindowIsMaximised()) WindowUnmaximise()
-    else WindowMinimise()
-}
-
-const ToDashboard = () => router.push('/')
-const ToGameSelection = () => router.push('/game-selection')
-const ToSettings = () => router.push('/settings')
-</script>
 
 <style scoped>
 .control-buttons {

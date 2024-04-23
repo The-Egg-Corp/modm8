@@ -5,8 +5,6 @@
 <template>
     <div class="container">
         <p class="header">Select Game</p>
-
-        
     </div>
 </template>
 

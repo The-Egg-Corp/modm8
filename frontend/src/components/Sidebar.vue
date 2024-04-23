@@ -1,10 +1,12 @@
 <script lang="ts" setup>
+import router from "../router"
 
+const ToSettings = () => router.push('/settings')
 </script>
 
 <template>
 <div class="settings">
-    <Button plain class="button" icon="pi pi-cog" @click=""/>
+    <Button plain class="button" icon="pi pi-cog" @click="ToSettings"/>
 </div>
 </template>
 

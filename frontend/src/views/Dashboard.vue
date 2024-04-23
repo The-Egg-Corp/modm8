@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { reactive } from 'vue'
-import { GetUserPackages } from '../../wailsjs/go/main/App'
+import { GetUserPackages } from '../../wailsjs/go/backend/App'
 
 interface PackageInfo {
   name: string
@@ -12,7 +12,7 @@ const data: PackageInfo = reactive({
 })
 
 function getUserPkgs() {
-  GetUserPackages(data.name).then(res => {
+  GetUserPackages(["lethal-company"], data.name).then(res => {
     data.resultText = res
   })
 }

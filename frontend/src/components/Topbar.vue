@@ -3,7 +3,8 @@
     <Toolbar class="no-drag">
     <template #start>
         <div class="flex align-items-center gap-2">
-            <Button plain label="Dashboard" text/>
+            <Button plain label="Dashboard" text @click="ToDashboard"/>
+            <Button plain label="Game Selection" text @click="ToGameSelection"/>
             <Button plain label="Profiles" text/>
         </div>
     </template>
@@ -27,10 +28,16 @@ import {
     WindowIsMaximised, Quit
 } from '../../wailsjs/runtime/runtime'
 
+import router from "../router"
+
 const CustomMinimise = async() => {
     if (await WindowIsMaximised()) WindowUnmaximise()
     else WindowMinimise()
 }
+
+const ToDashboard = () => router.push('/')
+const ToGameSelection = () => router.push('/game-selection')
+const ToSettings = () => router.push('/settings')
 </script>
 
 <style scoped>

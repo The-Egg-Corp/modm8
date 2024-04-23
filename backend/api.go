@@ -7,8 +7,8 @@ import (
 	v1 "github.com/the-egg-corp/thundergo/v1"
 )
 
-func (a *App) GetUserPackages(owner string) string {
-	pkgs, err := v1.GetAllPackages()
+func (a *App) GetUserPackages(communities []string, owner string) string {
+	pkgs, err := v1.PackagesFromCommunities(v1.NewCommunityList(communities...))
 	if err != nil {
 		return "An error getting packages!"
 	}

@@ -1,28 +1,11 @@
-package main
+package backend
 
 import (
-	"context"
 	"strings"
 
 	"github.com/samber/lo"
 	v1 "github.com/the-egg-corp/thundergo/v1"
 )
-
-// App struct
-type App struct {
-	ctx context.Context
-}
-
-// NewApp creates a new App application struct
-func NewApp() *App {
-	return &App{}
-}
-
-// startup is called when the app starts. The context is saved
-// so we can call the runtime methods
-func (a *App) startup(ctx context.Context) {
-	a.ctx = ctx
-}
 
 func (a *App) GetUserPackages(owner string) string {
 	pkgs, err := v1.GetAllPackages()

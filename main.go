@@ -7,6 +7,8 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 	"github.com/wailsapp/wails/v2/pkg/options/windows"
+
+	"modm8/backend"
 )
 
 //go:embed all:frontend/dist
@@ -23,7 +25,7 @@ var windowsOpts = &windows.Options{
 
 func main() {
 	// Create an instance of the app structure
-	app := NewApp()
+	app := backend.NewApp()
 
 	// Create application with options
 	err := wails.Run(&options.App{
@@ -38,7 +40,7 @@ func main() {
 		Frameless:                true,
 		EnableDefaultContextMenu: false,
 		Windows:                  windowsOpts,
-		OnStartup:                app.startup,
+		OnStartup:                app.Startup,
 		SingleInstanceLock: &options.SingleInstanceLock{
 			UniqueId: "7465fe36-08e3-478b-853b-0f8676f724b7",
 		},

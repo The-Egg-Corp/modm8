@@ -39,14 +39,14 @@ function getUserPkgs() {
 .container {
   user-select: none;
   position: absolute;
-  top: 0;
-  bottom: 150px;
-  right: 0;
+  top: 30%;
+  bottom: 0;
   left: 0;
+  right: 0;
   text-align: center;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+
 }
 
 .result {
@@ -85,7 +85,7 @@ function getUserPkgs() {
 #logo {
   display: inline-block;
   max-width: 30%;
-  min-width: 400px;
+  min-width: 420px;
   align-self: center;
   object-fit: contain;
   background-position: center;

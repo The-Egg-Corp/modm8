@@ -11,15 +11,13 @@
 <style scoped>
 .container {
     position: absolute;
-    top: 12%;
+    top: 30px;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%);
 }
 
 .container .header {
     user-select: none;
     font-size: 45px;
-    stroke: rgb(190, 123, 228);
-    stroke-width: 5px;
 }
 </style>

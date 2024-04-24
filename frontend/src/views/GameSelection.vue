@@ -4,22 +4,21 @@
 
 <template>
     <div class="container">
-        <p class="header">Select Game</p>
+        <p class="header">Choose a game to manage mods for.</p>
     </div>
 </template>
 
 <style scoped>
 .container {
     position: absolute;
-    top: 12%;
+    top: 40px;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%);
 }
 
 .container .header {
+    text-wrap: nowrap;
     user-select: none;
-    font-size: 45px;
-    stroke: rgb(190, 123, 228);
-    stroke-width: 5px;
+    font-size: 26px;
 }
 </style>

@@ -1,8 +1,8 @@
 import { RouteRecordRaw } from 'vue-router'
 
-import Dashboard from '../views/Dashboard.vue'
-import GameSelection from '../views/GameSelection.vue'
-import Settings from '../views/Settings.vue'
+const Dashboard = () => import('../views/Dashboard.vue')
+const GameSelection = () => import('../views/GameSelection.vue')
+const Settings = () => import('../views/Settings.vue')
 
 const ROUTES: RouteRecordRaw[] = [{
     path: '/', 

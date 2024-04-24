@@ -22,8 +22,7 @@ const ToGameSelection = () => router.push('/game-selection')
     <template #start>
         <div class="flex align-items-center gap-2">
             <Button plain label="Dashboard" text @click="ToDashboard"/>
-            <Button plain label="Game Selection" text @click="ToGameSelection"/>
-            <Button plain label="Profiles" text/>
+            <Button plain label="Select Game" text @click="ToGameSelection"/>
         </div>
     </template>
     </Toolbar>

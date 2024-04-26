@@ -24,7 +24,7 @@ interface ChangeEvent<V> {
     value: V
 }
 
-const dropdownChange = (e: ChangeEvent<Country>) => {
+const ChangeLocale = (e: ChangeEvent<Country>) => {
     locale.value = e.value?.code
 }
 </script>
@@ -33,7 +33,7 @@ const dropdownChange = (e: ChangeEvent<Country>) => {
     <div class="container">
         <p class="header">{{ $t('keywords.settings') }}</p>
 
-        <Dropdown @change="dropdownChange" class="no-drag-all-children w-full md:w-14rem" v-model="selectedCountry" :options="countries" optionLabel="name" placeholder="Select language">
+        <Dropdown @change="ChangeLocale" class="no-drag-all-children w-full md:w-14rem" v-model="selectedCountry" :options="countries" optionLabel="name" placeholder="Select language">
             <template #value="slotProps">
                 <div v-if="slotProps.value" class="flex align-items-center">
                     <img 

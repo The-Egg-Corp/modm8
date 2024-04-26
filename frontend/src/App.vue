@@ -16,6 +16,10 @@ import Topbar from './components/Topbar.vue'
   pointer-events: none;
 }
 
+.no-select {
+  user-select: none;
+}
+
 .drag {
   --wails-draggable: drag;
 }

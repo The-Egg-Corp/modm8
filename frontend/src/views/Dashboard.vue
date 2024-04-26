@@ -11,7 +11,7 @@ const data: PackageInfo = reactive({
   name: ""
 })
 
-function getUserPkgs() {
+function PackagesByUser() {
   GetUserPackages(["lethal-company"], data.name).then(res => {
     data.resultText = res
   })
@@ -27,7 +27,7 @@ function getUserPkgs() {
         <InputText id="name" v-model="data.name" autocomplete="off"/>
         <!-- <label for="name">Owner</label> -->
         
-        <button class="btn" @click="getUserPkgs">Get</button>
+        <button class="btn" @click="PackagesByUser">Get</button>
       </FloatLabel>
     </div>
     <div id="result" class="result no-drag">{{ data.resultText }}</div>

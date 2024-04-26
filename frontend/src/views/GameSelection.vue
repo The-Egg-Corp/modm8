@@ -4,7 +4,7 @@
 
 <template>
     <div class="container">
-        <p class="header">Choose a game to manage mods for.</p>
+        <p class="header">{{ $t('game-selection.header') }}</p>
     </div>
 </template>
 

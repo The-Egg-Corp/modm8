@@ -1,13 +1,22 @@
 {
     "topbar": {
         "dashboard": "Tableau de bord",
-        "select-game": ""
+        "select-game": "Sélectionnez un jeu"
+    },
+    "game-selection": {
+        "header": "Choisissez un jeu pour lequel gérer les mods."
+    },
+    "settings": {
+        "select-language": "Choisir la langue"
     },
     "keywords": {
-        "settings": "Paramètres"
+        "settings": "Paramètres",
+        "download": "Télécharger"
     },
     "languages": {
         "en": "Anglais",
-        "fr": "Français"
+        "fr": "Français",
+        "de": "Allemand",
+        "ae": "arabe"
     }
 }

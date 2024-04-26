@@ -1,0 +1,22 @@
+{
+    "topbar": {
+        "dashboard": "Armaturenbrett",
+        "select-game": "Spiel auswählen"
+    },
+    "game-selection": {
+        "header": "Wählen Sie ein Spiel aus, für das Sie Mods verwalten möchten."
+    },
+    "settings": {
+        "select-language": "Sprache auswählen"
+    },
+    "keywords": {
+        "settings": "Einstellungen",
+        "download": "Herunterladen"
+    },
+    "languages": {
+        "en": "Englisch",
+        "fr": "Französisch",
+        "de": "Deutsch",
+        "ae": "Arabisch"
+    }
+}

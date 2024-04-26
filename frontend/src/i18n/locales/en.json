@@ -3,11 +3,23 @@
         "dashboard": "Dashboard",
         "select-game": "Select Game"
     },
+    "game-selection": {
+        "header": "Choose a game to manage mods for."
+    },
+    "settings": {
+        "select-language": "Select language"
+    },
     "keywords": {
-        "settings": "Settings"
+        "settings": "Settings",
+        "download": "Download",
+        "get": "Get",
+        "new": "New",
+        "back": "Back"
     },
     "languages": {
         "en": "English",
-        "fr": "French"
+        "fr": "French",
+        "de": "German",
+        "ae": "Arabic"
     }
 }

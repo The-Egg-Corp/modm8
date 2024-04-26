@@ -17,6 +17,9 @@ const countries: Ref<Country[]> = ref([{
 }, { 
     name: t('languages.fr'),
     code: 'fr'
+}, {
+    name: t('languages.de'),
+    code: 'de'
 }])
 
 interface ChangeEvent<V> {
@@ -30,7 +33,13 @@ const ChangeLocale = (e: ChangeEvent<Country>) => {
 </script>
 
 <template>
-    <Dropdown @change="ChangeLocale" class="no-drag w-full md:w-14rem" v-model="selectedCountry" :options="countries" optionLabel="name" placeholder="Select language">
+    <Dropdown 
+        @change="ChangeLocale" class="no-drag w-full md:w-14rem" 
+        optionLabel="name"
+        :placeholder="$t('settings.select-language')"
+        v-model="selectedCountry" 
+        :options="countries" 
+    >
         <template #value="slotProps">
             <div v-if="slotProps.value" class="flex align-items-center">
                 <img 

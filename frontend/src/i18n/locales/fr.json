@@ -1,6 +1,9 @@
 {
-    "sidebar": {
+    "topbar": {
         "dashboard": "Tableau de bord",
+        "select-game": ""
+    },
+    "keywords": {
         "settings": "Paramètres"
     },
     "languages": {

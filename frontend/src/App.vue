@@ -23,4 +23,8 @@ import Topbar from './components/Topbar.vue'
 .no-drag {
   --wails-draggable: no-drag;
 }
+
+.no-drag-all-children > * {
+  --wails-draggable: no-drag;
+}
 </style>

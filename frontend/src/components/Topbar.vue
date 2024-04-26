@@ -21,8 +21,8 @@ const ToGameSelection = () => router.push('/game-selection')
     <Toolbar class="no-drag">
     <template #start>
         <div class="flex align-items-center gap-2">
-            <Button plain label="Dashboard" text @click="ToDashboard"/>
-            <Button plain label="Select Game" text @click="ToGameSelection"/>
+            <Button :label="$t('topbar.dashboard')" plain text @click="ToDashboard"/>
+            <Button label="Select Game" plain text @click="ToGameSelection"/>
         </div>
     </template>
     </Toolbar>
@@ -45,6 +45,8 @@ const ToGameSelection = () => router.push('/game-selection')
     right: 0;
     display: flex;
     align-items: center;
+    margin-right: 0.5rem;
+    margin-top: 0.5rem;
 }
 
 .control-buttons .button {
@@ -52,8 +54,6 @@ const ToGameSelection = () => router.push('/game-selection')
     background: transparent;
     border: none;
     color: rgba(177, 177, 177, 0.889);
-    padding-right: 0.5rem;
-    padding-top: 1rem;
 }
 
 .topbar {

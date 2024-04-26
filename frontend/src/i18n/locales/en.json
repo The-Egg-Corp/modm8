@@ -1,6 +1,9 @@
 {
-    "sidebar": {
+    "topbar": {
         "dashboard": "Dashboard",
+        "select-game": "Select Game"
+    },
+    "keywords": {
         "settings": "Settings"
     },
     "languages": {

@@ -6,7 +6,7 @@ const ToSettings = () => router.push('/settings')
 
 <template>
 <div class="settings">
-    <Button plain class="button no-drag" icon="pi pi-cog" @click="ToSettings"/>
+    <Button plain class="button no-drag" icon="pi pi-spin pi-cog" @click="ToSettings"/>
 </div>
 </template>
 

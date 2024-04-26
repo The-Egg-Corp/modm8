@@ -14,14 +14,17 @@ import Toolbar from 'primevue/toolbar'
 import FloatLabel from 'primevue/floatlabel'
 import InputText from 'primevue/inputtext'
 import DataView from 'primevue/dataview'
+import Dropdown from 'primevue/dropdown'
 //#endregion
 
 //#region Import styles
-import "primevue/resources/themes/aura-dark-amber/theme.css"
-import "primeicons/primeicons.css";
+import "primevue/resources/themes/aura-dark-purple/theme.css"
+import "primeflex/primeflex.css"
+import "primeicons/primeicons.css"
 //import "@mdi/font/css/materialdesignicons.css";
 
-import './assets/global.css';
+import './assets/global.css'
+import "./assets/flags.css"
 //#endregion
 
 const app = createApp(App)
@@ -37,5 +40,6 @@ app.component('Toolbar', Toolbar)
 app.component('FloatLabel', FloatLabel)
 app.component('InputText', InputText)
 app.component('DataView', DataView)
+app.component('Dropdown', Dropdown)
 
 app.mount('#app')

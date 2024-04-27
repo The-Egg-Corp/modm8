@@ -19,9 +19,9 @@ func (a *App) Startup(ctx context.Context) {
 	a.Ctx = ctx
 }
 
-func (a *App) Shutdown(ctx context.Context) {
+// func (a *App) Shutdown(ctx context.Context) {
 
-}
+// }
 
 func CheckForUpdate() {
 

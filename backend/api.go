@@ -4,8 +4,13 @@ import (
 	"strings"
 
 	"github.com/samber/lo"
+	exp "github.com/the-egg-corp/thundergo/experimental"
 	v1 "github.com/the-egg-corp/thundergo/v1"
 )
+
+func (a *App) GetCommunities() (exp.CommunityList, error) {
+	return exp.GetCommunities()
+}
 
 func (a *App) GetUserPackages(communities []string, owner string) string {
 	pkgs, err := v1.PackagesFromCommunities(v1.NewCommunityList(communities...))

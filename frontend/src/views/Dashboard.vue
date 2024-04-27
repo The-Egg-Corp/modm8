@@ -15,15 +15,14 @@ const data: PackageInfo = reactive({
   name: ""
 })
 
-function PackagesByUser() {
+async function PackagesByUser() {
   if (data.name == "") {
     data.resultText = t('search-packages.empty-input')
     return
   }
 
-  GetUserPackages(["lethal-company"], data.name).then(res => {
-    data.resultText = res
-  })
+  const pkgs = await GetUserPackages(["lethal-company"], data.name)
+  data.resultText = pkgs
 }
 </script>
 

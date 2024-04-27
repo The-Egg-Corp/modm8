@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Ref, ref } from 'vue'
+import { ComputedRef, Ref, computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const { t, locale } = useI18n()
@@ -10,16 +10,18 @@ interface Country {
     code: string
 }
 
-const selectedCountry: Ref<any> = ref()
-const countries: Ref<Country[]> = ref([{ 
+const placeholder = computed(() => t('settings.select-language'))
+
+const selectedCountry: Ref<Country | null> = ref(null)
+const countries: ComputedRef<Country[]> = computed(() => [{ 
     name: t('languages.en'),
     code: 'gb'
-}, { 
-    name: t('languages.fr'),
-    code: 'fr'
 }, {
     name: t('languages.de'),
     code: 'de'
+}, {
+    name: t('languages.fr'),
+    code: 'fr'
 }])
 
 interface ChangeEvent<V> {
@@ -29,16 +31,29 @@ interface ChangeEvent<V> {
 
 const ChangeLocale = (e: ChangeEvent<Country>) => {
     locale.value = e.value?.code
+
+    // Rebind the selected item with the updated value
+    const updatedCountry = countries.value.find(c => c.code === e.value.code)
+    if (!updatedCountry) return
+
+    selectedCountry.value = updatedCountry
 }
+
+const AlphabetSort = <T>(arr: T[]) => arr.sort((a: any, b: any) => {
+    if (a.name < b.name) return -1
+    if (a.name > b.name) return 1
+
+    return 0
+})
 </script>
 
 <template>
     <Dropdown 
         @change="ChangeLocale" class="no-drag w-full md:w-14rem" 
         optionLabel="name"
-        :placeholder="$t('settings.select-language')"
+        :placeholder="placeholder"
         v-model="selectedCountry" 
-        :options="countries" 
+        :options="AlphabetSort(countries)" 
     >
         <template #value="slotProps">
             <div v-if="slotProps.value" class="flex align-items-center">

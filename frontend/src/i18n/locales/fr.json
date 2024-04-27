@@ -1,4 +1,8 @@
 {
+    "search-packages": {
+        "header": "Rechercher des packages par utilisateur",
+        "empty-input": "Aucun utilisateur entré"
+    },
     "topbar": {
         "dashboard": "Tableau de bord",
         "select-game": "Sélectionnez un jeu"
@@ -11,12 +15,21 @@
     },
     "keywords": {
         "settings": "Paramètres",
-        "download": "Télécharger"
+        "download": "Télécharger",
+        "get": "Obtenir",
+        "new": "Nouveau",
+        "back": "Dos"
     },
     "languages": {
         "en": "Anglais",
         "fr": "Français",
         "de": "Allemand",
-        "ae": "arabe"
+        "ae": "arabe",
+        "jp": "Japonais",
+        "ru": "russe",
+        "ua": "ukrainien",
+        "se": "suédois",
+        "it": "italien",
+        "es": "Espagnol"
     }
 }

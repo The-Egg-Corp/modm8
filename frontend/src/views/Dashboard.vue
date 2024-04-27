@@ -1,5 +1,9 @@
 <script lang="ts" setup>
 import { reactive } from 'vue'
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n()
+
 import { GetUserPackages } from '../../wailsjs/go/backend/App'
 
 interface PackageInfo {
@@ -12,6 +16,11 @@ const data: PackageInfo = reactive({
 })
 
 function PackagesByUser() {
+  if (data.name == "") {
+    data.resultText = t('search-packages.empty-input')
+    return
+  }
+
   GetUserPackages(["lethal-company"], data.name).then(res => {
     data.resultText = res
   })
@@ -20,14 +29,16 @@ function PackagesByUser() {
 
 <template>
   <div class="container">
-    <img id="logo" alt="modm8 icon" src="../assets/images/modm8-logo-transparent-white-donut.png"/>
+    <!--  <img id="logo" alt="modm8 icon" src="../assets/images/modm8-logo-transparent-white-donut.png"/> -->
     
+    <h1>{{ t('search-packages.header') }}</h1>
+
     <div id="input" class="input-box no-drag">
       <FloatLabel>
         <InputText id="name" v-model="data.name" autocomplete="off"/>
         <!-- <label for="name">Owner</label> -->
         
-        <button class="btn" @click="PackagesByUser">Get</button>
+        <Button class="btn" severity="help" outlined icon="pi pi-search" @click="PackagesByUser"/>
       </FloatLabel>
     </div>
     <div id="result" class="result no-drag">{{ data.resultText }}</div>
@@ -46,7 +57,10 @@ function PackagesByUser() {
   text-align: center;
   display: flex;
   flex-direction: column;
+}
 
+.container h1 {
+  margin-bottom: 35px;
 }
 
 .result {
@@ -57,18 +71,21 @@ function PackagesByUser() {
   user-select: all;
 }
 
+.p-inputtext {
+  width: 300px;
+}
+
 .input-box .btn {
-  width: 70px;
-  height: 32px;
+  height: 36px;
   line-height: 30px;
-  margin: 2rem 0 0 20px;
-  padding: 0 8px;
-  cursor: auto;
+  margin: 0 0 0 15px;
+  border: #c0c0c0 solid 1px;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 .input-box .btn:hover {
-  background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
-  color: #363636;
+  border-radius: 3px;
 }
 
 .input-box .input {

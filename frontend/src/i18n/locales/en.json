@@ -1,4 +1,8 @@
 {
+    "search-packages": {
+        "header": "Search packages by user",
+        "empty-input": "No user entered"
+    },
     "topbar": {
         "dashboard": "Dashboard",
         "select-game": "Select Game"
@@ -20,6 +24,12 @@
         "en": "English",
         "fr": "French",
         "de": "German",
-        "ae": "Arabic"
+        "ae": "Arabic",
+        "jp": "Japanese",
+        "ru": "Russian",
+        "ua": "Ukrainian",
+        "se": "Swedish",
+        "it": "Italian",
+        "es": "Spanish"
     }
 }

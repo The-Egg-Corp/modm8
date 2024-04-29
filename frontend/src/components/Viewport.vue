@@ -18,18 +18,18 @@
 }
 
 .content-area {
+    display: flex;
     width: 100vw; /* Full viewport width */
     height: 100vh; /* Full viewport height to center content */
-    display: flex; /* Use flexbox */
-    justify-content: center; /* Center content horizontally */
-    align-items: flex-start; /* Center content vertically */
+    justify-content: center; /* Center horizontally */
+    align-items: flex-start; /* Center vertically */
     padding-top: 30px;
     padding-right: 65px;
-    background-color: rgba(0, 0, 0, 0);
-    border-radius: 8px;
-    border: rgba(216, 216, 216, 0.912) solid 1px;
     margin-top: 35px;
     margin-left: 150px;
+    background-color: rgba(0, 0, 0, 0);
+    border: rgba(216, 216, 216, 0.912) solid 1px;
+    border-radius: 8px;
 }
 
 .content-area h1 {

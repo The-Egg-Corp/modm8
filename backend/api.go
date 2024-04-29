@@ -15,7 +15,7 @@ func (a *App) GetCommunities() (exp.CommunityList, error) {
 func (a *App) GetUserPackages(communities []string, owner string) string {
 	pkgs, err := v1.PackagesFromCommunities(v1.NewCommunityList(communities...))
 	if err != nil {
-		return "An error getting packages!"
+		return "An error occurred getting packages!"
 	}
 
 	pkgs = lo.Filter(pkgs, func(pkg v1.Package, index int) bool {

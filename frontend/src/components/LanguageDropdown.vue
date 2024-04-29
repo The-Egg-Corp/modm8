@@ -32,14 +32,15 @@ interface ChangeEvent<V> {
 const ChangeLocale = (e: ChangeEvent<Country>) => {
     locale.value = e.value?.code
 
-    // Rebind the selected item with the updated value
+    //#region Rebind the selected item with the updated value
     const updatedCountry = countries.value.find(c => c.code === e.value.code)
     if (!updatedCountry) return
 
     selectedCountry.value = updatedCountry
+    //#endregion
 }
 
-const AlphabetSort = <T>(arr: T[]) => arr.sort((a: any, b: any) => {
+const AlphabetSort = <T extends { name: string }>(arr: T[]) => arr.sort((a: T, b: T) => {
     if (a.name < b.name) return -1
     if (a.name > b.name) return 1
 
@@ -48,37 +49,36 @@ const AlphabetSort = <T>(arr: T[]) => arr.sort((a: any, b: any) => {
 </script>
 
 <template>
-    <Dropdown 
-        @change="ChangeLocale" class="no-drag w-full md:w-14rem" 
-        optionLabel="name"
+    <Dropdown class="no-drag w-full md:w-14rem" optionLabel="name"
         :placeholder="placeholder"
-        v-model="selectedCountry" 
-        :options="AlphabetSort(countries)" 
+        v-model="selectedCountry"
+        :options="AlphabetSort(countries)"
+        @change="ChangeLocale"
     >
-        <template #value="slotProps">
-            <div v-if="slotProps.value" class="flex align-items-center">
-                <img 
-                    :alt="slotProps.value.label" 
-                    :class="`mr-2 flag-style flag flag-${slotProps.value.code.toLowerCase()}`"
+        <template #option="selectedItem">
+            <div class="flex no-drag align-items-center">
+                <img
+                    :alt="selectedItem.option.label" 
+                    :class="`mr-2 flag-style flag flag-${selectedItem.option.code.toLowerCase()}`" 
                     :src=flagPlaceholderURL
                 />
 
-                <div>{{ slotProps.value.name }}</div>
+                <div class="no-select">{{ selectedItem.option.name }}</div>
             </div>
-
-            <span v-else>{{ slotProps.placeholder }}</span>
         </template>
 
-        <template #option="slotProps">
-            <div class="flex no-drag align-items-center">
-                <img 
-                    :alt="slotProps.option.label" 
-                    :class="`mr-2 flag-style flag flag-${slotProps.option.code.toLowerCase()}`" 
+        <template #value="selectedItem">
+            <div v-if="selectedItem.value" class="flex align-items-center">
+                <img
+                    :alt="selectedItem.value.label" 
+                    :class="`mr-2 flag-style flag flag-${selectedItem.value.code.toLowerCase()}`"
                     :src=flagPlaceholderURL
                 />
 
-                <div class="no-select">{{ slotProps.option.name }}</div>
+                <div>{{ selectedItem.value.name }}</div>
             </div>
+
+            <span v-else>{{ selectedItem.placeholder }}</span>
         </template>
     </Dropdown>
 </template>

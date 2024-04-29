@@ -22,4 +22,5 @@ body::before {
     left: 0;
     background-color: rgba(15, 15, 17, 0.992);
     filter: blur(10px);
+    z-index: -1;
 }

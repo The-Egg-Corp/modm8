@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import LanguageDropdown from '../components/LanguageDropdown.vue'
+import Viewport from '../components/Viewport.vue'
 </script>
 
 <template>
@@ -14,15 +15,16 @@ import LanguageDropdown from '../components/LanguageDropdown.vue'
             <LanguageDropdown/>
         </div>
     </div>
+
+    <!-- <Viewport>
+
+    </Viewport> -->
 </div>
 </template>
 
 <style scoped>
 .container {
-    position: absolute;
-    top: 50px;
-    left: 50%;
-    transform: translate(-50%);
+    margin-top: 25px;
 }
 
 .container .header {
@@ -36,9 +38,9 @@ import LanguageDropdown from '../components/LanguageDropdown.vue'
 
 .language-setting {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
     align-items: center;
-    gap: 25px;
+    gap: 20px;
 }
 
 .flex-item {

@@ -4,10 +4,10 @@ import Topbar from './components/Topbar.vue'
 </script>
 
 <template>
-  <RouterView />
-
   <Topbar/>
   <Sidebar/>
+
+  <RouterView />
 </template>
 
 <style>

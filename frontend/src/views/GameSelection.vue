@@ -4,21 +4,22 @@
 
 <template>
     <div class="container">
-        <p class="header">{{ $t('game-selection.header') }}</p>
+        <h2 class="header">{{ $t('game-selection.header') }}</h2>
     </div>
 </template>
 
 <style scoped>
 .container {
-    position: absolute;
-    top: 40px;
-    left: 50%;
-    transform: translate(-50%);
+    margin-top: 30px;
 }
 
 .container .header {
     text-wrap: nowrap;
     user-select: none;
-    font-size: 26px;
+    font-size: 28px;
+    font-weight: 420;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    text-align: center;
 }
 </style>

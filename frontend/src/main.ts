@@ -23,8 +23,8 @@ import "primeflex/primeflex.css"
 import "primeicons/primeicons.css"
 //import "@mdi/font/css/materialdesignicons.css";
 
-import './assets/global.css'
-import "./assets/flags.css"
+import './assets/styles/global.css'
+import "./assets/styles/flags.css"
 //#endregion
 
 const app = createApp(App)

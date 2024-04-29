@@ -49,7 +49,10 @@ const ToGameSelection = () => router.push('/game-selection')
 }
 
 .p-toolbar {
-    border: solid rgba(167, 167, 167, 0.574) 1px;
+    border-top: transparent;
+    border-left: transparent;
+    border-right: transparent;
+    border-bottom: solid rgba(167, 167, 167, 0.574) 1px;
     border-radius: 0;
     padding: 0.4rem;
     background-color: #18181bcd;

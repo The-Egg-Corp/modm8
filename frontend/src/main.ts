@@ -4,13 +4,16 @@ import App from './App.vue'
 import i18n from "./i18n"
 import router from "./router"
 
-//#region Import framework
+//#region Import Framework & Components
 import PrimeVue from 'primevue/config'
 
 import Button from 'primevue/button'
 import ButtonGroup from 'primevue/buttongroup'
-import Card from 'primevue/card'
+
+import Sidebar from 'primevue/sidebar'
 import Toolbar from 'primevue/toolbar'
+
+import Card from 'primevue/card'
 import FloatLabel from 'primevue/floatlabel'
 import InputText from 'primevue/inputtext'
 import DataView from 'primevue/dataview'
@@ -35,8 +38,11 @@ app.use(PrimeVue, { ripple: true })
 
 app.component('Button', Button)
 app.component('ButtonGroup', ButtonGroup)
+
+app.component('Sidebar', Sidebar)
+app.component('Toolbar', Toolbar) // AKA 'Topbar'
+
 app.component('Card', Card)
-app.component('Toolbar', Toolbar)
 app.component('FloatLabel', FloatLabel)
 app.component('InputText', InputText)
 app.component('DataView', DataView)

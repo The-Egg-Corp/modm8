@@ -1,20 +1,9 @@
 <script lang="ts" setup>
 import router from "../router"
-
-import { 
-    Quit,
-    WindowMinimise,
-    WindowMaximise,
-    WindowUnmaximise, 
-    WindowIsMaximised,
-} from '../../wailsjs/runtime/runtime'
+import ControlButtons from "./ControlButtons.vue"
 
 const ToDashboard = () => router.push('/')
 const ToGameSelection = () => router.push('/game-selection')
-
-const CustomMinimise = async() => await WindowIsMaximised() 
-    ? WindowUnmaximise()
-    : WindowMaximise()
 </script>
 
 <template>
@@ -30,13 +19,7 @@ const CustomMinimise = async() => await WindowIsMaximised()
         </template>
 
         <template #end>
-            <div class="control-buttons no-drag">
-                <ButtonGroup>
-                    <Button plain class="button" icon="pi pi-minus" @click="WindowMinimise"/>
-                    <Button plain class="button" icon="pi pi-expand" @click="CustomMinimise"/>
-                    <Button plain class="button" icon="pi pi-times" @click="Quit"/>
-                </ButtonGroup>
-            </div>
+            <ControlButtons/>
         </template>
     </Toolbar>
 </div>
@@ -63,20 +46,5 @@ const CustomMinimise = async() => await WindowIsMaximised()
     color: rgba(201, 201, 201, 0.905);
     padding: 8px 10px 8px 10px;
     font-size: 17px;
-}
-
-.control-buttons {
-    top: 0;
-    right: 0;
-    display: flex;
-    align-items: center;
-}
-
-.control-buttons .button {
-    cursor: pointer;
-    background: transparent;
-    border: none;
-    color: rgba(201, 201, 201, 0.905);
-    margin-right: 0;
 }
 </style>

@@ -1,11 +1,10 @@
 <script lang="ts" setup>
 import Sidebar from './components/Sidebar.vue'
-import Topbar from './components/Topbar.vue'
+import ControlButtons from './components/ControlButtons.vue'
 </script>
 
 <template>
-  <Topbar/>
-  <Sidebar/>
+  <ControlButtons/>
 
   <RouterView />
 </template>

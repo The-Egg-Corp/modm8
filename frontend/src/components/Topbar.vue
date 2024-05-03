@@ -17,11 +17,11 @@ const ToGameSelection = () => router.push('/game-selection')
 </script>
 
 <template>
-<div class="topbar">
+<div class="topbar drag">
     <Toolbar>
         <template #start>
             <div class="flex align-items-center">
-                <img class="icon" src="../assets/images/appicon.png">
+                <img class="icon no-select" src="../assets/images/appicon.png">
 
                 <Button class="no-drag button" :label="$t('topbar.dashboard')" plain text @click="ToDashboard"/>
                 <Button class="no-drag button" :label="$t('topbar.select-game')" plain text @click="ToGameSelection"/>
@@ -43,8 +43,8 @@ const ToGameSelection = () => router.push('/game-selection')
 
 <style scoped>
 .icon {
-    width: 30px;
-    height: 30px;
+    width: 27px;
+    height: 27px;
     margin: 0px 5px 0px 5px;
 }
 
@@ -60,6 +60,8 @@ const ToGameSelection = () => router.push('/game-selection')
 
 .p-toolbar .button {
     color: rgba(201, 201, 201, 0.905);
+    padding: 8px 10px 8px 10px;
+    font-size: 17px;
 }
 
 .control-buttons {
@@ -74,6 +76,6 @@ const ToGameSelection = () => router.push('/game-selection')
     background: transparent;
     border: none;
     color: rgba(201, 201, 201, 0.905);
+    margin-right: 0;
 }
-
 </style>

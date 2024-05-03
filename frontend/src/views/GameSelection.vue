@@ -10,7 +10,7 @@
 
 <style scoped>
 .container {
-    margin-top: 30px;
+    margin-top: 43px;
 }
 
 .container .header {

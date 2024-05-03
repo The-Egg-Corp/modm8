@@ -24,32 +24,32 @@ import Viewport from '../components/Viewport.vue'
 
 <style scoped>
 .container {
-    margin-top: 25px;
+    margin-top: 43px;
 }
 
 .container .header {
     user-select: none;
-    font-size: 48px;
+    font-size: 50px;
     font-weight: 500;
     text-align: center;
     margin-top: 0;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
 }
 
 .language-setting {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 20px;
+    gap: 25px;
 }
 
 .flex-item {
     text-align: center;
     user-select: none;
+    font-size: 19px;
 }
 
 .flex-item h2 {
     font-weight: 400;
-    font-size: 27px;
 }
 </style>

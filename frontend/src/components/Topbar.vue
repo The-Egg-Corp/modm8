@@ -1,19 +1,20 @@
 <script lang="ts" setup>
-import { 
-    WindowMinimise,
-    WindowUnmaximise, WindowMaximise,
-    WindowIsMaximised, Quit
-} from '../../wailsjs/runtime/runtime'
-
 import router from "../router"
 
-const CustomMinimise = async() => {
-    if (await WindowIsMaximised()) WindowUnmaximise()
-    else WindowMinimise()
-}
+import { 
+    Quit,
+    WindowMinimise,
+    WindowMaximise,
+    WindowUnmaximise, 
+    WindowIsMaximised,
+} from '../../wailsjs/runtime/runtime'
 
 const ToDashboard = () => router.push('/')
 const ToGameSelection = () => router.push('/game-selection')
+
+const CustomMinimise = async() => await WindowIsMaximised() 
+    ? WindowUnmaximise()
+    : WindowMaximise()
 </script>
 
 <template>
@@ -31,8 +32,8 @@ const ToGameSelection = () => router.push('/game-selection')
         <template #end>
             <div class="control-buttons no-drag">
                 <ButtonGroup>
-                    <Button plain class="button" icon="pi pi-minus" @click="CustomMinimise"/>
-                    <Button plain class="button" icon="pi pi-expand" @click="WindowMaximise"/>
+                    <Button plain class="button" icon="pi pi-minus" @click="WindowMinimise"/>
+                    <Button plain class="button" icon="pi pi-expand" @click="CustomMinimise"/>
                     <Button plain class="button" icon="pi pi-times" @click="Quit"/>
                 </ButtonGroup>
             </div>

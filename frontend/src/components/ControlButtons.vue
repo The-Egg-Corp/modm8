@@ -15,9 +15,9 @@ const CustomMinimise = async() => await WindowIsMaximised()
 <template>
 <div class="control-buttons no-drag">
     <ButtonGroup>
-        <Button plain class="button" icon="pi pi-minus" @click="WindowMinimise"/>
-        <Button plain class="button" icon="pi pi-expand" @click="CustomMinimise"/>
-        <Button plain class="button" icon="pi pi-times" @click="Quit"/>
+        <Button class="button" icon="pi pi-minus" plain text @click="WindowMinimise"/>
+        <Button class="button" icon="pi pi-expand" plain text @click="CustomMinimise"/>
+        <Button class="button" icon="pi pi-times" plain text @click="Quit"/>
     </ButtonGroup>
 </div>
 </template>
@@ -30,14 +30,17 @@ const CustomMinimise = async() => await WindowIsMaximised()
     display: flex;
     align-items: center;
     background-color: #1e1e21;
-    border-radius: 5px;
+    border-radius: 4px;
+    border-width: 1px;
+    border-color: white;
 }
 
 .control-buttons .button {
     cursor: pointer;
     background: transparent;
-    border: none;
     color: rgba(201, 201, 201, 0.905);
     margin-right: 0;
+    width: 46px;
+    height: 38px;
 }
 </style>

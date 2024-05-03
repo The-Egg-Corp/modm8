@@ -3,17 +3,17 @@
 </script>
 
 <template>
-    <div class="container">
+    <div class="game-selection">
         <h2 class="header">{{ $t('game-selection.header') }}</h2>
     </div>
 </template>
 
 <style scoped>
-.container {
-    margin-top: 43px;
+.game-selection {
+    padding-top: 45px;
 }
 
-.container .header {
+.game-selection .header {
     text-wrap: nowrap;
     user-select: none;
     font-size: 28px;

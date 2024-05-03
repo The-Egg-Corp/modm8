@@ -5,6 +5,7 @@ import ControlButtons from './components/ControlButtons.vue'
 
 <template>
   <ControlButtons/>
+  <Sidebar/>
 
   <RouterView />
 </template>

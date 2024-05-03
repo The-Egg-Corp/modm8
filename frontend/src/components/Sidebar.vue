@@ -5,22 +5,8 @@ const ToSettings = () => router.push('/settings')
 </script>
 
 <template>
-<div>
-    <!-- Sidebar that's always visible -->
-    <Sidebar :visible="true" :modal="false" position="left">
-        <template #header>
-        <h2>Menu</h2>
-        </template>
-
-        <ul>
-        <li>Dashboard</li>
-        <li>Select Game</li>
-        </ul>
-    </Sidebar>
-</div>
-
 <div class="settings">
-    <Button plain class="button no-drag" icon="pi pi-spin pi-cog" @click="ToSettings"/>
+    <Button class="button no-drag" icon="pi pi-spin pi-cog" plain @click="ToSettings"/>
 </div>
 </template>
 
@@ -39,12 +25,4 @@ const ToSettings = () => router.push('/settings')
     border-radius: 3.5px;
 }
 
-.p-sidebar-close {
-    display: none;
-}
-
-.content {
-    margin-left: 250px;  /* Adjust the margin to accommodate the sidebar width */
-    padding: 20px;
-}
 </style>

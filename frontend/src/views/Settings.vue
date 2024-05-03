@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import LanguageDropdown from '../components/LanguageDropdown.vue'
-import Viewport from '../components/Viewport.vue'
+//import Viewport from '../components/Viewport.vue'
 </script>
 
 <template>
-<div class="container">
+<div class="settings">
     <h1 class="header">{{ $t('keywords.settings') }}</h1>
 
     <div class="language-setting">
@@ -23,11 +23,11 @@ import Viewport from '../components/Viewport.vue'
 </template>
 
 <style scoped>
-.container {
-    margin-top: 43px;
+.settings {
+    padding-top: 45px;
 }
 
-.container .header {
+.settings .header {
     user-select: none;
     font-size: 50px;
     font-weight: 500;

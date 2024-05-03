@@ -29,7 +29,7 @@ interface ChangeEvent<V> {
     value: V
 }
 
-const ChangeLocale = (e: ChangeEvent<Country>) => {
+const changeLocale = (e: ChangeEvent<Country>) => {
     locale.value = e.value?.code
 
     //#region Rebind the selected item with the updated value
@@ -40,7 +40,7 @@ const ChangeLocale = (e: ChangeEvent<Country>) => {
     //#endregion
 }
 
-const AlphabetSort = <T extends { name: string }>(arr: T[]) => arr.sort((a: T, b: T) => {
+const alphabetSort = <T extends { name: string }>(arr: T[]) => arr.sort((a: T, b: T) => {
     if (a.name < b.name) return -1
     if (a.name > b.name) return 1
 
@@ -52,8 +52,8 @@ const AlphabetSort = <T extends { name: string }>(arr: T[]) => arr.sort((a: T, b
     <Dropdown class="no-drag w-full md:w-14rem" optionLabel="name"
         :placeholder="placeholder"
         v-model="selectedCountry"
-        :options="AlphabetSort(countries)"
-        @change="ChangeLocale"
+        :options="alphabetSort(countries)"
+        @change="changeLocale"
     >
         <template #option="selectedItem">
             <div class="flex no-drag align-items-center">

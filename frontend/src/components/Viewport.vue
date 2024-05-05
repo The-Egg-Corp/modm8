@@ -4,7 +4,9 @@
 
 <template>
 <div class="viewport">
-    <div class="content-area"></div>
+    <div class="content-area">
+        <h2>hi</h2>
+    </div>
 </div>
 </template>
   
@@ -25,6 +27,5 @@
     padding-right: 65px;
     margin-left: 75px;
     border: rgba(216, 216, 216, 0.912) solid 1px;
-    border-radius: 8px;
 }
 </style>

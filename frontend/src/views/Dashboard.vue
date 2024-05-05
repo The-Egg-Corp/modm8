@@ -27,9 +27,7 @@ async function PackagesByUser() {
 </script>
 
 <template>
-  <div class="container">
-    <!--  <img id="logo" alt="modm8 icon" src="../assets/images/modm8-logo-transparent-white-donut.png"/> -->
-    
+  <div class="dashboard flex-full column">
     <h1>{{ t('search-packages.header') }}</h1>
 
     <div id="input" class="input-box no-drag">
@@ -46,19 +44,14 @@ async function PackagesByUser() {
 
 <!-- #region Style -->
 <style scoped>
-.container {
-  user-select: none;
-  position: absolute;
-  top: 30%;
-  bottom: 0;
-  left: 0;
-  right: 0;
+.dashboard {
+  position: relative;
   text-align: center;
-  display: flex;
-  flex-direction: column;
+  user-select: none;
+  top: 100px;
 }
 
-.container h1 {
+.dashboard h1 {
   margin-bottom: 35px;
 }
 
@@ -96,18 +89,6 @@ async function PackagesByUser() {
   padding: 0 10px;
   background-color: rgb(43, 43, 43);
   -webkit-font-smoothing: antialiased;
-}
-
-#logo {
-  display: inline-block;
-  max-width: 30%;
-  min-width: 420px;
-  align-self: center;
-  object-fit: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-  background-origin: content-box;
 }
 </style>
 <!-- #endregion -->

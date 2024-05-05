@@ -20,7 +20,31 @@ body::before {
     right: 0;
     bottom: 0;
     left: 0;
-    background-color: rgba(15, 15, 17, 0.992);
-    filter: blur(10px);
+    background-color: rgba(15, 15, 17, 0.975);
+    filter: blur(6px);
     z-index: -1;
+}
+
+.flex-span {
+    display: flex;
+    width: 100vw;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-full {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+}
+
+.column {
+    flex-direction: column;
+}
+
+.center {
+    justify-content: center;
 }

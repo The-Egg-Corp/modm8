@@ -5,12 +5,18 @@ import ControlButtons from './components/ControlButtons.vue'
 
 <template>
   <ControlButtons/>
-  <Sidebar/>
-
-  <RouterView />
+  
+  <div class="app-container">
+    <Sidebar/>
+    <RouterView/>
+  </div>
 </template>
 
 <style>
+.app-container {
+  display: flex;
+}
+
 #logo {
   user-select: none;
   pointer-events: none;

@@ -4,10 +4,11 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
+    "clean": "rimraf ./node_modules",
     "dev": "bunx vite",
     "build": "bunx vite build",
-    "preview": "bun -b vite preview",
-    "reinstall": "rimraf node_modules && bun i"
+    "typecheck": "bunx vue-tsc --noEmit",
+    "ci": "bun i && bun run typecheck"
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",
@@ -25,6 +26,7 @@
     "typescript": "latest",
     "vite": "latest",
     "@vitejs/plugin-vue": "^3.0.3",
-    "@babel/types": "^7.18.10"
+    "@babel/types": "^7.18.10",
+    "vue-tsc": "latest"
   }
 }

@@ -3,12 +3,12 @@ import LanguageDropdown from '../components/LanguageDropdown.vue'
 </script>
 
 <template>
-<div class="container">
+<div class="settings">
     <h1 class="header">{{ $t('keywords.settings') }}</h1>
 
     <div class="language-setting">
         <div class="flex-item">
-            <h2>{{ $t('keywords.language') }}</h2>
+            <h3>{{ $t('keywords.language') }}</h3>
         </div>
         <div class="flex-item">
             <LanguageDropdown/>
@@ -18,36 +18,33 @@ import LanguageDropdown from '../components/LanguageDropdown.vue'
 </template>
 
 <style scoped>
-.container {
-    position: absolute;
-    top: 50px;
-    left: 50%;
-    transform: translate(-50%);
+.settings {
+    padding-top: 50px;
+    padding-left: 45px;
 }
 
-.container .header {
+.settings .header {
     user-select: none;
-    font-size: 48px;
+    font-size: 52px;
     font-weight: 500;
-    text-align: center;
     margin-top: 0;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1rem;
 }
 
 .language-setting {
     display: flex;
-    justify-content: space-evenly;
+    padding-left: 15px;
     align-items: center;
-    gap: 25px;
+    gap: 40px;
 }
 
 .flex-item {
     text-align: center;
     user-select: none;
+    font-size: 21px;
 }
 
-.flex-item h2 {
-    font-weight: 400;
-    font-size: 27px;
+.flex-item h3 {
+    font-weight: 420;
 }
 </style>

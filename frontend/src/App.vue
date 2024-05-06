@@ -1,16 +1,22 @@
 <script lang="ts" setup>
 import Sidebar from './components/Sidebar.vue'
-import Topbar from './components/Topbar.vue'
+import ControlButtons from './components/ControlButtons.vue'
 </script>
 
 <template>
-  <RouterView />
-
-  <Topbar/>
-  <Sidebar/>
+  <ControlButtons/>
+  
+  <div class="app-container">
+    <Sidebar/>
+    <RouterView/>
+  </div>
 </template>
 
 <style>
+.app-container {
+  display: flex;
+}
+
 #logo {
   user-select: none;
   pointer-events: none;

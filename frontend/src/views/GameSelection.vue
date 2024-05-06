@@ -3,22 +3,24 @@
 </script>
 
 <template>
-    <div class="container">
-        <p class="header">{{ $t('game-selection.header') }}</p>
+    <div class="game-selection flex-span">
+        <h2 class="header">{{ $t('game-selection.header') }}</h2>
     </div>
 </template>
 
 <style scoped>
-.container {
-    position: absolute;
-    top: 40px;
-    left: 50%;
-    transform: translate(-50%);
+.game-selection {
+    padding-top: 65px;
+    justify-content: center;
 }
 
-.container .header {
-    text-wrap: nowrap;
+.game-selection .header {
+    text-wrap: wrap;
     user-select: none;
-    font-size: 26px;
+    font-size: 30px;
+    font-weight: 420;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    text-align: center;
 }
 </style>

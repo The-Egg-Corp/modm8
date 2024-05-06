@@ -16,7 +16,6 @@ import Toolbar from 'primevue/toolbar'
 import Card from 'primevue/card'
 import FloatLabel from 'primevue/floatlabel'
 import InputText from 'primevue/inputtext'
-import DataView from 'primevue/dataview'
 import Dropdown from 'primevue/dropdown'
 //#endregion
 
@@ -45,7 +44,6 @@ app.component('Toolbar', Toolbar) // AKA 'Topbar'
 app.component('Card', Card)
 app.component('FloatLabel', FloatLabel)
 app.component('InputText', InputText)
-app.component('DataView', DataView)
 app.component('Dropdown', Dropdown)
 
 app.mount('#app')

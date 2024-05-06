@@ -11,25 +11,26 @@ const ToSettings = () => router.push('/settings')
     <div class="top flex-column">
         <img class="icon no-select" src="../assets/images/appicon.png">
 
-        <Button class="plain-btn margin-lr no-drag" icon="pi pi-spin pi-home" @click="ToDashboard"/>
-        <Button class="plain-btn margin-lr no-drag" icon="pi pi-spin pi-list" @click="ToGameSelection"/>
+        <Button plain outlined class="btn margin-lr no-drag" icon="pi pi-spin pi-home" @click="ToDashboard"/>
+        <Button plain outlined class="btn margin-lr no-drag" icon="pi pi-spin pi-list" @click="ToGameSelection"/>
     </div>
 
     <div class="spacer"></div>
 
     <div class="bottom">
-        <Button class="plain-btn margin-lr no-drag" icon="pi pi-spin pi-cog" @click="ToSettings"/>
+        <Button plain outlined class="btn margin-lr no-drag" icon="pi pi-spin pi-cog" @click="ToSettings"/>
     </div>
 </div>
 </template>
 
 <style scoped>
 .sidebar {
+    position: relative;
     z-index: 999;
     height: 100vh;
     width: fit-content;
     border-right: rgba(231, 231, 231, 0.885) 1px outset;
-    background-color: rgba(25, 25, 26, 0.845);
+    background-color: rgb(23, 23, 26);
 }
 
 .sidebar img {
@@ -49,12 +50,16 @@ const ToSettings = () => router.push('/settings')
     margin-bottom: 10px;
 }
 
-.plain-btn {
+.btn {
     position: relative;
+    border-radius: 3px;
+}
+
+.plain-btn {
     color: rgba(218, 218, 218, 0.921);
     background-color: #18181bcd;
     border: solid rgba(139, 139, 139, 0.712) 1px;
-    border-radius: 3.5px;
+    border-radius: 3px;
 }
 
 .spacer {

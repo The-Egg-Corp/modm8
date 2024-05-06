@@ -11,11 +11,11 @@
 <style scoped>
 .game-selection {
     padding-top: 65px;
-    justify-content: center; /* Center horizontally */
+    justify-content: center;
 }
 
 .game-selection .header {
-    text-wrap: nowrap;
+    text-wrap: wrap;
     user-select: none;
     font-size: 30px;
     font-weight: 420;

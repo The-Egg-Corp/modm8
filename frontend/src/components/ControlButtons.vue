@@ -29,18 +29,17 @@ const CustomMinimise = async() => await WindowIsMaximised()
     right: 0;
     display: flex;
     align-items: center;
-    background-color: #1e1e21;
-    border-radius: 4px;
-    border-width: 1px;
-    border-color: white;
+    background-color: transparent;
+    border: rgba(211, 211, 211, 0.823) 1px outset;
+    border-bottom-left-radius: 6px;
 }
 
 .control-buttons .button {
     cursor: pointer;
     background: transparent;
     color: rgba(201, 201, 201, 0.905);
-    margin-right: 0;
     width: 46px;
     height: 38px;
+    background-color: rgba(25, 25, 26, 0.845);
 }
 </style>

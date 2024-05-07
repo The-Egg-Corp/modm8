@@ -1,4 +1,4 @@
-package backend
+package thunderstore
 
 import (
 	"strings"
@@ -8,11 +8,25 @@ import (
 	v1 "github.com/the-egg-corp/thundergo/v1"
 )
 
-func (a *App) GetCommunities() (exp.CommunityList, error) {
+type API struct{}
+
+func NewAPI() *API {
+	return &API{}
+}
+
+func (a *API) GetCommunities() (exp.CommunityList, error) {
 	return exp.GetCommunities()
 }
 
-func (a *App) GetUserPackages(communities []string, owner string) string {
+func (a *API) GetPackagesInCommunity(identifier string) (v1.PackageList, error) {
+	comm := v1.Community{
+		Identifier: identifier,
+	}
+
+	return comm.AllPackages()
+}
+
+func (a *API) GetUserPackages(communities []string, owner string) string {
 	pkgs, err := v1.PackagesFromCommunities(v1.NewCommunityList(communities...))
 	if err != nil {
 		return "An error occurred getting packages!"

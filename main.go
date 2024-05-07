@@ -10,6 +10,7 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options/windows"
 
 	"modm8/backend"
+	"modm8/backend/thunderstore"
 )
 
 //go:embed all:frontend/dist
@@ -27,6 +28,7 @@ var windowsOpts = &windows.Options{
 func main() {
 	// Create an instance of the app structure
 	app := backend.NewApp()
+	tsapi := thunderstore.NewAPI()
 
 	// Create application with options
 	err := wails.Run(&options.App{
@@ -48,6 +50,7 @@ func main() {
 		LogLevel: logger.INFO,
 		Bind: IList{
 			app,
+			tsapi,
 		},
 	})
 

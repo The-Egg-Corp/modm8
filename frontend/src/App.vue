@@ -4,37 +4,37 @@ import ControlButtons from './components/ControlButtons.vue'
 </script>
 
 <template>
-  <ControlButtons/>
+<ControlButtons/>
   
-  <div class="app-container">
-    <Sidebar/>
-    <RouterView/>
-  </div>
+<div class="app-container">
+  <Sidebar/>
+  <RouterView/>
+</div>
 </template>
 
 <style>
 .app-container {
-  display: flex;
+    display: flex;
 }
 
 #logo {
-  user-select: none;
-  pointer-events: none;
+    user-select: none;
+    pointer-events: none;
 }
 
 .no-select {
-  user-select: none;
+    user-select: none;
 }
 
 .drag {
-  --wails-draggable: drag;
+    --wails-draggable: drag;
 }
 
 .no-drag {
-  --wails-draggable: no-drag;
+    --wails-draggable: no-drag;
 }
 
 .no-drag-all-children > * {
-  --wails-draggable: no-drag;
+    --wails-draggable: no-drag;
 }
 </style>

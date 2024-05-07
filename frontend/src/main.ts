@@ -15,8 +15,11 @@ import Toolbar from 'primevue/toolbar'
 
 import Card from 'primevue/card'
 import FloatLabel from 'primevue/floatlabel'
-import InputText from 'primevue/inputtext'
 import Dropdown from 'primevue/dropdown'
+
+import InputText from 'primevue/inputtext'
+import InputIcon from 'primevue/inputicon'
+import IconField from 'primevue/iconfield'
 //#endregion
 
 //#region Import styles
@@ -43,7 +46,10 @@ app.component('Toolbar', Toolbar) // AKA 'Topbar'
 
 app.component('Card', Card)
 app.component('FloatLabel', FloatLabel)
-app.component('InputText', InputText)
 app.component('Dropdown', Dropdown)
+
+app.component('InputText', InputText)
+app.component('InputIcon', InputIcon)
+app.component('IconField', IconField)
 
 app.mount('#app')

@@ -1,36 +1,37 @@
 {
-    "search-packages": {
-        "header": "Rechercher des packages par utilisateur",
-        "empty-input": "Aucun utilisateur entré"
-    },
-    "topbar": {
-        "dashboard": "Tableau de bord",
-        "select-game": "Sélectionnez un jeu"
-    },
-    "game-selection": {
-        "header": "Choisissez un jeu pour lequel gérer les mods."
-    },
-    "settings": {
-        "select-language": "Choisir la langue"
-    },
-    "keywords": {
-        "settings": "Paramètres",
-        "download": "Télécharger",
-        "language": "Langue",
-        "get": "Obtenir",
-        "new": "Nouveau",
-        "back": "Dos"
-    },
-    "languages": {
-        "en": "Anglais",
-        "fr": "Français",
-        "de": "Allemand",
-        "ae": "arabe",
-        "jp": "Japonais",
-        "ru": "russe",
-        "ua": "ukrainien",
-        "se": "suédois",
-        "it": "italien",
-        "es": "Espagnol"
-    }
+  "search-packages": {
+    "header": "Rechercher des packages par utilisateur",
+    "empty-input": "Aucun utilisateur entré"
+  },
+  "topbar": {
+    "dashboard": "Tableau de bord",
+    "select-game": "Sélectionnez un jeu"
+  },
+  "game-selection": {
+    "header": "Choisissez un jeu pour lequel gérer les mods.",
+    "select-button": "Sélectionnez un jeu"
+  },
+  "settings": {
+    "select-language": "Choisir la langue"
+  },
+  "keywords": {
+    "settings": "Paramètres",
+    "download": "Télécharger",
+    "language": "Langue",
+    "get": "Obtenir",
+    "new": "Nouveau",
+    "back": "Dos"
+  },
+  "languages": {
+    "en": "Anglais",
+    "fr": "Français",
+    "de": "Allemand",
+    "ae": "arabe",
+    "jp": "Japonais",
+    "ru": "russe",
+    "ua": "ukrainien",
+    "se": "suédois",
+    "it": "italien",
+    "es": "Espagnol"
+  }
 }

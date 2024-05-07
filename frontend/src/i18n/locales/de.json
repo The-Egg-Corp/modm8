@@ -1,36 +1,37 @@
 {
-    "search-packages": {
-        "header": "Durchsuchen Sie Pakete nach Benutzer",
-        "empty-input": "Kein Benutzer eingegeben"
-    },
-    "topbar": {
-        "dashboard": "Armaturenbrett",
-        "select-game": "Spiel auswählen"
-    },
-    "game-selection": {
-        "header": "Wählen Sie ein Spiel aus, für das Sie Mods verwalten möchten."
-    },
-    "settings": {
-        "select-language": "Sprache auswählen"
-    },
-    "keywords": {
-        "settings": "Einstellungen",
-        "download": "Herunterladen",
-        "language": "Sprache",
-        "get": "Erhalten",
-        "new": "Neu",
-        "back": "Zurück"
-    },
-    "languages": {
-        "en": "Englisch",
-        "fr": "Französisch",
-        "de": "Deutsch",
-        "ae": "Arabisch",
-        "jp": "japanisch",
-        "ru": "Russisch",
-        "ua": "ukrainisch",
-        "se": "Schwedisch",
-        "it": "Italienisch",
-        "es": "Spanisch"
-    }
+  "search-packages": {
+    "header": "Durchsuchen Sie Pakete nach Benutzer",
+    "empty-input": "Kein Benutzer eingegeben"
+  },
+  "topbar": {
+    "dashboard": "Armaturenbrett",
+    "select-game": "Spiel auswählen"
+  },
+  "game-selection": {
+    "header": "Wählen Sie ein Spiel aus, für das Sie Mods verwalten möchten.",
+    "select-button": "Spiel auswählen"
+  },
+  "settings": {
+    "select-language": "Sprache auswählen"
+  },
+  "keywords": {
+    "settings": "Einstellungen",
+    "download": "Herunterladen",
+    "language": "Sprache",
+    "get": "Erhalten",
+    "new": "Neu",
+    "back": "Zurück"
+  },
+  "languages": {
+    "en": "Englisch",
+    "fr": "Französisch",
+    "de": "Deutsch",
+    "ae": "Arabisch",
+    "jp": "japanisch",
+    "ru": "Russisch",
+    "ua": "ukrainisch",
+    "se": "Schwedisch",
+    "it": "Italienisch",
+    "es": "Spanisch"
+  }
 }

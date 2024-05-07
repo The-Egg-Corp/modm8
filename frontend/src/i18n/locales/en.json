@@ -8,7 +8,8 @@
         "select-game": "Select Game"
     },
     "game-selection": {
-        "header": "Choose a game to manage mods for."
+        "header": "Choose a game to manage mods for.",
+        "select-button": "Select game"
     },
     "settings": {
         "select-language": "Select language"

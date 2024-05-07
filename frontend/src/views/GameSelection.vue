@@ -49,9 +49,7 @@ const sortMostPopular = () => {
                     <div class="no-drag grid grid-nogutter">
                         <div v-for="(item, index) in slotProps.items" :key="index" class="col-12">
                             <div class="flex flex-column sm:flex-row sm:align-items-center p-2 gap-5" :class="{ 'border-top-1 surface-border': index !== 0 }">
-                                <div class="relative">
-                                    <img class="fadeinleft fadeinleft-thumbnail game-list-thumbnail block xl:block mx-auto w-full" :src="getThumbnail(item)" :alt="item.name" />
-                                </div>
+                                <img class="fadeinleft fadeinleft-thumbnail game-list-thumbnail block xl:block mx-auto w-full" :src="getThumbnail(item)" :alt="item.name" />
 
                                 <div class="flex flex-column md:flex-row justify-content-between md:align-items-center flex-1 gap-4">
                                     <div class="fadeinleft fadeinleft-title flex flex-row md:flex-column justify-content-between align-items-start gap-2">
@@ -128,7 +126,7 @@ const sortMostPopular = () => {
 .grid-item {
     min-width: fit-content;
     flex: auto 1 1;
-    padding: 10px;
+    padding: 5px;
     margin: 0;
 }
 
@@ -141,7 +139,7 @@ const sortMostPopular = () => {
 
 .game-grid-thumbnail {
     user-select: none;
-    width: 190px;
+    width: 200px;
 }
 
 .game-title {

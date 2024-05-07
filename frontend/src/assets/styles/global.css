@@ -20,8 +20,7 @@ body::before {
     right: 0;
     bottom: 0;
     left: 0;
-    background-color: rgba(15, 15, 17, 0.989);
-    filter: blur(10px);
+    background-color: rgba(15, 15, 17, 0.97);
     z-index: -1;
 }
 

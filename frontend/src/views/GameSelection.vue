@@ -48,19 +48,18 @@ const sortMostPopular = () => {
                 <template #list="slotProps">
                     <div class="no-drag grid grid-nogutter">
                         <div v-for="(item, index) in slotProps.items" :key="index" class="col-12">
-                            <div class="fadeinleft fadeinleft-props flex flex-column sm:flex-row sm:align-items-center p-2 gap-5" :class="{ 'border-top-1 surface-border': index !== 0 }">
+                            <div class="flex flex-column sm:flex-row sm:align-items-center p-2 gap-5" :class="{ 'border-top-1 surface-border': index !== 0 }">
                                 <div class="relative">
-                                    <img class="game-list-thumbnail block xl:block mx-auto w-full" :src="getThumbnail(item)" :alt="item.name" />
+                                    <img class="fadeinleft fadeinleft-thumbnail game-list-thumbnail block xl:block mx-auto w-full" :src="getThumbnail(item)" :alt="item.name" />
                                 </div>
 
                                 <div class="flex flex-column md:flex-row justify-content-between md:align-items-center flex-1 gap-4">
-                                    <div class="flex flex-row md:flex-column justify-content-between align-items-start gap-2">
+                                    <div class="fadeinleft fadeinleft-title flex flex-row md:flex-column justify-content-between align-items-start gap-2">
                                         <div class="game-title">{{ item.title }}</div>
                                     </div>
 
                                     <div class="flex flex-column md:align-items-end gap-5">
                                         <div class="flex flex-row md:flex-row gap-3">
-                                            
                                             <Button outlined plain :label="$t('game-selection.select-button')" class="flex-auto md:flex-initial white-space-nowrap"></Button>
                                             <Button outlined plain icon="pi pi-star"></Button>
                                         </div>
@@ -74,7 +73,7 @@ const sortMostPopular = () => {
                 <!-- Grid layout -->
                 <template #grid="slotProps">
                     <div class="grid grid-nogutter">
-                        <div v-for="(item, index) in slotProps.items" :key="index" class="col-12 sm:col-6 md:col-6 xl:col-4 p-2">
+                        <div v-for="(item, index) in slotProps.items" :key="index" class="grid-item col-6 sm:col-5 md:col-5 lg:col-4 xl:col-2">
                             <div class="flex flex-column p-4 border-1 surface-border border-round">
                                 <div class="flex justify-content-center border-round">
                                     <div class="relative mx-auto">
@@ -126,15 +125,18 @@ const sortMostPopular = () => {
     height: calc(100vh - 160px);
 }
 
-.game-card {
-    border: white 1px;
-    max-width: 50px;
+.grid-item {
+    min-width: fit-content;
+    flex: auto 1 1;
+    padding: 10px;
+    margin: 0;
 }
 
 .game-list-thumbnail {
     border-radius: 2.5px;
     max-width: 90px;
-    min-width: 75px;
+    min-width: 30px;
+    opacity: 0;
 }
 
 .game-grid-thumbnail {
@@ -166,7 +168,7 @@ const sortMostPopular = () => {
 @keyframes fadeinleft {
     0% {
         opacity: 0;
-        transform: translateX(-100%);
+        transform: translateX(-200px);
         transition: transform .12s cubic-bezier(0, 0, 0.2, 1), opacity .12s cubic-bezier(0, 0, 0.2, 1);
     }
     100% {
@@ -175,9 +177,16 @@ const sortMostPopular = () => {
     }
 }
 
-.fadeinleft-props {
-    animation-delay: 70ms;
-    animation-duration: 580ms;
+.fadeinleft-title {
+    animation-delay: 0ms;
+    animation-duration: 390ms;
     animation-iteration-count: 1;
+}
+
+.fadeinleft-thumbnail {
+    animation-delay: 380ms;
+    animation-duration: 490ms;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
 }
 </style>

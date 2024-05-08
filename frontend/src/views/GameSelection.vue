@@ -11,7 +11,7 @@ type Layout = 'grid' | 'list'
 const games = ref()
 const searchValue = ref()
 
-const layout = ref('grid')
+const layout = ref('list')
 const getLayout = () => layout.value as Layout
 
 const getThumbnail = (game: Game) => game.image
@@ -151,6 +151,15 @@ const sortMostPopular = () => {
     font-weight: 380;
 }
 
+.searchbar {
+    flex-grow: 1;
+}
+
+:deep(.searchbar .p-inputtext) {
+    width: 90%;
+    background: rgba(0, 0, 0, 0.24);
+}
+
 :deep(.p-dataview-header)  {
     background: transparent !important;
     padding: 10px 0px 10px 0px;
@@ -179,16 +188,18 @@ const sortMostPopular = () => {
     }
 }
 
-.fadeinleft-title {
-    animation-delay: 0ms;
-    animation-duration: 390ms;
-    animation-iteration-count: 1;
+.fadeinleft {
+    --title-duration: 450ms;
 }
 
 .fadeinleft-thumbnail {
-    animation-delay: 380ms;
-    animation-duration: 490ms;
-    animation-iteration-count: 1;
+    animation-duration: 300ms;
+    animation-delay: calc(var(--title-duration) - 100ms);
     animation-fill-mode: forwards;
+}
+
+.fadeinleft-title {
+    animation-duration: var(--title-duration);
+    animation-delay: 50ms;
 }
 </style>

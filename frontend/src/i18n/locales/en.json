@@ -8,7 +8,7 @@
     "select-game": "Select Game"
   },
   "game-selection": {
-    "header": "Select which game you are managing mods for.",
+    "header": "Choose a game to manage mods for.",
     "select-button": "Select Game",
     "search-placeholder": "Search title.."
   },

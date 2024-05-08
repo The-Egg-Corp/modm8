@@ -9,6 +9,7 @@
   },
   "game-selection": {
     "header": "Wählen Sie ein Spiel aus, für das Sie Mods verwalten möchten.",
+    "search-placeholder": "Titel suchen..",
     "select-button": "Spiel auswählen"
   },
   "settings": {

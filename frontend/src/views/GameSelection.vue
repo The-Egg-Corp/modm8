@@ -32,24 +32,28 @@ const sortMostPopular = () => {
     <div class="game-selection flex-span column">
         <h2 class="header no-select">{{ $t('game-selection.header') }}</h2>
         <div class="no-drag card game-container">
-            <DataView lazy class="custom-dataview" data-key="game-list" :value="games" :layout="getLayout()">
+            <DataView lazy data-key="game-list" :value="games" :layout="getLayout()">
                 <template #header>
-                    <div class="flex flex-row justify-content-between align-items-center">
-                        <IconField iconPosition="left">
-                            <InputIcon class="pi pi-search"></InputIcon>
-                            <InputText :v-model="searchValue" placeholder="Search"/>
-                        </IconField>
+                    <div class="flex flex-row justify-content-between align-items-center">    
+                        <div class="searchbar">
+                            <IconField iconPosition="left">
+                                <InputIcon class="pi pi-search"></InputIcon>
+                                <InputText :v-model="searchValue" :placeholder="$t('game-selection.search-placeholder')"/>
+                            </IconField>
+                        </div>
 
-                        <DataViewLayoutOptions v-model="layout"/>
+                        <div class="flex flex-row">
+                            <DataViewLayoutOptions v-model="layout"/>
+                        </div>
                     </div>
                 </template>
 
                 <!-- List layout -->
                 <template #list="slotProps">
-                    <div class="no-drag grid grid-nogutter">
+                    <div class="grid grid-nogutter">
                         <div v-for="(item, index) in slotProps.items" :key="index" class="col-12">
                             <div class="flex flex-column sm:flex-row sm:align-items-center p-2 gap-5" :class="{ 'border-top-1 surface-border': index !== 0 }">
-                                <img class="fadeinleft fadeinleft-thumbnail game-list-thumbnail block xl:block mx-auto w-full" :src="getThumbnail(item)" :alt="item.name" />
+                                <img class="game-list-thumbnail fadeinleft fadeinleft-thumbnail block xl:block mx-auto w-full" :src="getThumbnail(item)" :alt="item.name" />
 
                                 <div class="flex flex-column md:flex-row justify-content-between md:align-items-center flex-1 gap-4">
                                     <div class="fadeinleft fadeinleft-title flex flex-row md:flex-column justify-content-between align-items-start gap-2">
@@ -71,7 +75,7 @@ const sortMostPopular = () => {
                 <!-- Grid layout -->
                 <template #grid="slotProps">
                     <div class="grid grid-nogutter">
-                        <div v-for="(item, index) in slotProps.items" :key="index" class="grid-item col-6 sm:col-5 md:col-5 lg:col-4 xl:col-2">
+                        <div v-for="(item, index) in slotProps.items" :key="index" class="grid-item col-6 sm:col-2 md:col-3 lg:col-4 xl:col-2">
                             <div class="flex flex-column p-4 border-1 surface-border border-round">
                                 <div class="flex justify-content-center border-round">
                                     <div class="relative mx-auto">
@@ -99,21 +103,20 @@ const sortMostPopular = () => {
 
 <style scoped>
 .game-selection {
-    padding-top: 50px;
+    padding-top: 40px;
 }
 
 .game-selection .header {
     text-wrap: wrap;
     text-align: center;
-    font-size: 30px;
+    font-size: 35px;
     font-weight: 420;
-    margin-top: 0;
-    margin-bottom: 0;
+    margin: 15px 80px 15px 80px;
 }
 
 .game-container {
-    margin-left: 60px;
-    margin-right: 60px;
+    margin-left: 50px;
+    margin-right: 50px;
 }
 
 .grid {
@@ -125,12 +128,13 @@ const sortMostPopular = () => {
 
 .grid-item {
     min-width: fit-content;
-    flex: auto 1 1;
+    flex: 1 0 auto;
     padding: 5px;
     margin: 0;
 }
 
 .game-list-thumbnail {
+    user-select: none;
     border-radius: 2.5px;
     max-width: 90px;
     min-width: 30px;
@@ -150,7 +154,7 @@ const sortMostPopular = () => {
 :deep(.p-dataview-header)  {
     background: transparent !important;
     padding: 10px 0px 10px 0px;
-    margin: 0px 8px 0px 8px;
+    margin: 0px 5px 0px 5px;
     border: none;
 }
 

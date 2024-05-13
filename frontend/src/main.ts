@@ -39,8 +39,6 @@ app.use(router)
 app.use(PrimeVue, { ripple: true })
 app.use(store)
 
-changeLocale(currentLocale.value.code)
-
 app.component('Button', Button)
 app.component('ButtonGroup', ButtonGroup)
 
@@ -54,6 +52,5 @@ app.component('Dropdown', Dropdown)
 app.component('InputText', InputText)
 app.component('InputIcon', InputIcon)
 app.component('IconField', IconField)
-
 
 app.mount('#app')

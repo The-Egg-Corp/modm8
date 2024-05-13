@@ -20,6 +20,8 @@
     "types": [],
     "baseUrl": ".",
     "paths": {
+      "@assets": ["./src/assets"],
+      "@components": ["./src/components"],
       "@store": ["./src/store"],
       "@types": ["./src/types"],
       "@i18n": ["./src/i18n"],
@@ -30,8 +32,6 @@
   },
   "exclude": [
     "./node_modules",
-    "./node_modules/**",
-    "./node_modules/**/**",
     "vite.config.ts"
   ],
   "include": [

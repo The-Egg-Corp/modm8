@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import LanguageDropdown from '../components/settings/LanguageDropdown.vue'
-import ThemeDropdown from '../components/settings/ThemeDropdown.vue'
+import LanguageDropdown from '@components/settings/LanguageDropdown.vue'
+import ThemeDropdown from '@components/settings/ThemeDropdown.vue'
 </script>
 
 <template>

@@ -11,7 +11,7 @@ import de from "./locales/de.json"
 const i18n = createI18n({
   locale: "en",
   fallbackLocale: "en",
-  availableLocales: ["en", "fr", "de"],
+  availableLocales: ["en", "de", "fr"],
   messages: { en, fr, de },
   legacy: false,
 })
@@ -22,7 +22,7 @@ export const { t, n, locale } = i18n.global
 
 export const countries: ComputedRef<Country[]> = computed(() => [{ 
   name: t('languages.en'),
-  code: 'gb'
+  code: 'en'
 }, {
   name: t('languages.de'),
   code: 'de'
@@ -38,7 +38,9 @@ export const countryFromLocale = () => {
 
 export const currentLocale = computed(countryFromLocale)
 
+type CountryCode = typeof locale.value
+
 export const changeLocale = (code: string) => {
-  locale.value = code
+  locale.value = code as CountryCode 
   store.dispatch('setLocale', code)
 }

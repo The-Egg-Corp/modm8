@@ -16,6 +16,7 @@
     "select-language": "Select language"
   },
   "keywords": {
+    "theme": "Theme",
     "settings": "Settings",
     "download": "Download",
     "language": "Language",

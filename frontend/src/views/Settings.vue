@@ -18,7 +18,7 @@ import ThemeDropdown from '../components/settings/ThemeDropdown.vue'
 
     <div class="setting">
         <div class="flex-item">
-            <h3>Theme</h3>
+            <h3>{{ $t('keywords.theme') }}</h3>
         </div>
         <div class="flex-item">
             <ThemeDropdown/>

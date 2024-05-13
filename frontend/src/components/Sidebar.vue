@@ -17,7 +17,8 @@ const ToSettings = () => router.push('/settings')
 
     <div class="spacer"></div>
 
-    <div class="bottom">
+    <div class="bottom flex-column">
+        <!-- <Button text class="btn margin-lr no-drag" :icon="themeMode === 'dark' ? 'pi pi-sun' : 'pi pi-moon'" @click="ToggleThemeMode"/> -->
         <Button plain outlined class="btn margin-lr no-drag" icon="pi pi-spin pi-cog" @click="ToSettings"/>
     </div>
 </div>
@@ -48,6 +49,10 @@ const ToSettings = () => router.push('/settings')
 
 .top .p-button {
     margin-bottom: 10px;
+}
+
+.bottom .p-button {
+    margin-top: 10px;
 }
 
 .btn {

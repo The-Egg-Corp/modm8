@@ -34,7 +34,11 @@ const sortMostPopular = () => {
         <div class="no-drag card game-container">
             <DataView lazy data-key="game-list" :value="games" :layout="getLayout()">
                 <template #header>
-                    <div class="flex flex-row justify-content-between align-items-center">    
+                    <div class="flex flex-row justify-content-between align-items-center">
+                        <div class="flex flex-row">
+                            <DataViewLayoutOptions v-model="layout"/>
+                        </div>
+
                         <div class="searchbar">
                             <IconField iconPosition="left">
                                 <InputIcon class="pi pi-search"></InputIcon>
@@ -53,7 +57,7 @@ const sortMostPopular = () => {
                     <div class="grid grid-nogutter">
                         <div v-for="(item, index) in slotProps.items" :key="index" class="col-12">
                             <div class="flex flex-column sm:flex-row sm:align-items-center p-2 gap-5" :class="{ 'border-top-1 surface-border': index !== 0 }">
-                                <img class="game-list-thumbnail fadeinleft fadeinleft-thumbnail block xl:block mx-auto w-full" :src="getThumbnail(item)" :alt="item.name" />
+                                <img class="game-list-thumbnail fadeinleft fadeinleft-thumbnail block xl:block mx-auto w-full" :src="getThumbnail(item)"/>
 
                                 <div class="flex flex-column md:flex-row justify-content-between md:align-items-center flex-1 gap-4">
                                     <div class="fadeinleft fadeinleft-title flex flex-row md:flex-column justify-content-between align-items-start gap-2">
@@ -76,10 +80,10 @@ const sortMostPopular = () => {
                 <template #grid="slotProps">
                     <div class="grid grid-nogutter">
                         <div v-for="(item, index) in slotProps.items" :key="index" class="grid-item col-6 sm:col-2 md:col-3 lg:col-4 xl:col-2">
-                            <div class="flex flex-column p-4 border-1 surface-border border-round">
+                            <div class="flex flex-column p-3 border-1 surface-border border-round">
                                 <div class="flex justify-content-center border-round">
                                     <div class="relative mx-auto">
-                                        <img class="game-grid-thumbnail" :src="getThumbnail(item)" :alt="item.name"/>
+                                        <img class="game-grid-thumbnail" :src="getThumbnail(item)"/>
                                     </div>
                                 </div>
 
@@ -103,15 +107,15 @@ const sortMostPopular = () => {
 
 <style scoped>
 .game-selection {
-    padding-top: 40px;
+    padding-top: 0px;
 }
 
 .game-selection .header {
     text-wrap: wrap;
     text-align: center;
-    font-size: 35px;
+    font-size: 33px;
     font-weight: 420;
-    margin: 15px 80px 15px 80px;
+    margin: 45px 0px 5px 0px;
 }
 
 .game-container {
@@ -120,10 +124,9 @@ const sortMostPopular = () => {
 }
 
 .grid {
-    display: sticky;
     overflow-y: scroll;
     scrollbar-width: none;
-    height: calc(100vh - 160px);
+    height: calc(100vh - 155px); /* 100vh alone causes issues */
 }
 
 .grid-item {
@@ -152,12 +155,11 @@ const sortMostPopular = () => {
 }
 
 .searchbar {
-    flex-grow: 1;
+    flex-grow: auto;
 }
 
 :deep(.searchbar .p-inputtext) {
-    width: 90%;
-    background: rgba(0, 0, 0, 0.24);
+    background: rgba(0, 0, 0, 0.2);
 }
 
 :deep(.p-dataview-header)  {

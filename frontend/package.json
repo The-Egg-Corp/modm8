@@ -22,11 +22,11 @@
     "vuex": "^4.1.0"
   },
   "devDependencies": {
+    "@babel/types": "^7.18.10",
+    "@vitejs/plugin-vue": "^3.0.3",
     "rimraf": "latest",
     "typescript": "latest",
     "vite": "latest",
-    "@vitejs/plugin-vue": "^3.0.3",
-    "@babel/types": "^7.18.10",
     "vue-tsc": "latest"
   }
 }

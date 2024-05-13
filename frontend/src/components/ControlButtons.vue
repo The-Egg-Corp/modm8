@@ -5,7 +5,7 @@ import {
     WindowMaximise,
     WindowUnmaximise, 
     WindowIsMaximised,
-} from '../../wailsjs/runtime/runtime'
+} from '@runtime'
 
 const CustomMinimise = async() => await WindowIsMaximised() 
     ? WindowUnmaximise()

@@ -1,8 +1,9 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 
-import i18n from "./i18n"
+import i18n, { changeLocale, currentLocale } from "./i18n"
 import router from "./router"
+import store from "./store"
 
 //#region Import Framework & Components
 import PrimeVue from 'primevue/config'
@@ -23,7 +24,6 @@ import IconField from 'primevue/iconfield'
 //#endregion
 
 //#region Import styles
-import "primevue/resources/themes/aura-dark-purple/theme.css"
 import "primeflex/primeflex.css"
 import "primeicons/primeicons.css"
 //import "@mdi/font/css/materialdesignicons.css";
@@ -37,6 +37,9 @@ const app = createApp(App)
 app.use(i18n)
 app.use(router)
 app.use(PrimeVue, { ripple: true })
+app.use(store)
+
+changeLocale(currentLocale.value.code)
 
 app.component('Button', Button)
 app.component('ButtonGroup', ButtonGroup)
@@ -51,5 +54,6 @@ app.component('Dropdown', Dropdown)
 app.component('InputText', InputText)
 app.component('InputIcon', InputIcon)
 app.component('IconField', IconField)
+
 
 app.mount('#app')

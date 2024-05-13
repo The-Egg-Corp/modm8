@@ -4,7 +4,7 @@ import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
 
-import { GetUserPackages } from '../../wailsjs/go/thunderstore/API'
+import { GetUserPackages } from '@backend/thunderstore/API'
 
 interface PackageInfo {
     name: string

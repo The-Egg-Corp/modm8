@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 
-import i18n, { changeLocale, currentLocale } from "./i18n"
+import i18n, { changeLocale } from "./i18n"
 import router from "./router"
 import store from "./store"
 
@@ -31,6 +31,8 @@ import "primeicons/primeicons.css"
 import './assets/styles/global.css'
 import "./assets/styles/flags.css"
 //#endregion
+
+changeLocale(store.state.locale)
 
 const app = createApp(App)
 

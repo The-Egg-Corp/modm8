@@ -5,7 +5,7 @@ import {
     t,
     countries,
     changeLocale,
-    currentLocale
+    getCountry
 } from '@i18n'
 
 const flagPlaceholderURL = "https://primefaces.org/cdn/primevue/images/flag/flag_placeholder.png"
@@ -24,7 +24,7 @@ const alphabetSort = <T extends { name: string }>(arr: T[]) => arr.sort((a: T, b
 <template>
     <Dropdown class="no-drag w-full md:w-14rem" optionLabel="name"
         :placeholder="placeholder"
-        v-model="currentLocale"
+        v-model="getCountry"
         :options="alphabetSort(countries)"
         @change="change"
     >

@@ -9,7 +9,7 @@ import fr from "./locales/fr.json"
 import de from "./locales/de.json"
 
 const i18n = createI18n({
-  locale: currentLocale,
+  locale: "en",
   fallbackLocale: "en",
   availableLocales: ["en", "de", "fr"],
   messages: { en, fr, de },
@@ -33,10 +33,12 @@ export const countries: ComputedRef<Country[]> = computed(() => [{
 
 export const countryFromLocale = () => {
   const lang = store.state.locale
-  return lang ? countries.value.find(c => c.code === lang) ?? countries.value[0] : countries.value[0]
+  if (!lang) return countries.value[0]
+
+  return countries.value.find(c => c.code === lang) || countries.value[0]
 }
 
-export const currentLocale = computed(countryFromLocale)
+export const getCountry = computed(countryFromLocale) 
 
 type CountryCode = typeof locale.value
 

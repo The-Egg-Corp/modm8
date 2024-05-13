@@ -9,7 +9,7 @@ import fr from "./locales/fr.json"
 import de from "./locales/de.json"
 
 const i18n = createI18n({
-  locale: "en",
+  locale: currentLocale,
   fallbackLocale: "en",
   availableLocales: ["en", "de", "fr"],
   messages: { en, fr, de },

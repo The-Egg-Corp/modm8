@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 
-import i18n, { changeLocale } from "./i18n"
+import i18n from "./i18n"
 import router from "./router"
 import store from "./store"
 
@@ -21,6 +21,11 @@ import Dropdown from 'primevue/dropdown'
 import InputText from 'primevue/inputtext'
 import InputIcon from 'primevue/inputicon'
 import IconField from 'primevue/iconfield'
+
+import TabView from 'primevue/tabview'
+import TabPanel from 'primevue/tabpanel'
+
+import Tooltip from 'primevue/tooltip'
 //#endregion
 
 //#region Import styles
@@ -31,8 +36,6 @@ import "primeicons/primeicons.css"
 import './assets/styles/global.css'
 import "./assets/styles/flags.css"
 //#endregion
-
-changeLocale(store.state.locale)
 
 const app = createApp(App)
 
@@ -54,5 +57,10 @@ app.component('Dropdown', Dropdown)
 app.component('InputText', InputText)
 app.component('InputIcon', InputIcon)
 app.component('IconField', IconField)
+
+app.component('TabView', TabView)
+app.component('TabPanel', TabPanel)
+
+app.directive('Tooltip', Tooltip)
 
 app.mount('#app')

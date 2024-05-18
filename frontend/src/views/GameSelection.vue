@@ -61,7 +61,7 @@ const sortMostPopular = () => {
 
                                 <div class="flex flex-column md:flex-row justify-content-between md:align-items-center flex-1 gap-4">
                                     <div class="fadeinleft fadeinleft-title flex flex-row md:flex-column justify-content-between align-items-start gap-2">
-                                        <div class="game-title">{{ item.title }}</div>
+                                        <div class="game-list-title">{{ item.title }}</div>
                                     </div>
 
                                     <div class="flex flex-column md:align-items-end gap-5">
@@ -88,7 +88,7 @@ const sortMostPopular = () => {
                                 </div>
 
                                 <div class="flex flex column align-items-center interact-section pt-3">
-                                    <div class="game-title">{{ item.title }}</div>
+                                    <div class="game-grid-title">{{ item.title }}</div>
                                     <div class="flex gap-4 mt-3">
                                         <div class="flex gap-2">
                                             <Button outlined plain :label="$t('game-selection.select-button')" class="flex flex-grow-1 white-space-nowrap"></Button>
@@ -149,17 +149,27 @@ const sortMostPopular = () => {
     width: 200px;
 }
 
-.game-title {
+.game-list-title {
+    font-size: 24px;
+    font-weight: 380;
+}
+
+.game-grid-title {
     font-size: 22px;
     font-weight: 380;
 }
 
 .searchbar {
-    flex-grow: auto;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 :deep(.searchbar .p-inputtext) {
     background: rgba(0, 0, 0, 0.2);
+    margin-left: auto;
+    margin-right: auto;
+    width: 350px;
+    min-width: 200px;
 }
 
 :deep(.p-dataview-header)  {

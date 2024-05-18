@@ -1,6 +1,17 @@
 <script lang="ts" setup>
 import Sidebar from './components/Sidebar.vue'
 import ControlButtons from './components/ControlButtons.vue'
+
+import { onMounted } from 'vue'
+import { changeLocale } from '@i18n'
+import { GetSettings } from '@backend/core/App'
+
+onMounted(async () => {
+    const settings = await GetSettings()
+    console.log(settings)
+
+    changeLocale(settings.locale)
+})
 </script>
 
 <template>

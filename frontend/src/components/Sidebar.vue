@@ -1,9 +1,15 @@
 <script lang="ts" setup>
 import router from "../router"
 
-const ToDashboard = () => router.push('/')
-const ToGameSelection = () => router.push('/game-selection')
-const ToSettings = () => router.push('/settings')
+const Dashboard = () => router.push('/')
+const GameSelection = () => router.push('/game-selection')
+const Settings = () => router.push('/settings')
+
+const tooltipOpts = (text: string) => ({ 
+    value: text, 
+    showDelay: 60, 
+    hideDelay: 5
+})
 </script>
 
 <template>
@@ -11,15 +17,37 @@ const ToSettings = () => router.push('/settings')
     <div class="top flex-column">
         <img class="icon no-select" src="../assets/images/appicon.png">
 
-        <Button plain outlined class="btn margin-lr no-drag" icon="pi pi-spin pi-home" @click="ToDashboard"/>
-        <Button plain outlined class="btn margin-lr no-drag" icon="pi pi-spin pi-list" @click="ToGameSelection"/>
+        <Button 
+            plain outlined 
+            class="btn margin-lr no-drag" icon="pi pi-spin pi-home" 
+            v-tooltip="tooltipOpts('Dashboard')"
+            @click="Dashboard"
+        />
+
+        <Button 
+            plain outlined 
+            class="btn margin-lr no-drag" icon="pi pi-spin pi-list" 
+            v-tooltip="tooltipOpts('Game Selection')"
+            @click="GameSelection"
+        />
     </div>
+
+    <!-- <div class="spacer"></div>
+
+    <div class="top flex-column">
+        <Button plain outlined class="btn margin-lr no-drag" icon="pi pi-spin pi-wrench"/>
+        <Button plain outlined class="btn margin-lr no-drag" icon="pi pi-spin pi-upload"/>
+    </div> -->
 
     <div class="spacer"></div>
 
     <div class="bottom flex-column">
         <!-- <Button text class="btn margin-lr no-drag" :icon="themeMode === 'dark' ? 'pi pi-sun' : 'pi pi-moon'" @click="ToggleThemeMode"/> -->
-        <Button plain outlined class="btn margin-lr no-drag" icon="pi pi-spin pi-cog" @click="ToSettings"/>
+        <Button 
+            plain outlined 
+            class="btn margin-lr no-drag" icon="pi pi-spin pi-cog" 
+            v-tooltip="tooltipOpts('Settings')"
+            @click="Settings"/>
     </div>
 </div>
 </template>

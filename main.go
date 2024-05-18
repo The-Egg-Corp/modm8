@@ -9,7 +9,7 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 	"github.com/wailsapp/wails/v2/pkg/options/windows"
 
-	"modm8/backend"
+	"modm8/backend/core"
 	"modm8/backend/thunderstore"
 )
 
@@ -23,14 +23,13 @@ var windowsOpts = &windows.Options{
 	WebviewIsTransparent: true,
 	BackdropType:         windows.Mica,
 	ResizeDebounceMS:     1,
+	WebviewUserDataPath:  core.ConfigDir(),
 }
 
 func main() {
-	// Create an instance of the app structure
-	app := backend.NewApp()
+	app := core.NewApp()
 	tsapi := thunderstore.NewAPI()
 
-	// Create application with options
 	err := wails.Run(&options.App{
 		Title:     "modm8",
 		Width:     1380,
@@ -50,7 +49,11 @@ func main() {
 		LogLevel: logger.INFO,
 		Bind: IList{
 			app,
+			app.Settings,
 			tsapi,
+		},
+		EnumBind: IList{
+			core.AllUpdateBehaviours,
 		},
 	})
 

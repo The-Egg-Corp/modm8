@@ -1,13 +1,15 @@
 import { createStore, Commit } from 'vuex'
+import { SetLocale, Save } from '@backend/core/AppSettings'
 
 const state = {
-    locale: localStorage.getItem('locale') || 'gb'
+    locale: 'en'
 }
 
 const mutations = {
     setLocale(state: State, code: string) {
         state.locale = code
-        localStorage.setItem('locale', code)
+        SetLocale(code)
+        Save()
     }
 }
 

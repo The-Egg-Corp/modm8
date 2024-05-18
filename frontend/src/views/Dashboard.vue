@@ -28,18 +28,29 @@ async function PackagesByUser() {
 
 <template>
 <div class="dashboard flex-full column">
-    <h1>{{ t('search-packages.header') }}</h1>
+    <TabView>
+        <TabPanel header="Thunderstore">
+            <div class="search-user-packages">
+                <h1>{{ t('search-packages.header') }}</h1>
 
-    <div id="input" class="input-box no-drag">
-        <FloatLabel>
-            <InputText id="name" v-model="data.name" autocomplete="off"/>
-            <!-- <label for="name">Owner</label> -->
-          
-            <Button class="btn" severity="help" outlined icon="pi pi-search" @click="PackagesByUser"/>
-        </FloatLabel>
-    </div>
+                <div id="input" class="input-box no-drag">
+                    <FloatLabel>
+                        <InputText id="name" v-model="data.name" autocomplete="off"/>
+                        <!-- <label for="name">Owner</label> -->
+                    
+                        <Button class="btn" severity="help" outlined icon="pi pi-search" @click="PackagesByUser"/>
+                    </FloatLabel>
+                </div>
 
-    <div id="result" class="result no-drag">{{ data.resultText }}</div>
+                <div id="result" class="result no-drag">{{ data.resultText }}</div>
+            </div>
+        </TabPanel>
+        <TabPanel header="Nexus">
+            <p class="m-0">
+                buh
+            </p>
+        </TabPanel>
+    </TabView>
 </div>
 </template>
 
@@ -49,11 +60,16 @@ async function PackagesByUser() {
     position: relative;
     text-align: center;
     user-select: none;
-    top: 100px;
+    top: 35px;
 }
 
 .dashboard h1 {
     margin-bottom: 35px;
+}
+
+.search-user-packages {
+    align-items: center;
+    justify-content: center;
 }
 
 .result {
@@ -90,6 +106,29 @@ async function PackagesByUser() {
     padding: 0 10px;
     background-color: rgb(43, 43, 43);
     -webkit-font-smoothing: antialiased;
+}
+
+:deep(.p-tabview-nav) {
+   justify-content: center;
+   background: none;
+   border: none;
+}
+
+:deep(.p-tabview-nav-link) {
+    background: none;
+    border: none;
+    color: white;
+    font-weight: 540;
+    font-size: 23px;
+}
+
+:deep(.p-tabview) > * {
+    background: none;
+}
+
+:deep(.p-tabview-header) {
+    user-select: none;
+    --wails-draggable: no-drag;
 }
 </style>
 <!-- #endregion -->

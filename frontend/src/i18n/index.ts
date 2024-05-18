@@ -42,7 +42,11 @@ export const getCountry = computed(countryFromLocale)
 
 type CountryCode = typeof locale.value
 
-export const changeLocale = (code: string) => {
+/**
+ * Changes the current locale within the Vuex store.
+ * @param code The locale/language code to switch to, such as 'en' or 'fr'.
+ */
+export const changeLocale = async (code: string) => {
   locale.value = code as CountryCode 
-  store.dispatch('setLocale', code)
+  await store.dispatch('setLocale', code)
 }

@@ -5,12 +5,15 @@ import ControlButtons from './components/ControlButtons.vue'
 import { onMounted } from 'vue'
 import { changeLocale } from '@i18n'
 import { GetSettings } from '@backend/core/App'
+import { core } from '@backend/models'
+
+var settings: core.AppSettings
 
 onMounted(async () => {
-    const settings = await GetSettings()
+    settings = await GetSettings()
     console.log(settings)
 
-    changeLocale(settings.locale)
+    await changeLocale(settings.locale)
 })
 </script>
 

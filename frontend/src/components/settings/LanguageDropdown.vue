@@ -8,10 +8,18 @@ import {
     getCountry
 } from '@i18n'
 
+import { Save, SetLocale } from '@backend/core/AppSettings'
+
 const flagPlaceholderURL = "https://primefaces.org/cdn/primevue/images/flag/flag_placeholder.png"
 const placeholder = computed(() => t('settings.select-language'))
 
-const change = (e: ChangeEvent<Country>) => changeLocale(e.value.code)
+const change = async (e: ChangeEvent<Country>) => {
+    await changeLocale(e.value.code)
+
+    // Save locale change to settings file.
+    SetLocale(e.value.code)
+    Save()
+}
 
 const alphabetSort = <T extends { name: string }>(arr: T[]) => arr.sort((a: T, b: T) => {
     if (a.name < b.name) return -1

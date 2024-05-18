@@ -1,5 +1,4 @@
 import { createStore, Commit } from 'vuex'
-import { SetLocale, Save } from '@backend/core/AppSettings'
 
 const state = {
     locale: 'en'
@@ -8,8 +7,6 @@ const state = {
 const mutations = {
     setLocale(state: State, code: string) {
         state.locale = code
-        SetLocale(code)
-        Save()
     }
 }
 

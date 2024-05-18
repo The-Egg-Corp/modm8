@@ -7,7 +7,7 @@ import { changeLocale } from '@i18n'
 import { GetSettings } from '@backend/core/App'
 import { core } from '@backend/models'
 
-var settings: core.AppSettings
+let settings: core.AppSettings
 
 onMounted(async () => {
     settings = await GetSettings()

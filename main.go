@@ -3,10 +3,12 @@ package main
 import (
 	"embed"
 
+	"github.com/leaanthony/u"
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/logger"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
+	"github.com/wailsapp/wails/v2/pkg/options/mac"
 	"github.com/wailsapp/wails/v2/pkg/options/windows"
 
 	"modm8/backend/core"
@@ -26,6 +28,16 @@ var windowsOpts = &windows.Options{
 	WebviewUserDataPath:  core.ConfigDir(),
 }
 
+var macOpts = &mac.Options{
+	TitleBar:             mac.TitleBarHiddenInset(),
+	Appearance:           mac.NSAppearanceNameDarkAqua,
+	WindowIsTranslucent:  true,
+	WebviewIsTransparent: true,
+	Preferences: &mac.Preferences{
+		TabFocusesLinks: u.NewBool(false),
+	},
+}
+
 func main() {
 	app := core.NewApp()
 	tsapi := thunderstore.NewAPI()
@@ -41,11 +53,12 @@ func main() {
 		},
 		Frameless:                true,
 		EnableDefaultContextMenu: false,
-		Windows:                  windowsOpts,
 		OnStartup:                app.Startup,
 		SingleInstanceLock: &options.SingleInstanceLock{
 			UniqueId: "7465fe36-08e3-478b-853b-0f8676f724b7",
 		},
+		Windows:  windowsOpts,
+		Mac:      macOpts,
 		LogLevel: logger.INFO,
 		Bind: IList{
 			app,

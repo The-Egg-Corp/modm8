@@ -1,11 +1,12 @@
 package core
 
 import (
+	"fmt"
 	"os"
 	"path"
 	"runtime"
 
-	"github.com/fatih/structs"
+	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/viper"
 )
 
@@ -76,7 +77,14 @@ func SettingsPath() string {
 }
 
 func (settings *AppSettings) WriteToConfig() {
-	cfg.MergeConfigMap(structs.Map(settings))
+	var result map[string]interface{}
+	err := mapstructure.Decode(settings, &result)
+	if err != nil {
+		fmt.Printf("%#v", result)
+		return
+	}
+
+	cfg.MergeConfigMap(result)
 }
 
 func (settings *AppSettings) Load() error {
@@ -92,7 +100,7 @@ func (settings *AppSettings) Load() error {
 		return err
 	}
 
-	if err := cfg.UnmarshalExact(settings); err != nil {
+	if err := cfg.Unmarshal(settings); err != nil {
 		return err
 	}
 

@@ -5,7 +5,7 @@ go 1.22.1
 // replace github.com/wailsapp/wails/v2 v2.8.1 => C:\Users\Owen\go\pkg\mod
 
 require (
-	github.com/fatih/structs v1.1.0
+	github.com/mitchellh/mapstructure v1.5.0
 	github.com/spf13/viper v1.18.2
 	github.com/the-egg-corp/thundergo v0.7.0
 	github.com/wailsapp/wails/v2 v2.8.1
@@ -16,7 +16,6 @@ require (
 	github.com/hashicorp/go-version v1.6.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
-	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.1.0 // indirect
 	github.com/sagikazarmark/locafero v0.4.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
@@ -45,7 +44,7 @@ require (
 	github.com/leaanthony/go-ansi-parser v1.6.1 // indirect
 	github.com/leaanthony/gosod v1.0.3 // indirect
 	github.com/leaanthony/slicer v1.6.0 // indirect
-	github.com/leaanthony/u v1.1.1 // indirect
+	github.com/leaanthony/u v1.1.1
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect

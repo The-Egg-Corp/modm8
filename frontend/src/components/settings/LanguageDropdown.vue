@@ -9,10 +9,7 @@ import {
 } from '@i18n'
 
 import { Save, SetLocale } from '@backend/core/AppSettings'
-
-const flagPlaceholderURL = "https://primefaces.org/cdn/primevue/images/flag/flag_placeholder.png"
-const placeholder = computed(() => t('settings.select-language'))
-
+    
 const change = async (e: ChangeEvent<Country>) => {
     await changeLocale(e.value.code)
 
@@ -21,6 +18,9 @@ const change = async (e: ChangeEvent<Country>) => {
     Save()
 }
 
+const flagPlaceholderURL = "https://primefaces.org/cdn/primevue/images/flag/flag_placeholder.png"
+const placeholder = computed(() => t('settings.select-language'))
+    
 const alphabetSort = <T extends { name: string }>(arr: T[]) => arr.sort((a: T, b: T) => {
     if (a.name < b.name) return -1
     if (a.name > b.name) return 1

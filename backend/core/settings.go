@@ -111,7 +111,7 @@ func (settings *AppSettings) Save() error {
 	// Write struct values to viper config
 	settings.WriteToConfig()
 
-	// Write the config 'settings.toml' file.
+	// Write config to the `settings.toml` file.
 	if err := cfg.WriteConfigAs(SettingsPath()); err != nil {
 		return err
 	}

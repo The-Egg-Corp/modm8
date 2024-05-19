@@ -32,7 +32,7 @@ export const countries: ComputedRef<Country[]> = computed(() => [{
 }])
 
 export const countryFromLocale = () => {
-  const lang = store.state.locale
+  const lang = store.state.settings.locale
   if (!lang) return countries.value[0]
 
   return countries.value.find(c => c.code === lang) || countries.value[0]

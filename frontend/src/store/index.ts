@@ -31,22 +31,22 @@ const mutations = {
     },
 }
 
-type ActionParams = { 
+type Context = { 
     commit: Commit 
 }
 
 const actions = {
-    setLocale(params: ActionParams, code: string) {
-        params.commit('setLocale', code)
+    setLocale(ctx: Context, code: string) {
+        ctx.commit('setLocale', code)
     },
-    setTheme(params: ActionParams, theme: string) {
-        params.commit('setTheme', theme)
+    setTheme(ctx: Context, theme: string) {
+        ctx.commit('setTheme', theme)
     },
-    setThreads(params: ActionParams, count: number) {
-        params.commit('setThreads', count)
+    setThreads(ctx: Context, count: number) {
+        ctx.commit('setThreads', count)
     },
-    setAcceleration(params: ActionParams, value: boolean) {
-        params.commit('setAcceleration', value)
+    setAcceleration(ctx: Context, value: boolean) {
+        ctx.commit('setAcceleration', value)
     },
 }
 

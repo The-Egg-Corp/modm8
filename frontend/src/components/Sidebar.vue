@@ -6,7 +6,6 @@ const { setVisible } = useDialog()
 
 const Dashboard = () => router.push('/')
 const GameSelection = () => router.push('/game-selection')
-//const Settings = () => router.push('/settings')
 
 const tooltipOpts = (text: string) => ({ 
     value: text, 

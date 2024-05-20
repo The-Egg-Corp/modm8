@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import Sidebar from './components/Sidebar.vue'
 import ControlButtons from './components/ControlButtons.vue'
+import SettingsOverlay from './components/settings/SettingsOverlay.vue'
 
 import { onMounted } from 'vue'
 import { changeLocale } from '@i18n'
@@ -22,6 +23,7 @@ onMounted(async () => {
   
 <div class="app-container">
   <Sidebar/>
+  <SettingsOverlay/>
   <RouterView/>
 </div>
 </template>

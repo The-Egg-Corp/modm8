@@ -87,7 +87,7 @@ const sortMostPopular = () => {
                                     </div>
                                 </div>
 
-                                <div class="flex flex column align-items-center interact-section pt-3">
+                                <div class="flex flex-column align-items-center interact-section pt-3">
                                     <div class="game-grid-title">{{ item.title }}</div>
                                     <div class="flex gap-4 mt-3">
                                         <div class="flex gap-2">

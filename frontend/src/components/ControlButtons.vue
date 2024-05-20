@@ -32,7 +32,7 @@ const CustomMinimise = async() => await WindowIsMaximised()
     border-left: rgba(211, 211, 211, 0.823) 1px solid;
     border-bottom: rgba(211, 211, 211, 0.823) 1px solid;
     border-bottom-left-radius: 5px;
-    z-index: 1000;
+    z-index: 9999;
     background-color: rgb(23, 23, 26);
 }
 

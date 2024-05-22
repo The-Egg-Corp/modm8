@@ -51,7 +51,7 @@ export const getCountry = computed(countryFromLocale)
 type CountryCode = typeof locale.value
 
 /**
- * Changes the current locale within the Settings store.
+ * Updates the app-global language to another.
  * @param code The locale/language code to switch to, such as 'en' or 'fr'.
  */
 export const changeLocale = async (code: string) => {

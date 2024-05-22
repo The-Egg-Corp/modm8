@@ -9,9 +9,9 @@ import {
 } from '@i18n'
 
 import { SetLocale } from '@backend/core/AppSettings'
-    
+
 const change = async (e: ChangeEvent<Country>) => {
-    await changeLocale(e.value.code)
+    changeLocale(e.value.code)
 
     // Save locale change to settings file.
     SetLocale(e.value.code)

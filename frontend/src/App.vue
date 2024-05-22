@@ -14,7 +14,7 @@ onMounted(async () => {
     settings = await GetSettings()
     console.log(settings)
 
-    await changeLocale(settings.locale)
+    changeLocale(settings.locale)
 })
 </script>
 

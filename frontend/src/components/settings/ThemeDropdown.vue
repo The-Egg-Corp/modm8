@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Ref, computed } from 'vue'
+import { ComputedRef, Ref, computed, ref } from 'vue'
 
 interface Theme {
     label: string
@@ -8,22 +8,26 @@ interface Theme {
 
 interface ThemeGroup {
     label: string
-    items: Theme[]
+    themes: Theme[]
 }
 
-const selectedTheme = computed(() => 'aura-dark-purple')
-const groupedThemes: Ref<ThemeGroup[]> = computed(() => [{
+const selectedTheme: Ref<Theme> = ref({
+    label: 'Dark',
+    value: 'aura-dark-purple'
+})
+
+const groupedThemes: ComputedRef<ThemeGroup[]> = computed(() => [{
     label: 'Aura Purple',
-    items: [{
+    themes: [{
         label: 'Dark',
-        value: 'aura-dark-purple'
+        value: 'aura-dark-purple',
     }, {
         label: 'Light',
         value: 'aura-light-purple'
     }]
 }, {
     label: 'Aura Yellow',
-    items: [{
+    themes: [{
         label: 'Dark',
         value: 'aura-dark-yellow'
     }, {
@@ -32,26 +36,21 @@ const groupedThemes: Ref<ThemeGroup[]> = computed(() => [{
     }]
 }])
 
-const labelFromValue = (value: string) => {
-    let item: any
-    const group = groupedThemes.value.find(g => {
-        item = g.items.find(i => i.value == value)
-        return item != null
-    }) as ThemeGroup
-
-    return `${group.label} (${item.label})`
-}
-
 const change = () => {
     
+}
+
+const getGroup = (theme: Theme) => groupedThemes.value.find(g => g.themes.find(t => t.value == theme.value))
+const fullLabel = (theme: Theme) => {
+    return `${getGroup(theme)?.label} (${theme.label})`
 }
 </script>
 
 <template>
-    <Dropdown 
+    <Dropdown
         class="no-drag w-full md:w-14rem" 
-        optionLabel="label" optionGroupLabel="label" optionGroupChildren="items"
-        :placeholder="labelFromValue(selectedTheme)"
+        optionLabel="label" optionGroupLabel="label" optionGroupChildren="themes"
+        :placeholder="fullLabel(selectedTheme)"
         :options="groupedThemes"
         v-model="selectedTheme"
         @change="change"
@@ -59,6 +58,12 @@ const change = () => {
         <template #optiongroup="slotProps">
             <div class="flex align-items-center">
                 <div>{{ slotProps.option.label }}</div>
+            </div>
+        </template>
+
+        <template #value="slotProps">
+            <div class="flex align-items-center">
+                <div>{{ fullLabel(slotProps.value) }}</div>
             </div>
         </template>
     </Dropdown>

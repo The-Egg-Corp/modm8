@@ -3,6 +3,7 @@ Lightweight and intuitive mod manager with support for [Thunderstore](https://th
 Built with [Wails](https://wails.io) for an Electron-like experience but without the bloat.
 
 <img src="./screenshots/game-selection-grid.png">
+<img src="./screenshots/settings.png">
 
 ## Features
 - Multiple themes + dark mode by default.

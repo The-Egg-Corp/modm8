@@ -31,11 +31,9 @@ const cardStyle = {
 const dividerAlignment: Alignment = "center"
 
 const accelChecked = ref(true)
-const setAccel = (e: Event) => {
-    const el = e.target as HTMLInputElement
-    
-    modules.settings.state.performance.gpu_acceleration = el.checked
-    accelChecked.value = el.checked
+const setAccel = (value: boolean) => {
+    modules.settings.state.performance.gpu_acceleration = value
+    accelChecked.value = value
 
     // Make Wails aware of new setting value by restarting the app (or prompt user?).
 }
@@ -47,8 +45,11 @@ const setThreads = (count: number) => {
 }
 
 const animationsEnabled = ref(true)
+const setAnimsEnabled = (value: boolean) => {
+    modules.settings.state.misc.animations_enabled = value
+}
 
-const updateBehaviour = ref('Auto')
+const updateBehaviour = ref('Automatic')
 const behaviours = ref(['Automatic', 'Notify Me', 'Off'])
 </script>
 
@@ -78,6 +79,7 @@ const behaviours = ref(['Automatic', 'Notify Me', 'Off'])
                             <h2 class="category-divider">{{ $t('keywords.general') }}</h2>
                         </Divider>
 
+                        <!-- #region General Section -->
                         <div>
                             <div class="setting">
                                 <div class="flex-item">
@@ -97,18 +99,20 @@ const behaviours = ref(['Automatic', 'Notify Me', 'Off'])
                                 </div>
                             </div>
                         </div>
+                        <!-- #endregion -->
 
                         <Divider :align="dividerAlignment" type="solid">
                             <h2 class="category-divider">{{ $t('keywords.performance') }}</h2>
                         </Divider>
 
+                        <!-- #region Performance Section -->
                         <div>
                             <div class="setting">
                                 <div class="flex-item">
                                     <h3>{{ $t('settings.gpu-acceleration') }}</h3>
                                 </div>
                                 <div class="flex-item">
-                                    <InputSwitch v-model="accelChecked" @change="setAccel"/>
+                                    <InputSwitch v-model="accelChecked" @update:model-value="setAccel"/>
                                 </div>
                             </div>
 
@@ -122,18 +126,20 @@ const behaviours = ref(['Automatic', 'Notify Me', 'Off'])
                                 </div>
                             </div>
                         </div>
+                        <!-- #endregion -->
 
                         <Divider :align="dividerAlignment" type="solid">
                             <h2 class="category-divider">{{ $t('keywords.misc') }}</h2>
                         </Divider>
-
+                        
+                        <!-- #region Misc Section -->
                         <div>
                             <div class="setting">
                                 <div class="flex-item">
                                     <h3>{{ $t('settings.animations-enabled') }}</h3>
                                 </div>
                                 <div class="flex-item">
-                                    <InputSwitch v-model="animationsEnabled" @change=""/>
+                                    <InputSwitch v-model="animationsEnabled" @update:model-value="setAnimsEnabled"/>
                                 </div>
                             </div>
 
@@ -142,10 +148,14 @@ const behaviours = ref(['Automatic', 'Notify Me', 'Off'])
                                     <h3>{{ $t('settings.update-behaviour') }}</h3>
                                 </div>
                                 <div class="flex-item">
-                                    <SelectButton v-model="updateBehaviour" :options="behaviours" aria-labelledby="basic" @change=""/>
+                                    <SelectButton 
+                                        aria-labelledby="basic" :options="behaviours"
+                                        v-model="updateBehaviour" @update:model-value="" 
+                                    />
                                 </div>
                             </div>
                         </div>
+                        <!-- #endregion -->
                     </div>
                 </template>
             </Card>

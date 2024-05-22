@@ -42,7 +42,10 @@ const change = () => {
 
 const getGroup = (theme: Theme) => groupedThemes.value.find(g => g.themes.find(t => t.value == theme.value))
 const fullLabel = (theme: Theme) => {
-    return `${getGroup(theme)?.label} (${theme.label})`
+    const group = getGroup(theme)
+    if (!group) return theme.value
+
+    return `${group.label} (${theme.label})`
 }
 </script>
 

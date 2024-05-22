@@ -1,2 +1,3 @@
 export * from './settings'
-export * from './i18n'
+export * from './primevue'
+export * from './store'

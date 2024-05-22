@@ -1,55 +1,31 @@
-import { createStore, Commit } from 'vuex'
+// TODO: Move from Vuex to Pinia
+import { createStore } from 'vuex'
+
+import SettingsModule from './modules/settings.js'
+// import ProfileModule from './modules/profile.js'
+// import VersionModule from './modules/version.js'
 
 // Defaults. These will usually be different at runtime.
 const state = {
-    settings: {
-        locale: 'en',
-        theme: 'default-purple-dark',
-        performance: {
-            thread_count: 2,
-            gpu_acceleration: true
-        },
-        misc: {
-            animations_enabled: true,
-            update_behaviour: 2
-        }
-    }
+    selectedGame: null
 }
 
-const mutations = {
-    setLocale(state: State, code: string) {
-        state.settings.locale = code
-    },
-    setTheme(state: State, theme: string) {
-        state.settings.theme = theme
-    },
-    setThreads(state: State, count: number) {
-        state.settings.performance.thread_count = count
-    },
-    setAcceleration(state: State, value: boolean) {
-        state.settings.performance.gpu_acceleration = value
-    },
+const modules = {
+    settings: SettingsModule,
+    // profile: ProfileModule,
+    // version: VersionModule
 }
 
-type Context = { 
-    commit: Commit 
+// The root state of all modules.
+export type AppState = typeof state
+export type Modules = typeof modules
+
+export { 
+   modules 
 }
 
-const actions = {
-    setLocale(ctx: Context, code: string) {
-        ctx.commit('setLocale', code)
-    },
-    setTheme(ctx: Context, theme: string) {
-        ctx.commit('setTheme', theme)
-    },
-    setThreads(ctx: Context, count: number) {
-        ctx.commit('setThreads', count)
-    },
-    setAcceleration(ctx: Context, value: boolean) {
-        ctx.commit('setAcceleration', value)
-    },
-}
-
-export type State = typeof state
-
-export default createStore<State>({ state, mutations, actions })
+export default createStore<AppState>({ 
+    strict: false,
+    state,
+    modules
+})

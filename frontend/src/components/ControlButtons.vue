@@ -7,7 +7,7 @@ import {
     WindowIsMaximised,
 } from '@runtime'
 
-const CustomMinimise = async() => await WindowIsMaximised() 
+const CustomMinimise = async () => await WindowIsMaximised() 
     ? WindowUnmaximise()
     : WindowMaximise()
 </script>
@@ -24,16 +24,16 @@ const CustomMinimise = async() => await WindowIsMaximised()
 
 <style scoped>
 .control-buttons {
+    z-index: 9999;
     position: fixed;
     top: 0;
     right: 0;
     display: flex;
     align-items: center;
-    border-left: rgba(211, 211, 211, 0.823) 1px solid;
-    border-bottom: rgba(211, 211, 211, 0.823) 1px solid;
-    border-bottom-left-radius: 5px;
-    z-index: 9999;
-    background-color: rgb(23, 23, 26);
+    /* border-left: rgba(211, 211, 211, 0.823) 1px solid; */
+    /* border-bottom: rgba(211, 211, 211, 0.823) 1px solid; */
+    /* border-bottom-left-radius: 5px; */
+    /* background-color: rgb(23, 23, 26); */
 }
 
 .control-buttons .p-button {

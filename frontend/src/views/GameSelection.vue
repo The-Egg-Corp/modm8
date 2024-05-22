@@ -1,18 +1,17 @@
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, Ref } from 'vue'
 
 import DataView from 'primevue/dataview'
 import DataViewLayoutOptions from 'primevue/dataviewlayoutoptions'
 
 import { Game, getGameList } from '../mocks/GameService'
+import { Nullable } from 'primevue/ts-helpers'
 
 type Layout = 'grid' | 'list'
 
-const games = ref()
-const searchValue = ref()
-
-const layout = ref('list')
-const getLayout = () => layout.value as Layout
+const games: Ref<Game[]> = ref([])
+const searchValue: Ref<Nullable<string>> = ref(null)
+const layout: Ref<Layout> = ref('grid')
 
 const getThumbnail = (game: Game) => game.image
     ? `https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/${game.image}` 
@@ -32,7 +31,7 @@ const sortMostPopular = () => {
     <div class="game-selection flex-span column">
         <h2 class="header no-select">{{ $t('game-selection.header') }}</h2>
         <div class="no-drag card game-container">
-            <DataView lazy data-key="game-list" :value="games" :layout="getLayout()">
+            <DataView lazy data-key="game-list" :value="games" :layout="layout">
                 <template #header>
                     <div class="flex flex-row justify-content-between align-items-center">
                         <div class="flex flex-row">
@@ -42,7 +41,7 @@ const sortMostPopular = () => {
                         <div class="searchbar">
                             <IconField iconPosition="left">
                                 <InputIcon class="pi pi-search"></InputIcon>
-                                <InputText :v-model="searchValue" :placeholder="$t('game-selection.search-placeholder')"/>
+                                <InputText type="password" v-model="searchValue" :placeholder="$t('game-selection.search-placeholder')"/>
                             </IconField>
                         </div>
 
@@ -116,6 +115,7 @@ const sortMostPopular = () => {
     font-size: 33px;
     font-weight: 420;
     margin: 45px 0px 5px 0px;
+    padding: 0px 20px 0px 20px; /* Makes text get wrapped earlier */
 }
 
 .game-container {
@@ -126,7 +126,7 @@ const sortMostPopular = () => {
 .grid {
     overflow-y: scroll;
     scrollbar-width: none;
-    height: calc(100vh - 155px); /* 100vh alone causes issues */
+    height: calc(100vh - 155px); /* 100vh alone causes spacing issues */
 }
 
 .grid-item {
@@ -138,15 +138,16 @@ const sortMostPopular = () => {
 
 .game-list-thumbnail {
     user-select: none;
-    border-radius: 2.5px;
     max-width: 90px;
     min-width: 30px;
     opacity: 0;
+    border-radius: 3px;
 }
 
 .game-grid-thumbnail {
     user-select: none;
     width: 200px;
+    border-radius: 4px;
 }
 
 .game-list-title {

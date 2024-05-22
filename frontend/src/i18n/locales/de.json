@@ -13,7 +13,11 @@
     "select-button": "Spiel auswählen"
   },
   "settings": {
-    "select-language": "Sprache auswählen"
+    "select-language": "Sprache auswählen",
+    "gpu-acceleration": "GPU-Beschleunigung",
+    "threads": "Themen",
+    "update-behaviour": "Verhalten aktualisieren",
+    "animations-enabled": "Animationen aktivieren"
   },
   "keywords": {
     "settings": "Einstellungen",
@@ -22,16 +26,19 @@
     "get": "Erhalten",
     "new": "Neu",
     "back": "Zurück",
-    "theme": "Thema"
+    "theme": "Thema",
+    "performance": "Leistung",
+    "misc": "Verschiedenes",
+    "general": "Allgemein"
   },
   "languages": {
     "en": "Englisch",
     "fr": "Französisch",
     "de": "Deutsch",
     "ae": "Arabisch",
-    "jp": "japanisch",
+    "jp": "Japanisch",
     "ru": "Russisch",
-    "ua": "ukrainisch",
+    "ua": "Ukrainisch",
     "se": "Schwedisch",
     "it": "Italienisch",
     "es": "Spanisch"

@@ -1,0 +1,46 @@
+{
+  "search-packages": {
+    "header": "Cerca pacchetti per utente",
+    "empty-input": "Nessun utente inserito"
+  },
+  "topbar": {
+    "dashboard": "Pannello di controllo",
+    "select-game": "Seleziona Gioco"
+  },
+  "game-selection": {
+    "header": "Scegli un gioco per il quale gestire le mod.",
+    "select-button": "Seleziona Gioco",
+    "search-placeholder": "Cerca titolo.."
+  },
+  "settings": {
+    "select-language": "Seleziona la lingua",
+    "gpu-acceleration": "Accelerazione GPU",
+    "threads": "Filetti di sistema",
+    "update-behaviour": "Aggiorna comportamento",
+    "animations-enabled": "Abilita animazioni"
+  },
+  "keywords": {
+    "general": "Generale",
+    "performance": "Prestazione",
+    "misc": "Varie",
+    "theme": "Tema",
+    "settings": "Impostazioni",
+    "download": "Scaricamento",
+    "language": "Lingua",
+    "get": "Ottenere",
+    "new": "Nuovo",
+    "back": "Indietro"
+  },
+  "languages": {
+    "en": "Inglese",
+    "fr": "Francese",
+    "de": "Tedesco",
+    "ae": "Arabo",
+    "jp": "Giapponese",
+    "ru": "Russo",
+    "ua": "Ucraino",
+    "se": "Svedese",
+    "it": "Italiano",
+    "es": "Spagnolo"
+  }
+}

@@ -1,14 +1,24 @@
 <script lang="ts" setup>
+import { Save } from '@backend/core/AppSettings'
+
 import Dialog from 'primevue/dialog'
+import Divider from 'primevue/divider'
+import SelectButton from 'primevue/selectbutton'
+
 import LanguageDropdown from './LanguageDropdown.vue'
-import ThemeDropdown from '@components/settings/ThemeDropdown.vue'
+import ThemeDropdown from './ThemeDropdown.vue'
+
+import { ref } from 'vue'
 
 import { useDialog } from '@composables'
+import { modules } from '@store'
+import { Alignment } from '@types'
+
 const { visible, draggable, closable } = useDialog()
 
 const dialogStyle = {
     "margin-left": "70px",
-    "width": '40rem',
+    "width": '42rem',
     "background": 'none'
 }
 
@@ -17,44 +27,134 @@ const cardStyle = {
     "overflow": 'hidden',
     "margin": '-15px'
 }
+
+const dividerAlignment: Alignment = "center"
+
+const accelChecked = ref(true)
+const setAccel = (e: Event) => {
+    const el = e.target as HTMLInputElement
+    
+    modules.settings.state.performance.gpu_acceleration = el.checked
+    accelChecked.value = el.checked
+
+    // Make Wails aware of new setting value by restarting the app (or prompt user?).
+}
+
+const threadCount = ref(2)
+const setThreads = (count: number) => { 
+    modules.settings.state.performance.thread_count = count
+    threadCount.value = count
+}
+
+const animationsEnabled = ref(true)
+
+const updateBehaviour = ref('Auto')
+const behaviours = ref(['Automatic', 'Notify Me', 'Off'])
 </script>
 
 <template>
     <div class="settings-container">
         <Dialog 
+            modal class="settings-dialog no-drag"
+            :style="dialogStyle"
+            :block-scroll="true"
+            :dismissable-mask="true"
+            :show-header="false"
             v-model:visible="visible"
             v-model:draggable="draggable" 
             v-model:closable="closable"
-            :block-scroll="true"
-            :dismissable-mask="true"
-            modal class="settings-dialog no-drag"
-            :style="dialogStyle"
         >
             <Card :style=cardStyle>
                 <template #content>
                     <div class="card-content">
-                        <h1 class="header">{{ $t('keywords.settings') }}</h1>
+                        <div class="flex flex-column">
+                            <h1 class="header">{{ $t('keywords.settings') }}</h1>
+                            <p style="font-weight: 305; margin-bottom: 10px; margin-top: 10px; padding-left: 4px;">
+                                Values set here are saved to the <b>settings.toml</b> file upon applying.
+                            </p>
+                        </div>
 
-                        <div class="setting">
-                            <div class="flex-item">
-                                <h3>{{ $t('keywords.language') }}</h3>
+                        <Divider :align="dividerAlignment" type="solid">
+                            <h2 class="category-divider">{{ $t('keywords.general') }}</h2>
+                        </Divider>
+
+                        <div>
+                            <div class="setting">
+                                <div class="flex-item">
+                                    <h3>{{ $t('keywords.language') }}</h3>
+                                </div>
+                                <div class="flex-item">
+                                    <LanguageDropdown/>
+                                </div>
                             </div>
-                            <div class="flex-item">
-                                <LanguageDropdown/>
+        
+                            <div class="setting">
+                                <div class="flex-item">
+                                    <h3>{{ $t('keywords.theme') }}</h3>
+                                </div>
+                                <div class="flex-item">
+                                    <ThemeDropdown/>
+                                </div>
                             </div>
                         </div>
-    
-                        <div class="setting">
-                            <div class="flex-item">
-                                <h3>{{ $t('keywords.theme') }}</h3>
+
+                        <Divider :align="dividerAlignment" type="solid">
+                            <h2 class="category-divider">{{ $t('keywords.performance') }}</h2>
+                        </Divider>
+
+                        <div>
+                            <div class="setting">
+                                <div class="flex-item">
+                                    <h3>{{ $t('settings.gpu-acceleration') }}</h3>
+                                </div>
+                                <div class="flex-item">
+                                    <InputSwitch v-model="accelChecked" @change="setAccel"/>
+                                </div>
                             </div>
-                            <div class="flex-item">
-                                <ThemeDropdown/>
+
+                            <div class="setting">
+                                <div class="flex-item">
+                                    <h3>{{ $t('settings.threads') }}</h3>
+                                </div>
+                                <div class="flex flex-row justify-content-end align-items-center gap-5">
+                                    <InputText class="w-2" v-model.number="threadCount"/>
+                                    <Slider class="w-12rem" v-model="threadCount" :min="2" :max="24" @change="setThreads"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <Divider :align="dividerAlignment" type="solid">
+                            <h2 class="category-divider">{{ $t('keywords.misc') }}</h2>
+                        </Divider>
+
+                        <div>
+                            <div class="setting">
+                                <div class="flex-item">
+                                    <h3>{{ $t('settings.animations-enabled') }}</h3>
+                                </div>
+                                <div class="flex-item">
+                                    <InputSwitch v-model="animationsEnabled" @change=""/>
+                                </div>
+                            </div>
+
+                            <div class="setting">
+                                <div class="flex-item">
+                                    <h3>{{ $t('settings.update-behaviour') }}</h3>
+                                </div>
+                                <div class="flex-item">
+                                    <SelectButton v-model="updateBehaviour" :options="behaviours" aria-labelledby="basic" @change=""/>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </template>
             </Card>
+
+            <div class="flex justify-content-end gap-3 mt-3">
+                <Button class="w-full" type="button" label="Reset all to default" severity="secondary"></Button>
+                <Button class="w-full" type="button" label="Apply" @click="Save"></Button>
+                <Button class="w-full" type="button" label="Close" severity="secondary" @click="visible = false"></Button>
+            </div>
         </Dialog>
     </div>
 </template>
@@ -69,7 +169,7 @@ const cardStyle = {
 }
 
 .settings-dialog {
-    width: 40rem;
+    width: 42rem;
 }
 
 .card-content {
@@ -79,26 +179,33 @@ const cardStyle = {
 .card-content .header {
     user-select: none;
     font-size: 45px;
-    font-weight: 520;
-    margin-top: -15px;
-    margin-bottom: 10px;
+    font-weight: 490;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    -webkit-font-smoothing: antialiased;
 }
 
 .setting {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    align-items: first baseline;
+    align-items: center;
     padding-left: 5px;
 }
 
 .flex-item {
-    text-align: center;
-    user-select: none;
-    font-size: 20px;
+    font-size: 16px;
 }
 
 .flex-item h3 {
-    font-weight: 380;
+    font-weight: 325;
+}
+
+.category-divider {
+    font-weight: 425;
+    font-size: 22px;
+    margin-top: -8px;
+    margin-bottom: -8px;
+    user-select: none;
 }
 </style>

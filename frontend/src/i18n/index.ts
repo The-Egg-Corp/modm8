@@ -1,4 +1,4 @@
-import store from "@store"
+import store, { modules } from "@store"
 import { Country } from "@types"
 
 import { ComputedRef, computed } from "vue"
@@ -7,13 +7,15 @@ import { createI18n } from "vue-i18n"
 import en from "./locales/en.json"
 import fr from "./locales/fr.json"
 import de from "./locales/de.json"
+import it from "./locales/it.json"
+import es from "./locales/es.json"
 
 const i18n = createI18n({
   locale: "en",
   fallbackLocale: "en",
-  availableLocales: ["en", "de", "fr"],
-  messages: { en, fr, de },
-  legacy: false,
+  availableLocales: ["en", "de", "fr", "it", "es"],
+  messages: { en, fr, de, it, es },
+  legacy: false
 })
 
 export default i18n
@@ -29,10 +31,16 @@ export const countries: ComputedRef<Country[]> = computed(() => [{
 }, {
   name: t('languages.fr'),
   code: 'fr'
+},{
+  name: t('languages.it'),
+  code: 'it'
+},{
+  name: t('languages.es'),
+  code: 'es'
 }])
 
 export const countryFromLocale = () => {
-  const lang = store.state.settings.locale
+  const lang = modules.settings.state.locale
   if (!lang) return countries.value[0]
 
   return countries.value.find(c => c.code === lang) || countries.value[0]
@@ -48,5 +56,5 @@ type CountryCode = typeof locale.value
  */
 export const changeLocale = async (code: string) => {
   locale.value = code as CountryCode 
-  await store.dispatch('setLocale', code)
+  await store.dispatch('settings/setLocale', code)
 }

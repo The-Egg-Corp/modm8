@@ -13,9 +13,16 @@
     "search-placeholder": "Search title.."
   },
   "settings": {
-    "select-language": "Select language"
+    "select-language": "Select language",
+    "gpu-acceleration": "GPU Acceleration",
+    "threads": "Threads",
+    "update-behaviour": "Update Behaviour",
+    "animations-enabled": "Enable Animations"
   },
   "keywords": {
+    "general": "General",
+    "performance": "Performance",
+    "misc": "Miscellaneous",
     "theme": "Theme",
     "settings": "Settings",
     "download": "Download",

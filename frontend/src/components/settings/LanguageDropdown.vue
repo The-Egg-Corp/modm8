@@ -8,14 +8,13 @@ import {
     getCountry
 } from '@i18n'
 
-import { Save, SetLocale } from '@backend/core/AppSettings'
+import { SetLocale } from '@backend/core/AppSettings'
     
 const change = async (e: ChangeEvent<Country>) => {
     await changeLocale(e.value.code)
 
     // Save locale change to settings file.
     SetLocale(e.value.code)
-    Save()
 }
 
 const flagPlaceholderURL = "https://primefaces.org/cdn/primevue/images/flag/flag_placeholder.png"

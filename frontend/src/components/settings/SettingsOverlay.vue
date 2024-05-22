@@ -1,5 +1,11 @@
 <script lang="ts" setup>
-import { Save } from '@backend/core/AppSettings'
+import { 
+    Save, 
+    SetGPUAccel, SetThreads,
+    SetAnimationsEnabled, SetUpdateBehaviour
+} from '@backend/core/AppSettings'
+
+import { core } from '@backend/models'
 
 import Dialog from 'primevue/dialog'
 import Divider from 'primevue/divider'
@@ -8,11 +14,11 @@ import SelectButton from 'primevue/selectbutton'
 import LanguageDropdown from './LanguageDropdown.vue'
 import ThemeDropdown from './ThemeDropdown.vue'
 
-import { ref } from 'vue'
+import { Ref, ref } from 'vue'
 
 import { useDialog } from '@composables'
-import { modules } from '@store'
-import { Alignment } from '@types'
+import { useSettingsStore } from '@stores'
+import { Alignment, ChangeEvent } from '@types'
 
 const { visible, draggable, closable } = useDialog()
 
@@ -32,25 +38,64 @@ const dividerAlignment: Alignment = "center"
 
 const accelChecked = ref(true)
 const setAccel = (value: boolean) => {
-    modules.settings.state.performance.gpu_acceleration = value
+    const store = useSettingsStore()
+
+    store.performance.gpu_acceleration = value
     accelChecked.value = value
 
+    SetGPUAccel(value)
     // Make Wails aware of new setting value by restarting the app (or prompt user?).
 }
 
 const threadCount = ref(2)
 const setThreads = (count: number) => { 
-    modules.settings.state.performance.thread_count = count
+    const store = useSettingsStore()
+    
+    store.setThreads(count)
     threadCount.value = count
+
+    SetThreads(count)
 }
 
 const animationsEnabled = ref(true)
 const setAnimsEnabled = (value: boolean) => {
-    modules.settings.state.misc.animations_enabled = value
+    const store = useSettingsStore()
+
+    store.setAnimationsEnabled(value)
+    animationsEnabled.value = value
+
+    SetAnimationsEnabled(value)
 }
 
-const updateBehaviour = ref('Automatic')
-const behaviours = ref(['Automatic', 'Notify Me', 'Off'])
+interface Behaviour {
+    label: string
+    value: core.UpdateBehaviour
+}
+
+const updateBehaviour: Ref<Behaviour> = ref({ label: 'Automatic', value: core.UpdateBehaviour.AUTO })
+const behaviours: Ref<Behaviour[]> = ref([{
+    label: 'Automatic',
+    value: core.UpdateBehaviour.AUTO
+}, {
+    label: 'Notify Me',
+    value: core.UpdateBehaviour.NOTIFY
+}, {
+    label: 'Off',
+    value: core.UpdateBehaviour.OFF
+}])
+
+const setUpdateBehaviour = (e: ChangeEvent<Behaviour>) => {
+    const store = useSettingsStore()
+    store.setUpdateBehaviour(e.value.value)
+}
+
+const applySettings = async() => {
+    const t0 = performance.now()
+
+    await Save()
+
+    console.log(`Settings saved. Took ${performance.now() - t0}ms`)
+}
 </script>
 
 <template>
@@ -149,8 +194,8 @@ const behaviours = ref(['Automatic', 'Notify Me', 'Off'])
                                 </div>
                                 <div class="flex-item">
                                     <SelectButton 
-                                        aria-labelledby="basic" :options="behaviours"
-                                        v-model="updateBehaviour" @update:model-value="" 
+                                        aria-labelledby="basic" :options="behaviours.map(b => b.label)"
+                                        v-model="updateBehaviour" @change="setUpdateBehaviour"
                                     />
                                 </div>
                             </div>
@@ -162,7 +207,7 @@ const behaviours = ref(['Automatic', 'Notify Me', 'Off'])
 
             <div class="flex justify-content-end gap-3 mt-3">
                 <Button class="w-full" type="button" label="Reset all to default" severity="secondary"></Button>
-                <Button class="w-full" type="button" label="Apply" @click="Save"></Button>
+                <Button class="w-full" type="button" label="Apply" @click="applySettings"></Button>
                 <Button class="w-full" type="button" label="Close" severity="secondary" @click="visible = false"></Button>
             </div>
         </Dialog>

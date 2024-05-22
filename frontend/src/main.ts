@@ -1,9 +1,9 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 
+import { createPinia } from 'pinia'
 import i18n from "./i18n"
 import router from "./router"
-import store from "./store"
 
 //#region Import Framework & Components
 import PrimeVue from 'primevue/config'
@@ -39,12 +39,13 @@ import './assets/styles/global.css'
 import "./assets/styles/flags.css"
 //#endregion
 
+const pinia = createPinia()
 const app = createApp(App)
 
+app.use(pinia)
 app.use(i18n)
 app.use(router)
 app.use(PrimeVue, { ripple: true })
-app.use(store)
 
 app.component('Button', Button)
 app.component('ButtonGroup', ButtonGroup)

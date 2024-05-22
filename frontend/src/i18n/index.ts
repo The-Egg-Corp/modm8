@@ -1,4 +1,4 @@
-import store, { modules } from "@store"
+import { useSettingsStore } from "@stores"
 import { Country } from "@types"
 
 import { ComputedRef, computed } from "vue"
@@ -40,10 +40,10 @@ export const countries: ComputedRef<Country[]> = computed(() => [{
 }])
 
 export const countryFromLocale = () => {
-  const lang = modules.settings.state.locale
-  if (!lang) return countries.value[0]
+  const store = useSettingsStore()
+  if (!store.locale) return countries.value[0]
 
-  return countries.value.find(c => c.code === lang) || countries.value[0]
+  return countries.value.find(c => c.code === store.locale) || countries.value[0]
 }
 
 export const getCountry = computed(countryFromLocale) 
@@ -51,10 +51,12 @@ export const getCountry = computed(countryFromLocale)
 type CountryCode = typeof locale.value
 
 /**
- * Changes the current locale within the Vuex store.
+ * Changes the current locale within the Settings store.
  * @param code The locale/language code to switch to, such as 'en' or 'fr'.
  */
 export const changeLocale = async (code: string) => {
-  locale.value = code as CountryCode 
-  await store.dispatch('settings/setLocale', code)
+  locale.value = code as CountryCode
+  
+  const store = useSettingsStore()
+  store.setLocale(code)
 }

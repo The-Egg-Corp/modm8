@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { ComputedRef, Ref, computed, ref } from 'vue'
 
-import { modules } from '@store'
+import { useSettingsStore } from '@stores'
 import { ChangeEvent } from '@types'
- 
+
 interface Theme {
     label: string
     value: string
@@ -42,8 +42,10 @@ const groupedThemes: ComputedRef<ThemeGroup[]> = computed(() => [{
 const change = (e: ChangeEvent<Theme>) => {
     const theme = e.value
 
+    const settingsStore = useSettingsStore()
+    settingsStore.setTheme(theme.value)
+    
     selectedTheme.value = theme
-    modules.settings.state.theme = theme.value
 }
 
 const getGroup = (theme: Theme) => groupedThemes.value.find(g => g.themes.find(t => t.value == theme.value))

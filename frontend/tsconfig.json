@@ -23,7 +23,7 @@
       "@assets": ["./src/assets"],
       "@components": ["./src/components"],
       "@composables": ["./src/composables"],
-      "@store": ["./src/store"],
+      "@stores": ["src/stores"],
       "@types": ["./src/types"],
       "@i18n": ["./src/i18n"],
       "@backend/*": ["./wailsjs/go/*"],

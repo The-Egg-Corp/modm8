@@ -38,7 +38,7 @@ const actions = {
 export type SettingsState = typeof state
 
 export const useSettingsStore = defineStore({
-    id: "SettingsStore",
+    id: 'SettingsStore',
     state: () => state,
     actions
 })

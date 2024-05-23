@@ -26,6 +26,10 @@ func (a *App) Startup(ctx context.Context) {
 	a.Settings.Load()
 }
 
+func (a *App) Restart() {
+
+}
+
 // func (a *App) Shutdown(ctx context.Context) {
 
 // }

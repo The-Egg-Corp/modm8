@@ -16,7 +16,12 @@
     "select-language": "Sprache auswählen",
     "gpu-acceleration": "GPU-Beschleunigung",
     "threads": "Themen",
-    "update-behaviour": "Verhalten aktualisieren",
+    "update-behaviour": {
+      "label": "",
+      "option-1": "",
+      "option-2": "",
+      "option-3": ""
+    },
     "animations-enabled": "Animationen aktivieren"
   },
   "keywords": {
@@ -29,7 +34,11 @@
     "theme": "Thema",
     "performance": "Leistung",
     "misc": "Verschiedenes",
-    "general": "Allgemein"
+    "general": "Allgemein",
+    "off": "",
+    "on": "",
+    "yes": "",
+    "no": ""
   },
   "languages": {
     "en": "Englisch",

@@ -16,8 +16,13 @@
     "select-language": "Select language",
     "gpu-acceleration": "GPU Acceleration",
     "threads": "Threads",
-    "update-behaviour": "Update Behaviour",
-    "animations-enabled": "Enable Animations"
+    "update-behaviour": {
+      "label": "Update on launch",
+      "option-1": "Automatic",
+      "option-2": "Notify Me",
+      "option-3": "Off"
+    },
+    "animations-enabled": "Enable animations"
   },
   "keywords": {
     "general": "General",
@@ -29,7 +34,11 @@
     "language": "Language",
     "get": "Get",
     "new": "New",
-    "back": "Back"
+    "back": "Back",
+    "off": "Off",
+    "on": "On",
+    "yes": "Yes",
+    "no": "No"
   },
   "languages": {
     "en": "English",

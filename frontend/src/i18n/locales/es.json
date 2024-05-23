@@ -16,7 +16,12 @@
     "select-language": "Seleccione el idioma",
     "gpu-acceleration": "Aceleración de GPU",
     "threads": "Hilos",
-    "update-behaviour": "Comportamiento de actualización",
+    "update-behaviour": {
+      "label": "",
+      "option-1": "",
+      "option-2": "",
+      "option-3": ""
+    },
     "animations-enabled": "Habilitar animaciones"
   },
   "keywords": {
@@ -29,7 +34,11 @@
     "language": "Idioma",
     "get": "Conseguir",
     "new": "Nuevo",
-    "back": "Atrás"
+    "back": "Atrás",
+    "off": "",
+    "on": "",
+    "yes": "",
+    "no": ""
   },
   "languages": {
     "en": "Inglés",

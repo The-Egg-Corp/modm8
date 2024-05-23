@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "clean": "rimraf ./node_modules",
+    "reinstall": "bun run clean && bun i",
     "dev": "bunx vite",
     "build": "bunx vite build",
     "typecheck": "bunx vue-tsc --noEmit",

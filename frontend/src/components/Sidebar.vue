@@ -61,7 +61,7 @@ const tooltipOpts = (text: string) => ({
     height: 100vh;
     width: fit-content;
     border-right: rgba(231, 231, 231, 0.885) 1px outset;
-    background-color: rgb(23, 23, 26);
+    background-color: rgb(28, 29, 33);
 }
 
 .sidebar img {

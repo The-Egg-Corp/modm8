@@ -24,14 +24,14 @@ const { visible, draggable, closable } = useDialog()
 
 const dialogStyle = {
     "margin-left": "70px",
-    "width": '42rem',
-    "background": 'none'
+    "width": '42rem'
 }
 
 const cardStyle = {
     "box-shadow": 'none',
     "overflow": 'hidden',
-    "margin": '-15px'
+    "margin": '-15px',
+    "background": 'none'
 }
 
 const dividerAlignment: Alignment = "center"
@@ -72,21 +72,27 @@ interface Behaviour {
     value: core.UpdateBehaviour
 }
 
-const updateBehaviour: Ref<Behaviour> = ref({ label: 'Automatic', value: core.UpdateBehaviour.AUTO })
-const behaviours: Ref<Behaviour[]> = ref([{
+const updateBehaviour: Ref<Behaviour> = ref({ 
     label: 'Automatic',
     value: core.UpdateBehaviour.AUTO
+})
+
+const behaviours: Ref<Behaviour[]> = ref([{
+    label: 'Off',
+    value: core.UpdateBehaviour.OFF
 }, {
     label: 'Notify Me',
     value: core.UpdateBehaviour.NOTIFY
 }, {
-    label: 'Off',
-    value: core.UpdateBehaviour.OFF
+    label: 'Automatic',
+    value: core.UpdateBehaviour.AUTO
 }])
 
 const setUpdateBehaviour = (e: ChangeEvent<Behaviour>) => {
     const store = useSettingsStore()
     store.setUpdateBehaviour(e.value.value)
+
+    SetUpdateBehaviour(e.value.value)
 }
 
 const applySettings = async() => {
@@ -115,7 +121,7 @@ const applySettings = async() => {
                     <div class="card-content">
                         <div class="flex flex-column">
                             <h1 class="header">{{ $t('keywords.settings') }}</h1>
-                            <p style="font-weight: 305; margin-bottom: 10px; margin-top: 10px; padding-left: 4px;">
+                            <p style="font-weight: 305; margin-bottom: 10px; margin-top: 10px; padding-left: 2px;">
                                 Values set here are saved to the <b>settings.toml</b> file upon applying.
                             </p>
                         </div>
@@ -206,15 +212,30 @@ const applySettings = async() => {
             </Card>
 
             <div class="flex justify-content-end gap-3 mt-3">
+                <Button class="w-full" type="button" label="Close" severity="secondary" @click="visible = false"></Button>
                 <Button class="w-full" type="button" label="Reset all to default" severity="secondary"></Button>
                 <Button class="w-full" type="button" label="Apply" @click="applySettings"></Button>
-                <Button class="w-full" type="button" label="Close" severity="secondary" @click="visible = false"></Button>
             </div>
         </Dialog>
     </div>
 </template>
 
 <style scoped>
+:global(.p-dialog) {
+    background: none;
+    border: 1px solid #4d4d4d;
+    border-radius: 9px;
+}
+
+:global(.p-dialog-content) {
+    background: none;
+    border-radius: 9px;
+}
+
+:global(.p-divider-content) {
+    background: none;
+}
+
 :deep(.p-dialog-title) {
     user-select: none;
 }
@@ -249,11 +270,11 @@ const applySettings = async() => {
 }
 
 .flex-item {
-    font-size: 16px;
+    font-size: 15.8px;
 }
 
 .flex-item h3 {
-    font-weight: 325;
+    font-weight: 320;
 }
 
 .category-divider {

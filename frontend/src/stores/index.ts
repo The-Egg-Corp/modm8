@@ -1,15 +1,16 @@
 import { defineStore } from 'pinia'
 
-// import ProfileModule from './modules/profile.js'
-// import VersionModule from './modules/version.js'
+type Game = null | {}
 
-// Defaults. These will usually be different at runtime.
-const state = {
-    selectedGame: null
+// The global application state.
+export interface AppState {
+    selectedGame: Game
 }
 
-// The root state of all modules.
-export type AppState = typeof state
+// Defaults. These will usually be different at runtime.
+const state: AppState = {
+    selectedGame: null
+}
 
 export const useGlobalStore = defineStore({
     id: 'AppStore',

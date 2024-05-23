@@ -5,7 +5,7 @@ export interface InternalState {
 }
 
 const state: InternalState = {
-    appVersion: '1.0'
+    appVersion: ''
 }
 
 export const useInternalStore = defineStore({

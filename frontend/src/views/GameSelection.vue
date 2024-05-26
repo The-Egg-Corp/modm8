@@ -18,14 +18,7 @@ const getThumbnail = (game: Game) => game.image
     ? `https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/${game.image}` 
     : "https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/Titanfall2.jpg"
 
-onMounted(() => {
-    let data = getGameList()
-    games.value = data
-})
-
-const sortMostPopular = () => {
-    
-}
+onMounted(() => games.value = getGameList())
 </script>
 
 <template>

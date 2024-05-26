@@ -2,7 +2,7 @@
 import { ComputedRef, Ref, computed, ref } from 'vue'
 
 import { useSettingsStore } from '@stores'
-import { ChangeEvent } from '@types'
+import { ChangeEvent, OptionItem, ValueItem } from '@types'
 
 interface Theme {
     label: string
@@ -40,12 +40,10 @@ const groupedThemes: ComputedRef<ThemeGroup[]> = computed(() => [{
 }])
 
 const change = (e: ChangeEvent<Theme>) => {
-    const theme = e.value
-
     const settingsStore = useSettingsStore()
-    settingsStore.setTheme(theme.value)
     
-    selectedTheme.value = theme
+    settingsStore.setTheme(e.value.value)
+    selectedTheme.value = e.value
 }
 
 const getGroup = (theme: Theme) => groupedThemes.value.find(g => g.themes.find(t => t.value == theme.value))
@@ -66,13 +64,13 @@ const fullLabel = (theme: Theme) => {
         v-model="selectedTheme"
         @change="change"
     >
-        <template #optiongroup="slotProps">
+        <template #optiongroup="slotProps: OptionItem<ThemeGroup>">
             <div class="flex align-items-center">
                 <div>{{ slotProps.option.label }}</div>
             </div>
         </template>
 
-        <template #value="slotProps">
+        <template #value="slotProps: ValueItem<Theme>">
             <div class="flex align-items-center">
                 <div>{{ fullLabel(slotProps.value) }}</div>
             </div>

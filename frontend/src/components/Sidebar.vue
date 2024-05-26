@@ -49,7 +49,8 @@ const tooltipOpts = (text: string) => ({
             plain outlined 
             class="btn margin-lr no-drag" icon="pi pi-spin pi-cog" 
             v-tooltip="tooltipOpts('Settings')"
-            @click="setVisible(true)"/>
+            @click="setVisible(true)"
+        />
     </div>
 </div>
 </template>

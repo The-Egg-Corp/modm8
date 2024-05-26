@@ -41,9 +41,11 @@ export const countries: ComputedRef<Country[]> = computed(() => [{
 
 export const countryFromLocale = () => {
   const store = useSettingsStore()
-  if (!store.locale) return countries.value[0]
 
-  return countries.value.find(c => c.code === store.locale) || countries.value[0]
+  const lang = store.general.locale
+  if (!lang) return countries.value[0]
+  
+  return countries.value.find(c => c.code === store.general.locale) || countries.value[0]
 }
 
 export const getCountry = computed(countryFromLocale) 

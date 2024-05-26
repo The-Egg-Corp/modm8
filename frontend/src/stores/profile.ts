@@ -8,7 +8,6 @@ const state: ProfileState = {
     
 }
 
-export const useProfileStore = defineStore({
-    id: 'ProfileStore',
+export const useProfileStore = defineStore("ProfileStore", {
     state: () => state
 })

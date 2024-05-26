@@ -4,10 +4,11 @@ import { ref, onMounted, Ref } from 'vue'
 import DataView from 'primevue/dataview'
 import DataViewLayoutOptions from 'primevue/dataviewlayoutoptions'
 
-import { Game, getGameList } from '../mocks/GameService'
-import { Nullable } from 'primevue/ts-helpers'
+// TODO: Replace with real external service.
+import { getGameList } from '../mocks/GameService'
 
-type Layout = 'grid' | 'list'
+import { Nullable } from 'primevue/ts-helpers'
+import { Game, GameProps, Layout } from '@types'
 
 const games: Ref<Game[]> = ref([])
 const searchValue: Ref<Nullable<string>> = ref(null)
@@ -52,7 +53,7 @@ const sortMostPopular = () => {
                 </template>
 
                 <!-- List layout -->
-                <template #list="slotProps">
+                <template #list="slotProps: GameProps">
                     <div class="grid grid-nogutter">
                         <div v-for="(item, index) in slotProps.items" :key="index" class="col-12">
                             <div class="flex flex-column sm:flex-row sm:align-items-center p-2 gap-5" :class="{ 'border-top-1 surface-border': index !== 0 }">
@@ -76,7 +77,7 @@ const sortMostPopular = () => {
                 </template>
 
                 <!-- Grid layout -->
-                <template #grid="slotProps">
+                <template #grid="slotProps: GameProps">
                     <div class="grid grid-nogutter">
                         <div v-for="(item, index) in slotProps.items" :key="index" class="grid-item col-6 sm:col-2 md:col-3 lg:col-4 xl:col-2">
                             <div class="flex flex-column p-3 border-1 surface-border border-round">

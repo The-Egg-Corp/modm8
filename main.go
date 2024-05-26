@@ -66,7 +66,7 @@ func main() {
 			tsapi,
 		},
 		EnumBind: IList{
-			core.AllUpdateBehaviours,
+			core.UpdateBehaviours,
 		},
 	})
 

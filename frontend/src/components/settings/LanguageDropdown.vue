@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { ChangeEvent, Country } from '@types'
+import { ChangeEvent, Country, OptionItem, ValueItem } from '@types'
 import { 
     t,
     countries,
@@ -35,10 +35,9 @@ const alphabetSort = <T extends { name: string }>(arr: T[]) => arr.sort((a: T, b
         :options="alphabetSort(countries)"
         @change="change"
     >
-        <template #option="selectedItem">
+        <template #option="selectedItem: OptionItem<Country>">
             <div class="flex no-drag align-items-center">
                 <img
-                    :alt="selectedItem.option.label" 
                     :class="`mr-2 flag-style flag flag-${selectedItem.option.code.toLowerCase()}`" 
                     :src=flagPlaceholderURL
                 />
@@ -47,10 +46,9 @@ const alphabetSort = <T extends { name: string }>(arr: T[]) => arr.sort((a: T, b
             </div>
         </template>
 
-        <template #value="selectedItem">
+        <template #value="selectedItem: ValueItem<Country>">
             <div v-if="selectedItem.value" class="flex align-items-center">
                 <img
-                    :alt="selectedItem.value.label" 
                     :class="`mr-2 flag-style flag flag-${selectedItem.value.code.toLowerCase()}`"
                     :src=flagPlaceholderURL
                 />

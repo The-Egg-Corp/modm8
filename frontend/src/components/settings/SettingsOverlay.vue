@@ -3,22 +3,22 @@ import {
     Save, 
     SetGPUAccel, SetThreads,
     SetAnimationsEnabled, SetUpdateBehaviour
-} from '@backend/core/AppSettings'
+} from "@backend/core/AppSettings"
 
-import { core } from '@backend/models'
+import { core } from "@backend/models"
 
-import Dialog from 'primevue/dialog'
-import Divider from 'primevue/divider'
-import SelectButton from 'primevue/selectbutton'
+import Dialog from "primevue/dialog"
+import Divider from "primevue/divider"
+import SelectButton from "primevue/selectbutton"
 
-import LanguageDropdown from './LanguageDropdown.vue'
-import ThemeDropdown from './ThemeDropdown.vue'
+import LanguageDropdown from "./LanguageDropdown.vue"
+import ThemeDropdown from "./ThemeDropdown.vue"
 
-import { Ref, ref } from 'vue'
+import { Ref, ref } from "vue"
 
-import { useDialog } from '@composables'
-import { useSettingsStore } from '@stores'
-import { Alignment, ChangeEvent } from '@types'
+import { useDialog } from "@composables"
+import { useSettingsStore } from "@stores"
+import { Alignment, ChangeEvent } from "@types"
 
 const { visible, draggable, closable } = useDialog()
 
@@ -44,6 +44,7 @@ const setAccel = (value: boolean) => {
     accelChecked.value = value
 
     SetGPUAccel(value)
+
     // Make Wails aware of new setting value by restarting the app (or prompt user?).
 }
 

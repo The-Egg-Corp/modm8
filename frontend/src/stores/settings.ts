@@ -1,25 +1,30 @@
-import { core } from "@backend/models.js"
 import { defineStore } from 'pinia'
 
+import { core } from "@backend/models.js"
+import { Layout } from "@types"
+
 const state = {
-    locale: 'en',
-    theme: 'default-purple-dark',
+    general: {
+        locale: 'en',
+        theme: 'default-purple-dark',
+    },
     performance: {
         thread_count: 2,
         gpu_acceleration: true
     },
     misc: {
         animations_enabled: true,
-        update_behaviour: 2
+        update_behaviour: 2,
+        game_selection_layout: 'grid'
     }
 }
 
 const actions = {
     setLocale(code: string) {
-        state.locale = code
+        state.general.locale = code
     },
     setTheme(theme: string) {
-        state.theme = theme
+        state.general.theme = theme
     },
     setThreads(count: number) {
         state.performance.thread_count = count
@@ -32,13 +37,15 @@ const actions = {
     },
     setUpdateBehaviour(behaviour: core.UpdateBehaviour) {
         state.misc.update_behaviour = behaviour
+    },
+    setGameSelectionLayout(layout: Layout) {
+        state.misc.game_selection_layout = layout
     }
 }
 
 export type SettingsState = typeof state
 
-export const useSettingsStore = defineStore({
-    id: 'SettingsStore',
+export const useSettingsStore = defineStore("SettingsStore", {
     state: () => state,
-    actions
+    actions,
 })

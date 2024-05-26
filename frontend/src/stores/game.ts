@@ -1,19 +1,16 @@
 import { defineStore } from 'pinia'
 
-// The global application state.
-export interface AppState {
+// Game-related state type.
+export interface GameState {
     
 }
 
 // Defaults. These will usually be different at runtime.
-const state: AppState = {
-
+const state: GameState = {
+    
 }
 
 export const useGlobalStore = defineStore({
     id: 'AppStore',
     state: () => state
 })
-
-export * from './settings'
-export * from './version'

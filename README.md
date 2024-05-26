@@ -12,6 +12,9 @@ Built with [Wails](https://wails.io) for an Electron-like experience but without
 - App settings can be easily changed. No need to go through unnecessary menus.
 - Includes handy features for mod developers. (Publishing, validation etc.)
 - Familiar frontend. Similar to existing apps like `r2modman`.
+- Supports multiple languages with the help of `vue-i18n`.
+  - Currently implemented: **English**, **German**, **French**, **Spanish**, **Italian**
+  - Language PRs are greatly appreciated as some keys may have been wrongly translated!
 
 ## Installation
 1. Head to the [latest release](../../releases/latest) page.

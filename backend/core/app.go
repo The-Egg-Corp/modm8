@@ -34,6 +34,9 @@ func (a *App) Restart() {
 
 // }
 
-func CheckForUpdate() {
+// Fetches the tag of the latest modm8 GitHub release.
+//
+// https://api.github.com/repos/The-Egg-Corp/modm8/releases/latest
+func LatestReleaseVersion() {
 
 }

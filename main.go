@@ -40,7 +40,9 @@ var macOpts = &mac.Options{
 
 func main() {
 	app := core.NewApp()
-	tsapi := thunderstore.NewAPI()
+
+	tsAPI := thunderstore.NewAPI()
+	//nexusAPI := nexus.NewAPI()
 
 	err := wails.Run(&options.App{
 		Title:     "modm8",
@@ -63,7 +65,7 @@ func main() {
 		Bind: IList{
 			app,
 			app.Settings,
-			tsapi,
+			tsAPI,
 		},
 		EnumBind: IList{
 			core.UpdateBehaviours,

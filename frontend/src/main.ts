@@ -51,7 +51,7 @@ app.component('Button', Button)
 app.component('ButtonGroup', ButtonGroup)
 
 app.component('Sidebar', Sidebar)
-app.component('Toolbar', Toolbar) // AKA 'Topbar'
+app.component('Toolbar', Toolbar) // AKA a Topbar.
 
 app.component('Card', Card)
 app.component('FloatLabel', FloatLabel)

@@ -7,15 +7,16 @@ const state = {
     general: {
         locale: 'en',
         theme: 'default-purple-dark',
+        animations_enabled: true,
     },
     performance: {
         thread_count: 2,
         gpu_acceleration: true
     },
     misc: {
-        animations_enabled: true,
+        nexus_personal_key: '',
         update_behaviour: 2,
-        game_selection_layout: 'grid'
+        game_selection_layout: 'grid',
     }
 }
 
@@ -26,14 +27,17 @@ const actions = {
     setTheme(theme: string) {
         state.general.theme = theme
     },
+    setAnimationsEnabled(value: boolean) {
+        state.general.animations_enabled = value
+    },
     setThreads(count: number) {
         state.performance.thread_count = count
     },
     setAcceleration(value: boolean) {
         state.performance.gpu_acceleration = value
     },
-    setAnimationsEnabled(value: boolean) {
-        state.misc.animations_enabled = value
+    setNexusPersonalKey(key: string) {
+        state.misc.nexus_personal_key = key
     },
     setUpdateBehaviour(behaviour: core.UpdateBehaviour) {
         state.misc.update_behaviour = behaviour

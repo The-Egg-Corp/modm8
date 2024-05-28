@@ -18,6 +18,6 @@ type Game struct {
 	SettingsIdentifier string   `json:"settings_identifier" mapstructure:"settings_identifier"`
 	ExeName            []string `json:"exe_name" mapstructure:"exe_name"`
 	DataFolderName     string   `json:"data_folder_name" mapstructure:"data_folder_name"`
-	ThunderstoreURL    string   `json:"thunderstore_url" mapstructure:"thunderstore_url"`
+	ThunderstoreURL    *string  `json:"thunderstore_url" mapstructure:"thunderstore_url"`
 	ExclusionsURL      string   `json:"exclusions_url" mapstructure:"exclusions_url"`
 }

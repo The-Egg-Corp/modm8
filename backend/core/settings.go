@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"path"
-	"runtime"
 
 	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/viper"
@@ -28,9 +27,16 @@ var UpdateBehaviours = []struct {
 	{UpdateBehaviourAuto, "AUTO"},
 }
 
+type AppSettings struct {
+	General     GeneralOptions     `json:"general" mapstructure:"general"`
+	Performance PerformanceOptions `json:"performance" mapstructure:"performance"`
+	Misc        MiscOptions        `json:"misc" mapstructure:"misc"`
+}
+
 type GeneralOptions struct {
-	Locale string `json:"locale" mapstructure:"locale"`
-	Theme  string `json:"theme" mapstructure:"theme"`
+	Locale            string `json:"locale" mapstructure:"locale"`
+	Theme             string `json:"theme" mapstructure:"theme"`
+	AnimationsEnabled bool   `json:"animations_enabled" mapstructure:"animations_enabled"`
 }
 
 type PerformanceOptions struct {
@@ -39,15 +45,9 @@ type PerformanceOptions struct {
 }
 
 type MiscOptions struct {
-	AnimationsEnabled   bool            `json:"animations_enabled" mapstructure:"animations_enabled"`
+	NexusPersonalKey    string          `json:"nexus_personal_key" mapstructure:"nexus_personal_key"`
 	UpdateBehaviour     UpdateBehaviour `json:"update_behaviour" mapstructure:"update_behaviour"`
 	GameSelectionLayout string          `json:"game_selection_layout" mapstructure:"game_selection_layout"`
-}
-
-type AppSettings struct {
-	General     GeneralOptions     `json:"general" mapstructure:"general"`
-	Performance PerformanceOptions `json:"performance" mapstructure:"performance"`
-	Misc        MiscOptions        `json:"misc" mapstructure:"misc"`
 }
 
 var cfg = viper.New()
@@ -55,15 +55,16 @@ var cfg = viper.New()
 func NewSettings() *AppSettings {
 	return &AppSettings{
 		General: GeneralOptions{
-			Locale: "en",
-			Theme:  "default-purple/dark",
+			Locale:            "en",
+			Theme:             "default-purple/dark",
+			AnimationsEnabled: true,
 		},
 		Performance: PerformanceOptions{
-			ThreadCount:     uint8(runtime.NumCPU()),
+			ThreadCount:     NumCPU(),
 			GPUAcceleration: true,
 		},
 		Misc: MiscOptions{
-			AnimationsEnabled:   true,
+			NexusPersonalKey:    "",
 			UpdateBehaviour:     UpdateBehaviourAuto,
 			GameSelectionLayout: "grid",
 		},
@@ -103,7 +104,7 @@ func (settings *AppSettings) Load() error {
 		return err
 	}
 
-	if err := cfg.Unmarshal(settings); err != nil {
+	if err := cfg.UnmarshalExact(settings); err != nil {
 		return err
 	}
 
@@ -130,6 +131,10 @@ func (settings *AppSettings) SetTheme(theme string) {
 	settings.General.Theme = theme
 }
 
+func (settings *AppSettings) SetAnimationsEnabled(val bool) {
+	settings.General.AnimationsEnabled = val
+}
+
 func (settings *AppSettings) SetThreads(count uint8) {
 	settings.Performance.ThreadCount = count
 }
@@ -138,8 +143,8 @@ func (settings *AppSettings) SetGPUAccel(val bool) {
 	settings.Performance.GPUAcceleration = val
 }
 
-func (settings *AppSettings) SetAnimationsEnabled(val bool) {
-	settings.Misc.AnimationsEnabled = val
+func (settings *AppSettings) SetNexusPersonalKey(key string) {
+	settings.Misc.NexusPersonalKey = key
 }
 
 func (settings *AppSettings) SetUpdateBehaviour(behaviour UpdateBehaviour) {

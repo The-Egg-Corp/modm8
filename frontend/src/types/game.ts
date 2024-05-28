@@ -1,7 +1,6 @@
-export type Game = {
+export interface Game {
     identifier: string
     title?: string
-    rating?: number
     description?: string,
     image?: string
 }

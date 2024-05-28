@@ -2,6 +2,7 @@ package core
 
 import (
 	"context"
+	"runtime"
 )
 
 type App struct {
@@ -28,6 +29,14 @@ func (a *App) Startup(ctx context.Context) {
 
 func (a *App) Restart() {
 
+}
+
+func NumCPU() uint8 {
+	return uint8(runtime.NumCPU())
+}
+
+func (a *App) NumCPU() uint8 {
+	return NumCPU()
 }
 
 // func (a *App) Shutdown(ctx context.Context) {

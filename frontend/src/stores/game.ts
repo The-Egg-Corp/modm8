@@ -1,19 +1,23 @@
 import { Game } from '@types'
 import { defineStore } from 'pinia'
 
-// Game-related state type.
-export interface GameState {
-    selectedGame: Game
-}
-
-// Defaults. These will usually be different at runtime.
-const state: GameState = {
+// Stores state for anything game-related.
+const state = {
     selectedGame: {
         identifier: ''
     }
 }
 
+const actions = {
+    setSelectedGame: (game: Game) => {
+        state.selectedGame = game
+    }
+}
+
+export type GameState = typeof state
+
 export const useGlobalStore = defineStore({
     id: 'GameStore',
-    state: () => state
+    state: () => state,
+    actions
 })

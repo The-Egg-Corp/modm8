@@ -17,10 +17,11 @@ import ThemeDropdown from "./ThemeDropdown.vue"
 import { Ref, ref } from "vue"
 
 import { useDialog } from "@composables"
-import { useSettingsStore } from "@stores"
+import { useAppStore, useSettingsStore } from "@stores"
 import { Alignment, ChangeEvent } from "@types"
 
 const { visible, draggable, closable } = useDialog()
+const appStore = useAppStore()
 
 const dialogStyle = {
     "margin-left": "70px",
@@ -150,6 +151,15 @@ const applySettings = async() => {
                                     <ThemeDropdown/>
                                 </div>
                             </div>
+
+                            <div class="setting">
+                                <div class="flex-item">
+                                    <h3>{{ $t('settings.animations-enabled') }}</h3>
+                                </div>
+                                <div class="flex-item">
+                                    <InputSwitch v-model="animationsEnabled" @update:model-value="setAnimsEnabled"/>
+                                </div>
+                            </div>
                         </div>
                         <!-- #endregion -->
 
@@ -174,7 +184,7 @@ const applySettings = async() => {
                                 </div>
                                 <div class="flex flex-row justify-content-end align-items-center gap-5">
                                     <InputText class="w-2" v-model.number="threadCount"/>
-                                    <Slider class="w-12rem" v-model="threadCount" :min="2" :max="24" @change="setThreads"/>
+                                    <Slider class="w-12rem" v-model="threadCount" :min="2" :max="appStore.maxThreads" @change="setThreads"/>
                                 </div>
                             </div>
                         </div>
@@ -186,18 +196,11 @@ const applySettings = async() => {
                         
                         <!-- #region Misc Section -->
                         <div>
-                            <div class="setting">
-                                <div class="flex-item">
-                                    <h3>{{ $t('settings.animations-enabled') }}</h3>
-                                </div>
-                                <div class="flex-item">
-                                    <InputSwitch v-model="animationsEnabled" @update:model-value="setAnimsEnabled"/>
-                                </div>
-                            </div>
+                            <!-- TODO: Add setting for Nexus personal API key. -->
 
                             <div class="setting">
                                 <div class="flex-item">
-                                    <h3>{{ $t('settings.update-behaviour') }}</h3>
+                                    <h3>{{ $t('settings.update-behaviour.label') }}</h3>
                                 </div>
                                 <div class="flex-item">
                                     <SelectButton 
@@ -223,7 +226,6 @@ const applySettings = async() => {
 
 <style scoped>
 :global(.p-dialog) {
-    background: none;
     border: 1px solid #4d4d4d;
     border-radius: 9px;
 }

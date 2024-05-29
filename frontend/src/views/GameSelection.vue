@@ -11,7 +11,7 @@ import { Nullable } from 'primevue/ts-helpers'
 import { Game, GameProps, Layout } from '@types'
 
 const games: Ref<Game[]> = ref([])
-const searchValue: Ref<Nullable<string>> = ref(null)
+const searchInput: Ref<Nullable<string>> = ref(null)
 const layout: Ref<Layout> = ref('grid')
 
 const getThumbnail = (game: Game) => game.image
@@ -19,13 +19,63 @@ const getThumbnail = (game: Game) => game.image
     : "https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/Titanfall2.jpg"
 
 onMounted(() => games.value = getGameList())
+
+function filterBySearch(games: Game[]) {
+    if (!searchInput.value) return games
+
+    const input = searchInput.value.trim()
+    if (input == "") return games
+
+    const lowerInput = input.toLowerCase()
+    const inputWords = lowerInput.split(" ")
+
+    return games.filter(g => {
+        const lowerTitle = g.title?.toLowerCase() ?? ""
+
+        // Necessary to not show irrelevent games with only 1 letter input.
+        if (input.length == 1 && !lowerTitle.startsWith(lowerInput)) {
+            return false
+        }
+
+        const wordMatch = inputWords.some(word => lowerTitle.includes(word))
+        if (wordMatch) return true
+
+        // Check if each character in the input appears in order in the title
+        let inputIndex = 0
+        let matchFound = false
+
+        const titleLen = lowerTitle.length
+
+        for (let titleIndex = 0; titleIndex < titleLen; titleIndex++) {
+            if (lowerTitle[titleIndex] !== input[inputIndex]) {
+                inputIndex = 0
+                continue
+            }
+                
+            inputIndex++
+            if (inputIndex === input.length) {
+                matchFound = true
+                break
+            }
+        }
+
+        // If we've matched all characters in the input, it's a match
+        return matchFound
+    })
+}
 </script>
 
 <template>
     <div class="game-selection flex-span column">
         <h2 class="header no-select">{{ $t('game-selection.header') }}</h2>
         <div class="no-drag card game-container">
-            <DataView lazy data-key="game-list" :value="games" :layout="layout">
+            <DataView lazy data-key="game-list" :value="filterBySearch(games)" :layout="layout">
+                <template #empty>
+                    <div class="dataview-empty">
+                        <p>No games match the search query! 😔</p>
+                    </div>
+                </template>
+
                 <template #header>
                     <div class="flex flex-row justify-content-between align-items-center">
                         <div class="flex flex-row">
@@ -35,7 +85,7 @@ onMounted(() => games.value = getGameList())
                         <div class="searchbar">
                             <IconField iconPosition="left">
                                 <InputIcon class="pi pi-search"></InputIcon>
-                                <InputText type="password" v-model="searchValue" :placeholder="$t('game-selection.search-placeholder')"/>
+                                <InputText type="text" :placeholder="$t('game-selection.search-placeholder')" v-model="searchInput"/>
                             </IconField>
                         </div>
 
@@ -208,5 +258,16 @@ onMounted(() => games.value = getGameList())
 .fadeinleft-title {
     animation-duration: var(--title-duration);
     animation-delay: 50ms;
+}
+
+.dataview-empty {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+.dataview-empty p {
+    font-size: 22.5px;
+    margin: 0 auto;
 }
 </style>

@@ -14,18 +14,20 @@ import SelectButton from "primevue/selectbutton"
 import LanguageDropdown from "./LanguageDropdown.vue"
 import ThemeDropdown from "./ThemeDropdown.vue"
 
-import { Ref, ref } from "vue"
+import { Ref, computed, ref } from "vue"
 
 import { useDialog } from "@composables"
 import { useAppStore, useSettingsStore } from "@stores"
 import { Alignment, ChangeEvent } from "@types"
+import { t } from "@i18n"
 
 const { visible, draggable, closable } = useDialog()
 const appStore = useAppStore()
 
 const dialogStyle = {
     "margin-left": "70px",
-    "width": '42rem'
+    "width": 'auto',
+    "min-width": '45rem'
 }
 
 const cardStyle = {
@@ -79,14 +81,14 @@ const updateBehaviour: Ref<Behaviour> = ref({
     value: core.UpdateBehaviour.AUTO
 })
 
-const behaviours: Ref<Behaviour[]> = ref([{
-    label: 'Off',
+const behaviours: Ref<Behaviour[]> = computed(() => [{
+    label: t('settings.update-behaviour.option-1'),
     value: core.UpdateBehaviour.OFF
 }, {
-    label: 'Notify Me',
+    label: t('settings.update-behaviour.option-2'),
     value: core.UpdateBehaviour.NOTIFY
 }, {
-    label: 'Automatic',
+    label: t('settings.update-behaviour.option-3'),
     value: core.UpdateBehaviour.AUTO
 }])
 
@@ -196,8 +198,6 @@ const applySettings = async() => {
                         
                         <!-- #region Misc Section -->
                         <div>
-                            <!-- TODO: Add setting for Nexus personal API key. -->
-
                             <div class="setting">
                                 <div class="flex-item">
                                     <h3>{{ $t('settings.update-behaviour.label') }}</h3>
@@ -207,6 +207,15 @@ const applySettings = async() => {
                                         aria-labelledby="basic" :options="behaviours.map(b => b.label)"
                                         v-model="updateBehaviour" @change="setUpdateBehaviour"
                                     />
+                                </div>
+                            </div>
+
+                            <div class="setting">
+                                <div class="flex-item">
+                                    <h3>{{ $t('settings.nexus-personal-key') }}</h3>
+                                </div>
+                                <div class="flex flex-row justify-content-end align-items-center">
+                                    <InputText type="password" style="width: 310px"/>
                                 </div>
                             </div>
                         </div>
@@ -273,18 +282,19 @@ const applySettings = async() => {
 }
 
 .flex-item {
-    font-size: 15.8px;
+    font-size: 15px;
 }
 
 .flex-item h3 {
-    font-weight: 320;
+    font-weight: 300;
+    text-wrap: balance;
 }
 
 .category-divider {
-    font-weight: 425;
-    font-size: 22px;
-    margin-top: -8px;
-    margin-bottom: -8px;
+    font-size: 22.5px;
+    font-weight: 500;
+    margin-top: -2px;
+    margin-bottom: -2px;
     user-select: none;
 }
 </style>

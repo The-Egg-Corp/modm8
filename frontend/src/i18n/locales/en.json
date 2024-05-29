@@ -10,19 +10,21 @@
   "game-selection": {
     "header": "Choose a game to manage mods for.",
     "select-button": "Select Game",
-    "search-placeholder": "Search title.."
+    "search-placeholder": "Search title..",
+    "empty-results": "No games match the search query"
   },
   "settings": {
     "select-language": "Select language",
     "gpu-acceleration": "GPU Acceleration",
     "threads": "Threads",
     "update-behaviour": {
-      "label": "Update on launch",
+      "label": "Launch Update Behaviour",
       "option-1": "Automatic",
       "option-2": "Notify Me",
       "option-3": "Off"
     },
-    "animations-enabled": "Enable animations"
+    "animations-enabled": "Enable Animations",
+    "nexus-personal-key": "Nexus Personal API Key"
   },
   "keywords": {
     "general": "General",

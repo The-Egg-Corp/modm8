@@ -17,12 +17,13 @@
     "gpu-acceleration": "Aceleración de GPU",
     "threads": "Hilos",
     "update-behaviour": {
-      "label": "",
-      "option-1": "",
-      "option-2": "",
-      "option-3": ""
+      "label": "Comportamiento de actualización de inicio",
+      "option-1": "Automático",
+      "option-2": "Notificarme",
+      "option-3": "Apagado"
     },
-    "animations-enabled": "Habilitar animaciones"
+    "animations-enabled": "Habilitar animaciones",
+    "nexus-personal-key": "Clave API personal de Nexus"
   },
   "keywords": {
     "general": "General",

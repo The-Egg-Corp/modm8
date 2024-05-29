@@ -17,12 +17,13 @@
     "gpu-acceleration": "Accelerazione GPU",
     "threads": "Filetti di sistema",
     "update-behaviour": {
-      "label": "",
-      "option-1": "",
-      "option-2": "",
-      "option-3": ""
+      "label": "Avvia il comportamento di aggiornamento",
+      "option-1": "Automatico",
+      "option-2": "Avvisami",
+      "option-3": "Spento"
     },
-    "animations-enabled": "Abilita animazioni"
+    "animations-enabled": "Abilita animazioni",
+    "nexus-personal-key": "Chiave API personale Nexus"
   },
   "keywords": {
     "general": "Generale",

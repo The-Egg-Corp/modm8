@@ -31,6 +31,7 @@ type AppSettings struct {
 	General     GeneralOptions     `json:"general" mapstructure:"general"`
 	Performance PerformanceOptions `json:"performance" mapstructure:"performance"`
 	Misc        MiscOptions        `json:"misc" mapstructure:"misc"`
+	Video       VideoOptions       `json:"video" mapstructure:"video"`
 }
 
 type GeneralOptions struct {
@@ -50,6 +51,13 @@ type MiscOptions struct {
 	GameSelectionLayout string          `json:"game_selection_layout" mapstructure:"game_selection_layout"`
 }
 
+type VideoOptions struct {
+	WindowWidth  uint16 `json:"window_width" mapstructure:"window_width"`
+	WindowHeight uint16 `json:"window_height" mapstructure:"window_height"`
+	WindowPosX   uint32 `json:"window_pos_x" mapstructure:"window_pos_x"`
+	WindowPosY   uint32 `json:"window_pos_y" mapstructure:"window_pos_y"`
+}
+
 var cfg = viper.New()
 
 func NewSettings() *AppSettings {
@@ -67,6 +75,13 @@ func NewSettings() *AppSettings {
 			NexusPersonalKey:    "",
 			UpdateBehaviour:     UpdateBehaviourAuto,
 			GameSelectionLayout: "grid",
+		},
+		// Not accessible within settings, only in settings.toml for persistence.
+		Video: VideoOptions{
+			WindowWidth:  1380,
+			WindowHeight: 930,
+			WindowPosX:   0,
+			WindowPosY:   0,
 		},
 	}
 }
@@ -149,4 +164,20 @@ func (settings *AppSettings) SetNexusPersonalKey(key string) {
 
 func (settings *AppSettings) SetUpdateBehaviour(behaviour UpdateBehaviour) {
 	settings.Misc.UpdateBehaviour = behaviour
+}
+
+func (settings *AppSettings) SetWindowWidth(width uint16) {
+	settings.Video.WindowWidth = width
+}
+
+func (settings *AppSettings) SetWindowHeight(height uint16) {
+	settings.Video.WindowHeight = height
+}
+
+func (settings *AppSettings) SetWindowX(xPos uint32) {
+	settings.Video.WindowPosX = xPos
+}
+
+func (settings *AppSettings) SetWindowY(yPos uint32) {
+	settings.Video.WindowPosY = yPos
 }

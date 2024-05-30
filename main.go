@@ -12,6 +12,7 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options/windows"
 
 	"modm8/backend/core"
+	"modm8/backend/nexus"
 	"modm8/backend/thunderstore"
 )
 
@@ -40,14 +41,15 @@ var macOpts = &mac.Options{
 
 func main() {
 	app := core.NewApp()
+	app.Settings.Load()
 
+	nexusAPI := nexus.NewAPI()
 	tsAPI := thunderstore.NewAPI()
-	//nexusAPI := nexus.NewAPI()
 
 	err := wails.Run(&options.App{
 		Title:     "modm8",
-		Width:     1380,
-		Height:    930,
+		Width:     int(app.Settings.Video.WindowWidth),
+		Height:    int(app.Settings.Video.WindowHeight),
 		MinWidth:  800,
 		MinHeight: 600,
 		AssetServer: &assetserver.Options{
@@ -56,6 +58,7 @@ func main() {
 		Frameless:                true,
 		EnableDefaultContextMenu: false,
 		OnStartup:                app.Startup,
+		OnShutdown:               app.Shutdown,
 		SingleInstanceLock: &options.SingleInstanceLock{
 			UniqueId: "7465fe36-08e3-478b-853b-0f8676f724b7",
 		},
@@ -66,6 +69,7 @@ func main() {
 			app,
 			app.Settings,
 			tsAPI,
+			nexusAPI,
 		},
 		EnumBind: IList{
 			core.UpdateBehaviours,

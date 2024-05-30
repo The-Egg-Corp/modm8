@@ -77,7 +77,7 @@ interface Behaviour {
 }
 
 const updateBehaviour: Ref<Behaviour> = ref({ 
-    label: 'Automatic',
+    label: t('settings.update-behaviour.option-1'),
     value: core.UpdateBehaviour.AUTO
 })
 

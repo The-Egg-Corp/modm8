@@ -51,7 +51,7 @@ function filterBySearch(games: Game[]) {
                 inputIndex = 0
                 continue
             }
-                
+
             inputIndex++
             if (inputIndex === input.length) {
                 matchFound = true
@@ -63,13 +63,18 @@ function filterBySearch(games: Game[]) {
         return matchFound
     })
 }
+
+const alphabetSort = (games: Game[]) => {
+    if ((searchInput.value?.length ?? 0) < 1) return games
+    return games.sort((g1, g2) => g1 > g2 ? 1 : (g1 === g2 ? 0 : -1))
+}
 </script>
 
 <template>
     <div class="game-selection flex-span column">
         <h2 class="header no-select">{{ $t('game-selection.header') }}</h2>
         <div class="no-drag card game-container">
-            <DataView lazy data-key="game-list" :value="filterBySearch(games)" :layout="layout">
+            <DataView lazy data-key="game-list" :value="alphabetSort(filterBySearch(games))" :layout="layout">
                 <template #empty>
                     <div class="dataview-empty">
                         <p>No games match the search query! 😔</p>
@@ -132,10 +137,15 @@ function filterBySearch(games: Game[]) {
 
                                 <div class="flex flex-column align-items-center interact-section pt-3">
                                     <div class="game-grid-title">{{ item.title }}</div>
-                                    <div class="flex gap-4 mt-3">
-                                        <div class="flex gap-2">
+                                    <div class="flex flex-column gap-3 mt-3">
+                                        <div class="flex flex-row gap-2">
                                             <Button outlined plain :label="$t('game-selection.select-button')" class="flex flex-grow-1 white-space-nowrap"></Button>
                                             <Button outlined plain icon="pi pi-star-fill" class="star-btn"></Button>
+                                        </div>
+
+                                        <div class="flex gap-2 justify-content-center align-items-baseline">
+                                            <p class="m-0">BepInEx Installed</p>
+                                            <i class="pi pi-spin pi-check" style="color: lime"></i>
                                         </div>
                                     </div>
                                 </div>

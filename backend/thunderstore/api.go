@@ -8,7 +8,8 @@ import (
 	v1 "github.com/the-egg-corp/thundergo/v1"
 )
 
-type API struct{}
+type API struct {
+}
 
 func NewAPI() *API {
 	return &API{}

@@ -41,7 +41,9 @@ var macOpts = &mac.Options{
 
 func main() {
 	app := core.NewApp()
+
 	app.Settings.Load()
+	app.Persistence.Load()
 
 	nexusAPI := nexus.NewAPI()
 	tsAPI := thunderstore.NewAPI()
@@ -58,6 +60,7 @@ func main() {
 		Frameless:                true,
 		EnableDefaultContextMenu: false,
 		OnStartup:                app.Startup,
+		OnBeforeClose:            app.OnBeforeClose,
 		OnShutdown:               app.Shutdown,
 		SingleInstanceLock: &options.SingleInstanceLock{
 			UniqueId: "7465fe36-08e3-478b-853b-0f8676f724b7",

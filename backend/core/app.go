@@ -5,6 +5,8 @@ import (
 	"os"
 	"path"
 	"runtime"
+
+	wRuntime "github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 type App struct {
@@ -27,10 +29,18 @@ func NewApp() *App {
 // Called when the app starts. The context is saved so we can call the runtime methods.
 func (a *App) Startup(ctx context.Context) {
 	a.Ctx = ctx
+
+	wRuntime.WindowSetPosition(ctx, a.Persistence.Window.X, a.Persistence.Window.Y)
 }
 
+// Called when the application is about to quit, either by clicking the window close button or calling runtime.Quit.
+func (a *App) OnBeforeClose(ctx context.Context) bool {
+	a.Persistence.SaveCurrentWindowState(ctx)
+	return false
+}
+
+// Called after the frontend has been destroyed, just before the application terminates.
 func (a *App) Shutdown(ctx context.Context) {
-	// Save settings if video options changed
 	a.Persistence.Save()
 }
 

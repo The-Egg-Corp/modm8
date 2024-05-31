@@ -1,10 +1,13 @@
 package core
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/viper"
+
+	wRuntime "github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 type Persistence struct {
@@ -14,8 +17,8 @@ type Persistence struct {
 type WindowState struct {
 	Width  uint16 `json:"width" mapstructure:"width"`
 	Height uint16 `json:"height" mapstructure:"height"`
-	X      uint32 `json:"pos_x" mapstructure:"pos_x"`
-	Y      uint32 `json:"pos_y" mapstructure:"pos_y"`
+	X      int    `json:"pos_x" mapstructure:"pos_x"`
+	Y      int    `json:"pos_y" mapstructure:"pos_y"`
 }
 
 var persistenceCfg = viper.New()
@@ -74,6 +77,17 @@ func (persistence *Persistence) Save() error {
 	return nil
 }
 
+// To get the current size from the runtime, the frontend has to still be loaded.
+func (ws *Persistence) SaveCurrentWindowState(ctx context.Context) {
+	w, h := wRuntime.WindowGetSize(ctx)
+	ws.SetWindowWidth(uint16(w))
+	ws.SetWindowHeight(uint16(h))
+
+	x, y := wRuntime.WindowGetPosition(ctx)
+	ws.SetWindowX(x)
+	ws.SetWindowY(y)
+}
+
 func (ws *Persistence) SetWindowWidth(width uint16) {
 	ws.Window.Width = width
 }
@@ -82,10 +96,10 @@ func (ws *Persistence) SetWindowHeight(height uint16) {
 	ws.Window.Height = height
 }
 
-func (ws *Persistence) SetWindowX(xPos uint32) {
+func (ws *Persistence) SetWindowX(xPos int) {
 	ws.Window.X = xPos
 }
 
-func (ws *Persistence) SetWindowY(yPos uint32) {
+func (ws *Persistence) SetWindowY(yPos int) {
 	ws.Window.Y = yPos
 }

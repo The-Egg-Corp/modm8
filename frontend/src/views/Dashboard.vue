@@ -46,9 +46,7 @@ async function PackagesByUser() {
             </div>
         </TabPanel>
         <TabPanel header="Nexus">
-            <p class="m-0">
-                buh
-            </p>
+            <p class="m-0">buh</p>
         </TabPanel>
     </TabView>
 </div>

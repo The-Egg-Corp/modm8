@@ -2,8 +2,6 @@ package core
 
 import (
 	"fmt"
-	"os"
-	"path"
 
 	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/viper"
@@ -31,7 +29,6 @@ type AppSettings struct {
 	General     GeneralOptions     `json:"general" mapstructure:"general"`
 	Performance PerformanceOptions `json:"performance" mapstructure:"performance"`
 	Misc        MiscOptions        `json:"misc" mapstructure:"misc"`
-	Video       VideoOptions       `json:"video" mapstructure:"video"`
 }
 
 type GeneralOptions struct {
@@ -51,14 +48,7 @@ type MiscOptions struct {
 	GameSelectionLayout string          `json:"game_selection_layout" mapstructure:"game_selection_layout"`
 }
 
-type VideoOptions struct {
-	WindowWidth  uint16 `json:"window_width" mapstructure:"window_width"`
-	WindowHeight uint16 `json:"window_height" mapstructure:"window_height"`
-	WindowPosX   uint32 `json:"window_pos_x" mapstructure:"window_pos_x"`
-	WindowPosY   uint32 `json:"window_pos_y" mapstructure:"window_pos_y"`
-}
-
-var cfg = viper.New()
+var settingsCfg = viper.New()
 
 func NewSettings() *AppSettings {
 	return &AppSettings{
@@ -76,23 +66,7 @@ func NewSettings() *AppSettings {
 			UpdateBehaviour:     UpdateBehaviourAuto,
 			GameSelectionLayout: "grid",
 		},
-		// Not accessible within settings, only in settings.toml for persistence.
-		Video: VideoOptions{
-			WindowWidth:  1380,
-			WindowHeight: 930,
-			WindowPosX:   0,
-			WindowPosY:   0,
-		},
 	}
-}
-
-func ConfigDir() string {
-	dir, _ := os.UserConfigDir()
-	return path.Join(dir, "modm8")
-}
-
-func SettingsPath() string {
-	return path.Join(ConfigDir(), "settings.toml")
 }
 
 func (settings *AppSettings) WriteToConfig() {
@@ -103,15 +77,15 @@ func (settings *AppSettings) WriteToConfig() {
 		return
 	}
 
-	cfg.MergeConfigMap(result)
+	settingsCfg.MergeConfigMap(result)
 }
 
 func (settings *AppSettings) Load() error {
-	cfg.SetConfigName("settings")
-	cfg.SetConfigType("toml")
-	cfg.AddConfigPath(ConfigDir())
+	settingsCfg.SetConfigName("settings")
+	settingsCfg.SetConfigType("toml")
+	settingsCfg.AddConfigPath(ConfigDir())
 
-	if err := cfg.ReadInConfig(); err != nil {
+	if err := settingsCfg.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
 			return settings.Save()
 		}
@@ -119,7 +93,7 @@ func (settings *AppSettings) Load() error {
 		return err
 	}
 
-	if err := cfg.UnmarshalExact(settings); err != nil {
+	if err := settingsCfg.Unmarshal(settings); err != nil {
 		return err
 	}
 
@@ -131,7 +105,7 @@ func (settings *AppSettings) Save() error {
 	settings.WriteToConfig()
 
 	// Write config to the `settings.toml` file.
-	if err := cfg.WriteConfigAs(SettingsPath()); err != nil {
+	if err := settingsCfg.WriteConfigAs(SettingsPath()); err != nil {
 		return err
 	}
 
@@ -164,20 +138,4 @@ func (settings *AppSettings) SetNexusPersonalKey(key string) {
 
 func (settings *AppSettings) SetUpdateBehaviour(behaviour UpdateBehaviour) {
 	settings.Misc.UpdateBehaviour = behaviour
-}
-
-func (settings *AppSettings) SetWindowWidth(width uint16) {
-	settings.Video.WindowWidth = width
-}
-
-func (settings *AppSettings) SetWindowHeight(height uint16) {
-	settings.Video.WindowHeight = height
-}
-
-func (settings *AppSettings) SetWindowX(xPos uint32) {
-	settings.Video.WindowPosX = xPos
-}
-
-func (settings *AppSettings) SetWindowY(yPos uint32) {
-	settings.Video.WindowPosY = yPos
 }

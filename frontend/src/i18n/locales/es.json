@@ -10,7 +10,8 @@
   "game-selection": {
     "header": "Elige un juego para administrar mods.",
     "select-button": "Selecciona un juego",
-    "search-placeholder": "Buscar título.."
+    "search-placeholder": "Buscar título..",
+    "empty-results": "Ningún juego coincide con la consulta de búsqueda."
   },
   "settings": {
     "select-language": "Seleccione el idioma",

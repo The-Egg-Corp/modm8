@@ -2,12 +2,15 @@ package core
 
 import (
 	"context"
+	"os"
+	"path"
 	"runtime"
 )
 
 type App struct {
-	Settings *AppSettings `json:"settings"`
-	Ctx      context.Context
+	Ctx         context.Context
+	Settings    *AppSettings `json:"settings"`
+	Persistence *Persistence `json:"persistence"`
 }
 
 func (a *App) GetSettings() *AppSettings {
@@ -16,7 +19,8 @@ func (a *App) GetSettings() *AppSettings {
 
 func NewApp() *App {
 	return &App{
-		Settings: NewSettings(),
+		Settings:    NewSettings(),
+		Persistence: NewPersistence(),
 	}
 }
 
@@ -26,7 +30,8 @@ func (a *App) Startup(ctx context.Context) {
 }
 
 func (a *App) Shutdown(ctx context.Context) {
-
+	// Save settings if video options changed
+	a.Persistence.Save()
 }
 
 func (a *App) Restart() {
@@ -41,9 +46,18 @@ func (a *App) NumCPU() uint8 {
 	return NumCPU()
 }
 
-// func (a *App) Shutdown(ctx context.Context) {
+func ConfigDir() string {
+	dir, _ := os.UserConfigDir()
+	return path.Join(dir, "modm8")
+}
 
-// }
+func SettingsPath() string {
+	return path.Join(ConfigDir(), "settings.toml")
+}
+
+func PersistencePath() string {
+	return path.Join(ConfigDir(), "persistence.toml")
+}
 
 // Fetches the tag of the latest modm8 GitHub release.
 //

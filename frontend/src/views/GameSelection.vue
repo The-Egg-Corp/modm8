@@ -77,7 +77,7 @@ const alphabetSort = (games: Game[]) => {
             <DataView lazy data-key="game-list" :value="alphabetSort(filterBySearch(games))" :layout="layout">
                 <template #empty>
                     <div class="dataview-empty">
-                        <p>No games match the search query! 😔</p>
+                        <p>{{ `${$t('game-selection.empty-results')}. 😔` }}</p>
                     </div>
                 </template>
 

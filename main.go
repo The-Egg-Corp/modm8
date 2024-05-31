@@ -48,8 +48,8 @@ func main() {
 
 	err := wails.Run(&options.App{
 		Title:     "modm8",
-		Width:     int(app.Settings.Video.WindowWidth),
-		Height:    int(app.Settings.Video.WindowHeight),
+		Width:     int(app.Persistence.Window.Width),
+		Height:    int(app.Persistence.Window.Height),
 		MinWidth:  800,
 		MinHeight: 600,
 		AssetServer: &assetserver.Options{

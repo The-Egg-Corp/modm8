@@ -10,7 +10,8 @@
   "game-selection": {
     "header": "Choisissez un jeu pour lequel gérer les mods.",
     "search-placeholder": "Rechercher le titre..",
-    "select-button": "Sélectionnez un jeu"
+    "select-button": "Sélectionnez un jeu",
+    "empty-results": "Aucun jeu ne correspond à la requête de recherche"
   },
   "settings": {
     "select-language": "Choisir la langue",

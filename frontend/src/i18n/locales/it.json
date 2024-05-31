@@ -10,7 +10,8 @@
   "game-selection": {
     "header": "Scegli un gioco per il quale gestire le mod.",
     "select-button": "Seleziona Gioco",
-    "search-placeholder": "Cerca titolo.."
+    "search-placeholder": "Cerca titolo..",
+    "empty-results": "Nessun gioco corrisponde alla query di ricerca"
   },
   "settings": {
     "select-language": "Seleziona la lingua",

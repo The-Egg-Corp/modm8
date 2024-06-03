@@ -2,17 +2,11 @@
 import { ComputedRef, Ref, computed, ref } from 'vue'
 
 import { useSettingsStore } from '@stores'
-import { ChangeEvent, OptionItem, ValueItem } from '@types'
-
-interface Theme {
-    label: string
-    value: string
-}
-
-interface ThemeGroup {
-    label: string
-    themes: Theme[]
-}
+import { 
+    ChangeEvent, 
+    OptionItem, ValueItem,
+    Theme, ThemeGroup
+} from '@types'
 
 const selectedTheme: Ref<Theme> = ref({
     label: 'Dark',

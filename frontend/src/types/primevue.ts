@@ -8,11 +8,16 @@ export interface ChangeEvent<V> {
 }
 
 export interface OptionItem<T> {
-    index: number;
+    index: number
     option: T
 }
 
 export interface ValueItem<V> {
     placeholder: string
-    value: V;
+    value: V
+}
+
+export interface ValueItemLabeled<V> {
+    label: string
+    value: V
 }

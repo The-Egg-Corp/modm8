@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, Ref } from 'vue'
+import { ref, onMounted, Ref, computed, ComputedRef } from 'vue'
 
 import DataView from 'primevue/dataview'
 import DataViewLayoutOptions from 'primevue/dataviewlayoutoptions'
@@ -8,7 +8,8 @@ import DataViewLayoutOptions from 'primevue/dataviewlayoutoptions'
 import { getGameList } from '../mocks/GameService'
 
 import { Nullable } from 'primevue/ts-helpers'
-import { Game, GameProps, Layout } from '@types'
+import { Game, GameProps, Layout, OptionItem, ValueItem } from '@types'
+import { t } from '@i18n'
 
 const games: Ref<Game[]> = ref([])
 const searchInput: Ref<Nullable<string>> = ref(null)
@@ -68,12 +69,19 @@ const alphabetSort = (games: Game[]) => {
     if ((searchInput.value?.length ?? 0) < 1) return games
     return games.sort((g1, g2) => g1 > g2 ? 1 : (g1 === g2 ? 0 : -1))
 }
+
+const selectedFilter: Ref<Nullable<string>> = ref(t('keywords.all'))
+const filters: ComputedRef<string[]> = computed(() => [
+    t('keywords.all'), 
+    t('keywords.installed')
+])
 </script>
 
 <template>
     <div class="game-selection flex-span column">
         <h2 class="header no-select">{{ $t('game-selection.header') }}</h2>
-        <div class="no-drag card game-container">
+
+        <div class="card game-container no-drag">
             <DataView lazy data-key="game-list" :value="alphabetSort(filterBySearch(games))" :layout="layout">
                 <template #empty>
                     <div class="dataview-empty">
@@ -83,8 +91,23 @@ const alphabetSort = (games: Game[]) => {
 
                 <template #header>
                     <div class="flex flex-row justify-content-between align-items-center">
-                        <div class="flex flex-row">
-                            <DataViewLayoutOptions v-model="layout"/>
+                        <div>
+                            <Dropdown 
+                                class="no-drag w-full w-8rem" checkmark
+                                v-model="selectedFilter" :options="filters"
+                            >
+                                <template #option="selectedItem: OptionItem<string>">
+                                    <div class="flex no-drag align-items-center">
+                                        <div class="no-select">{{ selectedItem.option }}</div>
+                                    </div>
+                                </template>
+                        
+                                <template #value="selectedItem: ValueItem<string>">
+                                    <div v-if="selectedItem.value" class="flex align-items-center">
+                                        <div>{{ selectedItem.value }}</div>
+                                    </div>
+                                </template>
+                            </Dropdown>
                         </div>
 
                         <div class="searchbar">
@@ -93,9 +116,13 @@ const alphabetSort = (games: Game[]) => {
                                 <InputText type="text" :placeholder="$t('game-selection.search-placeholder')" v-model="searchInput"/>
                             </IconField>
                         </div>
-
+                        
                         <div class="flex flex-row">
-                            <DataViewLayoutOptions v-model="layout"/>
+                            <DataViewLayoutOptions v-model="layout">
+                                <template #listicon>
+                                    <div class="pi pi-list"></div>
+                                </template>
+                            </DataViewLayoutOptions>
                         </div>
                     </div>
                 </template>
@@ -114,7 +141,7 @@ const alphabetSort = (games: Game[]) => {
 
                                     <div class="flex flex-column md:align-items-end gap-5">
                                         <div class="flex flex-row md:flex-row gap-3">
-                                            <Button outlined plain :label="$t('game-selection.select-button')" class="flex-auto md:flex-initial white-space-nowrap"></Button>
+                                            <Button outlined plain :label="$t('game-selection.select-button')" class="list-select-game-btn flex-auto md:flex-initial"></Button>
                                             <Button outlined plain icon="pi pi-star"></Button>
                                         </div>
                                     </div>
@@ -127,7 +154,7 @@ const alphabetSort = (games: Game[]) => {
                 <!-- Grid layout -->
                 <template #grid="slotProps: GameProps">
                     <div class="grid grid-nogutter">
-                        <div v-for="(item, index) in slotProps.items" :key="index" class="grid-item col-6 sm:col-2 md:col-3 lg:col-4 xl:col-2">
+                        <div v-for="(item, index) in slotProps.items" :key="index" class="grid-item col-6 sm:col-3 md:col-3 lg:col-2 xl:col-1">
                             <div class="flex flex-column p-3 border-1 surface-border border-round">
                                 <div class="flex justify-content-center border-round">
                                     <div class="relative mx-auto">
@@ -139,7 +166,7 @@ const alphabetSort = (games: Game[]) => {
                                     <div class="game-grid-title">{{ item.title }}</div>
                                     <div class="flex flex-column gap-3 mt-3">
                                         <div class="flex flex-row gap-2">
-                                            <Button outlined plain :label="$t('game-selection.select-button')" class="flex flex-grow-1 white-space-nowrap"></Button>
+                                            <Button outlined plain :label="$t('game-selection.select-button')" class="grid-select-game-btn"></Button>
                                             <Button outlined plain icon="pi pi-star-fill" class="star-btn"></Button>
                                         </div>
 
@@ -192,7 +219,7 @@ const alphabetSort = (games: Game[]) => {
 
 .game-list-thumbnail {
     user-select: none;
-    max-width: 90px;
+    max-width: 111px;
     min-width: 30px;
     opacity: 0;
     border-radius: 3px;
@@ -200,18 +227,32 @@ const alphabetSort = (games: Game[]) => {
 
 .game-grid-thumbnail {
     user-select: none;
-    width: 200px;
+    width: 175px;
     border-radius: 4px;
 }
 
 .game-list-title {
-    font-size: 24px;
+    font-size: 26px;
     font-weight: 380;
 }
 
 .game-grid-title {
     font-size: 22px;
     font-weight: 380;
+}
+
+.grid-select-game-btn {
+    display: flex;
+    flex-grow: 1;
+    white-space: nowrap;
+    font-size: 16px;
+}
+
+.list-select-game-btn {
+    display: flex;
+    white-space: nowrap;
+    width: 150px;
+    font-size: 18px;
 }
 
 .searchbar {

@@ -40,7 +40,11 @@
     "off": "",
     "on": "",
     "yes": "",
-    "no": ""
+    "no": "",
+    "close": "Cerca",
+    "apply": "Aplicar",
+    "installed": "Instalado",
+    "all": "Todo"
   },
   "languages": {
     "en": "Inglés",
@@ -53,5 +57,13 @@
     "se": "Sueco",
     "it": "Italiano",
     "es": "Español"
+  },
+  "tooltips": {
+    "dashboard": "Panel",
+    "game-selection": "Selección de juego",
+    "mod-dev-tools": "Herramientas para desarrolladores de modificaciones"
+  },
+  "phrases": {
+    "reset-all-default": "Restablecer todo a los valores predeterminados"
   }
 }

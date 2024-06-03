@@ -15,10 +15,11 @@ type Persistence struct {
 }
 
 type WindowState struct {
-	Width  uint16 `json:"width" mapstructure:"width"`
-	Height uint16 `json:"height" mapstructure:"height"`
-	X      int    `json:"pos_x" mapstructure:"pos_x"`
-	Y      int    `json:"pos_y" mapstructure:"pos_y"`
+	Maximized bool   `json:"maximized" mapstructure:"maximized"`
+	Width     uint16 `json:"width" mapstructure:"width"`
+	Height    uint16 `json:"height" mapstructure:"height"`
+	X         int    `json:"pos_x" mapstructure:"pos_x"`
+	Y         int    `json:"pos_y" mapstructure:"pos_y"`
 }
 
 var persistenceCfg = viper.New()
@@ -26,10 +27,11 @@ var persistenceCfg = viper.New()
 func NewPersistence() *Persistence {
 	return &Persistence{
 		Window: WindowState{
-			Width:  1380,
-			Height: 930,
-			X:      0,
-			Y:      0,
+			Maximized: false,
+			Width:     1380,
+			Height:    930,
+			X:         0,
+			Y:         0,
 		},
 	}
 }

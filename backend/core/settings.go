@@ -54,7 +54,7 @@ func NewSettings() *AppSettings {
 	return &AppSettings{
 		General: GeneralOptions{
 			Locale:            "en",
-			Theme:             "default-purple/dark",
+			Theme:             "aura-dark-purple",
 			AnimationsEnabled: true,
 		},
 		Performance: PerformanceOptions{

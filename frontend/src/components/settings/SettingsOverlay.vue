@@ -18,7 +18,7 @@ import { Ref, computed, ref } from "vue"
 
 import { useDialog } from "@composables"
 import { useAppStore, useSettingsStore } from "@stores"
-import { Alignment, ChangeEvent } from "@types"
+import { Alignment, ChangeEvent, ValueItemLabeled } from "@types"
 import { t } from "@i18n"
 
 const { visible, draggable, closable } = useDialog()
@@ -71,10 +71,7 @@ const setAnimsEnabled = (value: boolean) => {
     SetAnimationsEnabled(value)
 }
 
-interface Behaviour {
-    label: string
-    value: core.UpdateBehaviour
-}
+type Behaviour = ValueItemLabeled<core.UpdateBehaviour>
 
 const updateBehaviour: Ref<Behaviour> = ref({ 
     label: t('settings.update-behaviour.option-1'),
@@ -225,9 +222,9 @@ const applySettings = async() => {
             </Card>
 
             <div class="flex justify-content-end gap-3 mt-3">
-                <Button class="w-full" type="button" label="Close" severity="secondary" @click="visible = false"></Button>
-                <Button class="w-full" type="button" label="Reset all to default" severity="secondary"></Button>
-                <Button class="w-full" type="button" label="Apply" @click="applySettings"></Button>
+                <Button class="w-full" type="button" :label="$t('keywords.close')" severity="secondary" @click="visible = false"></Button>
+                <Button class="w-full" type="button" :label="$t('phrases.reset-all-default')" severity="secondary"></Button>
+                <Button class="w-full" type="button" :label="$t('keywords.apply')" @click="applySettings"></Button>
             </div>
         </Dialog>
     </div>

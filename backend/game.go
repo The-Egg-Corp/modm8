@@ -4,7 +4,7 @@ type StorePlatform string
 
 const (
 	STEAM            StorePlatform = "Steam"
-	STEAM_DIRECT     StorePlatform = "Steam " // Add a space so that there's no conflict in the PlatformInterceptor listing
+	STEAM_DIRECT     StorePlatform = "Steam "
 	EPIC_GAMES_STORE StorePlatform = "Epic Games Store"
 	OCULUS_STORE     StorePlatform = "Oculus Store"
 	ORIGIN           StorePlatform = "Origin / EA Desktop"

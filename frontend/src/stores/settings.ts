@@ -6,7 +6,7 @@ import { Layout } from "@types"
 const state = {
     general: {
         locale: 'en',
-        theme: 'default-purple-dark',
+        theme: 'aura-dark-purple',
         animations_enabled: true,
     },
     performance: {

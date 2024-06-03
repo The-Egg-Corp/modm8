@@ -40,7 +40,11 @@
     "off": "",
     "on": "",
     "yes": "",
-    "no": ""
+    "no": "",
+    "close": "Schließen",
+    "apply": "Anwenden",
+    "installed": "Eingerichtet",
+    "all": "Alle"
   },
   "languages": {
     "en": "Englisch",
@@ -53,5 +57,13 @@
     "se": "Schwedisch",
     "it": "Italienisch",
     "es": "Spanisch"
+  },
+  "tooltips": {
+    "dashboard": "Armaturenbrett",
+    "game-selection": "Spielauswahl",
+    "mod-dev-tools": "Mod-Entwicklertools"
+  },
+  "phrases": {
+    "reset-all-default": "Alles auf Standard zurücksetzen"
   }
 }

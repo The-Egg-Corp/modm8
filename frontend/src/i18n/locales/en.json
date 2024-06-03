@@ -3,10 +3,6 @@
     "header": "Search packages by user",
     "empty-input": "No user entered"
   },
-  "topbar": {
-    "dashboard": "Dashboard",
-    "select-game": "Select Game"
-  },
   "game-selection": {
     "header": "Choose a game to manage mods for.",
     "select-button": "Select Game",
@@ -26,7 +22,19 @@
     "animations-enabled": "Enable Animations",
     "nexus-personal-key": "Nexus Personal API Key"
   },
+  "tooltips": {
+    "dashboard": "Dashboard",
+    "game-selection": "Game Selection",
+    "mod-dev-tools": "Mod Developer Tools"
+  },
+  "phrases": {
+    "reset-all-default": "Reset all to default"
+  },
   "keywords": {
+    "installed": "Installed",
+    "setup": "Setup",
+    "close": "Close",
+    "apply": "Apply",
     "general": "General",
     "performance": "Performance",
     "misc": "Miscellaneous",
@@ -34,6 +42,7 @@
     "settings": "Settings",
     "download": "Download",
     "language": "Language",
+    "all": "All",
     "get": "Get",
     "new": "New",
     "back": "Back",

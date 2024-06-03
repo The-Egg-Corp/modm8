@@ -2,10 +2,13 @@
 import router from "../router"
 import { useDialog } from '@composables'
 
+import { t } from '@i18n'
+
 const { setVisible } = useDialog()
 
 const Dashboard = () => router.push('/')
 const GameSelection = () => router.push('/game-selection')
+const ModDevTools = () => router.push('/mod-dev-tools')
 
 const tooltipOpts = (text: string) => ({ 
     value: text, 
@@ -16,41 +19,53 @@ const tooltipOpts = (text: string) => ({
 
 <template>
 <div class="sidebar flex-column">
-    <div class="top flex-column">
-        <img class="icon no-select" src="../assets/images/appicon.png">
+    <img class="icon no-select" src="../assets/images/appicon.png">
 
-        <Button 
-            plain outlined 
-            class="btn margin-lr no-drag" icon="pi pi-spin pi-home" 
-            v-tooltip="tooltipOpts('Dashboard')"
-            @click="Dashboard"
-        />
+    <div class="flex-column h-full">
+        <div class="top flex-column">
+            <Button 
+                plain outlined 
+                class="btn margin-lr no-drag" icon="pi pi-spin pi-home" 
+                v-tooltip="tooltipOpts(t('tooltips.dashboard'))"
+                @click="Dashboard"
+            />
+    
+            <Button 
+                plain outlined 
+                class="btn margin-lr no-drag" icon="pi pi-spin pi-list" 
+                v-tooltip="tooltipOpts(t('tooltips.game-selection'))"
+                @click="GameSelection"
+            >
+                <template #icon>
+                    <span class="material-symbols-sharp">stadia_controller</span>
+                </template>
+            </Button>
+        </div>
+    
+        <div class="spacer"></div>
 
-        <Button 
-            plain outlined 
-            class="btn margin-lr no-drag" icon="pi pi-spin pi-list" 
-            v-tooltip="tooltipOpts('Game Selection')"
-            @click="GameSelection"
-        />
-    </div>
+        <div class="top flex-column">
+            <Button 
+                plain outlined 
+                class="btn margin-lr no-drag" icon="pi pi-spin pi-wrench"
+                v-tooltip="tooltipOpts(t('tooltips.mod-dev-tools'))"
+                @click="ModDevTools"
+            />
 
-    <!-- <div class="spacer"></div>
+            <!-- <Button plain outlined class="btn margin-lr no-drag" icon="pi pi-spin pi-upload"/> -->
+        </div>
 
-    <div class="top flex-column">
-        <Button plain outlined class="btn margin-lr no-drag" icon="pi pi-spin pi-wrench"/>
-        <Button plain outlined class="btn margin-lr no-drag" icon="pi pi-spin pi-upload"/>
-    </div> -->
-
-    <div class="spacer"></div>
-
-    <div class="bottom flex-column">
-        <!-- <Button text class="btn margin-lr no-drag" :icon="themeMode === 'dark' ? 'pi pi-sun' : 'pi pi-moon'" @click="ToggleThemeMode"/> -->
-        <Button 
-            plain outlined 
-            class="btn margin-lr no-drag" icon="pi pi-spin pi-cog" 
-            v-tooltip="tooltipOpts('Settings')"
-            @click="setVisible(true)"
-        />
+        <div class="spacer"></div>
+ 
+        <div class="bottom flex-column">
+            <!-- <Button text class="btn margin-lr no-drag" :icon="themeMode === 'dark' ? 'pi pi-sun' : 'pi pi-moon'" @click="ToggleThemeMode"/> -->
+            <Button 
+                plain outlined 
+                class="btn margin-lr no-drag" icon="pi pi-spin pi-cog" 
+                v-tooltip="tooltipOpts(t('keywords.settings'))"
+                @click="setVisible(true)"
+            />
+        </div>
     </div>
 </div>
 </template>
@@ -104,5 +119,13 @@ const tooltipOpts = (text: string) => ({
 
 .bottom {
     padding-bottom: 20px;
+}
+
+.material-symbols-sharp {
+    font-variation-settings:
+    'FILL' 0,
+    'wght' 270,
+    'GRAD' 100,
+    'opsz' 40
 }
 </style>

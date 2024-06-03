@@ -47,6 +47,7 @@ func main() {
 
 	nexusAPI := nexus.NewAPI()
 	tsAPI := thunderstore.NewAPI()
+	tsTools := thunderstore.NewTools()
 
 	err := wails.Run(&options.App{
 		Title:     "modm8",
@@ -72,6 +73,7 @@ func main() {
 			app,
 			app.Settings,
 			tsAPI,
+			tsTools,
 			nexusAPI,
 		},
 		EnumBind: IList{

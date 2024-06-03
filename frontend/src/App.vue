@@ -13,7 +13,7 @@ let settings: core.AppSettings
 
 onMounted(async () => {
     settings = await GetSettings()
-    console.log(settings)
+    //console.log(settings)
 
     changeLocale(settings.general.locale)
 

@@ -40,7 +40,11 @@
     "off": "",
     "on": "",
     "yes": "",
-    "no": ""
+    "no": "",
+    "close": "Fermer",
+    "apply": "Appliquer",
+    "installed": "installée",
+    "all": "Tous"
   },
   "languages": {
     "en": "Anglais",
@@ -53,5 +57,13 @@
     "se": "Suédois",
     "it": "Italien",
     "es": "Espagnol"
+  },
+  "tooltips": {
+    "dashboard": "Tableau de bord",
+    "game-selection": "Sélection de jeux",
+    "mod-dev-tools": "Outils de développement de modules"
+  },
+  "phrases": {
+    "reset-all-default": "Tout réinitialiser par défaut"
   }
 }

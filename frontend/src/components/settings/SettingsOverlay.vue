@@ -2,7 +2,7 @@
 import { 
     Save, 
     SetGPUAccel, SetThreads,
-    SetAnimationsEnabled, SetUpdateBehaviour
+    SetAnimationsEnabled
 } from "@backend/core/AppSettings"
 
 import { core } from "@backend/models"
@@ -42,11 +42,7 @@ const dividerAlignment: Alignment = "center"
 const accelChecked = ref(true)
 const setAccel = (value: boolean) => {
     const store = useSettingsStore()
-
-    store.performance.gpu_acceleration = value
-    accelChecked.value = value
-
-    SetGPUAccel(value)
+    store.setAcceleration(value)
 
     // Make Wails aware of new setting value by restarting the app (or prompt user?).
 }
@@ -54,21 +50,13 @@ const setAccel = (value: boolean) => {
 const threadCount = ref(2)
 const setThreads = (count: number) => { 
     const store = useSettingsStore()
-    
     store.setThreads(count)
-    threadCount.value = count
-
-    SetThreads(count)
 }
 
 const animationsEnabled = ref(true)
 const setAnimsEnabled = (value: boolean) => {
     const store = useSettingsStore()
-
     store.setAnimationsEnabled(value)
-    animationsEnabled.value = value
-
-    SetAnimationsEnabled(value)
 }
 
 type Behaviour = ValueItemLabeled<core.UpdateBehaviour>
@@ -92,15 +80,12 @@ const behaviours: Ref<Behaviour[]> = computed(() => [{
 const setUpdateBehaviour = (e: ChangeEvent<Behaviour>) => {
     const store = useSettingsStore()
     store.setUpdateBehaviour(e.value.value)
-
-    SetUpdateBehaviour(e.value.value)
 }
 
 const applySettings = async() => {
     const t0 = performance.now()
-
     await Save()
-
+    
     console.log(`Settings saved. Took ${performance.now() - t0}ms`)
 }
 </script>

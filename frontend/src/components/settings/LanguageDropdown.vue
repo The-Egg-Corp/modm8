@@ -11,9 +11,10 @@ import {
 import { SetLocale } from '@backend/core/AppSettings'
 
 const change = async (e: ChangeEvent<Country>) => {
+    // Change in frontend state.
     changeLocale(e.value.code)
 
-    // Save locale change to settings file.
+    // Change in backend viper config.
     SetLocale(e.value.code)
 }
 

@@ -35,9 +35,7 @@ const groupedThemes: ComputedRef<ThemeGroup[]> = computed(() => [{
 
 const change = (e: ChangeEvent<Theme>) => {
     const settingsStore = useSettingsStore()
-    
     settingsStore.setTheme(e.value.value)
-    selectedTheme.value = e.value
 }
 
 const getGroup = (theme: Theme) => groupedThemes.value.find(g => g.themes.find(t => t.value == theme.value))

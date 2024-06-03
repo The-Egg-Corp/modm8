@@ -78,6 +78,7 @@ func main() {
 		},
 		EnumBind: IList{
 			core.UpdateBehaviours,
+			core.GameSelectionLayouts,
 		},
 	})
 

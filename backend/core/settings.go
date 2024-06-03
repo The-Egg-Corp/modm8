@@ -25,6 +25,21 @@ var UpdateBehaviours = []struct {
 	{UpdateBehaviourAuto, "AUTO"},
 }
 
+type GameSelectionLayout string
+
+const (
+	GameSelectionLayoutGrid GameSelectionLayout = "grid"
+	GameSelectionLayoutList GameSelectionLayout = "list"
+)
+
+var GameSelectionLayouts = []struct {
+	Value  GameSelectionLayout
+	TSName string
+}{
+	{GameSelectionLayoutGrid, "GRID"},
+	{GameSelectionLayoutList, "LIST"},
+}
+
 type AppSettings struct {
 	General     GeneralOptions     `json:"general" mapstructure:"general"`
 	Performance PerformanceOptions `json:"performance" mapstructure:"performance"`
@@ -43,9 +58,9 @@ type PerformanceOptions struct {
 }
 
 type MiscOptions struct {
-	NexusPersonalKey    string          `json:"nexus_personal_key" mapstructure:"nexus_personal_key"`
-	UpdateBehaviour     UpdateBehaviour `json:"update_behaviour" mapstructure:"update_behaviour"`
-	GameSelectionLayout string          `json:"game_selection_layout" mapstructure:"game_selection_layout"`
+	NexusPersonalKey    string              `json:"nexus_personal_key" mapstructure:"nexus_personal_key"`
+	UpdateBehaviour     UpdateBehaviour     `json:"update_behaviour" mapstructure:"update_behaviour"`
+	GameSelectionLayout GameSelectionLayout `json:"game_selection_layout" mapstructure:"game_selection_layout"`
 }
 
 var settingsCfg = viper.New()
@@ -138,4 +153,8 @@ func (settings *AppSettings) SetNexusPersonalKey(key string) {
 
 func (settings *AppSettings) SetUpdateBehaviour(behaviour UpdateBehaviour) {
 	settings.Misc.UpdateBehaviour = behaviour
+}
+
+func (settings *AppSettings) SetGameSelectionLayout(layout GameSelectionLayout) {
+	settings.Misc.GameSelectionLayout = layout
 }

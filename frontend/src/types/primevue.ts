@@ -1,3 +1,5 @@
+export type Layout = 'grid' | 'list'
+
 export type Alignment = "center" | "left" | "right"
 
 export interface ChangeEvent<V> {

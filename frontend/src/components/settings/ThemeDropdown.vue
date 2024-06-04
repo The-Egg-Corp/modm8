@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { ComputedRef, Ref, computed, ref } from 'vue'
+import { ComputedRef, computed } from 'vue'
+import { usePrimeVue } from 'primevue/config'
 
 import { useSettingsStore } from '@stores'
 import { 
@@ -8,11 +9,12 @@ import {
     Theme, ThemeGroup
 } from '@types'
 
-const selectedTheme: Ref<Theme> = ref({
-    label: 'Dark',
-    value: 'aura-dark-purple'
-})
+const currentTheme = () => {
+    const { general } = useSettingsStore()
+    return general.theme as Theme || groupedThemes.value[0]
+}
 
+const selectedTheme: ComputedRef<Theme> = computed(currentTheme)
 const groupedThemes: ComputedRef<ThemeGroup[]> = computed(() => [{
     label: 'Aura Purple',
     themes: [{
@@ -26,16 +28,22 @@ const groupedThemes: ComputedRef<ThemeGroup[]> = computed(() => [{
     label: 'Aura Yellow',
     themes: [{
         label: 'Dark',
-        value: 'aura-dark-yellow'
+        value: 'aura-dark-amber'
     }, {
         label: 'Light',
-        value: 'aura-light-yellow'
+        value: 'aura-light-amber'
     }]
 }])
 
+const PrimeVue = usePrimeVue()
+
 const change = (e: ChangeEvent<Theme>) => {
-    const settingsStore = useSettingsStore()
-    settingsStore.setTheme(e.value.value)
+    const newTheme = e.value
+    
+    PrimeVue.changeTheme(currentTheme().value, newTheme.value, 'theme-link')
+
+    const { setTheme } = useSettingsStore()
+    setTheme(newTheme)
 }
 
 const getGroup = (theme: Theme) => groupedThemes.value.find(g => g.themes.find(t => t.value == theme.value))

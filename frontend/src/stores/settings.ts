@@ -1,7 +1,5 @@
 import { defineStore } from 'pinia'
 
-import { core } from "@backend/models.js"
-import { Layout } from "@types"
 import {
     SetAnimationsEnabled, 
     SetGPUAccel, 
@@ -13,10 +11,16 @@ import {
     SetGameSelectionLayout
 } from '@backend/core/AppSettings.js'
 
+import { core } from "@backend/models.js"
+import { Theme } from "@types"
+
 const state = {
     general: {
         locale: 'en',
-        theme: 'aura-dark-purple',
+        theme: {
+            label: 'Dark',
+            value: 'aura-dark-purple'
+        } as Theme,
         animations_enabled: true,
     },
     performance: {
@@ -37,9 +41,9 @@ const actions = {
         state.general.locale = code
         if (save) SetLocale(code)
     },
-    setTheme(theme: string, save = true) {
-        state.general.theme = theme
-        if (save) SetTheme(theme)
+    setTheme(theme: Theme, save = true) {
+        Object.assign(state.general.theme, theme)
+        if (save) SetTheme(theme.value)
     },
     setAnimationsEnabled(value: boolean, save = true) {
         state.general.animations_enabled = value
@@ -61,7 +65,7 @@ const actions = {
         state.misc.update_behaviour = behaviour
         if (save) SetUpdateBehaviour(behaviour)
     },
-    setGameSelectionLayout(layout: Layout, save = true) {
+    setGameSelectionLayout(layout: core.GameSelectionLayout, save = true) {
         state.misc.game_selection_layout = layout
         if (save) SetGameSelectionLayout(layout)
     }

@@ -1,12 +1,11 @@
+import { ValueItemLabeled } from "./primevue.js"
+
 export interface Country {
     name: string
     code: string
 }
 
-export interface Theme {
-    label: string
-    value: string
-}
+export type Theme = ValueItemLabeled<string>
 
 export interface ThemeGroup {
     label: string

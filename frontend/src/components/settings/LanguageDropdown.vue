@@ -8,14 +8,9 @@ import {
     getCountry
 } from '@i18n'
 
-import { SetLocale } from '@backend/core/AppSettings'
-
 const change = async (e: ChangeEvent<Country>) => {
     // Change in frontend state.
     changeLocale(e.value.code)
-
-    // Change in backend viper config.
-    SetLocale(e.value.code)
 }
 
 const flagPlaceholderURL = "https://primefaces.org/cdn/primevue/images/flag/flag_placeholder.png"

@@ -2,7 +2,9 @@ package core
 
 import (
 	"context"
+	"errors"
 	"os"
+	"os/exec"
 	"path"
 	"runtime"
 
@@ -67,6 +69,23 @@ func SettingsPath() string {
 
 func PersistencePath() string {
 	return path.Join(ConfigDir(), "persistence.toml")
+}
+
+func (a *App) OpenWindowAtLocation(path string) error {
+	var cmd *exec.Cmd
+
+	switch runtime.GOOS {
+	case "windows":
+		cmd = exec.Command("cmd", "/C", "start", "", path)
+	case "darwin":
+		cmd = exec.Command("open", path)
+	case "linux":
+		cmd = exec.Command("xdg-open", path)
+	default:
+		return errors.New("unsupported platform")
+	}
+
+	return cmd.Start()
 }
 
 // Fetches the tag of the latest modm8 GitHub release.

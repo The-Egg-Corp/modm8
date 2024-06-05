@@ -2,36 +2,14 @@
 import router from "../router"
 import { useDialog } from '@composables'
 
+import { tooltipOpts } from "../../src/util"
 import { t } from '@i18n'
-import { TooltipOptions } from "primevue/tooltip"
 
 const { setVisible } = useDialog()
 
 const Dashboard = () => router.push('/')
 const GameSelection = () => router.push('/game-selection')
 const ModDevTools = () => router.push('/mod-dev-tools')
-
-const tooltipTextStyle = {
-    fontSize: '14.5px'
-}
-
-const tooltipArrowStyle = {
-    borderLeftColor: 'var(--primary-color)'
-}
-
-const tooltipOpts = (text: string): TooltipOptions => ({ 
-    value: text,
-    showDelay: 60,
-    hideDelay: 5,
-    pt: {
-        text: {
-            style: tooltipTextStyle
-        },
-        arrow: {
-            style: tooltipArrowStyle
-        }
-    }
-})
 </script>
 
 <template>
@@ -43,14 +21,14 @@ const tooltipOpts = (text: string): TooltipOptions => ({
             <Button 
                 plain outlined 
                 class="btn margin-lr no-drag" icon="pi pi-spin pi-home" 
-                v-tooltip="tooltipOpts(t('tooltips.dashboard'))"
+                v-tooltip="tooltipOpts(t('tooltips.sidebar.dashboard'))"
                 @click="Dashboard"
             />
     
             <Button 
                 plain outlined 
                 class="btn margin-lr no-drag" icon="pi pi-spin pi-list" 
-                v-tooltip="tooltipOpts(t('tooltips.game-selection'))"
+                v-tooltip="tooltipOpts(t('tooltips.sidebar.game-selection'))"
                 @click="GameSelection"
             >
                 <template #icon>
@@ -65,7 +43,7 @@ const tooltipOpts = (text: string): TooltipOptions => ({
             <Button 
                 plain outlined 
                 class="btn margin-lr no-drag" icon="pi pi-spin pi-wrench"
-                v-tooltip="tooltipOpts(t('tooltips.mod-dev-tools'))"
+                v-tooltip="tooltipOpts(t('tooltips.sidebar.mod-dev-tools'))"
                 @click="ModDevTools"
             />
 

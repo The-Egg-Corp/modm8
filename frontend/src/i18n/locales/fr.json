@@ -44,7 +44,8 @@
     "close": "Fermer",
     "apply": "Appliquer",
     "installed": "installée",
-    "all": "Tous"
+    "all": "Tous",
+    "favourite": "Préféré"
   },
   "languages": {
     "en": "Anglais",
@@ -59,9 +60,14 @@
     "es": "Espagnol"
   },
   "tooltips": {
-    "dashboard": "Tableau de bord",
-    "game-selection": "Sélection de jeux",
-    "mod-dev-tools": "Outils de développement de modules"
+    "sidebar": {
+      "dashboard": "Tableau de bord",
+      "game-selection": "Sélection de jeux",
+      "mod-dev-tools": "Outils de développement de modules"
+    },
+    "game-selection": {
+      "open-folder-location": "Emplacement du dossier ouvert"
+    }
   },
   "phrases": {
     "reset-all-default": "Tout réinitialiser par défaut"

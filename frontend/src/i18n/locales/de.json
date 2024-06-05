@@ -44,7 +44,8 @@
     "close": "Schließen",
     "apply": "Anwenden",
     "installed": "Eingerichtet",
-    "all": "Alle"
+    "all": "Alle",
+    "favourite": "Favorit"
   },
   "languages": {
     "en": "Englisch",
@@ -59,9 +60,14 @@
     "es": "Spanisch"
   },
   "tooltips": {
-    "dashboard": "Armaturenbrett",
-    "game-selection": "Spielauswahl",
-    "mod-dev-tools": "Mod-Entwicklertools"
+    "sidebar": {
+      "dashboard": "Armaturenbrett",
+      "game-selection": "Spielauswahl",
+      "mod-dev-tools": "Mod-Entwicklertools"
+    },
+    "game-selection": {
+      "open-folder-location": "Ordnerspeicherort öffnen"
+    }
   },
   "phrases": {
     "reset-all-default": "Alles auf Standard zurücksetzen"

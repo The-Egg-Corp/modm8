@@ -7,7 +7,8 @@
     "header": "Choose a game to manage mods for.",
     "select-button": "Select Game",
     "search-placeholder": "Search title..",
-    "empty-results": "No games match the search query"
+    "empty-results": "No games match the search query",
+    "bepinex-setup": "BepInEx Setup"
   },
   "settings": {
     "select-language": "Select language",
@@ -23,14 +24,20 @@
     "nexus-personal-key": "Nexus Personal API Key"
   },
   "tooltips": {
-    "dashboard": "Dashboard",
-    "game-selection": "Game Selection",
-    "mod-dev-tools": "Mod Developer Tools"
+    "sidebar": {
+      "dashboard": "Dashboard",
+      "game-selection": "Game Selection",
+      "mod-dev-tools": "Mod Developer Tools"
+    },
+    "game-selection": {
+      "open-folder-location": "Open folder location"
+    }
   },
   "phrases": {
     "reset-all-default": "Reset all to default"
   },
   "keywords": {
+    "favourite": "Favourite",
     "installed": "Installed",
     "setup": "Setup",
     "close": "Close",

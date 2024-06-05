@@ -226,7 +226,7 @@ onMounted(() => {
                                                 icon="pi pi-folder" 
                                                 v-if="game.path"
                                                 v-tooltip.top="tooltipOpts(t('tooltips.game-selection.open-folder-location'))"
-                                                @click=""
+                                                @click="openWindowAtLoc(game.path)"
                                             />
                                             
                                             <Button 
@@ -291,8 +291,8 @@ onMounted(() => {
 
 .game-grid-thumbnail {
     user-select: none;
-    width: 210px;
-    border-radius: 4px;
+    width: 185px;
+    border-radius: 3px;
 }
 
 .game-list-title {
@@ -301,7 +301,7 @@ onMounted(() => {
 }
 
 .game-grid-title {
-    font-size: 24.5px;
+    font-size: 23px;
     font-weight: 400;
 }
 

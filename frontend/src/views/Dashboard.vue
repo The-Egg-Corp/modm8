@@ -38,7 +38,7 @@ async function PackagesByUser() {
                         <InputText id="name" v-model="data.name" autocomplete="off"/>
                         <!-- <label for="name">Owner</label> -->
                     
-                        <Button class="btn" severity="help" outlined icon="pi pi-search" @click="PackagesByUser"/>
+                        <Button class="search-btn" severity="help" outlined icon="pi pi-search" @click="PackagesByUser"/>
                     </FloatLabel>
                 </div>
 
@@ -82,7 +82,7 @@ async function PackagesByUser() {
     width: 300px;
 }
 
-.input-box .btn {
+.input-box .search-btn {
     height: 36px;
     line-height: 30px;
     margin: 0 0 0 15px;
@@ -91,8 +91,8 @@ async function PackagesByUser() {
     cursor: pointer;
 }
 
-.input-box .btn:hover {
-    border-radius: 3px;
+.input-box .search-btn:hover {
+    border-radius: 2.5px;
 }
 
 .input-box .input {

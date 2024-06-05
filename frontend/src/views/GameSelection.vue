@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, Ref, computed, ComputedRef } from 'vue'
+import { ref, onMounted, Ref, computed, ComputedRef, reactive } from 'vue'
 
 import DataView from 'primevue/dataview'
 import DataViewLayoutOptions from 'primevue/dataviewlayoutoptions'
@@ -7,9 +7,11 @@ import DataViewLayoutOptions from 'primevue/dataviewlayoutoptions'
 // TODO: Replace with real external service.
 import { getGameList } from '../mocks/GameService'
 
+import { Game, Layout, OptionItem, ValueItem } from '@types'
 import { Nullable } from 'primevue/ts-helpers'
-import { Game, GameProps, Layout, OptionItem, ValueItem } from '@types'
+
 import { t } from '@i18n'
+import { BepinexInstalled } from '@backend/backend/GameManager'
 
 const games: Ref<Game[]> = ref([])
 const searchInput: Ref<Nullable<string>> = ref(null)
@@ -18,8 +20,6 @@ const layout: Ref<Layout> = ref('grid')
 const getThumbnail = (game: Game) => game.image
     ? `https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/${game.image}` 
     : "https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/Titanfall2.jpg"
-
-onMounted(() => games.value = getGameList())
 
 function filterBySearch(games: Game[]) {
     if (!searchInput.value) return games
@@ -75,6 +75,19 @@ const filters: ComputedRef<string[]> = computed(() => [
     t('keywords.all'), 
     t('keywords.installed')
 ])
+
+const installedStatuses: Map<string, boolean> = reactive(new Map())
+
+onMounted(() => {
+    games.value = getGameList()
+
+    games.value.forEach(async g => {
+        const installed = await (g.path ? BepinexInstalled(g.path) : false)
+        if (g.path) console.log(`${g.title} installed: ${installed}. Path: ${g.path}`)
+
+        installedStatuses.set(g.identifier, installed)
+    })
+})
 </script>
 
 <template>
@@ -89,6 +102,7 @@ const filters: ComputedRef<string[]> = computed(() => [
                     </div>
                 </template>
 
+                <!-- Header (filter, search, layout) -->
                 <template #header>
                     <div class="flex flex-row justify-content-between align-items-center">
                         <div>
@@ -101,7 +115,7 @@ const filters: ComputedRef<string[]> = computed(() => [
                                         <div class="no-select">{{ selectedItem.option }}</div>
                                     </div>
                                 </template>
-                        
+                                
                                 <template #value="selectedItem: ValueItem<string>">
                                     <div v-if="selectedItem.value" class="flex align-items-center">
                                         <div>{{ selectedItem.value }}</div>
@@ -128,15 +142,15 @@ const filters: ComputedRef<string[]> = computed(() => [
                 </template>
 
                 <!-- List layout -->
-                <template #list="slotProps: GameProps">
+                <template #list>
                     <div class="grid grid-nogutter">
-                        <div v-for="(item, index) in slotProps.items" :key="index" class="col-12">
+                        <div v-for="(game, index) in games" :key="index" class="col-12">
                             <div class="flex flex-column sm:flex-row sm:align-items-center p-2 gap-5" :class="{ 'border-top-1 surface-border': index !== 0 }">
-                                <img class="game-list-thumbnail fadeinleft fadeinleft-thumbnail block xl:block mx-auto w-full" :src="getThumbnail(item)"/>
+                                <img class="game-list-thumbnail fadeinleft fadeinleft-thumbnail block xl:block mx-auto w-full" :src="getThumbnail(game)"/>
 
                                 <div class="flex flex-column md:flex-row justify-content-between md:align-items-center flex-1 gap-4">
                                     <div class="fadeinleft fadeinleft-title flex flex-row md:flex-column justify-content-between align-items-start gap-2">
-                                        <div class="game-list-title">{{ item.title }}</div>
+                                        <div class="game-list-title">{{ game.title }}</div>
                                     </div>
 
                                     <div class="flex flex-column md:align-items-end gap-5">
@@ -152,18 +166,18 @@ const filters: ComputedRef<string[]> = computed(() => [
                 </template>
 
                 <!-- Grid layout -->
-                <template #grid="slotProps: GameProps">
+                <template #grid>
                     <div class="grid grid-nogutter">
-                        <div v-for="(item, index) in slotProps.items" :key="index" class="grid-item col-6 sm:col-3 md:col-3 lg:col-2 xl:col-1">
+                        <div v-for="(game, index) in games" :key="index" class="grid-item col-6 sm:col-3 md:col-3 lg:col-2 xl:col-1">
                             <div class="flex flex-column p-3 border-1 surface-border border-round">
                                 <div class="flex justify-content-center border-round">
                                     <div class="relative mx-auto">
-                                        <img class="game-grid-thumbnail" :src="getThumbnail(item)"/>
+                                        <img class="game-grid-thumbnail" :src="getThumbnail(game)"/>
                                     </div>
                                 </div>
 
                                 <div class="flex flex-column align-items-center interact-section pt-3">
-                                    <div class="game-grid-title">{{ item.title }}</div>
+                                    <div class="game-grid-title">{{ game.title }}</div>
                                     <div class="flex flex-column gap-3 mt-3">
                                         <div class="flex flex-row gap-2">
                                             <Button outlined plain :label="$t('game-selection.select-button')" class="grid-select-game-btn"></Button>
@@ -172,7 +186,10 @@ const filters: ComputedRef<string[]> = computed(() => [
 
                                         <div class="flex gap-2 justify-content-center align-items-baseline">
                                             <p class="m-0">BepInEx Installed</p>
-                                            <i class="pi pi-spin pi-check" style="color: lime"></i>
+                                            <i
+                                                :class="['pi', 'pi-spin', installedStatuses.get(game.identifier) == true ? 'pi-check' : 'pi-times']" 
+                                                :style="{ color: installedStatuses.get(game.identifier) == true ? 'lime' : 'red' }"
+                                            />
                                         </div>
                                     </div>
                                 </div>
@@ -195,7 +212,7 @@ const filters: ComputedRef<string[]> = computed(() => [
     text-align: center;
     font-size: 33px;
     font-weight: 420;
-    margin: 45px 0px 5px 0px;
+    margin: 40px 0px 10px 0px;
     padding: 0px 20px 0px 20px; /* Makes text get wrapped earlier */
 }
 

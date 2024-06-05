@@ -11,6 +11,7 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options/mac"
 	"github.com/wailsapp/wails/v2/pkg/options/windows"
 
+	"modm8/backend"
 	"modm8/backend/core"
 	"modm8/backend/nexus"
 	"modm8/backend/thunderstore"
@@ -49,6 +50,8 @@ func main() {
 	tsAPI := thunderstore.NewAPI()
 	tsTools := thunderstore.NewTools()
 
+	gameManager := backend.NewGameManager()
+
 	err := wails.Run(&options.App{
 		Title:     "modm8",
 		Width:     int(app.Persistence.Window.Width),
@@ -75,6 +78,7 @@ func main() {
 			tsAPI,
 			tsTools,
 			nexusAPI,
+			gameManager,
 		},
 		EnumBind: IList{
 			core.UpdateBehaviours,

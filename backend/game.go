@@ -1,5 +1,10 @@
 package backend
 
+import (
+	"os"
+	"path/filepath"
+)
+
 type StorePlatform string
 
 const (
@@ -20,4 +25,40 @@ type Game struct {
 	DataFolderName     string   `json:"data_folder_name" mapstructure:"data_folder_name"`
 	ThunderstoreURL    *string  `json:"thunderstore_url" mapstructure:"thunderstore_url"`
 	ExclusionsURL      string   `json:"exclusions_url" mapstructure:"exclusions_url"`
+}
+
+type GameManager struct {
+}
+
+func NewGameManager() *GameManager {
+	return &GameManager{}
+}
+
+func (gm *GameManager) BepinexInstalled(absPath string) bool {
+	installed, _ := BepinexInstalled(absPath)
+	return installed
+}
+
+func BepinexInstalled(absPath string) (bool, []string) {
+	required := []string{
+		"BepInEx",
+		"BepInEx/core",
+		"BepInEx/core/BepInEx.dll",
+		"BepInEx/core/BepInEx.Preloader.dll",
+	}
+
+	missing := []string{}
+
+	for _, file := range required {
+		// Use abs path to get path to current required file.
+		path := filepath.Join(absPath, file)
+
+		// Check if file exists, add to missing slice if not.
+		if _, err := os.Stat(path); os.IsNotExist(err) {
+			missing = append(missing, file)
+		}
+	}
+
+	// If no missing files, BepInEx is likely installed.
+	return len(missing) == 0, missing
 }

@@ -21,3 +21,7 @@ export interface ValueItemLabeled<V> {
     label: string
     value: V
 }
+
+export interface ItemProps<V> {
+    items: V[]
+}

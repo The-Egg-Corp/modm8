@@ -3,6 +3,7 @@ import router from "../router"
 import { useDialog } from '@composables'
 
 import { t } from '@i18n'
+import { TooltipOptions } from "primevue/tooltip"
 
 const { setVisible } = useDialog()
 
@@ -10,10 +11,26 @@ const Dashboard = () => router.push('/')
 const GameSelection = () => router.push('/game-selection')
 const ModDevTools = () => router.push('/mod-dev-tools')
 
-const tooltipOpts = (text: string) => ({ 
-    value: text, 
-    showDelay: 60, 
-    hideDelay: 5
+const tooltipTextStyle = {
+    fontSize: '14.5px'
+}
+
+const tooltipArrowStyle = {
+    borderLeftColor: 'var(--primary-color)'
+}
+
+const tooltipOpts = (text: string): TooltipOptions => ({ 
+    value: text,
+    showDelay: 60,
+    hideDelay: 5,
+    pt: {
+        text: {
+            style: tooltipTextStyle
+        },
+        arrow: {
+            style: tooltipArrowStyle
+        }
+    }
 })
 </script>
 

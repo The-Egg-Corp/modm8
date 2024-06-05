@@ -89,13 +89,7 @@ const getGames = (sort = true, filter = true) => {
     return out
 }
 
-const openWindowAtLoc = async (path: string) => {
-    try {
-        await OpenWindowAtLocation(path)
-    } catch(e) {
-        console.log(e)
-    }
-}
+const openWindowAtLoc = (path: string) => OpenWindowAtLocation(path).catch(console.log)
 
 onMounted(() => {
     games.value = getGameList()

@@ -5,6 +5,7 @@ go 1.22.1
 // replace github.com/wailsapp/wails/v2 v2.8.1 => C:\Users\Owen\go\pkg\mod
 
 require (
+	github.com/go-cmd/cmd v1.4.2
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/spf13/viper v1.18.2
 	github.com/the-egg-corp/thundergo v0.7.0
@@ -61,6 +62,6 @@ require (
 	golang.org/x/exp v0.0.0-20240416160154-fe59bbe5cc7f // indirect
 	golang.org/x/net v0.25.0 // indirect
 	golang.org/x/sync v0.7.0 // indirect
-	golang.org/x/sys v0.20.0 // indirect
+	golang.org/x/sys v0.20.0
 	golang.org/x/text v0.15.0 // indirect
 )

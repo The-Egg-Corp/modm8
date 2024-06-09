@@ -12,7 +12,7 @@ import { Nullable } from 'primevue/ts-helpers'
 
 import { t } from '@i18n'
 import { BepinexInstalled } from '@backend/backend/GameManager'
-import { OpenWindowAtLocation } from '@backend/core/App'
+import { OpenExternal } from '@backend/core/App'
 import { tooltipOpts } from "../../src/util"
 
 const searchInput: Ref<Nullable<string>> = ref(null)
@@ -89,7 +89,12 @@ const getGames = (sort = true, filter = true) => {
     return out
 }
 
-const openWindowAtLoc = (path: string) => OpenWindowAtLocation(path).catch(console.log)
+const openLink = async (path: string) => {
+    const t0 = performance.now()
+    await OpenExternal(path).catch(err => console.log("Error opening folder: " + err))
+
+    console.log(`Opened link: ${path}. Took ${performance.now() - t0}ms`)
+}
 
 onMounted(() => {
     games.value = getGameList()
@@ -171,10 +176,10 @@ onMounted(() => {
                                                 icon="pi pi-folder"
                                                 v-if="game.path"
                                                 v-tooltip.top="tooltipOpts(t('tooltips.game-selection.open-folder-location'))"
-                                                @click="openWindowAtLoc(game.path)"
+                                                @click="openLink(`file://${game.path}`)"
                                             />
 
-                                            <Button outlined plain icon="pi pi-star"></Button>
+                                            <Button outlined icon="pi pi-heart"></Button>
                                             <Button 
                                                 outlined plain 
                                                 :label="$t('game-selection.select-button')" 
@@ -226,12 +231,13 @@ onMounted(() => {
                                                 icon="pi pi-folder" 
                                                 v-if="game.path"
                                                 v-tooltip.top="tooltipOpts(t('tooltips.game-selection.open-folder-location'))"
-                                                @click="openWindowAtLoc(game.path)"
+                                                @click="openLink(`file://${game.path}`)"
                                             />
                                             
                                             <Button 
                                                 outlined plain 
-                                                icon="pi pi-star"
+                                                class="heart-icon"
+                                                icon="pi pi-heart"
                                                 v-tooltip.top="tooltipOpts(t('keywords.favourite'))"
                                                 @click=""
                                             />
@@ -383,5 +389,10 @@ onMounted(() => {
 .dataview-empty p {
     font-size: 22.5px;
     margin: 0 auto;
+}
+
+.heart-icon:hover {
+    color: var(--primary-color);
+    border-color: #a1a1aa;
 }
 </style>

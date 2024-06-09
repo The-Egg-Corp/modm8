@@ -1,9 +1,6 @@
 package core
 
 import (
-	"fmt"
-
-	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/viper"
 )
 
@@ -63,8 +60,6 @@ type MiscOptions struct {
 	GameSelectionLayout GameSelectionLayout `json:"game_selection_layout" mapstructure:"game_selection_layout"`
 }
 
-var settingsCfg = viper.New()
-
 func NewSettings() *AppSettings {
 	return &AppSettings{
 		General: GeneralOptions{
@@ -85,20 +80,11 @@ func NewSettings() *AppSettings {
 }
 
 func (settings *AppSettings) WriteToConfig() {
-	var result map[string]interface{}
-	err := mapstructure.Decode(settings, &result)
-	if err != nil {
-		fmt.Printf("%#v", result)
-		return
-	}
-
-	settingsCfg.MergeConfigMap(result)
+	WriteToConfig(*settingsCfg, settings)
 }
 
 func (settings *AppSettings) Load() error {
-	settingsCfg.SetConfigName("settings")
-	settingsCfg.SetConfigType("toml")
-	settingsCfg.AddConfigPath(ConfigDir())
+	SetupConfig(*settingsCfg, "settings", "toml")
 
 	if err := settingsCfg.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {

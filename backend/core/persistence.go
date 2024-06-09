@@ -2,16 +2,15 @@ package core
 
 import (
 	"context"
-	"fmt"
 
-	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/viper"
 
 	wRuntime "github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 type Persistence struct {
-	Window WindowState
+	Window         WindowState `json:"window" mapstructure:"window"`
+	FavouriteGames []string    `json:"favourite_games" mapstructure:"favourite_games"`
 }
 
 type WindowState struct {
@@ -22,10 +21,9 @@ type WindowState struct {
 	Y         int    `json:"pos_y" mapstructure:"pos_y"`
 }
 
-var persistenceCfg = viper.New()
-
 func NewPersistence() *Persistence {
 	return &Persistence{
+		FavouriteGames: []string{},
 		Window: WindowState{
 			Maximized: false,
 			Width:     1380,
@@ -36,31 +34,22 @@ func NewPersistence() *Persistence {
 	}
 }
 
-func (settings *Persistence) WriteToConfig() {
-	var result map[string]interface{}
-	err := mapstructure.Decode(settings, &result)
-	if err != nil {
-		fmt.Printf("%#v", result)
-		return
-	}
-
-	persistenceCfg.MergeConfigMap(result)
+func (persistence *Persistence) WriteToConfig() {
+	WriteToConfig(*persistenceCfg, persistence)
 }
 
-func (settings *Persistence) Load() error {
-	persistenceCfg.SetConfigName("persistence")
-	persistenceCfg.SetConfigType("toml")
-	persistenceCfg.AddConfigPath(ConfigDir())
+func (persistence *Persistence) Load() error {
+	SetupConfig(*persistenceCfg, "persistence", "toml")
 
 	if err := persistenceCfg.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			return settings.Save()
+			return persistence.Save()
 		}
 
 		return err
 	}
 
-	if err := persistenceCfg.Unmarshal(settings); err != nil {
+	if err := persistenceCfg.Unmarshal(persistence); err != nil {
 		return err
 	}
 
@@ -81,6 +70,8 @@ func (persistence *Persistence) Save() error {
 
 // To get the current size from the runtime, the frontend has to still be loaded.
 func (ws *Persistence) SaveCurrentWindowState(ctx context.Context) {
+	ws.SetMaximized(wRuntime.WindowIsMaximised(ctx))
+
 	w, h := wRuntime.WindowGetSize(ctx)
 	ws.SetWindowWidth(uint16(w))
 	ws.SetWindowHeight(uint16(h))
@@ -104,4 +95,12 @@ func (ws *Persistence) SetWindowX(xPos int) {
 
 func (ws *Persistence) SetWindowY(yPos int) {
 	ws.Window.Y = yPos
+}
+
+func (ws *Persistence) SetMaximized(maximized bool) {
+	ws.Window.Maximized = maximized
+}
+
+func (ws *Persistence) SetFavouriteGames(identifiers []string) {
+	ws.FavouriteGames = identifiers
 }

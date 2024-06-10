@@ -1,9 +1,5 @@
 package core
 
-import (
-	"github.com/spf13/viper"
-)
-
 type UpdateBehaviour uint8
 
 const (
@@ -12,7 +8,6 @@ const (
 	UpdateBehaviourAuto
 )
 
-// Mainly just for binding with Wails
 var UpdateBehaviours = []struct {
 	Value  UpdateBehaviour
 	TSName string
@@ -79,38 +74,17 @@ func NewSettings() *AppSettings {
 	}
 }
 
-func (settings *AppSettings) WriteToConfig() {
-	WriteToConfig(*settingsCfg, settings)
+func (settings *AppSettings) WriteToConfig() error {
+	return WriteToConfig(*settingsCfg, settings)
 }
 
 func (settings *AppSettings) Load() error {
 	SetupConfig(*settingsCfg, "settings", "toml")
-
-	if err := settingsCfg.ReadInConfig(); err != nil {
-		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			return settings.Save()
-		}
-
-		return err
-	}
-
-	if err := settingsCfg.Unmarshal(settings); err != nil {
-		return err
-	}
-
-	return nil
+	return ReadOrCreate(*settingsCfg, settings)
 }
 
 func (settings *AppSettings) Save() error {
-	// Write struct values to viper config
-	settings.WriteToConfig()
-
-	// Write config to the `settings.toml` file.
-	if err := settingsCfg.WriteConfigAs(SettingsPath()); err != nil {
-		return err
-	}
-
-	return nil
+	return Save(*settingsCfg, settings)
 }
 
 func (settings *AppSettings) SetLocale(locale string) {

@@ -42,9 +42,7 @@ var macOpts = &mac.Options{
 
 func main() {
 	app := core.NewApp()
-
-	app.Settings.Load()
-	app.Persistence.Load()
+	app.Init()
 
 	nexusAPI := nexus.NewAPI()
 	tsAPI := thunderstore.NewAPI()

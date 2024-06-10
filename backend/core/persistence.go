@@ -3,8 +3,6 @@ package core
 import (
 	"context"
 
-	"github.com/spf13/viper"
-
 	wRuntime "github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
@@ -34,42 +32,21 @@ func NewPersistence() *Persistence {
 	}
 }
 
-func (persistence *Persistence) WriteToConfig() {
-	WriteToConfig(*persistenceCfg, persistence)
+func (persistence *Persistence) WriteToConfig() error {
+	return WriteToConfig(*persistenceCfg, persistence)
 }
 
 func (persistence *Persistence) Load() error {
 	SetupConfig(*persistenceCfg, "persistence", "toml")
-
-	if err := persistenceCfg.ReadInConfig(); err != nil {
-		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			return persistence.Save()
-		}
-
-		return err
-	}
-
-	if err := persistenceCfg.Unmarshal(persistence); err != nil {
-		return err
-	}
-
-	return nil
+	return ReadOrCreate(*persistenceCfg, persistence)
 }
 
 func (persistence *Persistence) Save() error {
-	// Write struct values to viper config
-	persistence.WriteToConfig()
-
-	// Write config to the `persistence.toml` file.
-	if err := persistenceCfg.WriteConfigAs(PersistencePath()); err != nil {
-		return err
-	}
-
-	return nil
+	return Save(*persistenceCfg, persistence)
 }
 
-// To get the current size from the runtime, the frontend has to still be loaded.
-func (ws *Persistence) SaveCurrentWindowState(ctx context.Context) {
+// The frontend must still be loaded to call these runtime methods.
+func (ws *Persistence) ApplyCurrentWindowState(ctx context.Context) {
 	ws.SetMaximized(wRuntime.WindowIsMaximised(ctx))
 
 	w, h := wRuntime.WindowGetSize(ctx)

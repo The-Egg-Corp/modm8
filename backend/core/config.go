@@ -18,13 +18,41 @@ func SetupConfig(instance viper.Viper, name string, fileType string) {
 	instance.AddConfigPath(ConfigDir())
 }
 
-func WriteToConfig(instance viper.Viper, i interface{}) {
+func Save(instance viper.Viper, i interface{}) error {
+	// Write struct values to viper config
+	WriteToConfig(instance, i)
+
+	// Write config to the `settings.toml` file.
+	if err := instance.WriteConfigAs(SettingsPath()); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func WriteToConfig(instance viper.Viper, i interface{}) error {
 	var result map[string]interface{}
 	err := mapstructure.Decode(i, &result)
 	if err != nil {
 		fmt.Printf("%#v", result)
-		return
+		return err
 	}
 
-	instance.MergeConfigMap(result)
+	return instance.MergeConfigMap(result)
+}
+
+func ReadOrCreate(instance viper.Viper, i interface{}) error {
+	if err := instance.ReadInConfig(); err != nil {
+		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+			return Save(instance, i)
+		}
+
+		return err
+	}
+
+	if err := instance.Unmarshal(i); err != nil {
+		return err
+	}
+
+	return nil
 }

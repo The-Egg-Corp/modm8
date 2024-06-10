@@ -34,19 +34,24 @@ func (a *App) GetSettings() *AppSettings {
 }
 
 func NewApp() *App {
-	Init()
-
 	return &App{
 		Settings:    NewSettings(),
 		Persistence: NewPersistence(),
 	}
 }
 
-func Init() {
+// Called before anything else in main and before Wails runs.
+//
+// Any initial app setup logic should be done here.
+func (a *App) Init() {
+	a.Settings.Load()
+	a.Persistence.Load()
+
 	switch runtime.GOOS {
 	case "windows":
 		setWindowsPriority(windows.ABOVE_NORMAL_PRIORITY_CLASS)
 
+		// Essentially replicates Electron's `shell.openExternal`
 		openArgs := []string{"url.dll,FileProtocolHandler"}
 		openCmd = &Command{
 			name: "rundll32",
@@ -73,7 +78,7 @@ func (a *App) Startup(ctx context.Context) {
 
 // Called when the application is about to quit, either by clicking the window close button or calling runtime.Quit.
 func (a *App) OnBeforeClose(ctx context.Context) bool {
-	a.Persistence.SaveCurrentWindowState(ctx)
+	a.Persistence.ApplyCurrentWindowState(ctx)
 	return false
 }
 

@@ -80,11 +80,11 @@ func (settings *AppSettings) WriteToConfig() error {
 
 func (settings *AppSettings) Load() error {
 	SetupConfig(*settingsCfg, "settings", "toml")
-	return ReadOrCreate(*settingsCfg, settings)
+	return ReadOrCreate(*settingsCfg, settings, SettingsPath())
 }
 
 func (settings *AppSettings) Save() error {
-	return Save(*settingsCfg, settings)
+	return Save(*settingsCfg, settings, SettingsPath())
 }
 
 func (settings *AppSettings) SetLocale(locale string) {

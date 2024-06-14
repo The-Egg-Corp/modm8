@@ -73,6 +73,7 @@ func main() {
 		Bind: IList{
 			app,
 			app.Settings,
+			app.Persistence,
 			tsAPI,
 			tsTools,
 			nexusAPI,

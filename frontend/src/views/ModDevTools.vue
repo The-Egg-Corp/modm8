@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import FileUpload from 'primevue/fileupload'
+//import FileUpload from 'primevue/fileupload'
 
 // TODO: Finish implementing pack/unpack functionality
 import { 
-    UnpackZip, 
+    //UnpackZip, 
     ValidateIcon, 
     ValidateManifest, 
     ValidateReadme

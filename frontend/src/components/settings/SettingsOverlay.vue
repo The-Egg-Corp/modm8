@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import { 
-    Save, 
-    SetGPUAccel, SetThreads,
-    SetAnimationsEnabled
+    Save,
 } from "@backend/core/AppSettings"
 
 import { core } from "@backend/models"
@@ -22,7 +20,9 @@ import { Alignment, ChangeEvent, ValueItemLabeled } from "@types"
 import { t } from "@i18n"
 
 const { visible, draggable, closable } = useDialog()
+
 const appStore = useAppStore()
+const settingsStore = useSettingsStore()
 
 const dialogStyle = {
     "margin-left": "70px",
@@ -48,16 +48,10 @@ const setAccel = (value: boolean) => {
 }
 
 const threadCount = ref(2)
-const setThreads = (count: number) => { 
-    const store = useSettingsStore()
-    store.setThreads(count)
-}
+const setThreads = (count: number) => settingsStore.setThreads(count)
 
 const animationsEnabled = ref(true)
-const setAnimsEnabled = (value: boolean) => {
-    const store = useSettingsStore()
-    store.setAnimationsEnabled(value)
-}
+const setAnimsEnabled = (value: boolean) => settingsStore.setAnimationsEnabled(value)
 
 type Behaviour = ValueItemLabeled<core.UpdateBehaviour>
 
@@ -77,10 +71,7 @@ const behaviours: Ref<Behaviour[]> = computed(() => [{
     value: core.UpdateBehaviour.AUTO
 }])
 
-const setUpdateBehaviour = (e: ChangeEvent<Behaviour>) => {
-    const store = useSettingsStore()
-    store.setUpdateBehaviour(e.value.value)
-}
+const setUpdateBehaviour = (e: ChangeEvent<Behaviour>) => settingsStore.setUpdateBehaviour(e.value.value)
 
 const applySettings = async() => {
     const t0 = performance.now()

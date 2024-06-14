@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, Ref, computed, ComputedRef, reactive } from 'vue'
+import { ref, onMounted, Ref, computed, ComputedRef } from 'vue'
 
 import DataView from 'primevue/dataview'
 import DataViewLayoutOptions from 'primevue/dataviewlayoutoptions'
@@ -14,6 +14,9 @@ import { t } from '@i18n'
 import { BepinexInstalled } from '@backend/backend/GameManager'
 import { OpenExternal } from '@backend/core/App'
 import { tooltipOpts } from "../../src/util"
+
+import { useGameStore } from '@stores'
+const store = useGameStore()
 
 const searchInput: Ref<Nullable<string>> = ref(null)
 const layout: Ref<Layout> = ref('grid')
@@ -74,14 +77,12 @@ const alphabetSort = (games: Game[]) => {
 const selectedFilter: Ref<Nullable<string>> = ref(t('keywords.all'))
 const filters: ComputedRef<string[]> = computed(() => [
     t('keywords.all'), 
-    t('keywords.installed')
+    t('keywords.installed'),
+    t('keywords.favourites')
 ])
 
-const installedStatuses: Map<string, boolean> = reactive(new Map())
-
-const games: Ref<Game[]> = ref([])
 const getGames = (sort = true, filter = true) => {
-    let out = games.value
+    let out = store.gamesAsArray()
 
     if (filter) out = filterBySearch(out)
     if (sort) out = alphabetSort(out)
@@ -89,20 +90,16 @@ const getGames = (sort = true, filter = true) => {
     return out
 }
 
-const openLink = async (path: string) => {
-    const t0 = performance.now()
-    await OpenExternal(path).catch(err => console.log("Error opening folder: " + err))
+const openLink = (path: string) => OpenExternal(path).catch(e => console.log(`Error opening folder: ${e}`))
 
-    console.log(`Opened link: ${path}. Took ${performance.now() - t0}ms`)
-}
+onMounted(async () => {
+    const games = getGameList()
 
-onMounted(() => {
-    games.value = getGameList()
+    for (const g of games) {
+        g.installed = g.path ? await BepinexInstalled(g.path) : false
+    }
 
-    games.value.forEach(async g => {
-        const installed = await (g.path ? BepinexInstalled(g.path) : false)
-        installedStatuses.set(g.identifier, installed)
-    })
+    store.games = new Map(games.map(g => [g.identifier, g]))
 })
 </script>
 
@@ -123,8 +120,10 @@ onMounted(() => {
                     <div class="flex flex-row justify-content-between align-items-center">
                         <div>
                             <Dropdown 
-                                class="no-drag w-full w-8rem" checkmark
-                                :options="filters" v-model="selectedFilter"
+                                checkmark
+                                class="no-drag filter-dropdown"
+                                :options="filters"
+                                v-model="selectedFilter"
                             >
                                 <template #option="selectedItem: OptionItem<string>">
                                     <div class="flex no-drag align-items-center">
@@ -171,7 +170,7 @@ onMounted(() => {
 
                                     <div class="flex flex-column md:align-items-end gap-5">
                                         <div class="flex flex-row md:flex-row gap-3">
-                                            <Button 
+                                            <Button
                                                 outlined plain
                                                 icon="pi pi-folder"
                                                 v-if="game.path"
@@ -179,11 +178,18 @@ onMounted(() => {
                                                 @click="openLink(`file://${game.path}`)"
                                             />
 
-                                            <Button outlined icon="pi pi-heart"></Button>
                                             <Button 
-                                                outlined plain 
-                                                :label="$t('game-selection.select-button')" 
+                                                outlined
+                                                class="heart-icon"
+                                                :icon="store.isFavouriteGame(game.identifier) ? 'pi pi-heart-fill' : 'pi pi-heart'"
+                                                @click="store.toggleFavouriteGame(game.identifier)"
+                                            />
+
+                                            <Button
+                                                outlined plain
+                                                :label="$t('game-selection.select-button')"
                                                 class="list-select-game-btn flex-auto md:flex-initial"
+                                                @click="store.setSelectedGame(game)"
                                             />
                                         </div>
                                     </div>
@@ -211,39 +217,37 @@ onMounted(() => {
                                 <div class="flex flex-column align-items-center interact-section pt-2">
                                     <div class="flex flex-column gap-3">
                                         <div class="flex gap-2 justify-content-center align-items-baseline">
-                                            <p class="m-0" style="font-size: 16.5px">BepInEx Installed</p>
+                                            <p class="m-0" style="font-size: 16.5px">{{ t('game-selection.bepinex-setup') }}</p>
                                             <i
-                                                :class="['pi', 'pi-spin', installedStatuses.get(game.identifier) ? 'pi-check' : 'pi-times']" 
-                                                :style="{ color: installedStatuses.get(game.identifier) ? 'lime' : 'red' }"
+                                                :class="['pi', 'pi-spin', store.isGameInstalled(game.identifier) ? 'pi-check' : 'pi-times']" 
+                                                :style="{ color: store.isGameInstalled(game.identifier) ? 'lime' : 'red' }"
                                             />
                                         </div>
 
                                         <div class="flex flex-row gap-2">
-                                            <Button 
+                                            <Button
                                                 outlined plain 
-                                                :label="$t('game-selection.select-button')" 
                                                 class="grid-select-game-btn"
-                                                @click=""
+                                                :label="$t('game-selection.select-button')" 
+                                                @click="store.setSelectedGame(game)"
                                             />
 
-                                            <Button 
-                                                outlined plain 
-                                                icon="pi pi-folder" 
+                                            <Button
+                                                outlined plain
+                                                icon="pi pi-folder"
                                                 v-if="game.path"
                                                 v-tooltip.top="tooltipOpts(t('tooltips.game-selection.open-folder-location'))"
                                                 @click="openLink(`file://${game.path}`)"
                                             />
                                             
-                                            <Button 
-                                                outlined plain 
+                                            <Button
+                                                outlined plain
                                                 class="heart-icon"
-                                                icon="pi pi-heart"
                                                 v-tooltip.top="tooltipOpts(t('keywords.favourite'))"
-                                                @click=""
+                                                :icon="store.isFavouriteGame(game.identifier) ? 'pi pi-heart-fill' : 'pi pi-heart'"
+                                                @click="store.toggleFavouriteGame(game.identifier)"
                                             />
                                         </div>
-
-
                                     </div>
                                 </div>
                             </div>
@@ -394,5 +398,10 @@ onMounted(() => {
 .heart-icon:hover {
     color: var(--primary-color);
     border-color: #a1a1aa;
+}
+
+.filter-dropdown {
+    width: 8.5rem;
+    margin-right: 5px;
 }
 </style>

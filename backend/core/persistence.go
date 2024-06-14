@@ -38,11 +38,11 @@ func (persistence *Persistence) WriteToConfig() error {
 
 func (persistence *Persistence) Load() error {
 	SetupConfig(*persistenceCfg, "persistence", "toml")
-	return ReadOrCreate(*persistenceCfg, persistence)
+	return ReadOrCreate(*persistenceCfg, persistence, PersistencePath())
 }
 
 func (persistence *Persistence) Save() error {
-	return Save(*persistenceCfg, persistence)
+	return Save(*persistenceCfg, persistence, PersistencePath())
 }
 
 // The frontend must still be loaded to call these runtime methods.

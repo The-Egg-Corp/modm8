@@ -18,12 +18,12 @@ func SetupConfig(instance viper.Viper, name string, fileType string) {
 	instance.AddConfigPath(ConfigDir())
 }
 
-func Save(instance viper.Viper, i interface{}) error {
+func Save(instance viper.Viper, i interface{}, path string) error {
 	// Write struct values to viper config
 	WriteToConfig(instance, i)
 
 	// Write config to the `settings.toml` file.
-	if err := instance.WriteConfigAs(SettingsPath()); err != nil {
+	if err := instance.WriteConfigAs(path); err != nil {
 		return err
 	}
 
@@ -41,10 +41,10 @@ func WriteToConfig(instance viper.Viper, i interface{}) error {
 	return instance.MergeConfigMap(result)
 }
 
-func ReadOrCreate(instance viper.Viper, i interface{}) error {
+func ReadOrCreate(instance viper.Viper, i interface{}, path string) error {
 	if err := instance.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			return Save(instance, i)
+			return Save(instance, i, path)
 		}
 
 		return err

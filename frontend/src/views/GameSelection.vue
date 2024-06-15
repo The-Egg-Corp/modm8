@@ -7,7 +7,7 @@ import DataViewLayoutOptions from 'primevue/dataviewlayoutoptions'
 // TODO: Replace with real external service.
 import { getGameList } from '../mocks/GameService'
 
-import { Game, Layout, OptionItem, ValueItem } from '@types'
+import { Game, Layout, OptionItem, ValueItem, ValueItemLabeled } from '@types'
 import { Nullable } from 'primevue/ts-helpers'
 
 import { t } from '@i18n'
@@ -74,17 +74,30 @@ const alphabetSort = (games: Game[]) => {
     return games.sort((g1, g2) => g1 > g2 ? 1 : (g1 === g2 ? 0 : -1))
 }
 
-const selectedFilter: Ref<Nullable<string>> = ref(t('keywords.all'))
-const filters: ComputedRef<string[]> = computed(() => [
-    t('keywords.all'), 
-    t('keywords.installed'),
-    t('keywords.favourites')
-])
+const selectedFilter: Ref<ValueItemLabeled<string>> = ref({
+    label: "ALL",
+    value: t('keywords.all')
+})
 
-const getGames = (sort = true, filter = true) => {
+const filters: ComputedRef<ValueItemLabeled<string>[]> = computed(() => [{
+    label: "ALL",
+    value: t('keywords.all')
+}, {
+    label: "INSTALLED",
+    value: t('keywords.installed')
+}, {
+    label: "FAVOURITES",
+    value: t('keywords.favourites')
+}])
+
+const getGames = (sort = true, searchFilter = true) => {
     let out = store.gamesAsArray()
 
-    if (filter) out = filterBySearch(out)
+    const filter = selectedFilter.value.label
+    if (filter == "INSTALLED") out = out.filter(g => g.installed)
+    else if (filter == "FAVOURITES") out = out.filter(g => g.favourited)
+
+    if (searchFilter) out = filterBySearch(out)
     if (sort) out = alphabetSort(out)
 
     return out
@@ -125,15 +138,15 @@ onMounted(async () => {
                                 :options="filters"
                                 v-model="selectedFilter"
                             >
-                                <template #option="selectedItem: OptionItem<string>">
+                                <template #option="selectedItem: OptionItem<ValueItemLabeled<string>>">
                                     <div class="flex no-drag align-items-center">
-                                        <div class="no-select">{{ selectedItem.option }}</div>
+                                        <div class="no-select">{{ selectedItem.option.value }}</div>
                                     </div>
                                 </template>
                                 
-                                <template #value="selectedItem: ValueItem<string>">
+                                <template #value="selectedItem: ValueItem<ValueItemLabeled<string>>">
                                     <div v-if="selectedItem.value" class="flex align-items-center">
-                                        <div>{{ selectedItem.value }}</div>
+                                        <div>{{ selectedItem.value.value }}</div>
                                     </div>
                                 </template>
                             </Dropdown>
@@ -166,6 +179,14 @@ onMounted(async () => {
                                 <div class="flex flex-column md:flex-row justify-content-between md:align-items-center flex-1 gap-4">
                                     <div class="fadeinleft fadeinleft-title flex flex-row md:flex-column justify-content-between align-items-start gap-2">
                                         <div class="game-list-title">{{ game.title }}</div>
+
+                                        <div class="flex gap-2 justify-content-center align-items-baseline">
+                                            <p class="m-0" style="font-size: 16.5px">{{ t('game-selection.bepinex-setup') }}</p>
+                                            <i
+                                                :class="['pi', 'pi-spin', store.isGameInstalled(game.identifier) ? 'pi-check' : 'pi-times']" 
+                                                :style="{ color: store.isGameInstalled(game.identifier) ? 'lime' : 'red' }"
+                                            />
+                                        </div>
                                     </div>
 
                                     <div class="flex flex-column md:align-items-end gap-5">

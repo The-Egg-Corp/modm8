@@ -69,6 +69,8 @@ function filterBySearch(games: Game[]) {
     })
 }
 
+const openLink = (path: string) => OpenExternal(path).catch(e => console.log(`Error opening folder: ${e}`))
+
 const alphabetSort = (games: Game[]) => {
     if ((searchInput.value?.length ?? 0) < 1) return games
     return games.sort((g1, g2) => g1 > g2 ? 1 : (g1 === g2 ? 0 : -1))
@@ -103,7 +105,7 @@ const getGames = (sort = true, searchFilter = true) => {
     return out
 }
 
-const openLink = (path: string) => OpenExternal(path).catch(e => console.log(`Error opening folder: ${e}`))
+const loading = ref(true)
 
 onMounted(async () => {
     const games = getGameList()
@@ -113,6 +115,7 @@ onMounted(async () => {
     }
 
     store.games = new Map(games.map(g => [g.identifier, g]))
+    loading.value = false
 })
 </script>
 
@@ -121,7 +124,7 @@ onMounted(async () => {
         <h2 class="header no-select">{{ $t('game-selection.header') }}</h2>
 
         <div class="card game-container no-drag">
-            <DataView lazy data-key="game-list" :value="getGames()" :layout="layout">
+            <DataView v-if="!loading" lazy data-key="game-list" :value="getGames()" :layout="layout">
                 <template #empty>
                     <div class="dataview-empty">
                         <p>{{ `${$t('game-selection.empty-results')}. 😔` }}</p>
@@ -276,6 +279,7 @@ onMounted(async () => {
                     </div>
                 </template>
             </DataView>
+            <div v-else>Loading...</div>
         </div>
     </div>
 </template>

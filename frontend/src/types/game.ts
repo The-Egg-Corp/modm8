@@ -7,4 +7,5 @@ export interface Game {
     favourited?: boolean
     installed?: boolean
     bepinexSetup?: boolean
+    aliases?: string[]
 }

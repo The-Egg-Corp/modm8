@@ -1,11 +1,10 @@
 import { defineStore } from "pinia"
 
-const state = {
-    
+export interface ProfileState {
+    // TODO: Create 'Profile' type and replace `any`
+    profiles: Map<string, any>
 }
 
-export type ProfileState = typeof state
-
-export const useProfileStore = defineStore("ProfileStore", {
-    state: () => state
+export const useProfileStore = defineStore("ProfileStore", () => {
+    return {}
 })

@@ -13,67 +13,89 @@ import {
 
 import { core } from "@backend/models.js"
 import { Theme } from "@types"
+import { ref } from 'vue'
 
-const state = {
-    general: {
+export interface SettingsState {
+
+}
+
+export const useSettingsStore = defineStore("SettingsStore", () => {
+    const general = ref({
         locale: 'en',
         theme: {
             label: 'Dark',
             value: 'aura-dark-purple'
         } as Theme,
         animations_enabled: true,
-    },
-    performance: {
+    })
+    
+    const performance = ref({
         thread_count: 2,
         gpu_acceleration: true
-    },
-    misc: {
+    })
+    
+    const misc = ref({
         nexus_personal_key: '',
         update_behaviour: 2,
         game_selection_layout: 'grid',
-    }
-}
+    })
 
-// 'Save' here means updating the viper config in the backend.
-// See: backend/core/settings.go
-const actions = {
-    setLocale(code: string, save = true) {
-        state.general.locale = code
+    //#region Actions
+
+    // 'Save' here means updating the viper config in the backend.
+    // See: backend/core/settings.go
+    function setLocale(code: string, save = true) {
+        general.value.locale = code
         if (save) SetLocale(code)
-    },
-    setTheme(theme: Theme, save = true) {
-        Object.assign(state.general.theme, theme)
+    }
+
+    function setTheme(theme: Theme, save = true) {
+        Object.assign(general.value.theme, theme)
         if (save) SetTheme(theme.value)
-    },
-    setAnimationsEnabled(value: boolean, save = true) {
-        state.general.animations_enabled = value
+    }
+
+    function setAnimationsEnabled(value: boolean, save = true) {
+        general.value.animations_enabled = value
         if (save) SetAnimationsEnabled(value)
-    },
-    setThreads(count: number, save = true) {
-        state.performance.thread_count = count
+    }
+
+    function setThreads(count: number, save = true) {
+        performance.value.thread_count = count
         if (save) SetThreads(count)
-    },
-    setAcceleration(value: boolean, save = true) {
-        state.performance.gpu_acceleration = value
+    }
+
+    function setAcceleration(value: boolean, save = true) {
+        performance.value.gpu_acceleration = value
         if (save) SetGPUAccel(value)
-    },
-    setNexusPersonalKey(key: string, save = true) {
-        state.misc.nexus_personal_key = key
+    }
+
+    function setNexusPersonalKey(key: string, save = true) {
+        misc.value.nexus_personal_key = key
         if (save) SetNexusPersonalKey(key)
-    },
-    setUpdateBehaviour(behaviour: core.UpdateBehaviour, save = true) {
-        state.misc.update_behaviour = behaviour
+    }
+
+    function setUpdateBehaviour(behaviour: core.UpdateBehaviour, save = true) {
+        misc.value.update_behaviour = behaviour
         if (save) SetUpdateBehaviour(behaviour)
-    },
-    setGameSelectionLayout(layout: core.GameSelectionLayout, save = true) {
-        state.misc.game_selection_layout = layout
+    }
+
+    function setGameSelectionLayout(layout: core.GameSelectionLayout, save = true) {
+        misc.value.game_selection_layout = layout
         if (save) SetGameSelectionLayout(layout)
     }
-}
+    //#endregion
 
-export type SettingsState = typeof state
-
-export const useSettingsStore = defineStore("SettingsStore", {
-    state: () => state,
-    actions,
+    return {
+        general,
+        performance,
+        misc,
+        setLocale,
+        setTheme,
+        setAnimationsEnabled,
+        setThreads,
+        setAcceleration,
+        setNexusPersonalKey,
+        setUpdateBehaviour,
+        setGameSelectionLayout
+    }
 })

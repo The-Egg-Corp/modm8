@@ -1,22 +1,21 @@
 import { defineStore } from 'pinia'
+import { ref } from 'vue'
 
-// Defaults. These will usually be different at runtime.
-const state = {
-    maxThreads: 2
+export interface AppState {
+    maxThreads: number
 }
 
-const actions = {
-    setMaxThreads(num: number) {
-        state.maxThreads = num
+export const useAppStore = defineStore('AppStore', () => {
+    const maxThreads = ref(2)
+
+    function setMaxThreads(num: number) {
+        maxThreads.value = num
     }
-}
 
-export type AppState = typeof state
-
-export const useAppStore = defineStore({
-    id: 'AppStore',
-    state: () => state,
-    actions
+    return {
+        maxThreads,
+        setMaxThreads
+    }
 })
 
 export * from './settings'

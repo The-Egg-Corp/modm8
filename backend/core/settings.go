@@ -1,5 +1,7 @@
 package core
 
+import "github.com/spf13/viper"
+
 type UpdateBehaviour uint8
 
 const (
@@ -55,6 +57,8 @@ type MiscOptions struct {
 	GameSelectionLayout GameSelectionLayout `json:"game_selection_layout" mapstructure:"game_selection_layout"`
 }
 
+var settingsCfg = viper.New()
+
 func NewSettings() *AppSettings {
 	return &AppSettings{
 		General: GeneralOptions{
@@ -75,16 +79,16 @@ func NewSettings() *AppSettings {
 }
 
 func (settings *AppSettings) WriteToConfig() error {
-	return WriteToConfig(*settingsCfg, settings)
+	return WriteToConfig(settingsCfg, settings)
 }
 
 func (settings *AppSettings) Load() error {
-	SetupConfig(*settingsCfg, "settings", "toml")
-	return ReadOrCreate(*settingsCfg, settings, SettingsPath())
+	SetupConfig(settingsCfg, "settings", "toml")
+	return ReadOrCreate(settingsCfg, settings, SettingsPath())
 }
 
 func (settings *AppSettings) Save() error {
-	return Save(*settingsCfg, settings, SettingsPath())
+	return Save(settingsCfg, settings, SettingsPath())
 }
 
 func (settings *AppSettings) SetLocale(locale string) {

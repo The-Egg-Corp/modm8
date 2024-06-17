@@ -3,7 +3,7 @@ import { compare } from 'compare-versions'
 import { version as pkgVer } from '../../package.json'
 import { computed, ref } from "vue"
 
-export type VersionState = {
+export interface VersionState {
     currentVer: string,
     remoteVer: string
 }

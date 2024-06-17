@@ -11,15 +11,18 @@ import {
     GetSettings
 } from '@backend/core/App'
 
-import { useAppStore, useGameStore } from '@stores'
+import { useAppStore } from '@stores'
 
 const appStore = useAppStore()
+const {
+    setMaxThreads
+} = appStore
 
 onMounted(async () => {
-    appStore.setMaxThreads(await NumCPU())
-
     const settings = await GetSettings()
     changeLocale(settings.general.locale)
+
+    setMaxThreads(await NumCPU())
 })
 </script>
 

@@ -13,7 +13,7 @@ import { Nullable } from 'primevue/ts-helpers'
 
 import { t } from '@i18n'
 import { BepinexInstalled } from '@backend/backend/GameManager'
-import { OpenExternal } from '@backend/core/App'
+import { GetPersistence, OpenExternal } from '@backend/core/App'
 import { tooltipOpts } from "../../src/util"
 
 import { useGameStore } from '@stores'
@@ -22,7 +22,8 @@ const store = useGameStore()
 const { 
     games,
     isGameInstalled, 
-    isFavouriteGame
+    isFavouriteGame,
+    gamesAsArray
 } = storeToRefs(store)
 const {
     toggleFavouriteGame,
@@ -104,8 +105,7 @@ const filters: ComputedRef<ValueItemLabeled<string>[]> = computed(() => [{
 }])
 
 const getGames = (sort = true, searchFilter = true) => {
-    let out = store.gamesAsArray
-    console.log(out)
+    let out = gamesAsArray.value
 
     const filter = selectedFilter.value.label
     if (filter == "INSTALLED") out = out.filter(g => g.installed)
@@ -122,7 +122,7 @@ const loading = ref(true)
 onMounted(async () => {
     loading.value = true
 
-    //const persistence = await GetPersistence()
+    const persistence = await GetPersistence()
 
     const _games = getGameList()
     for (const g of _games) {
@@ -133,6 +133,7 @@ onMounted(async () => {
         }
 
         // TODO: Set `g.favourited` using backend
+        g.favourited = persistence.favourite_games.includes(g.identifier)
     }
 
     games.value = new Map(_games.map(g => [g.identifier, g]))
@@ -249,8 +250,8 @@ onMounted(async () => {
                                         <div class="flex gap-2 justify-content-center align-items-baseline">
                                             <p class="m-0" style="font-size: 16.5px">{{ t('game-selection.bepinex-setup') }}</p>
                                             <i
-                                                :class="['pi', store.isGameInstalled(game.identifier) ? 'pi-check' : 'pi-times']" 
-                                                :style="{ color: store.isGameInstalled(game.identifier) ? 'lime' : 'red' }"
+                                                :class="['pi', isGameInstalled(game.identifier) ? 'pi-check' : 'pi-times']" 
+                                                :style="{ color: isGameInstalled(game.identifier) ? 'lime' : 'red' }"
                                             />
                                         </div>
                                     </div>
@@ -268,15 +269,15 @@ onMounted(async () => {
                                             <Button 
                                                 outlined
                                                 class="heart-icon"
-                                                :icon="store.isFavouriteGame(game.identifier) ? 'pi pi-heart-fill' : 'pi pi-heart'"
-                                                @click="store.toggleFavouriteGame(game.identifier)"
+                                                :icon="isFavouriteGame(game.identifier) ? 'pi pi-heart-fill' : 'pi pi-heart'"
+                                                @click="toggleFavouriteGame(game.identifier)"
                                             />
 
                                             <Button
                                                 outlined plain
                                                 :label="$t('game-selection.select-button')"
                                                 class="list-select-game-btn flex-auto md:flex-initial"
-                                                @click="store.setSelectedGame(game)"
+                                                @click="setSelectedGame(game)"
                                             />
                                         </div>
                                     </div>

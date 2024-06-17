@@ -16,13 +16,24 @@ import { Ref, computed, ref } from "vue"
 
 import { useDialog } from "@composables"
 import { useAppStore, useSettingsStore } from "@stores"
-import { Alignment, ChangeEvent, ValueItemLabeled } from "@types"
+import { Alignment, ValueItemLabeled } from "@types"
 import { t } from "@i18n"
+import { storeToRefs } from "pinia"
 
 const { visible, draggable, closable } = useDialog()
 
 const appStore = useAppStore()
+const {
+    maxThreads
+} = storeToRefs(appStore)
+
 const settingsStore = useSettingsStore()
+const {
+    setThreads,
+    setAcceleration,
+    setAnimationsEnabled,
+    setUpdateBehaviour
+} = settingsStore
 
 const dialogStyle = {
     "margin-left": "70px",
@@ -41,17 +52,13 @@ const dividerAlignment: Alignment = "center"
 
 const accelChecked = ref(true)
 const setAccel = (value: boolean) => {
-    const store = useSettingsStore()
-    store.setAcceleration(value)
+    setAcceleration(value)
 
     // Make Wails aware of new setting value by restarting the app (or prompt user?).
 }
 
 const threadCount = ref(2)
-const setThreads = (count: number) => settingsStore.setThreads(count)
-
 const animationsEnabled = ref(true)
-const setAnimsEnabled = (value: boolean) => settingsStore.setAnimationsEnabled(value)
 
 type Behaviour = ValueItemLabeled<core.UpdateBehaviour>
 
@@ -70,8 +77,6 @@ const behaviours: Ref<Behaviour[]> = computed(() => [{
     label: t('settings.update-behaviour.option-3'),
     value: core.UpdateBehaviour.AUTO
 }])
-
-const setUpdateBehaviour = (e: ChangeEvent<Behaviour>) => settingsStore.setUpdateBehaviour(e.value.value)
 
 const applySettings = async() => {
     const t0 = performance.now()
@@ -132,7 +137,10 @@ const applySettings = async() => {
                                     <h3>{{ $t('settings.animations-enabled') }}</h3>
                                 </div>
                                 <div class="flex-item">
-                                    <InputSwitch v-model="animationsEnabled" @update:model-value="setAnimsEnabled"/>
+                                    <InputSwitch 
+                                        v-model="animationsEnabled" 
+                                        @update:model-value="setAnimationsEnabled(animationsEnabled)"
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -149,7 +157,10 @@ const applySettings = async() => {
                                     <h3>{{ $t('settings.gpu-acceleration') }}</h3>
                                 </div>
                                 <div class="flex-item">
-                                    <InputSwitch v-model="accelChecked" @update:model-value="setAccel"/>
+                                    <InputSwitch 
+                                        v-model="accelChecked" 
+                                        @update:model-value="setAccel(accelChecked)"
+                                    />
                                 </div>
                             </div>
 
@@ -159,7 +170,10 @@ const applySettings = async() => {
                                 </div>
                                 <div class="flex flex-row justify-content-end align-items-center gap-5">
                                     <InputText class="w-2" v-model.number="threadCount"/>
-                                    <Slider class="w-12rem" v-model="threadCount" :min="2" :max="appStore.maxThreads" @change="setThreads"/>
+                                    <Slider 
+                                        class="w-12rem" :min="2" :max="maxThreads"
+                                        v-model="threadCount" @change="setThreads(threadCount)"
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -178,7 +192,7 @@ const applySettings = async() => {
                                 <div class="flex-item">
                                     <SelectButton 
                                         aria-labelledby="basic" :options="behaviours.map(b => b.label)"
-                                        v-model="updateBehaviour" @change="setUpdateBehaviour"
+                                        v-model="updateBehaviour" @change="setUpdateBehaviour(updateBehaviour.value)"
                                     />
                                 </div>
                             </div>

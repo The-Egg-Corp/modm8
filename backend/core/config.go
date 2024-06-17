@@ -7,22 +7,17 @@ import (
 	"github.com/spf13/viper"
 )
 
-var (
-	persistenceCfg = viper.New()
-	settingsCfg    = viper.New()
-)
-
-func SetupConfig(instance viper.Viper, name string, fileType string) {
+func SetupConfig(instance *viper.Viper, name string, fileType string) {
 	instance.SetConfigName(name)
 	instance.SetConfigType(fileType)
 	instance.AddConfigPath(ConfigDir())
 }
 
-func Save(instance viper.Viper, i interface{}, path string) error {
+func Save(instance *viper.Viper, i interface{}, path string) error {
 	// Write struct values to viper config
 	WriteToConfig(instance, i)
 
-	// Write config to the `settings.toml` file.
+	// Write config to the file at the specified path.
 	if err := instance.WriteConfigAs(path); err != nil {
 		return err
 	}
@@ -30,7 +25,7 @@ func Save(instance viper.Viper, i interface{}, path string) error {
 	return nil
 }
 
-func WriteToConfig(instance viper.Viper, i interface{}) error {
+func WriteToConfig(instance *viper.Viper, i interface{}) error {
 	var result map[string]interface{}
 	err := mapstructure.Decode(i, &result)
 	if err != nil {
@@ -41,9 +36,10 @@ func WriteToConfig(instance viper.Viper, i interface{}) error {
 	return instance.MergeConfigMap(result)
 }
 
-func ReadOrCreate(instance viper.Viper, i interface{}, path string) error {
+func ReadOrCreate(instance *viper.Viper, i interface{}, path string) error {
 	if err := instance.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+			fmt.Println("No file found, creating: " + path)
 			return Save(instance, i, path)
 		}
 

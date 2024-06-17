@@ -2,7 +2,9 @@ package core
 
 import (
 	"context"
+	"fmt"
 
+	"github.com/spf13/viper"
 	wRuntime "github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
@@ -19,6 +21,8 @@ type WindowState struct {
 	Y         int    `json:"pos_y" mapstructure:"pos_y"`
 }
 
+var persistenceCfg = viper.New()
+
 func NewPersistence() *Persistence {
 	return &Persistence{
 		FavouriteGames: []string{},
@@ -33,16 +37,17 @@ func NewPersistence() *Persistence {
 }
 
 func (persistence *Persistence) WriteToConfig() error {
-	return WriteToConfig(*persistenceCfg, persistence)
+	return WriteToConfig(persistenceCfg, persistence)
 }
 
 func (persistence *Persistence) Load() error {
-	SetupConfig(*persistenceCfg, "persistence", "toml")
-	return ReadOrCreate(*persistenceCfg, persistence, PersistencePath())
+	SetupConfig(persistenceCfg, "persistence", "toml")
+	return ReadOrCreate(persistenceCfg, persistence, PersistencePath())
 }
 
 func (persistence *Persistence) Save() error {
-	return Save(*persistenceCfg, persistence, PersistencePath())
+	fmt.Println("somehow ive been called??")
+	return Save(persistenceCfg, persistence, PersistencePath())
 }
 
 // The frontend must still be loaded to call these runtime methods.

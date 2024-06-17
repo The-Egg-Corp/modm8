@@ -4,17 +4,19 @@ import { defineStore } from 'pinia'
 import { Save, SetFavouriteGames } from '@backend/core/Persistence'
 import { Ref, computed, ref } from 'vue'
 
-export type GameState = {
+export interface GameState {
     selectedGame: Game,
     games: Map<string, Game>
 }
 
 export const useGameStore = defineStore('GameStore', () => {
+    //#region State
     const selectedGame = ref({
         identifier: ''
     }) as Ref<Game>
 
     const games = ref(new Map()) as Ref<Map<string, Game>>
+    //#endregion
 
     //#region Getters
     const _gameByID = (id: string) => games.value.get(id)
@@ -45,6 +47,8 @@ export const useGameStore = defineStore('GameStore', () => {
         if (!game) return // TODO: Implement proper error
 
         game.favourited = !game.favourited
+
+        console.log(favouriteGameIds)
 
         await SetFavouriteGames(favouriteGameIds.value)
         await Save()

@@ -20,6 +20,7 @@ export interface SettingsState {
 }
 
 export const useSettingsStore = defineStore("SettingsStore", () => {
+    //#region State
     const general = ref({
         locale: 'en',
         theme: {
@@ -39,6 +40,7 @@ export const useSettingsStore = defineStore("SettingsStore", () => {
         update_behaviour: 2,
         game_selection_layout: 'grid',
     })
+    //#endregion
 
     //#region Actions
 

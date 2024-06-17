@@ -1,5 +1,7 @@
-import { useSettingsStore } from "@stores"
 import { Country } from "@types"
+
+import { useSettingsStore } from "@stores"
+import { storeToRefs } from "pinia"
 
 import { ComputedRef, computed } from "vue"
 import { createI18n } from "vue-i18n"
@@ -39,13 +41,23 @@ export const countries: ComputedRef<Country[]> = computed(() => [{
   code: 'es'
 }])
 
-export const countryFromLocale = () => {
+const getSettingsStore = () => {
   const store = useSettingsStore()
+  return {
+    ...storeToRefs(store),
+    ...store
+  }
+}
 
-  const lang = store.general.locale
+export const countryFromLocale = () => {
+  const {
+    general
+  } = getSettingsStore()
+
+  const lang = general.locale
   if (!lang) return countries.value[0]
   
-  return countries.value.find(c => c.code === store.general.locale) || countries.value[0]
+  return countries.value.find(c => c.code === general.locale) || countries.value[0]
 }
 
 export const getCountry = computed(countryFromLocale) 
@@ -57,8 +69,10 @@ type CountryCode = typeof locale.value
  * @param code The locale/language code to switch to, such as 'en' or 'fr'.
  */
 export const changeLocale = async (code: string) => {
+  const {
+    setLocale
+  } = getSettingsStore()
+
   locale.value = code as CountryCode
-  
-  const store = useSettingsStore()
-  store.setLocale(code)
+  setLocale(code)
 }

@@ -5,20 +5,21 @@ import SettingsOverlay from './components/settings/SettingsOverlay.vue'
 
 import { onMounted } from 'vue'
 import { changeLocale } from '@i18n'
-import { GetSettings, NumCPU } from '@backend/core/App'
-import { core } from '@backend/models'
-import { useAppStore } from '@stores'
 
-let settings: core.AppSettings
+import { 
+    NumCPU,
+    GetSettings
+} from '@backend/core/App'
+
+import { useAppStore, useGameStore } from '@stores'
+
+const appStore = useAppStore()
 
 onMounted(async () => {
-    settings = await GetSettings()
-    //console.log(settings)
+    appStore.setMaxThreads(await NumCPU())
 
+    const settings = await GetSettings()
     changeLocale(settings.general.locale)
-
-    const store = useAppStore()
-    store.setMaxThreads(await NumCPU())
 })
 </script>
 

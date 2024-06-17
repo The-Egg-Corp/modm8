@@ -1,49 +1,65 @@
 import { Game } from '@types'
 import { defineStore } from 'pinia'
 
-import { SetFavouriteGames } from '@backend/core/Persistence'
-import { reactive } from 'vue'
+import { Save, SetFavouriteGames } from '@backend/core/Persistence'
+import { Ref, computed, ref } from 'vue'
 
-// Stores state for anything game-related.
-const state = {
-    selectedGame: {
-        identifier: ''
-    } as Game,
-    games: reactive(new Map()) as Map<string, Game>
+export type GameState = {
+    selectedGame: Game,
+    games: Map<string, Game>
 }
 
-const actions = {
-    // TODO: Possibly need to take in ID get from `state.games` instead ?
-    setSelectedGame: (game: Game) => state.selectedGame = game,
+export const useGameStore = defineStore('GameStore', () => {
+    const selectedGame = ref({
+        identifier: ''
+    }) as Ref<Game>
 
-    gamesAsArray: () => [...state.games.values()] as Game[],
-    gameByID: (id: string) => state.games.get(id),
+    const games = ref(new Map()) as Ref<Map<string, Game>>
 
-    isGameInstalled: (id: string) => actions.gameByID(id)?.installed || false,
-    isFavouriteGame: (id: string) => actions.gameByID(id)?.favourited || false,
+    //#region Getters
+    const _gameByID = (id: string) => games.value.get(id)
+    const gameByID = computed(() => _gameByID)
 
-    toggleFavouriteGame: async (id: string) => {
-        const game = actions.gameByID(id)
+    const gamesAsArray = computed(() => [...games.value.values()] as Game[])
+
+    const isGameInstalled = computed(() => (id: string) => _gameByID(id)?.installed || false)
+    const isFavouriteGame = computed(() => (id: string) => {
+        const game = _gameByID(id)
+        return game?.favourited || false
+    })
+
+    const favouriteGameIds = computed(() => gamesAsArray.value.reduce((acc: string[], game) => {
+        if (game.favourited) acc.push(game.identifier)
+        return acc
+    }, []))
+    //#endregion
+
+    //#region Actions
+    // TODO: Possibly need to take in ID, then get from `state.games` instead ?
+    function setSelectedGame(game: Game) {
+        selectedGame.value = game
+    }
+
+    async function toggleFavouriteGame(id: string) {
+        const game = _gameByID(id)
         if (!game) return // TODO: Implement proper error
 
         game.favourited = !game.favourited
 
-        const arr = actions.favouriteGameIds()
-        console.log(`Favourite games updated: ${arr}`)
-        
-        return SetFavouriteGames(arr)
-    },
+        await SetFavouriteGames(favouriteGameIds.value)
+        await Save()
+    }
+    //#endregion
 
-    favouriteGameIds: () => actions.gamesAsArray().reduce((acc: string[], game) => {
-        if (!game.favourited) acc.push(game.identifier)
-        return acc
-    }, []),
-}
-
-export type GameState = typeof state
-
-export const useGameStore = defineStore({
-    id: 'GameStore',
-    state: () => state,
-    actions
+    return {
+        selectedGame,
+        games,
+        gamesAsArray,
+        gameByID,
+        isGameInstalled,
+        isFavouriteGame,
+        favouriteGameIds,
+        setSelectedGame,
+        toggleFavouriteGame
+    }
 })

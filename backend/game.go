@@ -34,6 +34,20 @@ func NewGameManager() *GameManager {
 	return &GameManager{}
 }
 
+func (gm *GameManager) GameInstalled(dirPath string, exeKeywords []string) bool {
+	var installed bool
+
+	for _, keyword := range exeKeywords {
+		path := filepath.Join(dirPath, keyword)
+		if exists, _ := ExistsAtPath(path); exists {
+			installed = true
+			break
+		}
+	}
+
+	return installed
+}
+
 func (gm *GameManager) BepinexInstalled(absPath string) bool {
 	installed, _ := BepinexInstalled(absPath)
 	return installed
@@ -49,16 +63,24 @@ func BepinexInstalled(absPath string) (bool, []string) {
 
 	missing := []string{}
 
-	for _, file := range required {
+	for _, fileName := range required {
 		// Use abs path to get path to current required file.
-		path := filepath.Join(absPath, file)
+		path := filepath.Join(absPath, fileName)
 
 		// Check if file exists, add to missing slice if not.
-		if _, err := os.Stat(path); os.IsNotExist(err) {
-			missing = append(missing, file)
+		if exists, _ := ExistsAtPath(path); !exists {
+			missing = append(missing, fileName)
 		}
 	}
 
 	// If no missing files, BepInEx is likely installed.
 	return len(missing) == 0, missing
+}
+
+func ExistsAtPath(absPath string) (bool, error) {
+	if _, err := os.Stat(absPath); os.IsNotExist(err) {
+		return false, err
+	}
+
+	return true, nil
 }

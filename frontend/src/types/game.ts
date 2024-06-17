@@ -4,6 +4,7 @@ export interface Game {
     description?: string,
     image?: string,
     path?: string,
-    installed?: boolean
     favourited?: boolean
+    installed?: boolean
+    bepinexSetup?: boolean
 }

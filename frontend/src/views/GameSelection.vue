@@ -3,6 +3,7 @@ import { ref, onMounted, Ref, computed, ComputedRef } from 'vue'
 
 import DataView from 'primevue/dataview'
 import DataViewLayoutOptions from 'primevue/dataviewlayoutoptions'
+import Skeleton from 'primevue/skeleton'
 
 // TODO: Replace with real external service.
 import { getGameList } from '../mocks/GameService'
@@ -16,7 +17,17 @@ import { OpenExternal } from '@backend/core/App'
 import { tooltipOpts } from "../../src/util"
 
 import { useGameStore } from '@stores'
+import { storeToRefs } from 'pinia'
 const store = useGameStore()
+const { 
+    games,
+    isGameInstalled, 
+    isFavouriteGame
+} = storeToRefs(store)
+const {
+    toggleFavouriteGame,
+    setSelectedGame
+} = store
 
 const searchInput: Ref<Nullable<string>> = ref(null)
 const layout: Ref<Layout> = ref('grid')
@@ -93,7 +104,8 @@ const filters: ComputedRef<ValueItemLabeled<string>[]> = computed(() => [{
 }])
 
 const getGames = (sort = true, searchFilter = true) => {
-    let out = store.gamesAsArray()
+    let out = store.gamesAsArray
+    console.log(out)
 
     const filter = selectedFilter.value.label
     if (filter == "INSTALLED") out = out.filter(g => g.installed)
@@ -108,13 +120,22 @@ const getGames = (sort = true, searchFilter = true) => {
 const loading = ref(true)
 
 onMounted(async () => {
-    const games = getGameList()
+    loading.value = true
 
-    for (const g of games) {
-        g.installed = g.path ? await BepinexInstalled(g.path) : false
+    //const persistence = await GetPersistence()
+
+    const _games = getGameList()
+    for (const g of _games) {
+        if (!!g.path) {
+            // TODO: Make sure the game executable exists (call backend)
+            g.installed = true
+            g.bepinexSetup = await BepinexInstalled(g.path)
+        }
+
+        // TODO: Set `g.favourited` using backend
     }
 
-    store.games = new Map(games.map(g => [g.identifier, g]))
+    games.value = new Map(_games.map(g => [g.identifier, g]))
     loading.value = false
 })
 </script>
@@ -124,9 +145,51 @@ onMounted(async () => {
         <h2 class="header no-select">{{ $t('game-selection.header') }}</h2>
 
         <div class="card game-container no-drag">
-            <DataView v-if="!loading" lazy data-key="game-list" :value="getGames()" :layout="layout">
+
+            <!-- While loading, show a skeleton of a grid. -->
+            <DataView v-if="loading" data-key="game-selection-loading" layout="grid">
                 <template #empty>
-                    <div class="dataview-empty">
+                    <div class="grid grid-nogutter pt-4">
+                        <div v-for="i in 15" :key="i" class="grid-item col-6 sm:col-3 md:col-3 lg:col-2 xl:col-1">
+                            <div class="flex flex-column p-3 border-1 surface-border border-round">
+                                <div class="flex flex-column align-items-center interact-section pb-3">
+                                    <Skeleton width="6rem" height="2rem" />
+                                </div>
+                
+                                <div class="flex justify-content-center border-round">
+                                    <Skeleton width="75%" height="10rem" />
+                                </div>
+                
+                                <div class="flex flex-column align-items-center interact-section pt-2">
+                                    <div class="flex flex-column gap-3">
+                                        <div class="flex gap-2 justify-content-center align-items-baseline">
+                                            <Skeleton width="10rem" height="1.5rem" />
+                                            <Skeleton width="1.5rem" height="1.5rem" shape="circle" />
+                                        </div>
+                
+                                        <div class="flex flex-row gap-2">
+                                            <Skeleton width="4rem" height="2rem" />
+                                            <Skeleton width="2rem" height="2rem" shape="circle" />
+                                            <Skeleton width="2rem" height="2rem" shape="circle" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </DataView>
+
+            <!-- Finished loading, render the DataView with proper info -->
+            <DataView v-else lazy data-key="game-selection" :value="getGames()" :layout="layout">
+                <template #empty>
+                    <div v-if="selectedFilter.label == 'FAVOURITES'" class="dataview-empty">
+                        <p>No games favourited!</p>
+                    </div>
+                    <div v-else-if="selectedFilter.label == 'INSTALLED'" class="dataview-empty">
+                        <p>No games installed!</p>
+                    </div>
+                    <div v-else class="dataview-empty">
                         <p>{{ `${$t('game-selection.empty-results')}. 😔` }}</p>
                     </div>
                 </template>
@@ -186,7 +249,7 @@ onMounted(async () => {
                                         <div class="flex gap-2 justify-content-center align-items-baseline">
                                             <p class="m-0" style="font-size: 16.5px">{{ t('game-selection.bepinex-setup') }}</p>
                                             <i
-                                                :class="['pi', 'pi-spin', store.isGameInstalled(game.identifier) ? 'pi-check' : 'pi-times']" 
+                                                :class="['pi', store.isGameInstalled(game.identifier) ? 'pi-check' : 'pi-times']" 
                                                 :style="{ color: store.isGameInstalled(game.identifier) ? 'lime' : 'red' }"
                                             />
                                         </div>
@@ -226,7 +289,7 @@ onMounted(async () => {
                 <!-- Grid layout -->
                 <template #grid>
                     <div class="grid grid-nogutter">
-                        <div v-for="(game, index) in getGames()" :key="index" class="grid-item col-6 sm:col-3 md:col-3 lg:col-2 xl:col-1">
+                        <div v-for="(game, index) in getGames()" :key="index" class="grid-item col-6 sm:col-5 md:col-4 lg:col-3 xl:col-2">
                             <div class="flex flex-column p-3 border-1 surface-border border-round">
                                 <div class="flex flex-column align-items-center interact-section pb-3">
                                     <div class="game-grid-title">{{ game.title }}</div>
@@ -243,8 +306,8 @@ onMounted(async () => {
                                         <div class="flex gap-2 justify-content-center align-items-baseline">
                                             <p class="m-0" style="font-size: 16.5px">{{ t('game-selection.bepinex-setup') }}</p>
                                             <i
-                                                :class="['pi', 'pi-spin', store.isGameInstalled(game.identifier) ? 'pi-check' : 'pi-times']" 
-                                                :style="{ color: store.isGameInstalled(game.identifier) ? 'lime' : 'red' }"
+                                                :class="['pi', isGameInstalled(game.identifier) ? 'pi-check' : 'pi-times']" 
+                                                :style="{ color: isGameInstalled(game.identifier) ? 'lime' : 'red' }"
                                             />
                                         </div>
 
@@ -253,7 +316,7 @@ onMounted(async () => {
                                                 outlined plain 
                                                 class="grid-select-game-btn"
                                                 :label="$t('game-selection.select-button')" 
-                                                @click="store.setSelectedGame(game)"
+                                                @click="setSelectedGame(game)"
                                             />
 
                                             <Button
@@ -268,8 +331,8 @@ onMounted(async () => {
                                                 outlined plain
                                                 class="heart-icon"
                                                 v-tooltip.top="tooltipOpts(t('keywords.favourite'))"
-                                                :icon="store.isFavouriteGame(game.identifier) ? 'pi pi-heart-fill' : 'pi pi-heart'"
-                                                @click="store.toggleFavouriteGame(game.identifier)"
+                                                :icon="isFavouriteGame(game.identifier) ? 'pi pi-heart-fill' : 'pi pi-heart'"
+                                                @click="toggleFavouriteGame(game.identifier)"
                                             />
                                         </div>
                                     </div>
@@ -279,7 +342,6 @@ onMounted(async () => {
                     </div>
                 </template>
             </DataView>
-            <div v-else>Loading...</div>
         </div>
     </div>
 </template>
@@ -416,7 +478,8 @@ onMounted(async () => {
 }
 
 .dataview-empty p {
-    font-size: 22.5px;
+    padding-top: 15px;
+    font-size: 22px;
     margin: 0 auto;
 }
 

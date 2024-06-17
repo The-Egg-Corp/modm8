@@ -33,6 +33,10 @@ func (a *App) GetSettings() *AppSettings {
 	return a.Settings
 }
 
+func (a *App) GetPersistence() *Persistence {
+	return a.Persistence
+}
+
 func NewApp() *App {
 	return &App{
 		Settings:    NewSettings(),

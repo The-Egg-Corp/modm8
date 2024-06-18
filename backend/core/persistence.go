@@ -2,7 +2,6 @@ package core
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/spf13/viper"
 	wRuntime "github.com/wailsapp/wails/v2/pkg/runtime"
@@ -46,7 +45,6 @@ func (persistence *Persistence) Load() error {
 }
 
 func (persistence *Persistence) Save() error {
-	fmt.Println("somehow ive been called??")
 	return Save(persistenceCfg, persistence, PersistencePath())
 }
 

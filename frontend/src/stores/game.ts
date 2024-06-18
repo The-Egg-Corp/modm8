@@ -47,9 +47,7 @@ export const useGameStore = defineStore('GameStore', () => {
         if (!game) return // TODO: Implement proper error
 
         game.favourited = !game.favourited
-
-        console.log(favouriteGameIds)
-
+        
         await SetFavouriteGames(favouriteGameIds.value)
         await Save()
     }

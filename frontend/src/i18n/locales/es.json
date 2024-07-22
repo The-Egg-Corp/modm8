@@ -46,7 +46,8 @@
     "installed": "Instalado",
     "all": "Todo",
     "favourite": "Favorito",
-    "favourites": "Favoritos"
+    "favourites": "Favoritos",
+    "unfavourite": "No favorito"
   },
   "languages": {
     "en": "Inglés",

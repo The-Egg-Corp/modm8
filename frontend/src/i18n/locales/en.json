@@ -57,7 +57,8 @@
     "on": "On",
     "yes": "Yes",
     "no": "No",
-    "favourites": "Favourites"
+    "favourites": "Favourites",
+    "unfavourite": "Unfavourite"
   },
   "languages": {
     "en": "English",

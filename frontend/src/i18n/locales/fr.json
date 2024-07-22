@@ -43,10 +43,11 @@
     "no": "",
     "close": "Fermer",
     "apply": "Appliquer",
-    "installed": "installée",
+    "installed": "Installée",
     "all": "Tous",
     "favourite": "Préféré",
-    "favourites": "Favoris"
+    "favourites": "Favoris",
+    "unfavourite": "Défavorisé"
   },
   "languages": {
     "en": "Anglais",

@@ -236,57 +236,6 @@ onMounted(async () => {
                     </div>
                 </template>
 
-                <!-- List layout -->
-                <template #list>
-                    <div class="grid grid-nogutter">
-                        <div v-for="(game, index) in getGames()" :key="index" class="col-12">
-                            <div class="flex flex-column sm:flex-row sm:align-items-center p-2 gap-5" :class="{ 'border-top-1 surface-border': index !== 0 }">
-                                <img class="game-list-thumbnail fadeinleft fadeinleft-thumbnail block xl:block mx-auto w-full" :src="getThumbnail(game)"/>
-
-                                <div class="flex flex-column md:flex-row justify-content-between md:align-items-center flex-1 gap-4">
-                                    <div class="fadeinleft fadeinleft-title flex flex-row md:flex-column justify-content-between align-items-start gap-2">
-                                        <div class="game-list-title">{{ game.title }}</div>
-
-                                        <div class="flex gap-2 justify-content-center align-items-baseline">
-                                            <p class="m-0" style="font-size: 16.5px">{{ t('game-selection.bepinex-setup') }}</p>
-                                            <i
-                                                :class="['pi', isGameInstalled(game.identifier) ? 'pi-check' : 'pi-times']" 
-                                                :style="{ color: isGameInstalled(game.identifier) ? 'lime' : 'red' }"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div class="flex flex-column md:align-items-end gap-5">
-                                        <div class="flex flex-row md:flex-row gap-3">
-                                            <Button
-                                                outlined plain
-                                                icon="pi pi-folder"
-                                                v-if="game.path"
-                                                v-tooltip.top="tooltipOpts(t('tooltips.game-selection.open-folder-location'))"
-                                                @click="openLink(`file://${game.path}`)"
-                                            />
-
-                                            <Button 
-                                                outlined
-                                                class="heart-icon"
-                                                :icon="isFavouriteGame(game.identifier) ? 'pi pi-heart-fill' : 'pi pi-heart'"
-                                                @click="toggleFavouriteGame(game.identifier)"
-                                            />
-
-                                            <Button
-                                                outlined plain
-                                                :label="$t('game-selection.select-button')"
-                                                class="list-select-game-btn flex-auto md:flex-initial"
-                                                @click="setSelectedGame(game)"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>  
-                        </div>
-                    </div>
-                </template>
-
                 <!-- Grid layout -->
                 <template #grid>
                     <div class="grid grid-nogutter">
@@ -330,15 +279,66 @@ onMounted(async () => {
                                             
                                             <Button
                                                 outlined plain
-                                                class="heart-icon"
-                                                v-tooltip.top="tooltipOpts(t('keywords.favourite'))"
+                                                v-tooltip.top="tooltipOpts(isFavouriteGame(game.identifier) ? t('keywords.unfavourite') : t('keywords.favourite'))"
                                                 :icon="isFavouriteGame(game.identifier) ? 'pi pi-heart-fill' : 'pi pi-heart'"
+                                                :style="isFavouriteGame(game.identifier) ? { color: 'var(--primary-color)' } : {}"
                                                 @click="toggleFavouriteGame(game.identifier)"
                                             />
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- List layout -->
+                <template #list>
+                    <div class="list list-nogutter">
+                        <div v-for="(game, index) in getGames()" :key="index" class="col-12">
+                            <div class="flex flex-column sm:flex-row sm:align-items-center p-2 gap-5" :class="{ 'border-top-1 surface-border': index !== 0 }">
+                                <img class="game-list-thumbnail fadeinleft fadeinleft-thumbnail block xl:block mx-auto w-full" :src="getThumbnail(game)"/>
+
+                                <div class="flex flex-column md:flex-row justify-content-between md:align-items-center flex-1 gap-4">
+                                    <div class="fadeinleft fadeinleft-title flex flex-row md:flex-column justify-content-between align-items-start gap-2">
+                                        <div class="game-list-title">{{ game.title }}</div>
+
+                                        <div class="flex gap-2 justify-content-center align-items-baseline">
+                                            <p class="m-0" style="font-size: 16.5px">{{ t('game-selection.bepinex-setup') }}</p>
+                                            <i
+                                                :class="['pi', isGameInstalled(game.identifier) ? 'pi-check' : 'pi-times']" 
+                                                :style="{ color: isGameInstalled(game.identifier) ? 'lime' : 'red' }"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div class="flex flex-column md:align-items-end gap-5">
+                                        <div class="flex flex-row md:flex-row gap-3">
+                                            <Button
+                                                outlined plain
+                                                icon="pi pi-folder"
+                                                v-if="game.path"
+                                                v-tooltip.top="tooltipOpts(t('tooltips.game-selection.open-folder-location'))"
+                                                @click="openLink(`file://${game.path}`)"
+                                            />
+
+                                            <Button
+                                                outlined plain
+                                                :icon="isFavouriteGame(game.identifier) ? 'pi pi-heart-fill' : 'pi pi-heart'"
+                                                :style="isFavouriteGame(game.identifier) ? { color: 'var(--primary-color)' } : {}"
+                                                @click="toggleFavouriteGame(game.identifier)"
+                                            />
+
+                                            <Button
+                                                outlined plain
+                                                :label="$t('game-selection.select-button')"
+                                                class="list-select-game-btn flex-auto md:flex-initial"
+                                                @click="setSelectedGame(game)"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>  
                         </div>
                     </div>
                 </template>
@@ -364,6 +364,11 @@ onMounted(async () => {
 .game-container {
     margin-left: 50px;
     margin-right: 50px;
+}
+
+.list {
+    overflow-y: scroll;
+    scrollbar-width: none;
 }
 
 .grid {
@@ -482,11 +487,6 @@ onMounted(async () => {
     padding-top: 15px;
     font-size: 22px;
     margin: 0 auto;
-}
-
-.heart-icon:hover {
-    color: var(--primary-color);
-    border-color: #a1a1aa;
 }
 
 .filter-dropdown {

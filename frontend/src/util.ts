@@ -8,7 +8,7 @@ const tooltipArrowStyle = {
     borderLeftColor: 'var(--primary-color)'
 }
 
-export const tooltipOpts = (text: string, textStyle=tooltipTextStyle, arrowStyle=tooltipArrowStyle): TooltipOptions => ({ 
+export const tooltipOpts = (text: string, textStyle = tooltipTextStyle, arrowStyle = tooltipArrowStyle): TooltipOptions => ({ 
     value: text,
     showDelay: 60,
     hideDelay: 5,

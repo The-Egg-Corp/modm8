@@ -6,8 +6,9 @@
   "scripts": {
     "clean": "rimraf ./node_modules",
     "reinstall": "bun run clean && bun i",
-    "dev": "bunx vite",
-    "build": "bunx vite build",
+    "copy-themes": "copy-folder ./node_modules/primevue/resources/themes ./src/assets/themes --summary",
+    "dev": "bun run copy-themes && bunx vite",
+    "build": "bun run copy-themes && bunx vite build",
     "typecheck": "bunx vue-tsc --noEmit",
     "ci": "bun i && bun run typecheck"
   },
@@ -26,6 +27,7 @@
   "devDependencies": {
     "@babel/types": "^7.18.10",
     "@vitejs/plugin-vue": "^3.0.3",
+    "copy-folder-util": "^1.1.3",
     "rimraf": "latest",
     "typescript": "latest",
     "vite": "latest",

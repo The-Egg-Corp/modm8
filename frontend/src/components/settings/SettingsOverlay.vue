@@ -169,6 +169,7 @@ const applySettings = async() => {
                                     <h3>{{ $t('settings.threads') }}</h3>
                                 </div>
                                 <div class="flex flex-row justify-content-end align-items-center gap-5">
+                                    <!-- @vue-ignore -->
                                     <InputText class="w-2" v-model.number="threadCount"/>
                                     <Slider 
                                         class="w-12rem" :min="2" :max="maxThreads"

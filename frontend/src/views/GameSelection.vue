@@ -150,7 +150,7 @@ onMounted(async () => {
             <!-- While loading, show a skeleton of a grid. -->
             <DataView v-if="loading" data-key="game-selection-loading" layout="grid">
                 <template #empty>
-                    <div class="grid grid-nogutter pt-4">
+                    <div class="scrollable grid-nogutter pt-4">
                         <div v-for="i in 15" :key="i" class="grid-item col-6 sm:col-3 md:col-3 lg:col-2 xl:col-1">
                             <div class="flex flex-column p-3 border-1 surface-border border-round">
                                 <div class="flex flex-column align-items-center interact-section pb-3">
@@ -238,7 +238,7 @@ onMounted(async () => {
 
                 <!-- Grid layout -->
                 <template #grid>
-                    <div class="grid grid-nogutter">
+                    <div class="scrollable grid grid-nogutter">
                         <div v-for="(game, index) in getGames()" :key="index" class="grid-item col-6 sm:col-5 md:col-4 lg:col-3 xl:col-2">
                             <div class="flex flex-column p-3 border-1 surface-border border-round">
                                 <div class="flex flex-column align-items-center interact-section pb-3">
@@ -294,7 +294,7 @@ onMounted(async () => {
 
                 <!-- List layout -->
                 <template #list>
-                    <div class="list list-nogutter">
+                    <div class="scrollable list list-nogutter">
                         <div v-for="(game, index) in getGames()" :key="index" class="col-12">
                             <div class="flex flex-column sm:flex-row sm:align-items-center p-2 gap-5" :class="{ 'border-top-1 surface-border': index !== 0 }">
                                 <img class="game-list-thumbnail fadeinleft fadeinleft-thumbnail block xl:block mx-auto w-full" :src="getThumbnail(game)"/>
@@ -366,15 +366,10 @@ onMounted(async () => {
     margin-right: 50px;
 }
 
-.list {
+.scrollable {
     overflow-y: scroll;
     scrollbar-width: none;
-}
-
-.grid {
-    overflow-y: scroll;
-    scrollbar-width: none;
-    height: calc(100vh - 155px); /* 100vh alone causes spacing issues */
+    height: calc(100vh - 155px); /* 100vh alone causes issues */
 }
 
 .grid-item {

@@ -18,8 +18,8 @@ const items = computed(() => [{
 </script>
 
 <template>
-<div class="selected-game flex-full column">
-    <Breadcrumb class="breadcrumb flex row" :home="home" :model="items"
+<div class="selected-game row">
+    <Breadcrumb class="breadcrumb flex-full row" :home="home" :model="items"
             
     />
 </div>
@@ -32,11 +32,16 @@ const items = computed(() => [{
 }*/
 
 .breadcrumb {
-    margin-top: 10px;
-    align-items: flex-start;
-    flex-grow: 2;
+    margin-top: 20px;
+    padding: 5px;
     justify-content: center;
+    height: auto;
     background: none;
-    height: auto
+}
+
+:deep(.breadcrumb *) {
+    font-size: 21px;
+    user-select: none;
+    --wails-draggable: none;
 }
 </style>

@@ -18,6 +18,9 @@ import { tooltipOpts } from "../../src/util"
 
 import { useGameStore } from '@stores'
 import { storeToRefs } from 'pinia'
+
+import router from '../router'
+
 const store = useGameStore()
 const { 
     games,
@@ -25,6 +28,7 @@ const {
     isFavouriteGame,
     gamesAsArray
 } = storeToRefs(store)
+
 const {
     toggleFavouriteGame,
     setSelectedGame
@@ -104,6 +108,8 @@ const filters: ComputedRef<ValueItemLabeled<string>[]> = computed(() => [{
     value: t('keywords.favourites')
 }])
 
+const loading = ref(true)
+
 const getGames = (sort = true, searchFilter = true) => {
     let out = gamesAsArray.value
 
@@ -117,7 +123,10 @@ const getGames = (sort = true, searchFilter = true) => {
     return out
 }
 
-const loading = ref(true)
+const selectGame = (game: Game) => {
+    setSelectedGame(game)
+    router.push('/selected-game')
+}
 
 onMounted(async () => {
     loading.value = true
@@ -266,7 +275,7 @@ onMounted(async () => {
                                                 outlined plain 
                                                 class="grid-select-game-btn"
                                                 :label="$t('game-selection.select-button')" 
-                                                @click="setSelectedGame(game)"
+                                                @click="selectGame(game)"
                                             />
 
                                             <Button

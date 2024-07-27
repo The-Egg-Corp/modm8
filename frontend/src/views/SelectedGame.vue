@@ -2,16 +2,24 @@
 import Breadcrumb from 'primevue/breadcrumb'
 
 import { computed, ref } from "vue"
+import type { ComputedRef, Ref } from "vue"
+
 import { useGameStore } from "@stores"
 
 const { selectedGame } = useGameStore()
 
-const home = ref({
-    icon: 'pi pi-home',
-    route: '/game-selection'
+const gameSelection: Ref<BreadcrumbPage> = ref({
+    route: '/game-selection',
+    icon: 'pi pi-home'
 })
 
-const items = computed(() => [{ 
+interface BreadcrumbPage {
+    label?: string
+    icon?: string
+    route: string
+}
+
+const pages: ComputedRef<BreadcrumbPage[]> = computed(() => [{ 
     label: selectedGame.title,
     route: '/selected-game'
 }])
@@ -19,8 +27,8 @@ const items = computed(() => [{
 
 <template>
 <div class="selected-game row">
-    <Breadcrumb class="breadcrumb flex-full row" :home="home" :model="items"
-            
+    <Breadcrumb class="breadcrumb flex-full row" :home="gameSelection" :model="pages"
+        
     />
 </div>
 </template>

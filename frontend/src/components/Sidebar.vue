@@ -101,12 +101,12 @@ const ModDevTools = () => router.push('/mod-dev-tools')
     border-radius: 3px;
 }
 
-.plain-btn {
+/*.plain-btn {
     color: rgba(218, 218, 218, 0.921);
     background-color: #18181bcd;
     border: solid rgba(139, 139, 139, 0.712) 1px;
     border-radius: 3px;
-}
+}*/
 
 .spacer {
     flex: 1;

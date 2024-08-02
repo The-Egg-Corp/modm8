@@ -1,13 +1,14 @@
 package backend
 
 import (
+	"modm8/backend"
 	"strings"
 	"testing"
 )
 
 func TestBepinexInstalled(t *testing.T) {
 	dir := "E:\\SteamLibrary\\steamapps\\common\\Lethal Company"
-	installed, missing := BepinexInstalled(dir)
+	installed, missing := backend.BepinexInstalled(dir)
 
 	if !installed {
 		for i, item := range missing {

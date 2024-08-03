@@ -14,3 +14,10 @@ func TestSteamDir(t *testing.T) {
 
 	fmt.Println("Steam installed at:", *path)
 }
+
+func TestLaunchSteamGame(t *testing.T) {
+	err := backend.LaunchSteamGame(1966720)
+	if err != nil {
+		t.Fatalf("error launching game: %v", err)
+	}
+}

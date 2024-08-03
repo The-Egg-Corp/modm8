@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"modm8/backend/core"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strconv"
 
 	"golang.org/x/sys/windows/registry"
 )
@@ -24,14 +26,14 @@ func linuxPathList() ([]string, error) {
 	}
 
 	return []string{
-		buildPath(".local", "share", "Steam"),
+		buildPath(".steam"),
 		buildPath(".steam", "steam"),
 		buildPath(".steam", "root"),
-		buildPath(".steam"),
-		buildPath(".var", "app", "com.valvesoftware.Steam", ".local", "share", "Steam"),
+		buildPath(".local", "share", "Steam"),
+		buildPath(".var", "app", "com.valvesoftware.Steam", ".steam"),
 		buildPath(".var", "app", "com.valvesoftware.Steam", ".steam", "steam"),
 		buildPath(".var", "app", "com.valvesoftware.Steam", ".steam", "root"),
-		buildPath(".var", "app", "com.valvesoftware.Steam", ".steam"),
+		buildPath(".var", "app", "com.valvesoftware.Steam", ".local", "share", "Steam"),
 	}, nil
 }
 
@@ -40,7 +42,7 @@ func FindSteamDirectory() (*string, error) {
 	// Try and return path if it already exists in settings.toml
 	settings := core.NewSettings()
 	if err := settings.Load(); err != nil {
-		return nil, fmt.Errorf("load returned error: %v", err)
+		return nil, fmt.Errorf("failed to load settings: %v", err)
 	}
 
 	if settings.General.SteamInstallPath != nil {
@@ -50,7 +52,7 @@ func FindSteamDirectory() (*string, error) {
 	// Otherwise try find where it might be from a list of paths.
 	switch runtime.GOOS {
 	case "windows":
-		// Check Windows Registry for Steam installation path in both 32-bit and 64-bit paths
+		// Check Windows Registry for Steam installation path in both 32 and 64 bit paths.
 		paths := []string{
 			`Software\Valve\Steam`,
 			`Software\WOW6432Node\Valve\Steam`,
@@ -58,12 +60,15 @@ func FindSteamDirectory() (*string, error) {
 
 		for _, regPath := range paths {
 			k, err := registry.OpenKey(registry.LOCAL_MACHINE, regPath, registry.QUERY_VALUE)
+			if err != nil {
+				continue
+			}
+
+			defer k.Close()
+			installPath, _, err := k.GetStringValue("InstallPath")
+
 			if err == nil {
-				defer k.Close()
-				installPath, _, err := k.GetStringValue("InstallPath")
-				if err == nil {
-					return &installPath, nil
-				}
+				return &installPath, nil
 			}
 		}
 	case "linux":
@@ -89,6 +94,26 @@ func FindSteamDirectory() (*string, error) {
 	return nil, nil
 }
 
-func LaunchSteamGame(id string) {
+func LaunchSteamGame(id uint32, args ...string) error {
+	path, err := FindSteamDirectory()
+	if err != nil {
+		return err
+	}
 
+	var platformExtension string
+	if runtime.GOOS == "windows" {
+		platformExtension = "Steam.exe"
+	} else {
+		platformExtension = "steam.sh"
+	}
+
+	// Construct the command to launch the game via Steam using -applaunch
+	cmd := exec.Command(filepath.Join(*path, platformExtension), "-applaunch", strconv.Itoa(int(id)))
+	err = cmd.Run()
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

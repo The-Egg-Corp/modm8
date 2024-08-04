@@ -80,10 +80,6 @@ func NewSettings() *AppSettings {
 	}
 }
 
-func (settings *AppSettings) WriteToConfig() error {
-	return WriteToConfig(settingsCfg, settings)
-}
-
 func (settings *AppSettings) Load() error {
 	SetupConfig(settingsCfg, "settings", "toml")
 	return ReadOrCreate(settingsCfg, settings, SettingsPath())
@@ -91,6 +87,10 @@ func (settings *AppSettings) Load() error {
 
 func (settings *AppSettings) Save() error {
 	return Save(settingsCfg, settings, SettingsPath())
+}
+
+func (settings *AppSettings) WriteToConfig() error {
+	return WriteToConfig(settingsCfg, settings)
 }
 
 func (settings *AppSettings) SetLocale(locale string) {
@@ -103,6 +103,10 @@ func (settings *AppSettings) SetTheme(theme string) {
 
 func (settings *AppSettings) SetAnimationsEnabled(val bool) {
 	settings.General.AnimationsEnabled = val
+}
+
+func (settings *AppSettings) SetSteamInstallPath(path string) {
+	settings.General.SteamInstallPath = &path
 }
 
 func (settings *AppSettings) SetThreads(count uint8) {

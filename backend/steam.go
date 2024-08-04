@@ -12,33 +12,43 @@ import (
 	"golang.org/x/sys/windows/registry"
 )
 
+type SteamRunner struct {
+	InstallPath *string
+}
+
+func NewSteamRunner() *SteamRunner {
+	path, _ := GetSteamDirectory()
+
+	return &SteamRunner{
+		InstallPath: path,
+	}
+}
+
 var homeDir string
 var homeDirErr error
 
-func buildPath(args ...string) string {
-	return filepath.Join(append([]string{homeDir}, args...)...)
-}
-
-func linuxPathList() ([]string, error) {
-	homeDir, homeDirErr = os.UserHomeDir()
-	if homeDirErr != nil {
-		return nil, homeDirErr
+func (runner *SteamRunner) LaunchSteamGame(id uint32, args ...string) error {
+	path, err := GetSteamDirectory()
+	if err != nil {
+		return err
 	}
 
-	return []string{
-		buildPath(".steam"),
-		buildPath(".steam", "steam"),
-		buildPath(".steam", "root"),
-		buildPath(".local", "share", "Steam"),
-		buildPath(".var", "app", "com.valvesoftware.Steam", ".steam"),
-		buildPath(".var", "app", "com.valvesoftware.Steam", ".steam", "steam"),
-		buildPath(".var", "app", "com.valvesoftware.Steam", ".steam", "root"),
-		buildPath(".var", "app", "com.valvesoftware.Steam", ".local", "share", "Steam"),
-	}, nil
+	var platformExtension string
+	if runtime.GOOS == "windows" {
+		platformExtension = "Steam.exe"
+	} else {
+		platformExtension = "steam.sh"
+	}
+
+	// Construct a platform independent command that will launch the game with specified arguments.
+	cmd := exec.Command(filepath.Join(*path, platformExtension), "-applaunch", strconv.Itoa(int(id)))
+	cmd.Args = append(cmd.Args, args...)
+
+	return cmd.Run()
 }
 
 // TODO: Try use a global settings instance instead of creating a new one.
-func FindSteamDirectory() (*string, error) {
+func GetSteamDirectory() (*string, error) {
 	// Try and return path if it already exists in settings.toml
 	settings := core.NewSettings()
 	if err := settings.Load(); err != nil {
@@ -49,7 +59,20 @@ func FindSteamDirectory() (*string, error) {
 		return settings.General.SteamInstallPath, nil
 	}
 
-	// Otherwise try find where it might be from a list of paths.
+	dir, err := TryFindSteam()
+	if err != nil {
+		return nil, err
+	}
+
+	// Save to viper config & settings.toml file.
+	// Prevents having to try find Steam again in future.
+	settings.SetSteamInstallPath(*dir)
+	settings.Save()
+
+	return dir, nil
+}
+
+func TryFindSteam() (*string, error) {
 	switch runtime.GOOS {
 	case "windows":
 		// Check Windows Registry for Steam installation path in both 32 and 64 bit paths.
@@ -61,6 +84,7 @@ func FindSteamDirectory() (*string, error) {
 		for _, regPath := range paths {
 			k, err := registry.OpenKey(registry.LOCAL_MACHINE, regPath, registry.QUERY_VALUE)
 			if err != nil {
+				k.Close()
 				continue
 			}
 
@@ -72,9 +96,20 @@ func FindSteamDirectory() (*string, error) {
 			}
 		}
 	case "linux":
-		paths, err := linuxPathList()
-		if err != nil {
-			return nil, err
+		homeDir, homeDirErr = os.UserHomeDir()
+		if homeDirErr != nil {
+			return nil, homeDirErr
+		}
+
+		paths := []string{
+			buildPath(".steam"),
+			buildPath(".steam", "steam"),
+			buildPath(".steam", "root"),
+			buildPath(".local", "share", "Steam"),
+			buildPath(".var", "app", "com.valvesoftware.Steam", ".steam"),
+			buildPath(".var", "app", "com.valvesoftware.Steam", ".steam", "steam"),
+			buildPath(".var", "app", "com.valvesoftware.Steam", ".steam", "root"),
+			buildPath(".var", "app", "com.valvesoftware.Steam", ".local", "share", "Steam"),
 		}
 
 		// Check all known steam paths for a shell file.
@@ -94,26 +129,6 @@ func FindSteamDirectory() (*string, error) {
 	return nil, nil
 }
 
-func LaunchSteamGame(id uint32, args ...string) error {
-	path, err := FindSteamDirectory()
-	if err != nil {
-		return err
-	}
-
-	var platformExtension string
-	if runtime.GOOS == "windows" {
-		platformExtension = "Steam.exe"
-	} else {
-		platformExtension = "steam.sh"
-	}
-
-	// Construct the command to launch the game via Steam using -applaunch
-	cmd := exec.Command(filepath.Join(*path, platformExtension), "-applaunch", strconv.Itoa(int(id)))
-	err = cmd.Run()
-
-	if err != nil {
-		return err
-	}
-
-	return nil
+func buildPath(args ...string) string {
+	return filepath.Join(append([]string{homeDir}, args...)...)
 }

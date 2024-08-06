@@ -27,10 +27,10 @@ func NewSteamRunner() *SteamRunner {
 var homeDir string
 var homeDirErr error
 
-func (runner *SteamRunner) LaunchSteamGame(id uint32, args ...string) error {
+func (runner *SteamRunner) LaunchSteamGame(id uint32, args []string) (*exec.Cmd, error) {
 	path, err := GetSteamDirectory()
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	var platformExtension string
@@ -42,9 +42,11 @@ func (runner *SteamRunner) LaunchSteamGame(id uint32, args ...string) error {
 
 	// Construct a platform independent command that will launch the game with specified arguments.
 	cmd := exec.Command(filepath.Join(*path, platformExtension), "-applaunch", strconv.Itoa(int(id)))
-	cmd.Args = append(cmd.Args, args...)
+	if len(args) > 0 {
+		cmd.Args = append(cmd.Args, args...)
+	}
 
-	return cmd.Run()
+	return cmd, cmd.Run()
 }
 
 // TODO: Try use a global settings instance instead of creating a new one.

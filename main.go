@@ -57,6 +57,7 @@ func main() {
 	tsTools := thunderstore.NewTools()
 
 	gameManager := backend.NewGameManager()
+	steamRunner := backend.NewSteamRunner()
 
 	err := wails.Run(&options.App{
 		Title:     "modm8",
@@ -86,6 +87,7 @@ func main() {
 			tsTools,
 			nexusAPI,
 			gameManager,
+			steamRunner,
 		},
 		EnumBind: IList{
 			core.UpdateBehaviours,

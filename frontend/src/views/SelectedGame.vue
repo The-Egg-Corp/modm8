@@ -7,6 +7,8 @@ import Button from 'primevue/button'
 import { computed, ref } from "vue"
 import type { ComputedRef, Ref } from "vue"
 
+import { LaunchSteamGame } from '@backend/backend/SteamRunner'
+
 import { useGameStore } from "@stores"
 
 const { selectedGame } = useGameStore()
@@ -36,6 +38,9 @@ const pages: ComputedRef<BreadcrumbPage[]> = computed(() => [{
 const getThumbnail = () => selectedGame.image
     ? `https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/${selectedGame.image}` 
     : "https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/Titanfall2.jpg"
+
+const startVanilla = () => LaunchSteamGame(selectedGame.id, ["--doorstop-enable", "false"])
+const startModded = () => LaunchSteamGame(selectedGame.id, []) 
 </script>
 
 <template>
@@ -68,7 +73,7 @@ const getThumbnail = () => selectedGame.image
                             class="btn ml-3" 
                             icon="pi pi-caret-right"
                             label="Start Modded"
-                            @click=""
+                            @click="startModded"
                         />
 
                         <Button 
@@ -76,7 +81,7 @@ const getThumbnail = () => selectedGame.image
                             class="btn ml-3" 
                             icon="pi pi-caret-right"
                             label="Start Vanilla"
-                            @click=""
+                            @click="startVanilla"
                         />
                     </div>
                 </div>

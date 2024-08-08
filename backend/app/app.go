@@ -104,16 +104,19 @@ func (app *Application) OpenExternal(path string) error {
 
 	// Run cmd with the specified path as last argument
 	cmd := gocmd.NewCmd(openCmd.name, append(*openCmd.args, path)...)
-	statusChan := cmd.Start()
 
+	statusChan := cmd.Start()
 	status := <-statusChan
+
+	// Clean that bitch up properly.
+	// See -> https://github.com/go-cmd/cmd?tab=readme-ov-file#proper-process-termination
+	err := cmd.Stop()
+
 	if status.Error != nil {
-		return status.Error
+		err = status.Error
 	}
 
-	// Clean that bitch up (properly)
-	// https://github.com/go-cmd/cmd?tab=readme-ov-file#proper-process-termination
-	return cmd.Stop()
+	return err
 }
 
 func (app *Application) NumCPU() uint8 {

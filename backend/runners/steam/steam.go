@@ -3,9 +3,10 @@ package steam
 import (
 	"fmt"
 	"modm8/backend/app"
-	"os/exec"
 	"path/filepath"
 	"strconv"
+
+	gocmd "github.com/go-cmd/cmd"
 )
 
 type SteamRunner struct {
@@ -26,19 +27,31 @@ func (runner SteamRunner) LaunchSteamGame(id uint32, args []string) error {
 	return err
 }
 
-func LaunchGame(id uint32, args []string) (*exec.Cmd, error) {
-	path, err := GetInstallDirectory()
+func LaunchGame(id uint32, args []string) (*gocmd.Cmd, error) {
+	installDir, err := GetInstallDirectory()
 	if err != nil {
 		return nil, err
 	}
 
-	// Construct a platform independent command that will launch the game with specified arguments.
-	cmd := exec.Command(filepath.Join(*path, platformExtension), "-applaunch", strconv.Itoa(int(id)))
+	// Platform independent cmd that requests Steam to launch a game by its ID with all given arguments.
+	// When constructed, it will look something like: "C:/path/to/steam -applaunch 69 --example_arg true"
+	cmd := gocmd.NewCmd(filepath.Join(*installDir, platformExtension), "-applaunch", strconv.Itoa(int(id)))
 	if len(args) > 0 {
 		cmd.Args = append(cmd.Args, args...)
 	}
 
-	return cmd, cmd.Run()
+	statusChan := cmd.Start()
+	status := <-statusChan
+
+	// Clean that bitch up properly.
+	// See -> https://github.com/go-cmd/cmd?tab=readme-ov-file#proper-process-termination
+	err = cmd.Stop()
+
+	if status.Error != nil {
+		err = status.Error
+	}
+
+	return cmd, err
 }
 
 // TODO: Try use a global settings instance instead of creating a new one.

@@ -16,6 +16,8 @@ import (
 	"modm8/backend/core"
 	"modm8/backend/nexus"
 	"modm8/backend/thunderstore"
+
+	"modm8/backend/runners/steam"
 )
 
 //go:embed all:frontend/dist
@@ -57,7 +59,7 @@ func main() {
 	tsTools := thunderstore.NewTools()
 
 	gameManager := backend.NewGameManager()
-	steamRunner := backend.NewSteamRunner()
+	steamRunner := steam.NewRunner()
 
 	err := wails.Run(&options.App{
 		Title:     "modm8",

@@ -2,14 +2,12 @@ package backend
 
 import (
 	"fmt"
-	"modm8/backend"
+	steam "modm8/backend/runners/steam"
 	"testing"
 )
 
-var runner = backend.NewSteamRunner()
-
 func TestSteamDir(t *testing.T) {
-	path, err := backend.GetSteamDirectory()
+	path, err := steam.GetInstallDirectory()
 
 	if err != nil {
 		t.Fatalf("error getting steam directory: %v", err)
@@ -23,7 +21,7 @@ func TestSteamDir(t *testing.T) {
 }
 
 func TestLaunchSteamGame(t *testing.T) {
-	cmd, err := runner.LaunchSteamGame(1966720, []string{"--doorstop-enable", "false"})
+	cmd, err := steam.LaunchGame(1966720, []string{"--doorstop-enable", "false"})
 	if err != nil {
 		t.Fatalf("error launching game: %v", err)
 		return

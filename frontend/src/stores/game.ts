@@ -1,7 +1,7 @@
 import { Game } from '@types'
 import { defineStore } from 'pinia'
 
-import { Save, SetFavouriteGames } from '@backend/core/Persistence'
+import { Save, SetFavouriteGames } from '@backend/app/Persistence'
 import { Ref, computed, ref } from 'vue'
 
 export interface GameState {

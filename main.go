@@ -13,7 +13,7 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options/windows"
 
 	"modm8/backend"
-	"modm8/backend/core"
+	"modm8/backend/app"
 	"modm8/backend/nexus"
 	"modm8/backend/thunderstore"
 
@@ -31,7 +31,7 @@ func NewWindowsOptions(gpuAccel bool) *windows.Options {
 		WebviewIsTransparent: true,
 		BackdropType:         windows.Mica,
 		ResizeDebounceMS:     1,
-		WebviewUserDataPath:  core.ConfigDir(),
+		WebviewUserDataPath:  app.ConfigDir(),
 		WebviewGpuIsDisabled: !gpuAccel,
 	}
 }
@@ -49,10 +49,16 @@ func NewMacOptions() *mac.Options {
 }
 
 func main() {
-	app := core.NewApp()
-	app.Init()
+	modm8 := app.NewApp()
+	errs := modm8.Init()
 
-	runtime.GOMAXPROCS(int(app.Settings.Performance.ThreadCount))
+	if len(errs) > 0 {
+		for _, err := range errs {
+			println("Error occurred:", err)
+		}
+	}
+
+	runtime.GOMAXPROCS(int(modm8.Settings.Performance.ThreadCount))
 
 	nexusAPI := nexus.NewAPI()
 	tsAPI := thunderstore.NewAPI()
@@ -63,8 +69,8 @@ func main() {
 
 	err := wails.Run(&options.App{
 		Title:     "modm8",
-		Width:     int(app.Persistence.Window.Width),
-		Height:    int(app.Persistence.Window.Height),
+		Width:     int(modm8.Persistence.Window.Width),
+		Height:    int(modm8.Persistence.Window.Height),
 		MinWidth:  800,
 		MinHeight: 600,
 		AssetServer: &assetserver.Options{
@@ -72,19 +78,19 @@ func main() {
 		},
 		Frameless:                true,
 		EnableDefaultContextMenu: false,
-		OnStartup:                app.Startup,
-		OnBeforeClose:            app.OnBeforeClose,
-		OnShutdown:               app.Shutdown,
+		OnStartup:                modm8.Startup,
+		OnBeforeClose:            modm8.OnBeforeClose,
+		OnShutdown:               modm8.Shutdown,
 		SingleInstanceLock: &options.SingleInstanceLock{
 			UniqueId: "7465fe36-08e3-478b-853b-0f8676f724b7",
 		},
 		Mac:      NewMacOptions(),
-		Windows:  NewWindowsOptions(app.Settings.Performance.GPUAcceleration),
+		Windows:  NewWindowsOptions(modm8.Settings.Performance.GPUAcceleration),
 		LogLevel: logger.INFO,
 		Bind: IList{
-			app,
-			app.Settings,
-			app.Persistence,
+			modm8,
+			modm8.Settings,
+			modm8.Persistence,
 			tsAPI,
 			tsTools,
 			nexusAPI,
@@ -92,8 +98,8 @@ func main() {
 			steamRunner,
 		},
 		EnumBind: IList{
-			core.UpdateBehaviours,
-			core.GameSelectionLayouts,
+			app.UpdateBehaviours,
+			app.GameSelectionLayouts,
 		},
 	})
 

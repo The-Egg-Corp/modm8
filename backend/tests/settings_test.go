@@ -2,18 +2,18 @@ package backend
 
 import (
 	"fmt"
-	"modm8/backend/core"
+	"modm8/backend/app"
 	"testing"
 )
 
 func TestLoad(t *testing.T) {
-	settings := core.NewSettings()
+	settings := app.NewSettings()
 
 	if err := settings.Load(); err != nil {
 		t.Fatalf("Load returned error: %v", err)
 	}
 
-	expectedSettings := core.NewSettings()
+	expectedSettings := app.NewSettings()
 
 	// Check loaded settings match expected defaults
 	if *settings != *expectedSettings {

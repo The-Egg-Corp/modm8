@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { 
     Save,
-} from "@backend/core/AppSettings"
+} from "@backend/app/AppSettings"
 
-import { core } from "@backend/models"
+import { app } from "@backend/models"
 
 import Dialog from "primevue/dialog"
 import Divider from "primevue/divider"
@@ -60,22 +60,22 @@ const setAccel = (value: boolean) => {
 const threadCount = ref(2)
 const animationsEnabled = ref(true)
 
-type Behaviour = ValueItemLabeled<core.UpdateBehaviour>
+type Behaviour = ValueItemLabeled<app.UpdateBehaviour>
 
 const updateBehaviour: Ref<Behaviour> = ref({ 
     label: t('settings.update-behaviour.option-1'),
-    value: core.UpdateBehaviour.AUTO
+    value: app.UpdateBehaviour.AUTO
 })
 
 const behaviours: Ref<Behaviour[]> = computed(() => [{
     label: t('settings.update-behaviour.option-1'),
-    value: core.UpdateBehaviour.OFF
+    value: app.UpdateBehaviour.OFF
 }, {
     label: t('settings.update-behaviour.option-2'),
-    value: core.UpdateBehaviour.NOTIFY
+    value: app.UpdateBehaviour.NOTIFY
 }, {
     label: t('settings.update-behaviour.option-3'),
-    value: core.UpdateBehaviour.AUTO
+    value: app.UpdateBehaviour.AUTO
 }])
 
 const applySettings = async() => {

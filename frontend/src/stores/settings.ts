@@ -9,9 +9,9 @@ import {
     SetThreads,
     SetUpdateBehaviour,
     SetGameSelectionLayout
-} from '@backend/core/AppSettings.js'
+} from '@backend/app/AppSettings.js'
 
-import { core } from "@backend/models.js"
+import { app } from "@backend/models.js"
 import { Theme } from "@types"
 import { ref } from 'vue'
 
@@ -76,12 +76,12 @@ export const useSettingsStore = defineStore("SettingsStore", () => {
         if (save) SetNexusPersonalKey(key)
     }
 
-    function setUpdateBehaviour(behaviour: core.UpdateBehaviour, save = true) {
+    function setUpdateBehaviour(behaviour: app.UpdateBehaviour, save = true) {
         misc.value.update_behaviour = behaviour
         if (save) SetUpdateBehaviour(behaviour)
     }
 
-    function setGameSelectionLayout(layout: core.GameSelectionLayout, save = true) {
+    function setGameSelectionLayout(layout: app.GameSelectionLayout, save = true) {
         misc.value.game_selection_layout = layout
         if (save) SetGameSelectionLayout(layout)
     }

@@ -2,7 +2,7 @@ package steam
 
 import (
 	"fmt"
-	"modm8/backend/core"
+	"modm8/backend/app"
 	"os/exec"
 	"path/filepath"
 	"strconv"
@@ -44,7 +44,7 @@ func LaunchGame(id uint32, args []string) (*exec.Cmd, error) {
 // TODO: Try use a global settings instance instead of creating a new one.
 func GetInstallDirectory() (*string, error) {
 	// Try and return path if it already exists in settings.toml
-	settings := core.NewSettings()
+	settings := app.NewSettings()
 	if err := settings.Load(); err != nil {
 		return nil, fmt.Errorf("failed to load settings: %v", err)
 	}

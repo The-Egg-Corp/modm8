@@ -1,4 +1,4 @@
-package core
+package app
 
 import (
 	"context"
@@ -6,8 +6,6 @@ import (
 	"os"
 	"path"
 	"runtime"
-
-	"golang.org/x/sys/windows"
 
 	gocmd "github.com/go-cmd/cmd"
 	wRuntime "github.com/wailsapp/wails/v2/pkg/runtime"
@@ -47,25 +45,29 @@ func NewApp() *App {
 // Called before anything else in main and before Wails runs.
 //
 // Any initial app setup logic should be done here.
-func (a *App) Init() {
-	a.Settings.Load()
-	a.Persistence.Load()
+func (a App) Init() (errs []error) {
+	var err error
 
-	switch runtime.GOOS {
-	case "windows":
-		setWindowsPriority(windows.ABOVE_NORMAL_PRIORITY_CLASS)
-
-		// Essentially replicates Electron's `shell.openExternal`
-		openArgs := []string{"url.dll,FileProtocolHandler"}
-		openCmd = &Command{
-			name: "rundll32",
-			args: &openArgs,
-		}
-	case "darwin":
-		openCmd = &Command{name: "open"}
-	case "linux":
-		openCmd = &Command{name: "xdg-open"}
+	err = a.Settings.Load()
+	if err != nil {
+		errs = append(errs, err)
 	}
+
+	err = a.Persistence.Load()
+	if err != nil {
+		errs = append(errs, err)
+	}
+
+	//#region Platform specific
+	initCommands()
+
+	err = setPriority()
+	if err != nil {
+		errs = append(errs, err)
+	}
+	//#endregion
+
+	return errs
 }
 
 // Called when the app starts. The context is saved so we can call the runtime methods.
@@ -133,11 +135,6 @@ func (a *App) OpenExternal(path string) error {
 	// Clean that bitch up (properly)
 	// https://github.com/go-cmd/cmd?tab=readme-ov-file#proper-process-termination
 	return cmd.Stop()
-}
-
-func setWindowsPriority(prio uint32) error {
-	handle := windows.CurrentProcess()
-	return windows.SetPriorityClass(handle, prio)
 }
 
 // Fetches the tag of the latest modm8 GitHub release.

@@ -7,7 +7,7 @@ import Button from 'primevue/button'
 import { computed, ref } from "vue"
 import type { ComputedRef, Ref } from "vue"
 
-import { LaunchSteamGame } from '@backend/backend/SteamRunner'
+import { LaunchSteamGame } from '@backend/steam/SteamRunner'
 
 import { useGameStore } from "@stores"
 

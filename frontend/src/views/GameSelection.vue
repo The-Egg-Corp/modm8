@@ -13,7 +13,7 @@ import { Nullable } from 'primevue/ts-helpers'
 
 import { t } from '@i18n'
 import { BepinexInstalled } from '@backend/backend/GameManager'
-import { GetPersistence, OpenExternal } from '@backend/app/App'
+import { GetPersistence, OpenExternal } from '@backend/app/Application'
 import { tooltipOpts } from "../../src/util"
 
 import { useGameStore } from '@stores'

@@ -21,22 +21,22 @@ var (
 	openCmd                *Command
 )
 
-type App struct {
+type Application struct {
 	Ctx         context.Context
 	Settings    *AppSettings `json:"settings"`
 	Persistence *Persistence `json:"persistence"`
 }
 
-func (a *App) GetSettings() *AppSettings {
-	return a.Settings
+func (app *Application) GetSettings() *AppSettings {
+	return app.Settings
 }
 
-func (a *App) GetPersistence() *Persistence {
-	return a.Persistence
+func (app *Application) GetPersistence() *Persistence {
+	return app.Persistence
 }
 
-func NewApp() *App {
-	return &App{
+func NewApp() *Application {
+	return &Application{
 		Settings:    NewSettings(),
 		Persistence: NewPersistence(),
 	}
@@ -45,7 +45,7 @@ func NewApp() *App {
 // Called before anything else in main and before Wails runs.
 //
 // Any initial app setup logic should be done here.
-func (a App) Init() (errs []error) {
+func (a Application) Init() (errs []error) {
 	var err error
 
 	err = a.Settings.Load()
@@ -71,10 +71,10 @@ func (a App) Init() (errs []error) {
 }
 
 // Called when the app starts. The context is saved so we can call the runtime methods.
-func (a *App) Startup(ctx context.Context) {
-	a.Ctx = ctx
+func (app *Application) Startup(ctx context.Context) {
+	app.Ctx = ctx
 
-	if a.Persistence.Window.Maximized {
+	if app.Persistence.Window.Maximized {
 		wRuntime.WindowMaximise(ctx)
 		return
 	}
@@ -83,42 +83,21 @@ func (a *App) Startup(ctx context.Context) {
 }
 
 // Called when the application is about to quit, either by clicking the window close button or calling runtime.Quit.
-func (a *App) OnBeforeClose(ctx context.Context) bool {
-	a.Persistence.ApplyCurrentWindowState(ctx)
+func (app *Application) OnBeforeClose(ctx context.Context) bool {
+	app.Persistence.ApplyCurrentWindowState(ctx)
 	return false
 }
 
 // Called after the frontend has been destroyed, just before the application terminates.
-func (a *App) Shutdown(ctx context.Context) {
+func (a *Application) Shutdown(ctx context.Context) {
 	a.Persistence.Save()
 }
 
-func (a *App) Restart() {
+func (a *Application) Restart() {
 
 }
 
-func NumCPU() uint8 {
-	return uint8(runtime.NumCPU())
-}
-
-func (a *App) NumCPU() uint8 {
-	return NumCPU()
-}
-
-func ConfigDir() string {
-	dir, _ := os.UserConfigDir()
-	return path.Join(dir, "modm8")
-}
-
-func SettingsPath() string {
-	return path.Join(ConfigDir(), "settings.toml")
-}
-
-func PersistencePath() string {
-	return path.Join(ConfigDir(), "persistence.toml")
-}
-
-func (a *App) OpenExternal(path string) error {
+func (app *Application) OpenExternal(path string) error {
 	if openCmd == nil {
 		return ErrUnsupportedPlatform
 	}
@@ -135,6 +114,27 @@ func (a *App) OpenExternal(path string) error {
 	// Clean that bitch up (properly)
 	// https://github.com/go-cmd/cmd?tab=readme-ov-file#proper-process-termination
 	return cmd.Stop()
+}
+
+func (app *Application) NumCPU() uint8 {
+	return NumCPU()
+}
+
+func NumCPU() uint8 {
+	return uint8(runtime.NumCPU())
+}
+
+func ConfigDir() string {
+	dir, _ := os.UserConfigDir()
+	return path.Join(dir, "modm8")
+}
+
+func SettingsPath() string {
+	return path.Join(ConfigDir(), "settings.toml")
+}
+
+func PersistencePath() string {
+	return path.Join(ConfigDir(), "persistence.toml")
 }
 
 // Fetches the tag of the latest modm8 GitHub release.

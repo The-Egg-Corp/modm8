@@ -9,7 +9,7 @@ import { changeLocale } from '@i18n'
 import { 
     NumCPU,
     GetSettings
-} from '@backend/app/App'
+} from '@backend/app/Application'
 
 import { useAppStore } from '@stores'
 

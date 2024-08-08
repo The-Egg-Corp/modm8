@@ -45,15 +45,15 @@ func NewApp() *Application {
 // Called before anything else in main and before Wails runs.
 //
 // Any initial app setup logic should be done here.
-func (a Application) Init() (errs []error) {
+func (app Application) Init() (errs []error) {
 	var err error
 
-	err = a.Settings.Load()
+	err = app.Settings.Load()
 	if err != nil {
 		errs = append(errs, err)
 	}
 
-	err = a.Persistence.Load()
+	err = app.Persistence.Load()
 	if err != nil {
 		errs = append(errs, err)
 	}

@@ -5,7 +5,7 @@ import { useDialog } from '@composables'
 import { tooltipOpts } from "../../src/util"
 import { t } from '@i18n'
 
-const { setVisible } = useDialog()
+const { setVisible } = useDialog('settings')
 
 const Dashboard = () => router.push('/')
 const GameSelection = () => router.push('/game-selection')
@@ -58,7 +58,7 @@ const ModDevTools = () => router.push('/mod-dev-tools')
                 plain outlined 
                 class="btn margin-lr no-drag" icon="pi pi-spin pi-cog" 
                 v-tooltip="tooltipOpts(t('keywords.settings'))"
-                @click="setVisible(true)"
+                @click="setVisible()"
             />
         </div>
     </div>

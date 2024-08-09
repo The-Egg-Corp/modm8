@@ -13,14 +13,17 @@ import LanguageDropdown from "./LanguageDropdown.vue"
 import ThemeDropdown from "./ThemeDropdown.vue"
 
 import { Ref, computed, ref } from "vue"
+import { storeToRefs } from "pinia"
 
 import { useDialog } from "@composables"
 import { useAppStore, useSettingsStore } from "@stores"
 import { Alignment, ValueItemLabeled } from "@types"
 import { t } from "@i18n"
-import { storeToRefs } from "pinia"
 
-const { visible, draggable, closable } = useDialog()
+const { 
+    setVisible, 
+    visible, closable, draggable 
+} = useDialog('settings')
 
 const appStore = useAppStore()
 const {
@@ -54,7 +57,7 @@ const accelChecked = ref(true)
 const setAccel = (value: boolean) => {
     setAcceleration(value)
 
-    // Make Wails aware of new setting value by restarting the app (or prompt user?).
+    // TODO: Make Wails aware of new setting value by restarting the app (or prompt user?).
 }
 
 const threadCount = ref(2)
@@ -213,7 +216,7 @@ const applySettings = async() => {
             </Card>
 
             <div class="flex justify-content-end gap-3 mt-3">
-                <Button class="w-full" type="button" :label="$t('keywords.close')" severity="secondary" @click="visible = false"></Button>
+                <Button class="w-full" type="button" :label="$t('keywords.close')" severity="secondary" @click="setVisible(false)"></Button>
                 <Button class="w-full" type="button" :label="$t('phrases.reset-all-default')" severity="secondary"></Button>
                 <Button class="w-full" type="button" :label="$t('keywords.apply')" @click="applySettings"></Button>
             </div>

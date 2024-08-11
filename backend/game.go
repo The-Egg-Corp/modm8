@@ -48,6 +48,10 @@ func (gm *GameManager) GameInstalled(dirPath string, exeKeywords []string) bool 
 	return installed
 }
 
+func (gm *GameManager) FindCfgFiles(dirs []string) ([]string, error) {
+	return WalkDirExt(filepath.Join(dirs...), []string{"cfg"})
+}
+
 func (gm *GameManager) BepinexInstalled(absPath string) bool {
 	installed, _ := BepinexInstalled(absPath)
 	return installed

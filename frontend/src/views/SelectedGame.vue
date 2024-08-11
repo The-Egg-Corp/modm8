@@ -1,6 +1,11 @@
 <script lang="ts" setup>
+import path from 'path'
+
+import { computed, onMounted, ref } from "vue"
+import type { ComputedRef, Ref } from "vue"
+
 import Breadcrumb from 'primevue/breadcrumb'
-import Dialog from 'primevue/dialog'
+import CardOverlay from '../components/reusable/CardOverlay.vue'
 
 // import Splitter from 'primevue/splitter'
 // import SplitterPanel from 'primevue/splitterpanel'
@@ -8,10 +13,8 @@ import Dialog from 'primevue/dialog'
 import Card from 'primevue/card'
 import Button from 'primevue/button'
 
-import { computed, ref } from "vue"
-import type { ComputedRef, Ref } from "vue"
-
 import { LaunchSteamGame } from '@backend/steam/SteamRunner'
+import { FindCfgFiles } from '@backend/backend/GameManager'
 import { useGameStore } from "@stores"
 import { useDialog } from '@composables'
 
@@ -51,11 +54,26 @@ const {
     visible, closable, draggable 
 } = useDialog('selected-game')
 
-const dialogStyle = {
-    "margin-left": "70px",
-    "width": 'auto',
-    "min-width": '45rem'
+const getConfigFiles = async () => {
+    if (!selectedGame.bepinexSetup || !selectedGame.path) return []
+    
+    const files = await FindCfgFiles([selectedGame.path, "BepInEx", "config"])
+    const configPath = 'BepInEx/config'
+
+    return files.map(file => {
+        const normalizedFile = file.replace(/\\/g, '/')
+        const startIndex = normalizedFile.indexOf(configPath) + configPath.length + 1
+
+        return normalizedFile.substring(startIndex)
+    })
 }
+
+let configFiles: string[] = []
+
+onMounted(async () => {
+    configFiles = await getConfigFiles().catch(e => e)
+    console.log(configFiles)
+})
 </script>
 
 <template>
@@ -69,7 +87,7 @@ const dialogStyle = {
                 </a>
             </router-link>
         </template>
-        <template #separator>➥</template>
+        <template #separator>/</template>
     </Breadcrumb>
 
     <Card class="current-game-card">
@@ -116,18 +134,52 @@ const dialogStyle = {
 
     </DataView>
 
-    <Dialog 
-        modal class="no-drag"
-        :style="dialogStyle"
-        :block-scroll="true"
-        :dismissable-mask="true"
-        :show-header="false"
+    <CardOverlay 
+        class="no-drag"
         v-model:visible="visible"
-        v-model:draggable="draggable" 
         v-model:closable="closable"
+        v-model:draggable="draggable"
     >
-        <h2>Configuration File Editor</h2>
-    </Dialog>
+        <template #cardContent>
+            <div class="flex flex-column">
+                <!-- #region Heading & Subheading -->
+                <h1 class="header">Config Editor</h1>
+                <p style="font-weight: 340; margin-bottom: 15px; margin-top: 3px; padding-left: 5px; user-select: none;">
+                    Choose the configuration file you would like to edit values for.
+                </p>
+
+                <div 
+                    v-for="(path, index) in configFiles" :key="index" 
+                    class="flex flex-row pl-2 pr-2 justify-content-between align-items-center"
+                    style="height: 58.5px"
+                >
+                    <p style="font-size: 18.5px; font-weight: 285;">{{ path }}</p>
+
+                    <div class="flex gap-2">
+                        <Button outlined plain
+                            icon="pi pi-folder"
+                            style="font-size: 17px; width: 3rem;"
+                            v-tooltip.top="'Open in Explorer'"
+                            @click=""
+                        />
+
+                        <Button plain
+                            class="justify-content-center"
+                            style="font-size: 17px; width: 5rem; height: 2.5rem;"
+                            label="Edit"
+                        />
+                    </div>
+                </div>
+                <!-- #endregion -->
+            </div>
+        </template>
+    
+        <template #dialogContent>
+            <div class="flex justify-content-end gap-3 mt-3">
+                <Button class="w-full" type="button" :label="$t('keywords.close')" severity="secondary" @click="setVisible(false)"></Button>
+            </div>
+        </template>
+    </CardOverlay>
     
     <!-- <Splitter style="height: 350px; background: none; border: none;" class="mb-9 no-drag mx-auto">
         <SplitterPanel class="flex" :minSize="33">

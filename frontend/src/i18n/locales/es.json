@@ -73,5 +73,14 @@
   },
   "phrases": {
     "reset-all-default": "Restablecer todo a los valores predeterminados"
+  },
+  "selected-game": {
+    "config-editor": {
+      "title": "Editor de configuración"
+    },
+    "currently-selected": "Seleccionado actualmente",
+    "start-modded-button": "Empezar modificado",
+    "start-vanilla-button": "Iniciar vainilla",
+    "config-button": "Editar configuraciones"
   }
 }

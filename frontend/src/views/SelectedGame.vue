@@ -71,8 +71,7 @@ const getConfigFiles = async () => {
 let configFiles: string[] = []
 
 onMounted(async () => {
-    configFiles = await getConfigFiles().catch(e => e)
-    console.log(configFiles)
+    configFiles = await getConfigFiles()
 })
 </script>
 
@@ -92,7 +91,7 @@ onMounted(async () => {
 
     <Card class="current-game-card">
         <template #title>
-            <p style="font-size: 30px; font-weight: 520; user-select: none;" class="no-drag mt-0 mb-1">Currently Selected</p>
+            <p style="font-size: 30px; font-weight: 520; user-select: none;" class="no-drag mt-0 mb-1">{{ $t('selected-game.currently-selected') }}</p>
         </template>
 
         <template #content>
@@ -105,7 +104,7 @@ onMounted(async () => {
                             plain
                             class="btn ml-3" 
                             icon="pi pi-caret-right"
-                            label="Start Modded"
+                            :label="$t('selected-game.start-modded-button')"
                             @click="startModded"
                         />
 
@@ -113,7 +112,7 @@ onMounted(async () => {
                             plain outlined
                             class="btn ml-3" 
                             icon="pi pi-caret-right"
-                            label="Start Vanilla"
+                            :label="$t('selected-game.start-vanilla-button')"
                             @click="startVanilla"
                         />
 
@@ -121,7 +120,7 @@ onMounted(async () => {
                             plain outlined
                             class="btn ml-3 mt-4" 
                             icon="pi pi-file-edit"
-                            label="Edit Config"
+                            :label="$t('selected-game.config-button')"
                             @click="setVisible(true)"
                         />
                     </div>
@@ -143,12 +142,17 @@ onMounted(async () => {
         <template #cardContent>
             <div class="flex flex-column">
                 <!-- #region Heading & Subheading -->
-                <h1 class="header">Config Editor</h1>
+                <h1 class="header">{{ $t('selected-game.config-editor.title') }}</h1>
                 <p style="font-weight: 340; margin-bottom: 15px; margin-top: 3px; padding-left: 5px; user-select: none;">
                     Choose the configuration file you would like to edit values for.
                 </p>
 
+                <div v-if="configFiles.length < 1" class="flex justify-content-center align-items-center">
+                    <p class=" mb-1 mt-2" style="font-size: 18.5px; font-weight: 4250;">No config files found!</p>
+                </div>
+
                 <div 
+                    v-if="configFiles.length > 0"
                     v-for="(path, index) in configFiles" :key="index" 
                     class="flex flex-row pl-2 pr-2 justify-content-between align-items-center"
                     style="height: 58.5px"
@@ -166,7 +170,7 @@ onMounted(async () => {
                         <Button plain
                             class="justify-content-center"
                             style="font-size: 17px; width: 5rem; height: 2.5rem;"
-                            label="Edit"
+                            :label="$t('selected-game.config-editor.edit-button')"
                         />
                     </div>
                 </div>

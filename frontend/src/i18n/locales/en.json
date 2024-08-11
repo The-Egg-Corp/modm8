@@ -10,6 +10,16 @@
     "empty-results": "No games match the search query",
     "bepinex-setup": "BepInEx Setup"
   },
+  "selected-game": {
+    "currently-selected": "Currently Selected",
+    "start-modded-button": "Start Modded",
+    "start-vanilla-button": "Start Vanilla",
+    "config-button": "Edit Configs",
+    "config-editor": {
+      "title": "Config Editor",
+      "edit-button": "Edit"
+    }
+  },
   "settings": {
     "select-language": "Select language",
     "gpu-acceleration": "GPU Acceleration",

@@ -19,10 +19,15 @@ func (a *API) GetCommunities() (exp.CommunityList, error) {
 	return exp.GetCommunities()
 }
 
-func (a *API) GetPackagesInCommunity(identifier string) (v1.PackageList, error) {
+func (a *API) GetPackagesInCommunity(identifier string) ([]v1.Package, error) {
 	comm := v1.Community{
 		Identifier: identifier,
 	}
+
+	// pkgs, err := comm.AllPackages()
+	// if err != nil {
+	// 	return make(map[string]v1.Package, 0), err
+	// }
 
 	return comm.AllPackages()
 }

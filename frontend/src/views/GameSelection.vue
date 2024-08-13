@@ -132,9 +132,9 @@ onMounted(async () => {
     loading.value = true
 
     const persistence = await GetPersistence()
+    const gameList = getGameList()
 
-    const _games = getGameList()
-    for (const g of _games) {
+    for (const g of gameList) {
         if (!!g.path) {
             // TODO: Make sure the game executable exists (call backend)
             g.installed = true
@@ -145,7 +145,7 @@ onMounted(async () => {
         g.favourited = persistence.favourite_games.includes(g.identifier)
     }
 
-    games.value = new Map(_games.map(g => [g.identifier, g]))
+    games.value = new Map(gameList.map(g => [g.identifier, g]))
     loading.value = false
 })
 </script>
@@ -200,7 +200,10 @@ onMounted(async () => {
                         <p>No games installed!</p>
                     </div>
                     <div v-else class="dataview-empty">
-                        <p>{{ `${$t('game-selection.empty-results')}. 😔` }}</p>
+                        <p>{{ `${$t('game-selection.empty-results')}.` }}</p>
+
+                        <!-- Sadge -->
+                        <img src="https://cdn.7tv.app/emote/603cac391cd55c0014d989be/4x.png">
                     </div>
                 </template>
 

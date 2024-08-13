@@ -77,7 +77,7 @@ const applySettings = async() => {
 </script>
 
 <template>
-<div class="settings-container">
+<div :class="['settings-container', { 'no-drag': visible }]">
     <CardOverlay 
         class="settings-dialog no-drag"
         v-model:visible="visible"

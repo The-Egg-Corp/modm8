@@ -30,6 +30,7 @@ const props = withDefaults(defineProps<Props>(), {
     :block-scroll="true"
     :dismissable-mask="true"
     :show-header="false"
+    append-to="self"
 >
     <Card :style="props.cardStyle">
         <template #content>

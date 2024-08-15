@@ -51,6 +51,10 @@ export const useGameStore = defineStore('GameStore', () => {
         await SetFavouriteGames(favouriteGameIds.value)
         await Save()
     }
+
+    // function updateModCache(mods: thunderstore.StrippedPackage[]) {
+    //     selectedGame.value.modCache = mods
+    // }
     //#endregion
 
     return {

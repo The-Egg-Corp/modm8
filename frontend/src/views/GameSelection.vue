@@ -199,11 +199,14 @@ onMounted(async () => {
                     <div v-else-if="selectedFilter.label == 'INSTALLED'" class="dataview-empty">
                         <p>No games installed!</p>
                     </div>
-                    <div v-else class="dataview-empty">
+                    <div v-else class="dataview-empty flex flex-column">
                         <p>{{ `${$t('game-selection.empty-results')}.` }}</p>
 
                         <!-- Sadge -->
-                        <img src="https://cdn.7tv.app/emote/603cac391cd55c0014d989be/4x.png">
+                        <!-- <img class="pt-3" src="https://cdn.7tv.app/emote/603cac391cd55c0014d989be/2x.png"> -->
+
+                        <!-- modCheck -->
+                        <img class="pt-3" src="https://cdn.7tv.app/emote/60abf171870d317bef23d399/2x.gif">
                     </div>
                 </template>
 

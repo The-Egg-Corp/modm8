@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import path from 'path'
-
 import { computed, onMounted, ref } from "vue"
 import type { ComputedRef, Ref } from "vue"
 
@@ -13,12 +11,15 @@ import CardOverlay from '../components/reusable/CardOverlay.vue'
 import Card from 'primevue/card'
 import Button from 'primevue/button'
 
+import { GetPackagesStripped } from '@backend/thunderstore/API'
 import { LaunchSteamGame } from '@backend/steam/SteamRunner'
 import { FindCfgFiles } from '@backend/backend/GameManager'
 import { useGameStore } from "@stores"
 import { useDialog } from '@composables'
 
-const { selectedGame } = useGameStore()
+const { 
+    selectedGame
+} = useGameStore()
 
 interface BreadcrumbPage {
     route: string
@@ -47,7 +48,7 @@ const getThumbnail = () => selectedGame.image
     : "https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/Titanfall2.jpg"
 
 const startVanilla = () => LaunchSteamGame(selectedGame.id, ["--doorstop-enable", "false"])
-const startModded = () => LaunchSteamGame(selectedGame.id, [])
+const startModded = () => LaunchSteamGame(selectedGame.id, ["--doorstop-enable", "true"])
 
 const { 
     setVisible,
@@ -72,11 +73,25 @@ let configFiles: string[] = []
 
 onMounted(async () => {
     configFiles = await getConfigFiles()
+    
+    if (!selectedGame.modCache) {
+        console.log(`Putting ${selectedGame.identifier} mods into cache...`)
+
+        const t0 = performance.now()
+        const pkgs = await GetPackagesStripped(selectedGame.identifier, false)
+        //updateModCache(pkgs)
+
+        console.log(`Cached ${pkgs?.length} mods. Took: ${performance.now() - t0}ms`)
+    }
 })
+
+const editConfig = (path: string) => {
+    // Read file contents from backend
+}
 </script>
 
 <template>
-<div class="selected-game row">
+<div :class="['selected-game row', { 'no-drag': visible }]">
     <Breadcrumb class="breadcrumb flex-full row" :home="homePage" :model="pages">
         <template #item="{ item, props }">
             <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
@@ -129,9 +144,9 @@ onMounted(async () => {
         </template>
     </Card>
 
-    <DataView data-key="profile-selection">
+    <!-- <DataView lazy data-key="mod-list" :value="selectedGame.modCache" layout="list">
 
-    </DataView>
+    </DataView> -->
 
     <CardOverlay 
         class="no-drag"
@@ -140,38 +155,41 @@ onMounted(async () => {
         v-model:draggable="draggable"
     >
         <template #cardContent>
-            <div class="flex flex-column">
+            <div class="flex flex-column" style="max-height: calc(100vh - 180px);">
                 <!-- #region Heading & Subheading -->
                 <h1 class="header">{{ $t('selected-game.config-editor.title') }}</h1>
                 <p style="font-weight: 340; margin-bottom: 15px; margin-top: 3px; padding-left: 5px; user-select: none;">
                     Choose the configuration file you would like to edit values for.
                 </p>
-
+    
                 <div v-if="configFiles.length < 1" class="flex justify-content-center align-items-center">
-                    <p class=" mb-1 mt-2" style="font-size: 18.5px; font-weight: 4250;">No config files found!</p>
+                    <p class="mb-1 mt-2" style="font-size: 18.5px; font-weight: 450; user-select: none;">No config files found!</p>
                 </div>
 
-                <div 
-                    v-if="configFiles.length > 0"
-                    v-for="(path, index) in configFiles" :key="index" 
-                    class="flex flex-row pl-2 pr-2 justify-content-between align-items-center"
-                    style="height: 58.5px"
-                >
-                    <p style="font-size: 18.5px; font-weight: 285;">{{ path }}</p>
+                <div style="overflow-y: auto;">
+                    <div 
+                        v-if="configFiles.length > 0"
+                        v-for="(path, index) in configFiles" :key="index" 
+                        class="flex flex-row pl-2 pr-2 justify-content-between align-items-center"
+                        style="height: 58.5px"
+                    >
+                        <p style="font-size: 18.5px; font-weight: 285; user-select: none;">{{ path }}</p>
 
-                    <div class="flex gap-2">
-                        <Button outlined plain
-                            icon="pi pi-folder"
-                            style="font-size: 17px; width: 3rem;"
-                            v-tooltip.top="'Open in Explorer'"
-                            @click=""
-                        />
+                        <div class="flex gap-2">
+                            <Button outlined plain
+                                icon="pi pi-folder"
+                                style="font-size: 17px; width: 3rem;"
+                                v-tooltip.top="'Open in Explorer'"
+                                @click=""
+                            />
 
-                        <Button plain
-                            class="justify-content-center"
-                            style="font-size: 17px; width: 5rem; height: 2.5rem;"
-                            :label="$t('selected-game.config-editor.edit-button')"
-                        />
+                            <Button plain
+                                class="justify-content-center"
+                                style="font-size: 17px; width: 5rem; height: 2.5rem;"
+                                :label="$t('selected-game.config-editor.edit-button')"
+                                @click="editConfig(path)"
+                            />
+                        </div>
                     </div>
                 </div>
                 <!-- #endregion -->
@@ -179,7 +197,7 @@ onMounted(async () => {
         </template>
     
         <template #dialogContent>
-            <div class="flex justify-content-end gap-3 mt-3">
+            <div style="position: sticky; bottom: 0;" class="flex justify-content-end gap-3">
                 <Button class="w-full" type="button" :label="$t('keywords.close')" severity="secondary" @click="setVisible(false)"></Button>
             </div>
         </template>

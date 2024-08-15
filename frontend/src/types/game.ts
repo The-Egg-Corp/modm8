@@ -1,3 +1,5 @@
+import { thunderstore } from "@backend/models.js"
+
 export interface Game {
     id: number
     identifier: string
@@ -9,5 +11,5 @@ export interface Game {
     installed?: boolean
     bepinexSetup?: boolean
     aliases?: string[]
-    modCache?: any[]
+    modCache?: thunderstore.StrippedPackage[]
 }

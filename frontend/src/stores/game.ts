@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 
 import { Save, SetFavouriteGames } from '@backend/app/Persistence'
 import { Ref, computed, ref } from 'vue'
+import { thunderstore } from '@backend/models.js'
 
 export interface GameState {
     selectedGame: Game,
@@ -37,9 +38,17 @@ export const useGameStore = defineStore('GameStore', () => {
     //#endregion
 
     //#region Actions
-    // TODO: Possibly need to take in ID, then get from `state.games` instead ?
+    // TODO: Possibly need to take in ID, then get from `games` instead ?
     function setSelectedGame(game: Game) {
-        selectedGame.value = game
+        selectedGame.value = _gameByID(game.identifier) ?? game
+    }
+
+    /** Fills the `modCache` for the currently selected game with the specified mods. */
+    function updateModCache(mods: thunderstore.StrippedPackage[]) {
+        const game = _gameByID(selectedGame.value.identifier)
+        if (!game) return // TODO: Implement proper error
+
+        game.modCache = mods
     }
 
     async function toggleFavouriteGame(id: string) {
@@ -51,10 +60,6 @@ export const useGameStore = defineStore('GameStore', () => {
         await SetFavouriteGames(favouriteGameIds.value)
         await Save()
     }
-
-    // function updateModCache(mods: thunderstore.StrippedPackage[]) {
-    //     selectedGame.value.modCache = mods
-    // }
     //#endregion
 
     return {
@@ -66,6 +71,7 @@ export const useGameStore = defineStore('GameStore', () => {
         isFavouriteGame,
         favouriteGameIds,
         setSelectedGame,
-        toggleFavouriteGame
+        toggleFavouriteGame,
+        updateModCache
     }
 })

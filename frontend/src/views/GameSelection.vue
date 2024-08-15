@@ -31,7 +31,8 @@ const {
 
 const {
     toggleFavouriteGame,
-    setSelectedGame
+    setSelectedGame,
+    gameByID
 } = store
 
 const searchInput: Ref<Nullable<string>> = ref(null)
@@ -145,7 +146,14 @@ onMounted(async () => {
         g.favourited = persistence.favourite_games.includes(g.identifier)
     }
 
-    games.value = new Map(gameList.map(g => [g.identifier, g]))
+    games.value = new Map(gameList.map(g => {
+        // Make sure the cache persists through mounts
+        const modCache = gameByID(g.identifier)?.modCache
+        if (modCache) g.modCache = modCache
+
+        return [g.identifier, g]
+    }))
+
     loading.value = false
 })
 </script>

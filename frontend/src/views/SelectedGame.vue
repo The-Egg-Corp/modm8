@@ -17,9 +17,8 @@ import { FindCfgFiles } from '@backend/backend/GameManager'
 import { useGameStore } from "@stores"
 import { useDialog } from '@composables'
 
-const { 
-    selectedGame
-} = useGameStore()
+const gameStore = useGameStore()
+const { selectedGame, updateModCache } = gameStore
 
 interface BreadcrumbPage {
     route: string
@@ -74,14 +73,16 @@ let configFiles: string[] = []
 onMounted(async () => {
     configFiles = await getConfigFiles()
     
+    const t0 = performance.now()
     if (!selectedGame.modCache) {
         console.log(`Putting ${selectedGame.identifier} mods into cache...`)
 
-        const t0 = performance.now()
         const pkgs = await GetPackagesStripped(selectedGame.identifier, false)
-        //updateModCache(pkgs)
+        updateModCache(pkgs)
 
         console.log(`Cached ${pkgs?.length} mods. Took: ${performance.now() - t0}ms`)
+    } else {
+        console.log(`Got ${selectedGame.modCache.length} mods from cache. Took: ${performance.now() - t0}ms`)
     }
 })
 

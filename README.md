@@ -8,29 +8,20 @@ Built with [Wails](https://wails.io) for an Electron-like experience but without
 > Once officially released, a proper FOSS license will be added and contributions will be welcome!\
 > Meanwhile, there is no license, meaning all rights are reserved.
 
-# Previews
 <details>
-  <summary>Game Selection</summary>
+  <summary>View Showcase</summary>
 
-  <img src="./screenshots/game-selection-grid.png" width="1000"/>
-</details>
+  ### Game Selection
+  <img src="./screenshots/game-selection-grid.png"/>
 
-<details>
-  <summary>Selected Game</summary>
+  ### Current Game Screen
+  <img src="./screenshots/selected-game.png"/>
 
-  <img src="./screenshots/selected-game.png" width="1000"/>
-</details>
+  ### Config Editor
+  <img src="./screenshots/config-editor.png"/>
 
-<details>
-  <summary>Config Editor</summary>
-
-  <img src="./screenshots/config-editor.png" width="1000"/>
-</details>
-
-<details>
-  <summary>Settings</summary>
-
-  <img src="./screenshots/settings.png" width="1000"/>
+  ### Settings
+  <img src="./screenshots/settings.png"/>
 </details>
 
 ## Features

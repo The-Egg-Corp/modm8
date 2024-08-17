@@ -48,6 +48,15 @@ func (a *API) GetCommunities() (exp.CommunityList, error) {
 	return exp.GetCommunities()
 }
 
+func (a *API) GetLatestPackageVersion(community string, owner string, name string) (*v1.PackageVersion, error) {
+	versions, err := a.GetPackageVersions(community, owner, name)
+	if err != nil {
+		return nil, err
+	}
+
+	return &versions[0], nil
+}
+
 func (a *API) GetPackageVersions(community string, owner string, name string) ([]v1.PackageVersion, error) {
 	pkgs, exists := a.Cache[community]
 	if !exists {

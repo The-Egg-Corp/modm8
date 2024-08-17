@@ -2,6 +2,10 @@
 import { computed, onMounted, ref } from "vue"
 import type { ComputedRef, Ref } from "vue"
 
+import DataView, { DataViewPageEvent } from 'primevue/dataview'
+import Column from 'primevue/column'
+import BlockUI from 'primevue/blockui'
+
 import Breadcrumb from 'primevue/breadcrumb'
 import CardOverlay from '../components/reusable/CardOverlay.vue'
 
@@ -11,11 +15,12 @@ import CardOverlay from '../components/reusable/CardOverlay.vue'
 import Card from 'primevue/card'
 import Button from 'primevue/button'
 
-import { GetPackagesStripped } from '@backend/thunderstore/API'
+import { GetLatestPackageVersion, GetPackagesStripped } from '@backend/thunderstore/API'
 import { LaunchSteamGame } from '@backend/steam/SteamRunner'
 import { FindCfgFiles } from '@backend/backend/GameManager'
 import { useGameStore } from "@stores"
 import { useDialog } from '@composables'
+import { thunderstore, v1 } from "@backend/models"
 
 const gameStore = useGameStore()
 const { selectedGame, updateModCache } = gameStore
@@ -42,7 +47,10 @@ const pages: ComputedRef<BreadcrumbPage[]> = computed(() => [{
     class: "text-primary"
 }])
 
-const getThumbnail = () => selectedGame.image
+const latestModVersion = (mod: thunderstore.StrippedPackage) => 
+    GetLatestPackageVersion(selectedGame.identifier, mod.owner, mod.name)
+
+const gameThumbnail = () => selectedGame.image
     ? `https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/${selectedGame.image}` 
     : "https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/Titanfall2.jpg"
 
@@ -68,9 +76,13 @@ const getConfigFiles = async () => {
     })
 }
 
+const loading = ref(false)
 let configFiles: string[] = []
 
+const ROWS = 15
 onMounted(async () => {
+    loading.value = true
+
     configFiles = await getConfigFiles()
     
     const t0 = performance.now()
@@ -84,15 +96,39 @@ onMounted(async () => {
     } else {
         console.log(`Got ${selectedGame.modCache.length} mods from cache. Took: ${performance.now() - t0}ms`)
     }
+
+    await updatePage(0, ROWS)
+    loading.value = false
 })
 
 const editConfig = (path: string) => {
     // Read file contents from backend
 }
+
+type Package = thunderstore.StrippedPackage & {
+    latestVersion: v1.PackageVersion
+}
+
+const currentPageMods: Ref<Package[]> = ref([])
+const updatePage = async (first: number, rows: number) => {
+    const mods = (selectedGame.modCache || []).slice(first, first + rows) as Package[]
+
+    const promises = mods.map(async mod => {
+        mod.latestVersion = await latestModVersion(mod)
+        return mod
+    })
+
+    currentPageMods.value = await Promise.all(promises)
+}
+
+const onPageChange = async (e: DataViewPageEvent) => {
+    await updatePage(e.first, e.rows)
+    console.log(currentPageMods.value)
+}
 </script>
 
 <template>
-<div :class="['selected-game row', { 'no-drag': visible }]">
+<div :class="['selected-game', { 'no-drag': visible }]">
     <Breadcrumb class="breadcrumb flex-full row" :home="homePage" :model="pages">
         <template #item="{ item, props }">
             <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
@@ -105,105 +141,179 @@ const editConfig = (path: string) => {
         <template #separator>/</template>
     </Breadcrumb>
 
-    <Card class="current-game-card">
-        <template #title>
-            <p style="font-size: 30px; font-weight: 520; user-select: none;" class="no-drag mt-0 mb-1">{{ $t('selected-game.currently-selected') }}</p>
-        </template>
-
-        <template #content>
-            <div class="no-drag ml-1">
-                <img class="current-game-thumbnail" :src="getThumbnail()"/>
-                <div class="flex column" style="float: right">
-                    <p style="font-size: 25px; font-weight: 330" class="mt-0 mb-0 ml-3">{{ selectedGame.title }}</p>
-                    <div class="flex column gap-2 mt-3">
-                        <Button 
-                            plain
-                            class="btn ml-3" 
-                            icon="pi pi-caret-right"
-                            :label="$t('selected-game.start-modded-button')"
-                            @click="startModded"
-                        />
-
-                        <Button 
-                            plain outlined
-                            class="btn ml-3" 
-                            icon="pi pi-caret-right"
-                            :label="$t('selected-game.start-vanilla-button')"
-                            @click="startVanilla"
-                        />
-
-                        <Button 
-                            plain outlined
-                            class="btn ml-3 mt-4" 
-                            icon="pi pi-file-edit"
-                            :label="$t('selected-game.config-button')"
-                            @click="setVisible(true)"
-                        />
-                    </div>
-                </div>
-            </div>
-        </template>
-    </Card>
-
-    <!-- <DataView lazy data-key="mod-list" :value="selectedGame.modCache" layout="list">
-
-    </DataView> -->
-
-    <CardOverlay 
-        class="no-drag"
-        v-model:visible="visible"
-        v-model:closable="closable"
-        v-model:draggable="draggable"
-    >
-        <template #cardContent>
-            <div class="flex flex-column" style="max-height: calc(100vh - 180px);">
-                <!-- #region Heading & Subheading -->
-                <h1 class="header">{{ $t('selected-game.config-editor.title') }}</h1>
-                <p style="font-weight: 340; margin-bottom: 15px; margin-top: 3px; padding-left: 5px; user-select: none;">
-                    Choose the configuration file you would like to edit values for.
-                </p>
+    <BlockUI fullScreen v-if="loading"></BlockUI>
     
-                <div v-if="configFiles.length < 1" class="flex justify-content-center align-items-center">
-                    <p class="mb-1 mt-2" style="font-size: 18.5px; font-weight: 450; user-select: none;">No config files found!</p>
-                </div>
-
-                <div style="overflow-y: auto;">
-                    <div 
-                        v-if="configFiles.length > 0"
-                        v-for="(path, index) in configFiles" :key="index" 
-                        class="flex flex-row pl-2 pr-2 justify-content-between align-items-center"
-                        style="height: 58.5px"
-                    >
-                        <p style="font-size: 18.5px; font-weight: 285; user-select: none;">{{ path }}</p>
-
-                        <div class="flex gap-2">
-                            <Button outlined plain
-                                icon="pi pi-folder"
-                                style="font-size: 17px; width: 3rem;"
-                                v-tooltip.top="'Open in Explorer'"
-                                @click=""
+    <div class="flex row gap-3 no-drag">
+        <Card class="selected-game-card">
+            <template #title>
+                <p style="font-size: 30px; font-weight: 520; user-select: none;" class="no-drag mt-0 mb-1">{{ $t('selected-game.currently-selected') }}</p>
+            </template>
+    
+            <template #content>
+                <div class="no-drag ml-1">
+                    <img class="selected-game-thumbnail" :src="gameThumbnail()"/>
+                    <div class="flex column" style="float: right">
+                        <p style="font-size: 25px; font-weight: 330" class="mt-0 mb-0 ml-3">{{ selectedGame.title }}</p>
+                        <div class="flex column gap-2 mt-3">
+                            <Button 
+                                plain
+                                class="btn ml-3" 
+                                icon="pi pi-caret-right"
+                                :label="$t('selected-game.start-modded-button')"
+                                @click="startModded"
                             />
-
-                            <Button plain
-                                class="justify-content-center"
-                                style="font-size: 17px; width: 5rem; height: 2.5rem;"
-                                :label="$t('selected-game.config-editor.edit-button')"
-                                @click="editConfig(path)"
+    
+                            <Button 
+                                plain outlined
+                                class="btn ml-3" 
+                                icon="pi pi-caret-right"
+                                :label="$t('selected-game.start-vanilla-button')"
+                                @click="startVanilla"
+                            />
+    
+                            <Button 
+                                plain outlined
+                                class="btn ml-3 mt-4" 
+                                icon="pi pi-file-edit"
+                                :label="$t('selected-game.config-button')"
+                                @click="setVisible(true)"
                             />
                         </div>
                     </div>
                 </div>
-                <!-- #endregion -->
-            </div>
-        </template>
+            </template>
+        </Card>
     
-        <template #dialogContent>
-            <div style="position: sticky; bottom: 0;" class="flex justify-content-end gap-3">
-                <Button class="w-full" type="button" :label="$t('keywords.close')" severity="secondary" @click="setVisible(false)"></Button>
-            </div>
-        </template>
-    </CardOverlay>
+        <DataView lazy paginator stripedRows 
+            v-if="!loading" class="w-8"
+            style="margin: 70px 0px 0px 1.5%;"
+            layout="list" data-key="mod-list"
+            :value="currentPageMods"
+            :totalRecords="selectedGame.modCache?.length"
+            :rows="ROWS"
+            @page="onPageChange"
+        >
+            <template #empty>
+                <div class="dataview-empty flex flex-column">
+                    <p>No mods available! Something probably went wrong.</p>
+                </div>
+            </template>
     
+            <template #header>
+                <div class="searchbar">
+                    <IconField iconPosition="left">
+                        <InputIcon class="pi pi-search"></InputIcon>
+                        <InputText type="text" placeholder="Search mods"/>
+                    </IconField>
+                </div>
+            </template>
+    
+            <!-- <Column style="user-select: none; width: fit-content;" field="name" header="Name"></Column>
+            <Column style="user-select: none;" field="owner" header="Author"></Column>
+            <Column style="user-select: none;" field="rating_score" header="Rating"></Column>
+            <Column style="user-select: none;" field="has_nsfw_content" header="NSFW"></Column> -->
+    
+            <template #list>
+                <div class="scrollable list list-nogutter">
+                    <div v-for="(mod, index) in currentPageMods" :key="index" class="col-12">
+                        <div class="flex flex-column sm:flex-row sm:align-items-center p-2 gap-3" :class="{ 'border-top-1 surface-border': index !== 0 }">
+                            <img class="mod-list-thumbnail fadeinleft fadeinleft-thumbnail block xl:block mx-auto w-full" :src="mod.latestVersion?.icon || ''"/>
+                            
+                            <div class="flex flex-column md:flex-row justify-content-between md:align-items-center flex-1 gap-4">
+                                <div class="fadeinleft fadeinleft-title flex column justify-content-between align-items-start gap-2">
+                                    
+                                    <div class="flex row align-items-baseline">
+                                        <div class="mod-list-title mr-2">{{ mod.name }}</div>
+                                        <div class="mod-list-subtitle">({{ mod.owner }})</div>
+                                    </div>
+
+                                    <div class="mod-list-description">{{ mod.latestVersion.description }}</div>
+
+                                    <!--
+                                        :icon="isFavouriteGame(game.identifier) ? 'pi pi-heart-fill' : 'pi pi-heart'"
+                                        :style="isFavouriteGame(game.identifier) ? { color: 'var(--primary-color)' } : {}"
+                                        @click="toggleFavouriteGame(game.identifier)"
+                                    /> -->
+
+                                    <Button
+                                        outlined plain
+                                        class="mt-1"
+                                        :icon="'pi pi-thumbs-up'"
+                                    />
+                                </div>
+
+                                <div>
+                                    <Button 
+                                        plain
+                                        class="btn ml-3" 
+                                        icon="pi pi-folder-plus"
+                                        :label="$t('keywords.install')"
+                                        @click=""
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </DataView>
+    
+        <CardOverlay 
+            class="no-drag"
+            v-model:visible="visible"
+            v-model:closable="closable"
+            v-model:draggable="draggable"
+        >
+            <template #cardContent>
+                <div class="flex flex-column" style="max-height: calc(100vh - 180px);">
+                    <!-- #region Heading & Subheading -->
+                    <h1 class="header">{{ $t('selected-game.config-editor.title') }}</h1>
+                    <p style="font-weight: 340; margin-bottom: 15px; margin-top: 3px; padding-left: 5px; user-select: none;">
+                        Choose the configuration file you would like to edit values for.
+                    </p>
+        
+                    <div v-if="configFiles.length < 1" class="flex justify-content-center align-items-center">
+                        <p class="mb-1 mt-2" style="font-size: 18.5px; font-weight: 450; user-select: none;">No config files found!</p>
+                    </div>
+    
+                    <div style="overflow-y: auto;">
+                        <div 
+                            v-if="configFiles.length > 0"
+                            v-for="(path, index) in configFiles" :key="index" 
+                            class="flex flex-row pl-2 pr-2 justify-content-between align-items-center"
+                            style="height: 58.5px"
+                        >
+                            <p style="font-size: 18.5px; font-weight: 285; user-select: none;">{{ path }}</p>
+    
+                            <div class="flex gap-2">
+                                <Button outlined plain
+                                    icon="pi pi-folder"
+                                    style="font-size: 17px; width: 3rem;"
+                                    v-tooltip.top="'Open in Explorer'"
+                                    @click=""
+                                />
+    
+                                <Button plain
+                                    class="justify-content-center"
+                                    style="font-size: 17px; width: 5rem; height: 2.5rem;"
+                                    :label="$t('selected-game.config-editor.edit-button')"
+                                    @click="editConfig(path)"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <!-- #endregion -->
+                </div>
+            </template>
+        
+            <template #dialogContent>
+                <div style="position: sticky; bottom: 0;" class="flex justify-content-end gap-3">
+                    <Button class="w-full" type="button" :label="$t('keywords.close')" severity="secondary" @click="setVisible(false)"></Button>
+                </div>
+            </template>
+        </CardOverlay>
+    </div>
+
     <!-- <Splitter style="height: 350px; background: none; border: none;" class="mb-9 no-drag mx-auto">
         <SplitterPanel class="flex" :minSize="33">
 
@@ -251,16 +361,16 @@ const editConfig = (path: string) => {
     'opsz' 40
 }
 
-.current-game-card {
+.selected-game-card {
     background: none;
     width: fit-content;
 }
 
-:deep(.current-game-card .p-card-body) {
+:deep(.selected-game-card .p-card-body) {
     padding: 15px 0px 0px 40px;
 }
 
-.current-game-thumbnail {
+.selected-game-thumbnail {
     user-select: none;
     width: 162.5px;
     border-radius: 4px;
@@ -271,5 +381,88 @@ const editConfig = (path: string) => {
     position: relative;
     border-radius: 5px;
     text-align: left;
+}
+
+.mod-list-title {
+    font-size: 21px;
+    font-weight: 450;
+}
+
+.mod-list-subtitle {
+    font-size: 17px;
+    font-weight: 280;
+}
+
+.mod-list-description {
+    font-size: 17px;
+    font-weight: 265;
+}
+
+.mod-list-thumbnail {
+    user-select: none;
+    max-width: 70px;
+    min-width: 70px;
+    opacity: 0;
+    border-radius: 3px;
+}
+
+.fadeinleft {
+    --title-duration: 450ms;
+}
+
+.fadeinleft-thumbnail {
+    animation-duration: 300ms;
+    animation-delay: calc(var(--title-duration) - 100ms);
+    animation-fill-mode: forwards;
+}
+
+.fadeinleft-title {
+    animation-duration: var(--title-duration);
+    animation-delay: 50ms;
+}
+
+.scrollable {
+    overflow-y: scroll;
+    scrollbar-width: none;
+    height: calc(100vh - 265px);
+}
+
+:deep(.p-dataview-layout-options .p-button)  {
+    background: transparent !important;
+    border: none;
+}
+
+:deep(.p-dataview-content)  {
+    background: transparent !important;
+}
+
+.dataview-empty {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+}
+
+.dataview-empty p {
+    padding-top: 15px;
+    font-size: 22px;
+    margin: 0 auto;
+}
+
+.filter-dropdown {
+    width: 8.5rem;
+    margin-right: 5px;
+}
+
+.searchbar {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+:deep(.searchbar .p-inputtext) {
+    background: rgba(0, 0, 0, 0.2);
+    margin-left: auto;
+    margin-right: auto;
+    width: 350px;
+    min-width: 200px;
 }
 </style>

@@ -25,11 +25,6 @@ const {
     visible, closable, draggable 
 } = useDialog('settings')
 
-const appStore = useAppStore()
-const {
-    maxThreads
-} = storeToRefs(appStore)
-
 const settingsStore = useSettingsStore()
 const {
     setThreads,
@@ -38,18 +33,20 @@ const {
     setUpdateBehaviour
 } = settingsStore
 
-const dividerAlignment: Alignment = "center"
+const appStore = useAppStore()
+const { maxThreads } = storeToRefs(appStore)
 
+const threadCount = ref(2)
+const animationsEnabled = ref(true)
 const accelChecked = ref(true)
+
 const setAccel = (value: boolean) => {
     setAcceleration(value)
 
     // TODO: Make Wails aware of new setting value by restarting the app (or prompt user?).
 }
 
-const threadCount = ref(2)
-const animationsEnabled = ref(true)
-
+//#region Update Behaviour
 type Behaviour = ValueItemLabeled<app.UpdateBehaviour>
 
 const updateBehaviour: Ref<Behaviour> = ref({ 
@@ -67,6 +64,7 @@ const behaviours: Ref<Behaviour[]> = computed(() => [{
     label: t('settings.update-behaviour.option-3'),
     value: app.UpdateBehaviour.AUTO
 }])
+//#endregion
 
 const applySettings = async() => {
     const t0 = performance.now()
@@ -74,6 +72,8 @@ const applySettings = async() => {
     
     console.info(`Settings saved. Took ${performance.now() - t0}ms`)
 }
+
+const dividerAlignment: Alignment = "center"
 </script>
 
 <template>

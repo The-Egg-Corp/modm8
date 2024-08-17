@@ -68,7 +68,8 @@
     "yes": "Yes",
     "no": "No",
     "favourites": "Favourites",
-    "unfavourite": "Unfavourite"
+    "unfavourite": "Unfavourite",
+    "install": "Install"
   },
   "languages": {
     "en": "English",

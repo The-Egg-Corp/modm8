@@ -47,7 +47,8 @@
     "all": "Todo",
     "favourite": "Favorito",
     "favourites": "Favoritos",
-    "unfavourite": "No favorito"
+    "unfavourite": "No favorito",
+    "install": "Instalar"
   },
   "languages": {
     "en": "Inglés",

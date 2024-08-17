@@ -13,25 +13,25 @@ Built with [Wails](https://wails.io) for an Electron-like experience but without
   <summary>Game Selection</summary>
 
   <img src="./screenshots/game-selection-grid.png" width="1000"/>
-</details
+</details>
 
 <details>
   <summary>Selected Game</summary>
 
   <img src="./screenshots/selected-game.png" width="1000"/>
-</details
+</details>
 
 <details>
   <summary>Config Editor</summary>
 
   <img src="./screenshots/config-editor.png" width="1000"/>
-</details
+</details>
 
 <details>
   <summary>Settings</summary>
 
   <img src="./screenshots/settings.png" width="1000"/>
-</details
+</details>
 
 ## Features
 - Multiple themes + dark mode by default.

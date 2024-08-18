@@ -25,3 +25,12 @@ export interface ValueItemLabeled<V> {
 export interface ItemProps<V> {
     items: V[]
 }
+
+export interface BreadcrumbPage {
+    route: string
+    home?: boolean
+    label?: string
+    icon?: string
+    class?: string
+    style?: string
+}

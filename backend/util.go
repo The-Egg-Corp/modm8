@@ -2,6 +2,7 @@ package backend
 
 import (
 	"io/fs"
+	"os"
 	"path/filepath"
 	"strings"
 )
@@ -23,4 +24,14 @@ func WalkDirExt(root string, exts []string) ([]string, error) {
 		return nil
 	})
 	return files, err
+}
+
+func ReadFile(path string) (*string, error) {
+	content, err := os.ReadFile(filepath.Clean(path))
+	if err != nil {
+		return nil, nil
+	}
+
+	out := string(content)
+	return &out, nil
 }

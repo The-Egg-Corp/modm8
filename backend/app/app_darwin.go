@@ -2,8 +2,8 @@
 
 package app
 
-func setPriority() {
-	return
+func setPriority() error {
+	return nil
 }
 
 func initCommands() {

@@ -9,6 +9,8 @@ import (
 
 	gocmd "github.com/go-cmd/cmd"
 	wRuntime "github.com/wailsapp/wails/v2/pkg/runtime"
+
+	"modm8/backend"
 )
 
 type Command struct {
@@ -23,8 +25,19 @@ var (
 
 type Application struct {
 	Ctx         context.Context
+	Utils       *Utils       `json:"utils"`
 	Settings    *AppSettings `json:"settings"`
 	Persistence *Persistence `json:"persistence"`
+}
+
+type Utils struct{}
+
+func NewUtils() *Utils {
+	return &Utils{}
+}
+
+func (util *Utils) WalkDirExt(root string, exts []string) ([]string, error) {
+	return backend.WalkDirExt(root, exts)
 }
 
 func (app *Application) GetSettings() *AppSettings {
@@ -39,6 +52,7 @@ func NewApp() *Application {
 	return &Application{
 		Settings:    NewSettings(),
 		Persistence: NewPersistence(),
+		Utils:       NewUtils(),
 	}
 }
 

@@ -3,7 +3,6 @@ import { computed, onMounted, ref } from "vue"
 import type { ComputedRef, Ref } from "vue"
 
 import DataView, { DataViewPageEvent } from 'primevue/dataview'
-import Column from 'primevue/column'
 import BlockUI from 'primevue/blockui'
 
 import Breadcrumb from 'primevue/breadcrumb'
@@ -20,19 +19,21 @@ import { LaunchSteamGame } from '@backend/steam/SteamRunner'
 import { FindCfgFiles } from '@backend/backend/GameManager'
 import { useGameStore } from "@stores"
 import { useDialog } from '@composables'
-import { thunderstore, v1 } from "@backend/models"
+import { thunderstore } from "@backend/models"
+import { BreadcrumbPage, Package } from "@types"
+import { Nullable } from "primevue/ts-helpers"
 
 const gameStore = useGameStore()
 const { selectedGame, updateModCache } = gameStore
 
-interface BreadcrumbPage {
-    route: string
-    home?: boolean
-    label?: string
-    icon?: string
-    class?: string
-    style?: string
-}
+const { 
+    setVisible,
+    visible, closable, draggable 
+} = useDialog('selected-game')
+
+const loading = ref(false)
+const searchInput: Ref<Nullable<string>> = ref(null)
+const currentPageMods: Ref<Package[]> = ref([])
 
 const homePage: Ref<BreadcrumbPage> = ref({
     home: true,
@@ -47,39 +48,9 @@ const pages: ComputedRef<BreadcrumbPage[]> = computed(() => [{
     class: "text-primary"
 }])
 
-const latestModVersion = (mod: thunderstore.StrippedPackage) => 
-    GetLatestPackageVersion(selectedGame.identifier, mod.owner, mod.name)
-
-const gameThumbnail = () => selectedGame.image
-    ? `https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/${selectedGame.image}` 
-    : "https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/Titanfall2.jpg"
-
-const startVanilla = () => LaunchSteamGame(selectedGame.id, ["--doorstop-enable", "false"])
-const startModded = () => LaunchSteamGame(selectedGame.id, ["--doorstop-enable", "true"])
-
-const { 
-    setVisible,
-    visible, closable, draggable 
-} = useDialog('selected-game')
-
-const getConfigFiles = async () => {
-    if (!selectedGame.bepinexSetup || !selectedGame.path) return []
-    
-    const files = await FindCfgFiles([selectedGame.path, "BepInEx", "config"])
-    const configPath = 'BepInEx/config'
-
-    return files.map(file => {
-        const normalizedFile = file.replace(/\\/g, '/')
-        const startIndex = normalizedFile.indexOf(configPath) + configPath.length + 1
-
-        return normalizedFile.substring(startIndex)
-    })
-}
-
-const loading = ref(false)
+const ROWS = 15
 let configFiles: string[] = []
 
-const ROWS = 15
 onMounted(async () => {
     loading.value = true
 
@@ -101,18 +72,36 @@ onMounted(async () => {
     loading.value = false
 })
 
+const latestModVersion = (mod: thunderstore.StrippedPackage) => 
+    GetLatestPackageVersion(selectedGame.identifier, mod.owner, mod.name)
+
+const gameThumbnail = () => selectedGame.image
+    ? `https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/${selectedGame.image}` 
+    : "https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/Titanfall2.jpg"
+
+const startVanilla = () => LaunchSteamGame(selectedGame.id, ["--doorstop-enable", "false"])
+const startModded = () => LaunchSteamGame(selectedGame.id, ["--doorstop-enable", "true"])
+
+const getConfigFiles = async () => {
+    if (!selectedGame.bepinexSetup || !selectedGame.path) return []
+    
+    const files = await FindCfgFiles([selectedGame.path, "BepInEx", "config"])
+    const configPath = 'BepInEx/config'
+
+    return files.map(file => {
+        const normalizedFile = file.replace(/\\/g, '/')
+        const startIndex = normalizedFile.indexOf(configPath) + configPath.length + 1
+
+        return normalizedFile.substring(startIndex)
+    })
+}
+
 const editConfig = (path: string) => {
     // Read file contents from backend
 }
 
-type Package = thunderstore.StrippedPackage & {
-    latestVersion: v1.PackageVersion
-}
-
-const currentPageMods: Ref<Package[]> = ref([])
 const updatePage = async (first: number, rows: number) => {
     const mods = (selectedGame.modCache || []).slice(first, first + rows) as Package[]
-
     const promises = mods.map(async mod => {
         mod.latestVersion = await latestModVersion(mod)
         return mod
@@ -123,7 +112,7 @@ const updatePage = async (first: number, rows: number) => {
 
 const onPageChange = async (e: DataViewPageEvent) => {
     await updatePage(e.first, e.rows)
-    console.log(currentPageMods.value)
+    //console.log(currentPageMods.value)
 }
 </script>
 
@@ -203,15 +192,10 @@ const onPageChange = async (e: DataViewPageEvent) => {
                 <div class="searchbar">
                     <IconField iconPosition="left">
                         <InputIcon class="pi pi-search"></InputIcon>
-                        <InputText type="text" placeholder="Search mods"/>
+                        <InputText type="text" :placeholder="$t('selected-game.search-mods')" v-model="searchInput"/>
                     </IconField>
                 </div>
             </template>
-    
-            <!-- <Column style="user-select: none; width: fit-content;" field="name" header="Name"></Column>
-            <Column style="user-select: none;" field="owner" header="Author"></Column>
-            <Column style="user-select: none;" field="rating_score" header="Rating"></Column>
-            <Column style="user-select: none;" field="has_nsfw_content" header="NSFW"></Column> -->
     
             <template #list>
                 <div class="scrollable list list-nogutter">

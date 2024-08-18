@@ -10,7 +10,7 @@
   "game-selection": {
     "header": "Elige un juego para administrar mods.",
     "select-button": "Selecciona un juego",
-    "search-placeholder": "Buscar título..",
+    "search-placeholder": "Título de búsqueda",
     "empty-results": "Ningún juego coincide con la consulta de búsqueda."
   },
   "settings": {
@@ -82,6 +82,7 @@
     "currently-selected": "Seleccionado actualmente",
     "start-modded-button": "Empezar modificado",
     "start-vanilla-button": "Iniciar vainilla",
-    "config-button": "Editar configuraciones"
+    "config-button": "Editar configuraciones",
+    "search-mods": "Modificaciones de búsqueda"
   }
 }

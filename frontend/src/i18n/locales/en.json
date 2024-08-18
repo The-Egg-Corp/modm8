@@ -6,7 +6,7 @@
   "game-selection": {
     "header": "Choose a game to manage mods for.",
     "select-button": "Select Game",
-    "search-placeholder": "Search title..",
+    "search-placeholder": "Search title",
     "empty-results": "No games match the search query",
     "bepinex-setup": "BepInEx Setup"
   },
@@ -14,6 +14,7 @@
     "currently-selected": "Currently Selected",
     "start-modded-button": "Start Modded",
     "start-vanilla-button": "Start Vanilla",
+    "search-mods": "Search mods",
     "config-button": "Edit Configs",
     "config-editor": {
       "title": "Config Editor",

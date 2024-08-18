@@ -9,7 +9,7 @@
   },
   "game-selection": {
     "header": "Choisissez un jeu pour lequel gérer les mods.",
-    "search-placeholder": "Rechercher le titre..",
+    "search-placeholder": "Titre de recherche",
     "select-button": "Sélectionnez un jeu",
     "empty-results": "Aucun jeu ne correspond à la requête de recherche"
   },
@@ -82,6 +82,7 @@
     "currently-selected": "Actuellement sélectionné",
     "start-modded-button": "Démarrer la modification",
     "start-vanilla-button": "Démarrer Vanille",
-    "config-button": "Modifier les configurations"
+    "config-button": "Modifier les configurations",
+    "search-mods": "Rechercher des modules"
   }
 }

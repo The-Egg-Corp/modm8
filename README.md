@@ -1,12 +1,12 @@
 # modm8
+> [!NOTE]
+> This project is heavily **WIP** and as such, missing functionality or bugs will be commonplace until there is a stable release.\
+> Once officially released, a proper FOSS license will be added. Meanwhile, there is no license, meaning all rights are reserved.
+>
+> Until a release is ready, please build from source. PRs and contributions are very much welcome!
+
 Lightweight and intuitive mod manager with support for [Thunderstore](https://thunderstore.io) and [Nexus Mods](https://nexusmods.com).\
 Built with [Wails](https://wails.io) for an Electron-like experience but without the bloat.
-
-> [!WARNING]
-> This project is heavily a WIP and as such, missing functionality or bugs will be commonplace until there is a stable release.
-> 
-> Once officially released, a proper FOSS license will be added and contributions will be welcome!\
-> Meanwhile, there is no license, meaning all rights are reserved.
 
 <details>
   <summary>View Showcase</summary>

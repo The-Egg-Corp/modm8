@@ -115,6 +115,10 @@ func (a *API) GetPackagesStripped(community string, skipCache bool) ([]StrippedP
 	// Loops over all pkgs, stripping some unecessary fields, massively improving
 	// time to serialize/deserialize to avoid blocking the frontend.
 	for _, pkg := range pkgs {
+		if strings.EqualFold(pkg.Name, "r2modman") {
+			continue
+		}
+
 		strippedPkgs = append(strippedPkgs, StrippedPackage{
 			Name:           pkg.Name,
 			FullName:       pkg.FullName,

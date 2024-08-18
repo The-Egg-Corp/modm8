@@ -452,20 +452,20 @@ onMounted(async () => {
     min-width: 200px;
 }
 
-:deep(.p-dataview-header)  {
+:deep(.p-dataview-header) {
     background: transparent !important;
     padding: 10px 0px 10px 0px;
     margin: 0px 5px 0px 5px;
     border: none;
 }
 
-:deep(.p-dataview-layout-options .p-button)  {
-    background: transparent !important;
+:deep(.p-dataview-layout-options .p-button) {
+    background: none !important;
     border: none;
 }
 
-:deep(.p-dataview-content)  {
-    background: transparent !important;
+:deep(.p-dataview-content) {
+    background: none !important;
 }
 
 @keyframes fadeinleft {

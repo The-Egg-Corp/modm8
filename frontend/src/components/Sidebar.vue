@@ -68,7 +68,7 @@ const ModDevTools = () => router.push('/mod-dev-tools')
 <style scoped>
 .sidebar {
     position: relative;
-    z-index: 999;
+    z-index: 9998;
     height: 100vh;
     width: fit-content;
     border-right: rgba(231, 231, 231, 0.885) 1px outset;

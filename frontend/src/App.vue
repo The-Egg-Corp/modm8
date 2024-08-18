@@ -30,9 +30,9 @@ onMounted(async () => {
 <ControlButtons/>
   
 <div class="app-container">
-  <Sidebar/>
-  <SettingsOverlay/>
-  <RouterView/>
+    <Sidebar/>
+    <SettingsOverlay/>
+    <RouterView/>
 </div>
 </template>
 

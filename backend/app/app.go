@@ -40,6 +40,10 @@ func (util *Utils) WalkDirExt(root string, exts []string) ([]string, error) {
 	return backend.WalkDirExt(root, exts)
 }
 
+func (util *Utils) ReadFile(path string) (*string, error) {
+	return backend.ReadFile(path)
+}
+
 func (app *Application) GetSettings() *AppSettings {
 	return app.Settings
 }

@@ -132,16 +132,17 @@ const onPageChange = async (e: DataViewPageEvent) => {
 
     <BlockUI fullScreen v-if="loading"></BlockUI>
     
-    <div class="flex row gap-3 no-drag">
+    <div class="flex row gap-8 no-drag">
         <Card class="selected-game-card">
             <template #title>
                 <p style="font-size: 30px; font-weight: 520; user-select: none;" class="no-drag mt-0 mb-1">{{ $t('selected-game.currently-selected') }}</p>
             </template>
     
             <template #content>
-                <div class="no-drag ml-1">
+                <div class="flex no-drag sm:flex-column md:flex-column lg:flex-row xl:flex-row">
                     <img class="selected-game-thumbnail" :src="gameThumbnail()"/>
-                    <div class="flex column" style="float: right">
+                    
+                    <div class="flex column">
                         <p style="font-size: 25px; font-weight: 330" class="mt-0 mb-0 ml-3">{{ selectedGame.title }}</p>
                         <div class="flex column gap-2 mt-3">
                             <Button 
@@ -199,16 +200,16 @@ const onPageChange = async (e: DataViewPageEvent) => {
     
             <template #list>
                 <div class="scrollable list list-nogutter">
-                    <div v-for="(mod, index) in currentPageMods" :key="index" class="col-12">
-                        <div class="flex flex-column sm:flex-row sm:align-items-center p-2 gap-3" :class="{ 'border-top-1 surface-border': index !== 0 }">
+                    <div v-for="(mod, index) in currentPageMods" :key="index" class="list-item col-10">
+                        <div class="flex flex-column sm:flex-row sm:align-items-center pt-2 gap-3" :class="{ 'border-top-1 surface-border': index != 0 }">
                             <img class="mod-list-thumbnail fadeinleft fadeinleft-thumbnail block xl:block mx-auto w-full" :src="mod.latestVersion?.icon || ''"/>
                             
                             <div class="flex flex-column md:flex-row justify-content-between md:align-items-center flex-1 gap-4">
                                 <div class="fadeinleft fadeinleft-title flex column justify-content-between align-items-start gap-2">
                                     
                                     <div class="flex row align-items-baseline">
-                                        <div class="mod-list-title mr-2">{{ mod.name }}</div>
-                                        <div class="mod-list-subtitle">({{ mod.owner }})</div>
+                                        <div class="mod-list-title">{{ mod.name }}</div>
+                                        <div class="mod-list-author">({{ mod.owner }})</div>
                                     </div>
 
                                     <div class="mod-list-description">{{ mod.latestVersion.description }}</div>
@@ -219,18 +220,20 @@ const onPageChange = async (e: DataViewPageEvent) => {
                                         @click="toggleFavouriteGame(game.identifier)"
                                     /> -->
 
-                                    <Button
-                                        outlined plain
-                                        class="mt-1"
-                                        :icon="'pi pi-thumbs-up'"
-                                    />
+                                    <div class="flex row align-items-baseline">
+                                        <Button outlined plain 
+                                            class="mt-1" style="margin-right: 10px;"
+                                            :icon="'pi pi-thumbs-up'"
+                                        />
+
+                                        <div class="mod-list-rating">{{ mod.rating_score }}</div>
+                                    </div>
                                 </div>
 
                                 <div>
-                                    <Button 
-                                        plain
+                                    <Button plain
                                         class="btn ml-3" 
-                                        icon="pi pi-folder-plus"
+                                        icon="pi pi-download"
                                         :label="$t('keywords.install')"
                                         @click=""
                                     />
@@ -362,30 +365,35 @@ const onPageChange = async (e: DataViewPageEvent) => {
 }
 
 .btn {
-    position: relative;
-    border-radius: 5px;
+    border-radius: 4px;
     text-align: left;
 }
 
 .mod-list-title {
     font-size: 21px;
-    font-weight: 450;
+    font-weight: 460;
+    padding-right: 5px;
 }
 
-.mod-list-subtitle {
-    font-size: 17px;
-    font-weight: 280;
+.mod-list-author {
+    font-size: 16px;
+    font-weight: 310;
 }
 
 .mod-list-description {
+    font-size: 16.5px;
+    font-weight: 220;
+}
+
+.mod-list-rating {
     font-size: 17px;
-    font-weight: 265;
+    font-weight: 370;
 }
 
 .mod-list-thumbnail {
     user-select: none;
-    max-width: 70px;
-    min-width: 70px;
+    max-width: 80px;
+    min-width: 60px;
     opacity: 0;
     border-radius: 3px;
 }
@@ -411,15 +419,6 @@ const onPageChange = async (e: DataViewPageEvent) => {
     height: calc(100vh - 265px);
 }
 
-:deep(.p-dataview-layout-options .p-button)  {
-    background: transparent !important;
-    border: none;
-}
-
-:deep(.p-dataview-content)  {
-    background: transparent !important;
-}
-
 .dataview-empty {
     justify-content: center;
     align-items: center;
@@ -432,9 +431,20 @@ const onPageChange = async (e: DataViewPageEvent) => {
     margin: 0 auto;
 }
 
-.filter-dropdown {
-    width: 8.5rem;
-    margin-right: 5px;
+:deep(.p-dataview-layout-options .p-button) {
+    background: none !important;
+    border: none;
+}
+
+:deep(.p-dataview-header) {
+    background: none !important;
+    padding: 10px 0px 10px 0px;
+    margin: 0px 5px 0px 5px;
+    border: none;
+}
+
+:deep(.p-dataview-content) {
+    background: none !important;
 }
 
 .searchbar {
@@ -448,5 +458,14 @@ const onPageChange = async (e: DataViewPageEvent) => {
     margin-right: auto;
     width: 350px;
     min-width: 200px;
+}
+
+:deep(.p-paginator) {
+    background: none !important;
+}
+
+.list-item {
+    padding-bottom: 15px;
+    padding-top: 0px;
 }
 </style>

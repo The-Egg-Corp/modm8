@@ -4,7 +4,7 @@ Lightweight and intuitive mod manager with support for [Thunderstore](https://th
 Built with [Wails](https://wails.io) for an Electron-like experience but without the bloat.
 
 > [!NOTE]
-> This project is heavily **WIP** and as such, missing functionality or bugs will be commonplace until there is a stable release.\
+> This project is heavily **WIP** and as such, missing functionality or bugs will be commonplace until there is a stable release.
 > Once officially released, a proper FOSS license will be added. Meanwhile, there is no license, meaning all rights are reserved.
 >
 > Until a release is ready, please build from source. PRs and contributions are very much welcome!

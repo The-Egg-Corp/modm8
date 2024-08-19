@@ -5,7 +5,8 @@ import { useDialog } from '@composables'
 import { tooltipOpts } from "../../src/util"
 import { t } from '@i18n'
 
-const { setVisible } = useDialog('settings')
+const settings = useDialog('settings')
+const appInfo = useDialog('app-info')
 
 const Dashboard = () => router.push('/')
 const GameSelection = () => router.push('/game-selection')
@@ -13,11 +14,11 @@ const ModDevTools = () => router.push('/mod-dev-tools')
 </script>
 
 <template>
-<div class="sidebar flex-column">
+<div class="sidebar flex column">
     <img class="icon no-select" src="../assets/images/appicon.png">
 
-    <div class="flex-column h-full">
-        <div class="top flex-column">
+    <div class="flex column h-full">
+        <div class="top flex column">
             <Button 
                 plain outlined 
                 class="btn margin-lr no-drag" icon="pi pi-spin pi-home" 
@@ -39,7 +40,7 @@ const ModDevTools = () => router.push('/mod-dev-tools')
     
         <div class="spacer"></div>
 
-        <div class="top flex-column">
+        <div class="top flex column">
             <Button 
                 plain outlined 
                 class="btn margin-lr no-drag" icon="pi pi-spin pi-wrench"
@@ -52,13 +53,20 @@ const ModDevTools = () => router.push('/mod-dev-tools')
 
         <div class="spacer"></div>
  
-        <div class="bottom flex-column">
+        <div class="bottom flex column">
+            <Button plain outlined
+                class="btn margin-lr no-drag"
+                style="border: none;"
+                icon="pi pi-info-circle"
+                @click="appInfo.setVisible()"
+            />
+
             <!-- <Button text class="btn margin-lr no-drag" :icon="themeMode === 'dark' ? 'pi pi-sun' : 'pi pi-moon'" @click="ToggleThemeMode"/> -->
             <Button 
                 plain outlined 
                 class="btn margin-lr no-drag" icon="pi pi-spin pi-cog" 
                 v-tooltip="tooltipOpts(t('keywords.settings'))"
-                @click="setVisible()"
+                @click="settings.setVisible()"
             />
         </div>
     </div>

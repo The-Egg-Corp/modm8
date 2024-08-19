@@ -360,6 +360,7 @@ const onPageChange = async (e: DataViewPageEvent) => {
 .selected-game-thumbnail {
     user-select: none;
     width: 162.5px;
+    max-height: 100%;
     border-radius: 4px;
     border: 2px outset var(--primary-color);
 }

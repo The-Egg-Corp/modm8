@@ -263,20 +263,28 @@ const onInputChanged = async () => {
             </template>
     
             <template #header>
-                <div class="searchbar">
-                    <IconField iconPosition="left">
-                        <InputIcon class="pi pi-search"></InputIcon>
-                        <InputText type="text" :placeholder="$t('selected-game.search-mods')" 
-                            v-model="searchInput" 
-                            @input="onInputChanged"
-                        />
-                    </IconField>
+                <div class="flex row justify-content-between align-item-center">
+                    <div class="searchbar">
+                        <IconField iconPosition="left">
+                            <InputIcon class="pi pi-search"></InputIcon>
+                            <InputText type="text" :placeholder="$t('selected-game.search-mods')" 
+                                v-model="searchInput" 
+                                @input="onInputChanged"
+                            />
+                        </IconField>
+                    </div>
+
+                    <div>
+                        <Dropdown>
+
+                        </Dropdown>
+                    </div>
                 </div>
             </template>
     
             <template #list>
                 <div class="scrollable list list-nogutter">
-                    <div v-for="(mod, index) in currentPageMods" :key="index" class="list-item col-10">
+                    <div v-for="(mod, index) in currentPageMods" :key="index" class="list-item col-12">
                         <div class="flex column sm:flex-row sm:align-items-center pt-2 gap-3" :class="{ 'border-top-1 surface-border': index != 0 }">
                             <img class="mod-list-thumbnail block xl:block mx-auto w-full" :src="mod.latestVersion?.icon || ''"/>
                             
@@ -510,8 +518,7 @@ const onInputChanged = async () => {
 }
 
 .searchbar {
-    margin-left: auto;
-    margin-right: auto;
+    
 }
 
 :deep(.searchbar .p-inputtext) {

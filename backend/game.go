@@ -24,6 +24,7 @@ type Game struct {
 	ExeName            []string `json:"exe_name" mapstructure:"exe_name"`
 	DataFolderName     string   `json:"data_folder_name" mapstructure:"data_folder_name"`
 	ThunderstoreURL    *string  `json:"thunderstore_url" mapstructure:"thunderstore_url"`
+	NexusURL           *string  `json:"nexus_url" mapstructure:"nexus_url"`
 	ExclusionsURL      string   `json:"exclusions_url" mapstructure:"exclusions_url"`
 }
 
@@ -48,7 +49,7 @@ func (gm *GameManager) GameInstalled(dirPath string, exeKeywords []string) bool 
 	return installed
 }
 
-func (gm *GameManager) FindCfgFiles(dirs []string) ([]string, error) {
+func (gm *GameManager) BepinexConfigFiles(dirs []string) ([]string, error) {
 	return WalkDirExt(filepath.Join(dirs...), []string{"cfg"})
 }
 

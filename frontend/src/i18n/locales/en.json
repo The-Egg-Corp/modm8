@@ -19,7 +19,9 @@
     "config-editor": {
       "title": "Config Editor",
       "edit-button": "Edit"
-    }
+    },
+    "empty-results": "No mods match the search query",
+    "loading-mod-list": "Loading mod list"
   },
   "settings": {
     "select-language": "Select language",

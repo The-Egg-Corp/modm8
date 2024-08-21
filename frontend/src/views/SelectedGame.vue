@@ -2,8 +2,8 @@
 import { computed, onMounted, ref } from "vue"
 import type { ComputedRef, Ref } from "vue"
 
+import { Nullable } from "primevue/ts-helpers"
 import DataView, { DataViewPageEvent } from 'primevue/dataview'
-import BlockUI from 'primevue/blockui'
 
 import Breadcrumb from 'primevue/breadcrumb'
 import CardOverlay from '../components/reusable/CardOverlay.vue'
@@ -14,14 +14,15 @@ import CardOverlay from '../components/reusable/CardOverlay.vue'
 import Card from 'primevue/card'
 import Button from 'primevue/button'
 
+import { ReadFile } from "@backend/app/Utils"
 import { GetLatestPackageVersion, GetPackagesStripped } from '@backend/thunderstore/API'
 import { LaunchSteamGame } from '@backend/steam/SteamRunner'
-import { FindCfgFiles } from '@backend/backend/GameManager'
+import { BepinexConfigFiles } from '@backend/backend/GameManager'
 import { useGameStore } from "@stores"
 import { useDialog } from '@composables'
 import { thunderstore } from "@backend/models"
 import { BreadcrumbPage, Package } from "@types"
-import { Nullable } from "primevue/ts-helpers"
+import { debounce } from "../util"
 
 const gameStore = useGameStore()
 const { selectedGame, updateModCache } = gameStore
@@ -33,6 +34,8 @@ const {
 
 const loading = ref(false)
 const searchInput: Ref<Nullable<string>> = ref(null)
+
+const mods: Ref<thunderstore.StrippedPackage[]> = ref([])
 const currentPageMods: Ref<Package[]> = ref([])
 
 const homePage: Ref<BreadcrumbPage> = ref({
@@ -48,7 +51,7 @@ const pages: ComputedRef<BreadcrumbPage[]> = computed(() => [{
     class: "text-primary"
 }])
 
-const ROWS = 15
+const ROWS = 25
 let configFiles: string[] = []
 
 onMounted(async () => {
@@ -68,7 +71,9 @@ onMounted(async () => {
         console.log(`Got ${selectedGame.modCache.length} mods from cache. Took: ${performance.now() - t0}ms`)
     }
 
+    mods.value = getMods()
     await updatePage(0, ROWS)
+
     loading.value = false
 })
 
@@ -84,25 +89,30 @@ const startModded = () => LaunchSteamGame(selectedGame.id, ["--doorstop-enable",
 
 const getConfigFiles = async () => {
     if (!selectedGame.bepinexSetup || !selectedGame.path) return []
-    
-    const files = await FindCfgFiles([selectedGame.path, "BepInEx", "config"])
+    return await BepinexConfigFiles([selectedGame.path, "BepInEx", "config"])
+}
+
+const getRelativeConfigPath = (absPath: string) => {
     const configPath = 'BepInEx/config'
 
-    return files.map(file => {
-        const normalizedFile = file.replace(/\\/g, '/')
-        const startIndex = normalizedFile.indexOf(configPath) + configPath.length + 1
+    const normalizedFile = absPath.replace(/\\/g, '/')
+    const startIndex = normalizedFile.indexOf(configPath) + configPath.length + 1
 
-        return normalizedFile.substring(startIndex)
-    })
+    return normalizedFile.substring(startIndex)
 }
 
-const editConfig = (path: string) => {
+const editConfig = async (path: string) => {
     // Read file contents from backend
+    const contents = await ReadFile(path) as string
+    console.log(contents)
 }
 
+const onPageChange = (e: DataViewPageEvent) => updatePage(e.first, e.rows)
 const updatePage = async (first: number, rows: number) => {
-    const mods = (selectedGame.modCache || []).slice(first, first + rows) as Package[]
-    const promises = mods.map(async mod => {
+    const filtered = mods.value.slice(first, first + rows) as Package[]
+
+    // TODO: This could be potentially VERY slow. Consider replacing with Map/Set instead.
+    const promises = filtered.map(async mod => {
         mod.latestVersion = await latestModVersion(mod)
         return mod
     })
@@ -110,9 +120,65 @@ const updatePage = async (first: number, rows: number) => {
     currentPageMods.value = await Promise.all(promises)
 }
 
-const onPageChange = async (e: DataViewPageEvent) => {
-    await updatePage(e.first, e.rows)
-    //console.log(currentPageMods.value)
+const filterBySearch = (mods: thunderstore.StrippedPackage[]) => {
+    if (!searchInput.value) return mods
+
+    const input = searchInput.value.trim()
+    if (input == "") return mods
+
+    const lowerInput = input.toLowerCase()
+
+    return mods.filter(mod => {
+        const lowerTitle = mod.name?.toLowerCase() ?? ""
+
+        // Necessary to not show irrelevent games with only 1 letter input.
+        if (input.length == 1 && !lowerTitle.startsWith(lowerInput)) {
+            return false
+        }
+
+        return lowerTitle.includes(input)
+    })
+}
+
+const getMods = (searchFilter = true, defaultSort = true) => {
+    if (!selectedGame.modCache) return []
+    const mods = searchFilter ? filterBySearch(selectedGame.modCache) : selectedGame.modCache
+
+    if (defaultSort) {
+        mods.sort((m1, m2) => m2.rating_score - m1.rating_score)
+    }
+
+    return mods
+}
+
+const hasSearchInput = () => searchInput.value ? searchInput.value.length > 0 : undefined
+
+// Create a debounced version of onInputChanged once
+const debouncedSearch = debounce(async () => {
+    // if (timeout) clearTimeout(timeout)
+
+    // // Determine if we stopped typing by measuring the delay between the last and current inputs.
+    // // We then set a threshold to alleviate major lag caused by filtering the mod list too quickly.
+    // lastInput = performance.now()
+    // timeout = setTimeout(async () => {
+    //     if (performance.now() - lastInput >= searchTimeout) {
+            
+    //     }
+    // }, searchTimeout)
+
+    mods.value = getMods()
+    await updatePage(0, ROWS)
+}, 250)
+
+const onInputChanged = async () => {
+    // No input, no need to debounce.
+    if (!searchInput.value?.trim()) {
+        // Show all mods without filtering.
+        mods.value = getMods(false)
+        return await updatePage(0, ROWS)
+    }
+
+    debouncedSearch()
 }
 </script>
 
@@ -130,9 +196,7 @@ const onPageChange = async (e: DataViewPageEvent) => {
         <template #separator>/</template>
     </Breadcrumb>
 
-    <BlockUI fullScreen v-if="loading"></BlockUI>
-    
-    <div class="flex row gap-8 no-drag">
+    <div class="flex row no-drag">
         <Card class="selected-game-card">
             <template #title>
                 <p style="font-size: 30px; font-weight: 520; user-select: none;" class="no-drag mt-0 mb-1">{{ $t('selected-game.currently-selected') }}</p>
@@ -174,17 +238,26 @@ const onPageChange = async (e: DataViewPageEvent) => {
             </template>
         </Card>
     
-        <DataView lazy paginator stripedRows 
-            v-if="!loading" class="w-8"
-            style="margin: 70px 0px 0px 1.5%;"
+        <h1 v-if="loading">{{ $t('selected-game.loading-mod-list') }}...</h1>
+        <DataView lazy stripedRows 
+            v-else class="w-9"
+            style="padding: 70px 0px 0px 50px;"
             layout="list" data-key="mod-list"
-            :value="currentPageMods"
-            :totalRecords="selectedGame.modCache?.length"
             :rows="ROWS"
+            :paginator="mods.length > 0"
+            :value="mods"
             @page="onPageChange"
         >
             <template #empty>
-                <div class="dataview-empty flex flex-column">
+                <div v-if="hasSearchInput()">
+                    <p>{{ $t('selected-game.empty-results') }}.</p>
+
+                    <!-- Sadge -->
+                    <img class="pt-3" src="https://cdn.7tv.app/emote/603cac391cd55c0014d989be/2x.png">
+                </div>
+
+                <!-- TODO: If failed, make this show regardless of search input. --> 
+                <div v-else class="dataview-empty flex flex-column">
                     <p>No mods available! Something probably went wrong.</p>
                 </div>
             </template>
@@ -193,7 +266,10 @@ const onPageChange = async (e: DataViewPageEvent) => {
                 <div class="searchbar">
                     <IconField iconPosition="left">
                         <InputIcon class="pi pi-search"></InputIcon>
-                        <InputText type="text" :placeholder="$t('selected-game.search-mods')" v-model="searchInput"/>
+                        <InputText type="text" :placeholder="$t('selected-game.search-mods')" 
+                            v-model="searchInput" 
+                            @input="onInputChanged"
+                        />
                     </IconField>
                 </div>
             </template>
@@ -201,11 +277,11 @@ const onPageChange = async (e: DataViewPageEvent) => {
             <template #list>
                 <div class="scrollable list list-nogutter">
                     <div v-for="(mod, index) in currentPageMods" :key="index" class="list-item col-10">
-                        <div class="flex flex-column sm:flex-row sm:align-items-center pt-2 gap-3" :class="{ 'border-top-1 surface-border': index != 0 }">
-                            <img class="mod-list-thumbnail fadeinleft fadeinleft-thumbnail block xl:block mx-auto w-full" :src="mod.latestVersion?.icon || ''"/>
+                        <div class="flex column sm:flex-row sm:align-items-center pt-2 gap-3" :class="{ 'border-top-1 surface-border': index != 0 }">
+                            <img class="mod-list-thumbnail block xl:block mx-auto w-full" :src="mod.latestVersion?.icon || ''"/>
                             
-                            <div class="flex flex-column md:flex-row justify-content-between md:align-items-center flex-1 gap-4">
-                                <div class="fadeinleft fadeinleft-title flex column justify-content-between align-items-start gap-2">
+                            <div class="flex column md:flex-row justify-content-between md:align-items-center flex-1 gap-4">
+                                <div class="flex column justify-content-between align-items-start gap-2">
                                     
                                     <div class="flex row align-items-baseline">
                                         <div class="mod-list-title">{{ mod.name }}</div>
@@ -270,7 +346,7 @@ const onPageChange = async (e: DataViewPageEvent) => {
                             class="flex flex-row pl-2 pr-2 justify-content-between align-items-center"
                             style="height: 58.5px"
                         >
-                            <p style="font-size: 18.5px; font-weight: 285; user-select: none;">{{ path }}</p>
+                            <p style="font-size: 18.5px; font-weight: 285; user-select: none;">{{ getRelativeConfigPath(path) }}</p>
     
                             <div class="flex gap-2">
                                 <Button outlined plain
@@ -321,9 +397,10 @@ const onPageChange = async (e: DataViewPageEvent) => {
     height: 140%;
 }*/
 
-/*.selected-game {
-    
-}*/
+.selected-game {
+    display: flex;
+    flex-direction: column;    
+}
 
 .breadcrumb {
     margin-top: 20px;
@@ -395,23 +472,7 @@ const onPageChange = async (e: DataViewPageEvent) => {
     user-select: none;
     max-width: 80px;
     min-width: 60px;
-    opacity: 0;
-    border-radius: 3px;
-}
-
-.fadeinleft {
-    --title-duration: 450ms;
-}
-
-.fadeinleft-thumbnail {
-    animation-duration: 300ms;
-    animation-delay: calc(var(--title-duration) - 100ms);
-    animation-fill-mode: forwards;
-}
-
-.fadeinleft-title {
-    animation-duration: var(--title-duration);
-    animation-delay: 50ms;
+    border-radius: 2.5px;
 }
 
 .scrollable {
@@ -463,6 +524,7 @@ const onPageChange = async (e: DataViewPageEvent) => {
 
 :deep(.p-paginator) {
     background: none !important;
+    padding-top: 1rem;
 }
 
 .list-item {

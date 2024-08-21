@@ -35,14 +35,38 @@ const {
     gameByID
 } = store
 
+const loading = ref(true)
 const searchInput: Ref<Nullable<string>> = ref(null)
 const layout: Ref<Layout> = ref('grid')
+
+const selectedFilter: Ref<ValueItemLabeled<string>> = ref({
+    label: "ALL",
+    value: t('keywords.all')
+})
+
+const filters: ComputedRef<ValueItemLabeled<string>[]> = computed(() => [{
+    label: "ALL",
+    value: t('keywords.all')
+}, {
+    label: "INSTALLED",
+    value: t('keywords.installed')
+}, {
+    label: "FAVOURITES",
+    value: t('keywords.favourites')
+}])
+
+const openLink = (path: string) => OpenExternal(path).catch(e => console.log(`Error opening folder: ${e}`))
+
+const alphabetSort = (games: Game[]) => {
+    if ((searchInput.value?.length ?? 0) < 1) return games
+    return games.sort((g1, g2) => g1 > g2 ? 1 : (g1 === g2 ? 0 : -1))
+}
 
 const getThumbnail = (game: Game) => game.image
     ? `https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/${game.image}` 
     : "https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/Titanfall2.jpg"
 
-function filterBySearch(games: Game[]) {
+const filterBySearch = (games: Game[]) => {
     if (!searchInput.value) return games
 
     const input = searchInput.value.trim()
@@ -85,31 +109,6 @@ function filterBySearch(games: Game[]) {
         return matchFound
     })
 }
-
-const openLink = (path: string) => OpenExternal(path).catch(e => console.log(`Error opening folder: ${e}`))
-
-const alphabetSort = (games: Game[]) => {
-    if ((searchInput.value?.length ?? 0) < 1) return games
-    return games.sort((g1, g2) => g1 > g2 ? 1 : (g1 === g2 ? 0 : -1))
-}
-
-const selectedFilter: Ref<ValueItemLabeled<string>> = ref({
-    label: "ALL",
-    value: t('keywords.all')
-})
-
-const filters: ComputedRef<ValueItemLabeled<string>[]> = computed(() => [{
-    label: "ALL",
-    value: t('keywords.all')
-}, {
-    label: "INSTALLED",
-    value: t('keywords.installed')
-}, {
-    label: "FAVOURITES",
-    value: t('keywords.favourites')
-}])
-
-const loading = ref(true)
 
 const getGames = (sort = true, searchFilter = true) => {
     let out = gamesAsArray.value
@@ -207,7 +206,7 @@ onMounted(async () => {
                     <div v-else-if="selectedFilter.label == 'INSTALLED'" class="dataview-empty">
                         <p>No games installed!</p>
                     </div>
-                    <div v-else class="dataview-empty flex flex-column">
+                    <div v-else-if="searchInput && searchInput.length > 0" class="dataview-empty flex flex-column">
                         <p>{{ `${$t('game-selection.empty-results')}.` }}</p>
 
                         <!-- Sadge -->
@@ -215,6 +214,9 @@ onMounted(async () => {
 
                         <!-- modCheck -->
                         <img class="pt-3" src="https://cdn.7tv.app/emote/60abf171870d317bef23d399/2x.gif">
+                    </div>
+                    <div v-else class="dataview-empty flex flex-column">
+                        <p>No games available! Something probably went wrong.</p>
                     </div>
                 </template>
 

@@ -21,3 +21,22 @@ export const tooltipOpts = (text: string, textStyle = tooltipTextStyle, arrowSty
         }
     }
 })
+
+type ArgsFunc = (...args: any[]) => void
+
+export function debounce<T extends ArgsFunc>(func: T, delay = 100, now?: number) {
+    let timeout: NodeJS.Timeout | null = null
+    return function(this: any, ...args: Parameters<T>) {
+        const ctx = this
+
+        if (timeout) clearTimeout(timeout)
+        else if (now) func.apply(ctx, args)
+
+        const delayed = () => {
+            if (!now) func.apply(ctx, args)
+            timeout = null
+        }
+
+        timeout = setTimeout(delayed, delay)
+    }
+}

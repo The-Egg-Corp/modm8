@@ -83,6 +83,8 @@
     "start-modded-button": "Empezar modificado",
     "start-vanilla-button": "Iniciar vainilla",
     "config-button": "Editar configuraciones",
-    "search-mods": "Modificaciones de búsqueda"
+    "search-mods": "Modificaciones de búsqueda",
+    "empty-results": "Ninguna modificación coincide con la consulta de búsqueda.",
+    "loading-mod-list": "Cargando lista de mods"
   }
 }

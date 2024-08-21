@@ -83,6 +83,8 @@
     "start-modded-button": "Démarrer la modification",
     "start-vanilla-button": "Démarrer Vanille",
     "config-button": "Modifier les configurations",
-    "search-mods": "Rechercher des modules"
+    "search-mods": "Rechercher des modules",
+    "empty-results": "Aucun mod ne correspond à la requête de recherche",
+    "loading-mod-list": "Chargement de la liste des mods"
   }
 }

@@ -83,6 +83,8 @@
     "start-modded-button": "Modifiziert starten",
     "start-vanilla-button": "Beginnen Sie mit Vanille",
     "config-button": "Konfigurationen bearbeiten",
-    "search-mods": "Mods suchen"
+    "search-mods": "Mods suchen",
+    "empty-results": "Keine Mods entsprechen der Suchanfrage",
+    "loading-mod-list": "Mod-Liste wird geladen"
   }
 }

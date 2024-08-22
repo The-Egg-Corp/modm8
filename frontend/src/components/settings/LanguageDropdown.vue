@@ -1,6 +1,11 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { ChangeEvent, Country, OptionItem, ValueItem } from '@types'
+
+import { 
+    ChangeEvent, Country, 
+    OptionItem, ValueItem 
+} from '@types'
+
 import { 
     t,
     countries,

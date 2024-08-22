@@ -1,8 +1,10 @@
 package backend
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 type StorePlatform string
@@ -28,8 +30,20 @@ type Game struct {
 	ExclusionsURL      string   `json:"exclusions_url" mapstructure:"exclusions_url"`
 }
 
-type GameManager struct {
+type BepinexConfig struct {
+	RootComments []string                    `json:"root_comments" mapstructure:"root_comments"`
+	Variables    map[string]BepinexConfigVar `json:"variables" mapstructure:"variables"`
 }
+
+type BepinexConfigVar struct {
+	Section          string   `json:"section" mapstructure:"section"`
+	Value            string   `json:"value" mapstructure:"value"`
+	DefaultValue     string   `json:"default_value" mapstructure:"default_value"`
+	Comments         []string `json:"comments" mapstructure:"comments"`
+	AcceptableValues []string `json:"acceptable_values" mapstructure:"acceptable_values"`
+}
+
+type GameManager struct{}
 
 func NewGameManager() *GameManager {
 	return &GameManager{}
@@ -47,6 +61,96 @@ func (gm *GameManager) GameInstalled(dirPath string, exeKeywords []string) bool 
 	}
 
 	return installed
+}
+
+func (gm *GameManager) ParseBepinexConfig(path string) (*BepinexConfig, error) {
+	return ParseBepinexConfig(path)
+}
+
+func ParseBepinexConfig(path string) (*BepinexConfig, error) {
+	contents, err := ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+
+	vars := make(map[string]BepinexConfigVar)
+
+	// Distinct key to avoid conflicting with a possible section.
+	currentSection := "__root"
+	currentDefaultValue := ""
+
+	var rootComments = make([]string, 0)
+	var comments []string
+	var acceptableValues []string
+
+	lines := strings.Split(*contents, "\n")
+	for _, line := range lines {
+		line = strings.TrimSpace(line)
+
+		// Don't need to do anything with an empty line
+		if len(line) == 0 {
+			continue
+		}
+
+		//#region Parse comments
+		if strings.HasPrefix(line, "#") || strings.HasPrefix(line, ";") {
+			if currentSection != "__root" {
+				comments = append(comments, line)
+			} else {
+				rootComments = append(comments, line)
+			}
+
+			if strings.Contains(line, "Setting type: Boolean") {
+				acceptableValues = []string{"true", "false"}
+			}
+
+			if strings.Contains(line, "Default value: ") {
+				currentDefaultValue = strings.TrimSpace(line[len("# Default value:"):])
+			}
+
+			continue
+		}
+		//#endregion
+
+		//#region Parse section/category
+		if strings.HasPrefix(line, "[") && strings.HasSuffix(line, "]") {
+			// Grab everything in between the brackets
+			currentSection = line[1 : len(line)-1]
+			continue
+		}
+		//#endregion
+
+		//#region Parse option (key/value pair)
+		if strings.Index(line, "=") < 1 {
+			continue // Ignore malformed line
+		}
+
+		if key, value, found := strings.Cut(line, "="); found {
+			key = strings.TrimSpace(key)
+			value = strings.TrimSpace(value)
+
+			// Put the section within the key to avoid nested maps. Ex: parsed[section][key]
+			flatKey := fmt.Sprintf("%s.%s", currentSection, key)
+
+			vars[flatKey] = BepinexConfigVar{
+				Section:          currentSection,
+				Value:            value,
+				DefaultValue:     currentDefaultValue,
+				Comments:         comments,
+				AcceptableValues: acceptableValues,
+			}
+
+			// Clear comments and acceptable values for the next entry
+			comments = nil
+			acceptableValues = make([]string, 0)
+		}
+		//#endregion
+	}
+
+	return &BepinexConfig{
+		RootComments: rootComments,
+		Variables:    vars,
+	}, nil
 }
 
 func (gm *GameManager) BepinexConfigFiles(dirs []string) ([]string, error) {

@@ -7,6 +7,7 @@ import DataView, { DataViewPageEvent } from 'primevue/dataview'
 
 import Breadcrumb from 'primevue/breadcrumb'
 import CardOverlay from '../components/reusable/CardOverlay.vue'
+import ModListDropdown from "../components/ModListDropdown.vue"
 
 // import Splitter from 'primevue/splitter'
 // import SplitterPanel from 'primevue/splitterpanel'
@@ -131,12 +132,12 @@ const filterBySearch = (mods: thunderstore.StrippedPackage[]) => {
     return mods.filter(mod => {
         const lowerTitle = mod.name?.toLowerCase() ?? ""
 
-        // Necessary to not show irrelevent games with only 1 letter input.
+        // Necessary to not show irrelevent mods with only 1 letter input.
         if (input.length == 1 && !lowerTitle.startsWith(lowerInput)) {
             return false
         }
 
-        return lowerTitle.includes(input)
+        return lowerTitle.includes(lowerInput)
     })
 }
 
@@ -275,9 +276,9 @@ const onInputChanged = async () => {
                     </div>
 
                     <div>
-                        <Dropdown>
-
-                        </Dropdown>
+                        <ModListDropdown>
+                            
+                        </ModListDropdown>
                     </div>
                 </div>
             </template>
@@ -517,9 +518,9 @@ const onInputChanged = async () => {
     background: none !important;
 }
 
-.searchbar {
+/*.searchbar {
     
-}
+}*/
 
 :deep(.searchbar .p-inputtext) {
     background: rgba(0, 0, 0, 0.2);

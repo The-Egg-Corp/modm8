@@ -1,3 +1,4 @@
+import { OpenExternal } from "@backend/app/Application.js"
 import { TooltipOptions } from "primevue/tooltip"
 
 const tooltipTextStyle = {
@@ -40,3 +41,5 @@ export function debounce<T extends ArgsFunc>(func: T, delay = 100, now?: number)
         timeout = setTimeout(delayed, delay)
     }
 }
+
+export const openLink = (path: string) => OpenExternal(path).catch(e => console.log(`Error opening folder: ${e}`))

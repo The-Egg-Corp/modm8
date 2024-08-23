@@ -26,6 +26,14 @@ func WalkDirExt(root string, exts []string) ([]string, error) {
 	return files, err
 }
 
+func ExistsAtPath(absPath string) (bool, error) {
+	if _, err := os.Stat(absPath); os.IsNotExist(err) {
+		return false, err
+	}
+
+	return true, nil
+}
+
 func ReadFile(path string) (*string, error) {
 	content, err := os.ReadFile(filepath.Clean(path))
 	if err != nil {

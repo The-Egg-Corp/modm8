@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, ComputedRef } from 'vue'
 
-export const filters: ComputedRef<{ label: string, value: string }[]> = computed(() => [{ 
+const filters: ComputedRef<{ label: string, value: string }[]> = computed(() => [{ 
     label: "Most Rated",
     value: "most-rated"
 }, {

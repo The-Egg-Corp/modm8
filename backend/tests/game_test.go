@@ -1,7 +1,7 @@
 package backend
 
 import (
-	"modm8/backend"
+	"modm8/backend/game"
 	"strings"
 	"testing"
 
@@ -10,7 +10,7 @@ import (
 
 func TestBepinexInstalled(t *testing.T) {
 	dir := "E:\\SteamLibrary\\steamapps\\common\\Lethal Company"
-	installed, missing := backend.BepinexInstalled(dir)
+	installed, missing := game.BepinexInstalled(dir)
 
 	if !installed {
 		for i, item := range missing {
@@ -24,7 +24,7 @@ func TestBepinexInstalled(t *testing.T) {
 
 func TestParseConfig(t *testing.T) {
 	cfgPath := "E:\\SteamLibrary\\steamapps\\common\\Lethal Company\\BepInEx\\config\\IntroTweaks.cfg"
-	parsed, err := backend.ParseBepinexConfig(cfgPath)
+	parsed, err := game.ParseBepinexConfig(cfgPath)
 
 	if err != nil {
 		t.Fatal(err)

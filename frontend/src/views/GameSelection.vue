@@ -12,9 +12,9 @@ import { Game, Layout, OptionItem, ValueItem, ValueItemLabeled } from '@types'
 import { Nullable } from 'primevue/ts-helpers'
 
 import { t } from '@i18n'
-import { BepinexInstalled } from '@backend/backend/GameManager'
-import { GetPersistence, OpenExternal } from '@backend/app/Application'
-import { tooltipOpts } from "../../src/util"
+import { BepinexInstalled } from '@backend/game/GameManager'
+import { GetPersistence,  } from '@backend/app/Application'
+import { tooltipOpts, openLink } from "../../src/util"
 
 import { useGameStore } from '@stores'
 import { storeToRefs } from 'pinia'
@@ -55,7 +55,7 @@ const filters: ComputedRef<ValueItemLabeled<string>[]> = computed(() => [{
     value: t('keywords.favourites')
 }])
 
-const openLink = (path: string) => OpenExternal(path).catch(e => console.log(`Error opening folder: ${e}`))
+
 
 const alphabetSort = (games: Game[]) => {
     if ((searchInput.value?.length ?? 0) < 1) return games

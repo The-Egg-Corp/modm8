@@ -15,15 +15,14 @@ import ModListDropdown from "../components/ModListDropdown.vue"
 import Card from 'primevue/card'
 import Button from 'primevue/button'
 
-import { ReadFile } from "@backend/app/Utils"
 import { GetLatestPackageVersion, GetPackagesStripped } from '@backend/thunderstore/API'
 import { LaunchSteamGame } from '@backend/steam/SteamRunner'
-import { BepinexConfigFiles } from '@backend/backend/GameManager'
+import { BepinexConfigFiles, ParseBepinexConfig } from '@backend/game/GameManager'
 import { useGameStore } from "@stores"
 import { useDialog } from '@composables'
-import { thunderstore } from "@backend/models"
+import { thunderstore, backend } from "@backend/models"
 import { BreadcrumbPage, Package } from "@types"
-import { debounce } from "../util"
+import { debounce, openLink } from "../util"
 
 const gameStore = useGameStore()
 const { selectedGame, updateModCache } = gameStore
@@ -35,6 +34,7 @@ const {
 
 const loading = ref(false)
 const searchInput: Ref<Nullable<string>> = ref(null)
+const selectedConfig: Ref<Nullable<backend.BepinexConfig>> = ref(null)
 
 const mods: Ref<thunderstore.StrippedPackage[]> = ref([])
 const currentPageMods: Ref<Package[]> = ref([])
@@ -102,10 +102,19 @@ const getRelativeConfigPath = (absPath: string) => {
     return normalizedFile.substring(startIndex)
 }
 
+const closeConfigEditor = () => {
+    setVisible(false)
+    selectedConfig.value = null
+}
+
 const editConfig = async (path: string) => {
     // Read file contents from backend
-    const contents = await ReadFile(path) as string
-    console.log(contents)
+    try {
+        const config = await ParseBepinexConfig(path)
+        selectedConfig.value = config
+    } catch(err: any) {
+        // Show error toast
+    }
 }
 
 const onPageChange = (e: DataViewPageEvent) => updatePage(e.first, e.rows)
@@ -153,24 +162,6 @@ const getMods = (searchFilter = true, defaultSort = true) => {
 }
 
 const hasSearchInput = () => searchInput.value ? searchInput.value.length > 0 : undefined
-
-// Create a debounced version of onInputChanged once
-const debouncedSearch = debounce(async () => {
-    // if (timeout) clearTimeout(timeout)
-
-    // // Determine if we stopped typing by measuring the delay between the last and current inputs.
-    // // We then set a threshold to alleviate major lag caused by filtering the mod list too quickly.
-    // lastInput = performance.now()
-    // timeout = setTimeout(async () => {
-    //     if (performance.now() - lastInput >= searchTimeout) {
-            
-    //     }
-    // }, searchTimeout)
-
-    mods.value = getMods()
-    await updatePage(0, ROWS)
-}, 250)
-
 const onInputChanged = async () => {
     // No input, no need to debounce.
     if (!searchInput.value?.trim()) {
@@ -181,6 +172,11 @@ const onInputChanged = async () => {
 
     debouncedSearch()
 }
+
+const debouncedSearch = debounce(async () => {
+    mods.value = getMods()
+    await updatePage(0, ROWS)
+}, 250)
 </script>
 
 <template>
@@ -242,7 +238,7 @@ const onInputChanged = async () => {
         <h1 v-if="loading">{{ $t('selected-game.loading-mod-list') }}...</h1>
         <DataView lazy stripedRows 
             v-else class="w-9"
-            style="padding: 70px 0px 0px 50px;"
+            style="padding: 70px 50px 0px 50px;"
             layout="list" data-key="mod-list"
             :rows="ROWS"
             :paginator="mods.length > 0"
@@ -329,7 +325,7 @@ const onInputChanged = async () => {
                 </div>
             </template>
         </DataView>
-    
+
         <CardOverlay 
             class="no-drag"
             v-model:visible="visible"
@@ -337,7 +333,10 @@ const onInputChanged = async () => {
             v-model:draggable="draggable"
         >
             <template #cardContent>
-                <div class="flex flex-column" style="max-height: calc(100vh - 180px);">
+                <div v-if="selectedConfig" class="flex flex-column">
+
+                </div>
+                <div v-else class="flex flex-column" style="max-height: calc(100vh - 180px);">
                     <!-- #region Heading & Subheading -->
                     <h1 class="header">{{ $t('selected-game.config-editor.title') }}</h1>
                     <p style="font-weight: 340; margin-bottom: 15px; margin-top: 3px; padding-left: 5px; user-select: none;">
@@ -362,7 +361,7 @@ const onInputChanged = async () => {
                                     icon="pi pi-folder"
                                     style="font-size: 17px; width: 3rem;"
                                     v-tooltip.top="'Open in Explorer'"
-                                    @click=""
+                                    @click="openLink(`file://${path}`)"
                                 />
     
                                 <Button plain
@@ -380,7 +379,7 @@ const onInputChanged = async () => {
         
             <template #dialogContent>
                 <div style="position: sticky; bottom: 0;" class="flex justify-content-end gap-3">
-                    <Button class="w-full" type="button" :label="$t('keywords.close')" severity="secondary" @click="setVisible(false)"></Button>
+                    <Button class="w-full" type="button" :label="$t('keywords.close')" severity="secondary" @click="closeConfigEditor()"></Button>
                 </div>
             </template>
         </CardOverlay>

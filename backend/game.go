@@ -83,22 +83,30 @@ func ParseBepinexConfig(path string) (*BepinexConfig, error) {
 	var comments []string
 	var acceptableValues []string
 
+	reset := func() {
+		comments = nil
+		acceptableValues = make([]string, 0)
+	}
+
 	lines := strings.Split(*contents, "\n")
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
 
-		// Don't need to do anything with an empty line
 		if len(line) == 0 {
-			continue
+			if len(comments) < 1 {
+				continue
+			}
+
+			if currentSection == "__root" {
+				rootComments = append(rootComments, comments...)
+			}
+
+			reset()
 		}
 
 		//#region Parse comments
 		if strings.HasPrefix(line, "#") || strings.HasPrefix(line, ";") {
-			if currentSection != "__root" {
-				comments = append(comments, line)
-			} else {
-				rootComments = append(comments, line)
-			}
+			comments = append(comments, line)
 
 			if strings.Contains(line, "Setting type: Boolean") {
 				acceptableValues = []string{"true", "false"}
@@ -114,6 +122,12 @@ func ParseBepinexConfig(path string) (*BepinexConfig, error) {
 
 		//#region Parse section/category
 		if strings.HasPrefix(line, "[") && strings.HasSuffix(line, "]") {
+			if len(comments) > 0 && currentSection == "__root" {
+				rootComments = append(rootComments, comments...)
+
+				reset()
+			}
+
 			// Grab everything in between the brackets
 			currentSection = line[1 : len(line)-1]
 			continue
@@ -140,9 +154,7 @@ func ParseBepinexConfig(path string) (*BepinexConfig, error) {
 				AcceptableValues: acceptableValues,
 			}
 
-			// Clear comments and acceptable values for the next entry
-			comments = nil
-			acceptableValues = make([]string, 0)
+			reset()
 		}
 		//#endregion
 	}

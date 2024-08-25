@@ -18,7 +18,7 @@ import { BepinexConfigFiles, ParseBepinexConfig } from '@backend/game/GameManage
 import { thunderstore, game } from "@backend/models"
 
 import { useDialog } from '@composables'
-import { CardOverlay, ModListDropdown } from "@components"
+import { CardOverlay, ModListDropdown, ConfigEditLayout } from "@components"
 import { BreadcrumbPage, Package } from "@types"
 import { useGameStore } from "@stores"
 
@@ -34,7 +34,9 @@ const {
 
 const loading = ref(false)
 const searchInput: Ref<Nullable<string>> = ref(null)
+
 const selectedConfig: Ref<Nullable<game.BepinexConfig>> = ref(null)
+const selectedConfigName: Ref<Nullable<string>> = ref(null)
 
 const mods: Ref<thunderstore.StrippedPackage[]> = ref([])
 const currentPageMods: Ref<Package[]> = ref([])
@@ -104,7 +106,9 @@ const getRelativeConfigPath = (absPath: string) => {
 
 const closeConfigEditor = () => {
     setVisible(false)
+
     selectedConfig.value = null
+    selectedConfigName.value = null
 }
 
 const editConfig = async (path: string) => {
@@ -112,6 +116,7 @@ const editConfig = async (path: string) => {
     try {
         const config = await ParseBepinexConfig(path)
         selectedConfig.value = config
+        selectedConfigName.value = getRelativeConfigPath(path)
     } catch(err: any) {
         // Show error toast
     }
@@ -333,10 +338,7 @@ const debouncedSearch = debounce(async () => {
             v-model:draggable="draggable"
         >
             <template #cardContent>
-                <div v-if="selectedConfig" class="flex flex-column">
-
-                </div>
-                <div v-else class="flex flex-column" style="max-height: calc(100vh - 180px);">
+                <div v-if="!selectedConfig" class="flex flex-column" style="max-height: calc(100vh - 180px);">
                     <!-- #region Heading & Subheading -->
                     <h1 class="header">{{ $t('selected-game.config-editor.title') }}</h1>
                     <p style="font-weight: 340; margin-bottom: 15px; margin-top: 3px; padding-left: 5px; user-select: none;">
@@ -375,11 +377,16 @@ const debouncedSearch = debounce(async () => {
                     </div>
                     <!-- #endregion -->
                 </div>
+
+                <ConfigEditLayout v-else :config="selectedConfig" :fileName="selectedConfigName">
+                    
+                </ConfigEditLayout>
             </template>
         
             <template #dialogContent>
-                <div style="position: sticky; bottom: 0;" class="flex justify-content-end gap-3">
+                <div style="position: sticky; bottom: 0;" class="flex justify-content-end gap-2">
                     <Button class="w-full" type="button" :label="$t('keywords.close')" severity="secondary" @click="closeConfigEditor()"></Button>
+                    <Button v-if="selectedConfig" class="w-full" type="button" :label="$t('keywords.apply')" @click="closeConfigEditor()"></Button>
                 </div>
             </template>
         </CardOverlay>

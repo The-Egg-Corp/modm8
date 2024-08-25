@@ -12,7 +12,8 @@ const props = withDefaults(defineProps<Props>(), {
     dialogStyle: {
         "margin-left": "10px",
         "width": 'auto',
-        "min-width": '45rem'
+        "min-width": '45rem',
+        "max-width": '65rem'
     },
     cardStyle: {
         "box-shadow": 'none',
@@ -30,7 +31,6 @@ const props = withDefaults(defineProps<Props>(), {
     :block-scroll="true"
     :dismissable-mask="true"
     :show-header="false"
-    append-to="self"
 >
     <Card :style="props.cardStyle">
         <template #content>

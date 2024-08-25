@@ -4,10 +4,7 @@ import type { ComputedRef, Ref } from "vue"
 
 import { Nullable } from "primevue/ts-helpers"
 import DataView, { DataViewPageEvent } from 'primevue/dataview'
-
 import Breadcrumb from 'primevue/breadcrumb'
-import CardOverlay from '../components/reusable/CardOverlay.vue'
-import ModListDropdown from "../components/ModListDropdown.vue"
 
 // import Splitter from 'primevue/splitter'
 // import SplitterPanel from 'primevue/splitterpanel'
@@ -18,10 +15,13 @@ import Button from 'primevue/button'
 import { GetLatestPackageVersion, GetPackagesStripped } from '@backend/thunderstore/API'
 import { LaunchSteamGame } from '@backend/steam/SteamRunner'
 import { BepinexConfigFiles, ParseBepinexConfig } from '@backend/game/GameManager'
-import { useGameStore } from "@stores"
+import { thunderstore, game } from "@backend/models"
+
 import { useDialog } from '@composables'
-import { thunderstore, backend } from "@backend/models"
+import { CardOverlay, ModListDropdown } from "@components"
 import { BreadcrumbPage, Package } from "@types"
+import { useGameStore } from "@stores"
+
 import { debounce, openLink } from "../util"
 
 const gameStore = useGameStore()
@@ -34,7 +34,7 @@ const {
 
 const loading = ref(false)
 const searchInput: Ref<Nullable<string>> = ref(null)
-const selectedConfig: Ref<Nullable<backend.BepinexConfig>> = ref(null)
+const selectedConfig: Ref<Nullable<game.BepinexConfig>> = ref(null)
 
 const mods: Ref<thunderstore.StrippedPackage[]> = ref([])
 const currentPageMods: Ref<Package[]> = ref([])

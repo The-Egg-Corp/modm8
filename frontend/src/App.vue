@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import Sidebar from './components/Sidebar.vue'
-import ControlButtons from './components/ControlButtons.vue'
-import SettingsOverlay from './components/settings/SettingsOverlay.vue'
-import AppInfoOverlay from './components/AppInfoOverlay.vue'
+import { 
+    Sidebar, ControlButtons,
+    SettingsOverlay, AppInfoOverlay
+} from '@components'
 
 import { onMounted } from 'vue'
 import { changeLocale } from '@i18n'

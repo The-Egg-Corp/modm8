@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import router from "../router"
+import router from "../../router"
 import { useDialog } from '@composables'
 
-import { tooltipOpts } from "../../src/util"
+import { tooltipOpts } from "../../util"
 import { t } from '@i18n'
 
 const settings = useDialog('settings')
@@ -15,7 +15,7 @@ const ModDevTools = () => router.push('/mod-dev-tools')
 
 <template>
 <div class="sidebar flex column">
-    <img class="icon no-select" src="../assets/images/appicon.png">
+    <img class="icon no-select" src="../../assets/images/appicon.png">
 
     <div class="flex column h-full">
         <div class="top flex column">

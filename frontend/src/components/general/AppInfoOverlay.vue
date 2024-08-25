@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import CardOverlay from "./reusable/CardOverlay.vue"
+import { CardOverlay } from "@components"
 import { useDialog } from "@composables"
 
 const { 

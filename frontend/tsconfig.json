@@ -1,9 +1,8 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "useDefineForClassFields": true,
     "module": "ESNext",
-    "moduleResolution": "Node10",
+    "moduleResolution": "NodeNext",
     "strict": true,
     "jsx": "preserve",
     "sourceMap": true,
@@ -20,10 +19,10 @@
     "types": ["node"],
     "baseUrl": ".",
     "paths": {
-      "@assets": ["./src/assets"],
+      "@assets": ["./src/assets", "./src/assets/*"],
       "@components": ["./src/components"],
-      "@composables": ["./src/composables"],
-      "@stores": ["src/stores"],
+      "@composables": ["./src/composables", "./src/composables/*"],
+      "@stores": ["./src/stores"],
       "@types": ["./src/types"],
       "@i18n": ["./src/i18n"],
       "@backend/*": ["./wailsjs/go/*"],

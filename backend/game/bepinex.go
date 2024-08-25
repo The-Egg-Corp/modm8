@@ -1,17 +1,18 @@
 package game
 
 import (
+	"fmt"
 	backend "modm8/backend"
 	"path/filepath"
 	"strings"
 )
 
 type BepinexConfig struct {
-	RootComments []string                       `json:"root_comments" mapstructure:"root_comments"`
-	Variables    map[string]BepinexConfigOption `json:"variables" mapstructure:"variables"`
+	RootComments []string                      `json:"root_comments" mapstructure:"root_comments"`
+	Entries      map[string]BepinexConfigEntry `json:"entries" mapstructure:"entries"`
 }
 
-type BepinexConfigOption struct {
+type BepinexConfigEntry struct {
 	Section          string   `json:"section" mapstructure:"section"`
 	Value            string   `json:"value" mapstructure:"value"`
 	DefaultValue     string   `json:"default_value" mapstructure:"default_value"`
@@ -25,7 +26,7 @@ func ParseBepinexConfig(path string) (*BepinexConfig, error) {
 		return nil, err
 	}
 
-	vars := make(map[string]BepinexConfigOption)
+	entries := make(map[string]BepinexConfigEntry)
 
 	// Distinct key to avoid conflicting with a possible section.
 	currentSection := "__root"
@@ -95,11 +96,10 @@ func ParseBepinexConfig(path string) (*BepinexConfig, error) {
 			key = strings.TrimSpace(key)
 			value = strings.TrimSpace(value)
 
-			// Put the section within the key to avoid nested maps. Ex: parsed[section][key]
-			//flatKey := fmt.Sprintf("%s.%s", currentSection, )
+			// Put the section within the key to avoid map nesting.
+			flatKey := fmt.Sprintf("%s.%s", currentSection, key)
 
-			vars[key] = BepinexConfigOption{
-				Section:          currentSection,
+			entries[flatKey] = BepinexConfigEntry{
 				Value:            value,
 				DefaultValue:     currentDefaultValue,
 				Comments:         comments,
@@ -113,7 +113,7 @@ func ParseBepinexConfig(path string) (*BepinexConfig, error) {
 
 	return &BepinexConfig{
 		RootComments: rootComments,
-		Variables:    vars,
+		Entries:      entries,
 	}, nil
 }
 

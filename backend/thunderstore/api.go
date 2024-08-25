@@ -6,10 +6,25 @@ import (
 	"sync"
 
 	"github.com/samber/lo"
+
 	exp "github.com/the-egg-corp/thundergo/experimental"
 	"github.com/the-egg-corp/thundergo/util"
 	v1 "github.com/the-egg-corp/thundergo/v1"
 )
+
+type StrippedPackage struct {
+	Name           string        `json:"name"`
+	FullName       string        `json:"full_name"`
+	Owner          string        `json:"owner"`
+	UUID           string        `json:"uuid4"`
+	PackageURL     string        `json:"package_url"`
+	DateCreated    util.DateTime `json:"date_created"`
+	DateUpdated    util.DateTime `json:"date_updated"`
+	Rating         uint16        `json:"rating_score"`
+	Deprecated     bool          `json:"is_deprecated"`
+	HasNsfwContent bool          `json:"has_nsfw_content"`
+	Categories     []string      `json:"categories"`
+}
 
 type API struct {
 	Cache map[string]v1.PackageList
@@ -72,9 +87,6 @@ func (a *API) GetPackageVersions(community string, owner string, name string) ([
 }
 
 func (a *API) GetPackagesInCommunity(community string, skipCache bool) ([]v1.Package, error) {
-	// a.mutex.RLock()
-	// defer a.mutex.RUnlock()
-
 	if !skipCache {
 		pkgs, exists := a.Cache[community]
 		if exists {
@@ -87,18 +99,10 @@ func (a *API) GetPackagesInCommunity(community string, skipCache bool) ([]v1.Pac
 		Identifier: community,
 	}
 
-	// pkgs, err := comm.AllPackages()
-	// if err != nil {
-	// 	return make(map[string]v1.Package, 0), err
-	// }
-
 	pkgs, err := comm.AllPackages()
 	if err != nil {
 		return nil, err
 	}
-
-	// a.mutex.Lock()
-	// defer a.mutex.Unlock()
 
 	a.Cache[community] = pkgs
 	return pkgs, nil
@@ -159,18 +163,4 @@ func (a *API) GetUserPackages(communities []string, owner string) string {
 	}
 
 	return strings.Join(names, ", ")
-}
-
-type StrippedPackage struct {
-	Name           string        `json:"name"`
-	FullName       string        `json:"full_name"`
-	Owner          string        `json:"owner"`
-	UUID           string        `json:"uuid4"`
-	PackageURL     string        `json:"package_url"`
-	DateCreated    util.DateTime `json:"date_created"`
-	DateUpdated    util.DateTime `json:"date_updated"`
-	Rating         uint16        `json:"rating_score"`
-	Deprecated     bool          `json:"is_deprecated"`
-	HasNsfwContent bool          `json:"has_nsfw_content"`
-	Categories     []string      `json:"categories"`
 }

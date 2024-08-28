@@ -4,6 +4,7 @@ import (
 	exp "github.com/the-egg-corp/thundergo/experimental"
 )
 
+// Collection of util methods relating to Thunderstore mod development.
 type Tools struct {
 }
 

@@ -12,9 +12,9 @@ import Breadcrumb from 'primevue/breadcrumb'
 import Card from 'primevue/card'
 import Button from 'primevue/button'
 
-import { GetLatestPackageVersion, GetPackagesStripped } from '@backend/thunderstore/API'
-import { LaunchSteamGame } from '@backend/steam/SteamRunner'
+import * as Steam from '@backend/steam/SteamRunner'
 import { BepinexConfigFiles, ParseBepinexConfig } from '@backend/game/GameManager'
+import { GetLatestPackageVersion, GetPackagesStripped } from '@backend/thunderstore/API'
 import { thunderstore, game } from "@backend/models"
 
 import { useDialog } from '@composables'
@@ -87,8 +87,8 @@ const gameThumbnail = () => selectedGame.image
     ? `https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/${selectedGame.image}` 
     : "https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/Titanfall2.jpg"
 
-const startVanilla = () => LaunchSteamGame(selectedGame.id, ["--doorstop-enable", "false"])
-const startModded = () => LaunchSteamGame(selectedGame.id, ["--doorstop-enable", "true"])
+const startVanilla = () => Steam.LaunchGame(selectedGame.id, ["--doorstop-enable", "false"])
+const startModded = () => Steam.LaunchGame(selectedGame.id, ["--doorstop-enable", "true"])
 
 const getConfigFiles = async () => {
     if (!selectedGame.bepinexSetup || !selectedGame.path) return []

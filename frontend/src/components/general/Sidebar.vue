@@ -21,14 +21,14 @@ const ModDevTools = () => router.push('/mod-dev-tools')
         <div class="top flex column">
             <Button 
                 plain outlined 
-                class="btn margin-lr no-drag" icon="pi pi-spin pi-home" 
+                class="btn margin-lr no-drag" icon="pi pi-home" 
                 v-tooltip="tooltipOpts(t('tooltips.sidebar.dashboard'))"
                 @click="Dashboard"
             />
     
             <Button 
                 plain outlined 
-                class="btn margin-lr no-drag" icon="pi pi-spin pi-list" 
+                class="btn margin-lr no-drag" 
                 v-tooltip="tooltipOpts(t('tooltips.sidebar.game-selection'))"
                 @click="GameSelection"
             >
@@ -43,12 +43,12 @@ const ModDevTools = () => router.push('/mod-dev-tools')
         <div class="top flex column">
             <Button 
                 plain outlined 
-                class="btn margin-lr no-drag" icon="pi pi-spin pi-wrench"
+                class="btn margin-lr no-drag" icon="pi pi-wrench"
                 v-tooltip="tooltipOpts(t('tooltips.sidebar.mod-dev-tools'))"
                 @click="ModDevTools"
             />
 
-            <!-- <Button plain outlined class="btn margin-lr no-drag" icon="pi pi-spin pi-upload"/> -->
+            <!-- <Button plain outlined class="btn margin-lr no-drag" icon="pi pi-upload"/> -->
         </div>
 
         <div class="spacer"></div>
@@ -64,7 +64,7 @@ const ModDevTools = () => router.push('/mod-dev-tools')
             <!-- <Button text class="btn margin-lr no-drag" :icon="themeMode === 'dark' ? 'pi pi-sun' : 'pi pi-moon'" @click="ToggleThemeMode"/> -->
             <Button 
                 plain outlined 
-                class="btn margin-lr no-drag" icon="pi pi-spin pi-cog" 
+                class="btn margin-lr spin-hover no-drag" icon="pi pi-cog" 
                 v-tooltip="tooltipOpts(t('keywords.settings'))"
                 @click="settings.setVisible()"
             />
@@ -92,8 +92,8 @@ const ModDevTools = () => router.push('/mod-dev-tools')
 }
 
 .icon {
-    width: 40px;
-    height: 41.5px;
+    width: 41px;
+    height: 47.5px;
 }
 
 .top .p-button {
@@ -125,10 +125,6 @@ const ModDevTools = () => router.push('/mod-dev-tools')
 }
 
 .material-symbols-sharp {
-    font-variation-settings:
-    'FILL' 0,
-    'wght' 270,
-    'GRAD' 100,
-    'opsz' 40
+    font-variation-settings: 'FILL' 0, 'wght' 270, 'GRAD' 100, 'opsz' 40
 }
 </style>

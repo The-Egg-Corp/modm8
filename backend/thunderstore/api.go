@@ -3,7 +3,6 @@ package thunderstore
 import (
 	"context"
 	"errors"
-	"fmt"
 	"modm8/backend/common/downloader"
 	"modm8/backend/common/fileutil"
 	"path/filepath"
@@ -180,13 +179,13 @@ func (a *API) GetProgress(response grab.Response) float64 {
 
 // Downloads the specified package as a zip file and unpacks it under the specified directory (absolute path).
 //
-// The `fullName` parameter expects a string in the format "Author-Package-Major.Minor.Patch"
-func (a *API) InstallPackage(fullName string, dir string) error {
+// The `fullName` parameter expects a string in the format: "Author-Package-Major.Minor.Patch"
+func (a *API) InstallPackage(fullName string, dir string) (*grab.Response, error) {
 	url := "https://thunderstore.io/package/download/" + strings.ReplaceAll(fullName, "-", "/")
 
 	resp, err := downloader.DownloadZip(url, dir, fullName)
 	if err != nil {
-		return err
+		return resp, err
 	}
 
 	// 	ticker := time.NewTicker(5 * time.Millisecond)
@@ -204,17 +203,16 @@ func (a *API) InstallPackage(fullName string, dir string) error {
 	// 	}
 
 	// Finished, check for errors.
-	if err := resp.Err(); err != nil {
-		return fmt.Errorf("\ndownload failed:\n\n%v", err)
+	if err = resp.Err(); err != nil {
+		return resp, err
 	}
 
 	path := filepath.Join(dir, fullName)
-	zipPath := path + ".zip"
 
-	err = fileutil.Unzip(zipPath, path, true)
+	err = fileutil.Unzip(path+".zip", path, true)
 	if err != nil {
-		return err
+		return resp, err
 	}
 
-	return nil
+	return resp, nil
 }

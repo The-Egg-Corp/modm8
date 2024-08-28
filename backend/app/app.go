@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"os"
-	"path"
+	"path/filepath"
 	"runtime"
 
 	gocmd "github.com/go-cmd/cmd"
@@ -147,15 +147,15 @@ func NumCPU() uint8 {
 
 func ConfigDir() string {
 	dir, _ := os.UserConfigDir()
-	return path.Join(dir, "modm8")
+	return filepath.Join(dir, "modm8")
 }
 
 func SettingsPath() string {
-	return path.Join(ConfigDir(), "settings.toml")
+	return filepath.Join(ConfigDir(), "settings.toml")
 }
 
 func PersistencePath() string {
-	return path.Join(ConfigDir(), "persistence.toml")
+	return filepath.Join(ConfigDir(), "persistence.toml")
 }
 
 // Fetches the tag of the latest modm8 GitHub release.

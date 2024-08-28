@@ -22,7 +22,7 @@ func NewRunner() *SteamRunner {
 }
 
 // Attach to struct so Wails is aware of it.
-func (runner SteamRunner) LaunchSteamGame(id uint32, args []string) error {
+func (runner SteamRunner) LaunchGame(id uint32, args []string) error {
 	_, err := LaunchGame(id, args)
 	return err
 }

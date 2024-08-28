@@ -40,30 +40,35 @@ const getEntryDescription = (comments: string[]) => {
 </script>
 
 <template>
-    <div class="flex column">
+    <div class="flex column" style="max-height: calc(100vh - 180px);">
         <div class="flex flex-column">
-            <h2 class="header">Editing: {{ fileName }}</h2>
-            
+            <h1 class="header mb-2">Config Editor</h1>
+            <h3 class="mt-0 mb-0">Currently editing: {{ fileName?.replace('.cfg', '') }}</h3>
         </div>
 
-        <div v-for="(entries, section) in groupedEntries">
-            <Divider v-if="section != '__root'" align="center" type="solid" class="mb-0 mt-0">
-                <h2 class="category-divider">{{ section }}</h2>
-            </Divider>
-
-            <!-- Loop through each entry in the section -->
-            <div v-for="(entry, key) in entries" :key="key">
-                <div class="flex row justify-content-between pt-2">
-                    <div class="flex column">
-                        <p class="mt-0 mb-0" style="font-size: 20px">{{ key }}</p>
-                        <p class="mt-1 mb-2" style="font-size: 16px">{{ getEntryDescription(entry.comments) }}</p>
+        <div style="overflow-y: auto; scrollbar-width: none;">
+            <div v-for="(entries, section) in groupedEntries">
+                <Divider v-if="section != '__root'" align="center" type="solid" class="mb-0 mt-0">
+                    <h2 class="category-divider">{{ section }}</h2>
+                </Divider>
+    
+                <!-- Loop through each entry in the section -->
+                <div v-for="(entry, key) in entries" :key="key">
+                    <div class="flex row pt-2 justify-content-between align-items-center">
+                        <div class="flex column">
+                            <p class="mt-0 mb-0" style="font-size: 20px; color: var(--primary-color)">{{ key }}</p>
+                            <div v-for="comment in getEntryDescription(entry.comments)"> 
+    
+                            </div>
+                        </div>
+    
+    
+                        <InputText class="ml-3" style="font-size: 16.5px;" :value="entry.value">
+                    
+                        </InputText>
                     </div>
-
-                    <InputText :value="entry.value">
-                
-                    </InputText>
+    
                 </div>
-
             </div>
         </div>
     </div>

@@ -61,7 +61,7 @@ func main() {
 	runtime.GOMAXPROCS(int(modm8.Settings.Performance.ThreadCount))
 
 	nexusAPI := nexus.NewAPI()
-	tsAPI := thunderstore.NewAPI()
+	tsAPI := thunderstore.NewAPI(modm8.Ctx)
 	tsTools := thunderstore.NewTools()
 
 	gameManager := game.NewManager()

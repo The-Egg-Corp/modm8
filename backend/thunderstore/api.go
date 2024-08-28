@@ -1,10 +1,16 @@
 package thunderstore
 
 import (
+	"context"
 	"errors"
+	"fmt"
+	"modm8/backend/common/downloader"
+	"modm8/backend/common/fileutil"
+	"path/filepath"
 	"strings"
 	"sync"
 
+	"github.com/cavaliergopher/grab/v3"
 	"github.com/samber/lo"
 
 	exp "github.com/the-egg-corp/thundergo/experimental"
@@ -27,12 +33,14 @@ type StrippedPackage struct {
 }
 
 type API struct {
+	Ctx   context.Context
 	Cache map[string]v1.PackageList
 	mutex sync.RWMutex
 }
 
-func NewAPI() *API {
+func NewAPI(ctx context.Context) *API {
 	return &API{
+		Ctx:   ctx,
 		Cache: NewCache(),
 		mutex: sync.RWMutex{},
 	}
@@ -72,7 +80,7 @@ func (a *API) GetLatestPackageVersion(community string, owner string, name strin
 	return &versions[0], nil
 }
 
-func (a *API) GetPackageVersions(community string, owner string, name string) ([]v1.PackageVersion, error) {
+func (a *API) GetPackageVersions(community, owner, name string) ([]v1.PackageVersion, error) {
 	pkgs, exists := a.Cache[community]
 	if !exists {
 		return nil, errors.New("specified community has not been cached")
@@ -163,4 +171,50 @@ func (a *API) GetUserPackages(communities []string, owner string) string {
 	}
 
 	return strings.Join(names, ", ")
+}
+
+// Returns the progress as a percentage
+func (a *API) GetProgress(response grab.Response) float64 {
+	return 100 * response.Progress()
+}
+
+// Downloads the specified package as a zip file and unpacks it under the specified directory (absolute path).
+//
+// The `fullName` parameter expects a string in the format "Author-Package-Major.Minor.Patch"
+func (a *API) InstallPackage(fullName string, dir string) error {
+	url := "https://thunderstore.io/package/download/" + strings.ReplaceAll(fullName, "-", "/")
+
+	resp, err := downloader.DownloadZip(url, dir, fullName)
+	if err != nil {
+		return err
+	}
+
+	// 	ticker := time.NewTicker(5 * time.Millisecond)
+	// 	defer ticker.Stop()
+
+	// Loop:
+	// 	for {
+	// 		select {
+	// 		case <-resp.Done:
+	// 			//timeTaken = time.Since(startTime)
+	// 			break Loop
+	// 		case <-ticker.C:
+	// 			wRuntime.EventsEmit(a.Ctx, resp.Filename, 100*resp.Progress())
+	// 		}
+	// 	}
+
+	// Finished, check for errors.
+	if err := resp.Err(); err != nil {
+		return fmt.Errorf("\ndownload failed:\n\n%v", err)
+	}
+
+	path := filepath.Join(dir, fullName)
+	zipPath := path + ".zip"
+
+	err = fileutil.Unzip(zipPath, path, true)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -8,6 +8,7 @@ import (
 )
 
 func TestLaunchEpicGame(t *testing.T) {
+	// This is the ID for Subnautica.
 	cmd, err := epic.LaunchGame("jaguar")
 	if err != nil {
 		t.Fatalf("error launching game: %v", err)

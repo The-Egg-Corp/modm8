@@ -13,6 +13,13 @@ require (
 )
 
 require (
+	github.com/klauspost/compress v1.17.2 // indirect
+	github.com/saracen/fastzip v0.1.11
+	github.com/saracen/zipextra v0.0.0-20220303013732-0187cb0159ea // indirect
+)
+
+require (
+	github.com/cavaliergopher/grab/v3 v3.0.1
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/hashicorp/go-version v1.7.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect

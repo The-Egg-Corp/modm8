@@ -11,10 +11,6 @@ func NewTools() *Tools {
 	return &Tools{}
 }
 
-func (tools *Tools) UnpackZip() {
-
-}
-
 func (tools *Tools) ValidateManifest(author string, data []byte) (bool, []string, error) {
 	return exp.ValidateManifest(author, data)
 }

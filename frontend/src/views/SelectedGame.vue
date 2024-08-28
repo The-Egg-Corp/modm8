@@ -106,7 +106,10 @@ const getRelativeConfigPath = (absPath: string) => {
 
 const closeConfigEditor = () => {
     setVisible(false)
+    resetSelectedConfig()
+}
 
+const resetSelectedConfig = () => {
     selectedConfig.value = null
     selectedConfigName.value = null
 }
@@ -385,8 +388,21 @@ const debouncedSearch = debounce(async () => {
         
             <template #dialogContent>
                 <div style="position: sticky; bottom: 0;" class="flex justify-content-end gap-2">
-                    <Button class="w-full" type="button" :label="$t('keywords.close')" severity="secondary" @click="closeConfigEditor()"></Button>
-                    <Button v-if="selectedConfig" class="w-full" type="button" :label="$t('keywords.apply')" @click="closeConfigEditor()"></Button>
+                    <Button v-if="!selectedConfig" 
+                        class="w-full" type="button" severity="secondary" 
+                        :label="$t('keywords.close')" @click="closeConfigEditor()"
+                    />
+
+                    <Button v-else 
+                        class="w-5" type="button" severity="secondary" 
+                        icon="pi pi-arrow-left" :label="$t('keywords.back')"
+                        @click="resetSelectedConfig"
+                    />
+
+                    <Button v-if="selectedConfig"
+                        class="w-full" type="button" 
+                        :label="$t('keywords.apply')" @click=""
+                    />
                 </div>
             </template>
         </CardOverlay>

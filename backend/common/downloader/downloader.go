@@ -1,29 +1,24 @@
 package downloader
 
 import (
+	"errors"
 	"fmt"
 	"modm8/backend"
 	"modm8/backend/common/fileutil"
+	"os"
 	"path/filepath"
+	"sync"
 
 	"github.com/cavaliergopher/grab/v3"
+	"golang.org/x/sync/errgroup"
 )
 
-type DownloadRequest struct {
-	URL        string
-	OutputFile fileutil.FileInfo
-}
-
-func NewDownloadRequest(url string, fileName string, extension *string) DownloadRequest {
-	return DownloadRequest{
-		URL:        url,
-		OutputFile: fileutil.NewFileInfo(fileName, extension),
-	}
-}
+// Alias for a map, where the key is the URL and value is the associated output info.
+type DownloadPool = map[string]fileutil.FileMetadata
 
 func DownloadZip(url, dirPath, fileName string) (*grab.Response, error) {
 	ext := ".zip"
-	return DownloadFile(url, dirPath, fileutil.NewFileInfo(fileName, &ext))
+	return DownloadFile(url, dirPath, fileutil.NewFileInfo(fileName, &ext, dirPath))
 }
 
 // Makes a GET request to a download URL and saves it to the specified directory (created if it doesn't exist).
@@ -33,7 +28,7 @@ func DownloadZip(url, dirPath, fileName string) (*grab.Response, error) {
 // - The directory path is normalized and cleaned to be platform-independent.
 //
 // - While the download is in progress, the file is renamed with the specified extension (if not nil) plus ".tmp".
-func DownloadFile(url, dirPath string, fi fileutil.FileInfo) (*grab.Response, error) {
+func DownloadFile(url, dirPath string, fi fileutil.FileMetadata) (*grab.Response, error) {
 	outputPath := filepath.Join(filepath.Clean(dirPath), fi.GetCombined())
 	if exists, _ := backend.ExistsAtPath(outputPath); exists {
 		return nil, fmt.Errorf("file already exists: %s", outputPath)
@@ -47,9 +42,54 @@ func DownloadFile(url, dirPath string, fi fileutil.FileInfo) (*grab.Response, er
 	return res, nil
 }
 
-// Calls `DownloadFile` concurrently for the given urls, putting them all into the same specified path.
-func DownloadMultipleFiles(destPath string, requests ...DownloadRequest) {
+// Downloads all files in the pool concurrently, putting them all into the same specified path.
+//
+// The queue map allows us to customize the output file info per URL.
+func DownloadMultipleFiles(destPath string, pool DownloadPool) (map[string]error, error) {
+	fi, err := os.Stat(destPath)
+	if err != nil {
+		return nil, err
+	}
 
+	if !fi.IsDir() {
+		return nil, errors.New("destination is not a directory")
+	}
+
+	if len(pool) < 1 {
+		return nil, errors.New("error downloading: specified queue is empty")
+	}
+
+	var g errgroup.Group
+
+	// Slice to collect errors
+	errs := make(map[string]error)
+	errsMut := &sync.Mutex{}
+
+	for url, outputFile := range pool {
+		// Capture the vars instead of wrapping in a func
+		url := url
+		outputFile := outputFile
+
+		g.Go(func() error {
+			// Call the DownloadFile function for each URL
+			_, err := DownloadFile(url, destPath, outputFile)
+			if err != nil {
+				// Lock the map before writing to avoid race conditions
+				errsMut.Lock()
+				errs[url] = err
+				errsMut.Unlock()
+			}
+
+			return nil
+		})
+	}
+
+	// Wait for all goroutines to finish
+	if err := g.Wait(); err != nil {
+		return errs, err // Return the map with errors and the first error encountered by the group
+	}
+
+	return errs, nil
 }
 
 // ================================ ARCHIVED =====================================

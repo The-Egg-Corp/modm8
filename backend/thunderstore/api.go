@@ -3,8 +3,10 @@ package thunderstore
 import (
 	"context"
 	"errors"
+	"fmt"
 	"modm8/backend/common/downloader"
 	"modm8/backend/common/fileutil"
+	"os"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -53,6 +55,7 @@ func (a *API) ClearCache() {
 	a.Cache = NewCache()
 }
 
+// Removes all packages associated with the specified community.
 func (a *API) RemoveFromCache(community string) {
 	delete(a.Cache, community)
 }
@@ -180,7 +183,7 @@ func (a *API) GetProgress(response grab.Response) float64 {
 // Downloads the specified package as a zip file and unpacks it under the specified directory (absolute path).
 //
 // The `fullName` parameter expects a string in the format: "Author-Package-Major.Minor.Patch"
-func (a *API) InstallPackage(fullName string, dir string) (*grab.Response, error) {
+func (a *API) InstallPackage(fullName, dir string) (*grab.Response, error) {
 	url := "https://thunderstore.io/package/download/" + strings.ReplaceAll(fullName, "-", "/")
 
 	resp, err := downloader.DownloadZip(url, dir, fullName)
@@ -208,6 +211,55 @@ func (a *API) InstallPackage(fullName string, dir string) (*grab.Response, error
 	}
 
 	path := filepath.Join(dir, fullName)
+
+	err = fileutil.Unzip(path+".zip", path, true)
+	if err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+var testDir = GetProfileDir("LethalCompany", "test")
+
+func GetProfileDir(game, profile string) string {
+	cacheDir, _ := os.UserConfigDir()
+	return filepath.Join(cacheDir, fmt.Sprintf("modm8\\Games\\%s\\Profiles\\%s\\BepInEx\\plugins", game, profile))
+}
+
+func InstallWithDependencies(ver v1.PackageVersion, pkgs v1.PackageList, errs *[]error, downloadCount *int) {
+	_, err := Install(ver, testDir)
+	if err == nil {
+		*downloadCount += 1
+	}
+
+	for _, dependency := range ver.Dependencies {
+		// Split the dependency string into 3 elements: Author, Package Name, Version
+		split := strings.Split(dependency, "-")
+		pkg := pkgs.Get(split[0], split[1])
+
+		if pkg == nil {
+			*errs = append(*errs, fmt.Errorf("dependency '%s' not found", dependency))
+			continue
+		}
+
+		InstallWithDependencies(*pkg.GetVersion(split[2]), pkgs, errs, downloadCount)
+	}
+}
+
+// Downloads the given package version as a zip and unpacks it to the specified directory (expected to be absolute).
+func Install(pkg v1.PackageVersion, dir string) (*grab.Response, error) {
+	resp, err := downloader.DownloadZip(pkg.DownloadURL, dir, pkg.FullName)
+	if err != nil {
+		return resp, err
+	}
+
+	// Finished, check for errors.
+	if err = resp.Err(); err != nil {
+		return resp, err
+	}
+
+	path := filepath.Join(dir, pkg.FullName)
 
 	err = fileutil.Unzip(path+".zip", path, true)
 	if err != nil {

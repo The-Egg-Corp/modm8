@@ -9,6 +9,7 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/logger"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
+	"github.com/wailsapp/wails/v2/pkg/options/linux"
 	"github.com/wailsapp/wails/v2/pkg/options/mac"
 	"github.com/wailsapp/wails/v2/pkg/options/windows"
 
@@ -33,6 +34,14 @@ func NewWindowsOptions(gpuAccel bool) *windows.Options {
 		ResizeDebounceMS:     1,
 		WebviewUserDataPath:  app.ConfigDir(),
 		WebviewGpuIsDisabled: !gpuAccel,
+	}
+}
+
+func NewLinuxOptions() *linux.Options {
+	return &linux.Options{
+		WindowIsTranslucent: true,
+		WebviewGpuPolicy:    linux.WebviewGpuPolicyOnDemand,
+		ProgramName:         "modm8",
 	}
 }
 
@@ -84,7 +93,8 @@ func main() {
 		SingleInstanceLock: &options.SingleInstanceLock{
 			UniqueId: "7465fe36-08e3-478b-853b-0f8676f724b7",
 		},
-		Mac:      NewMacOptions(),
+		//Mac:      NewMacOptions(),
+		Linux:    NewLinuxOptions(),
 		Windows:  NewWindowsOptions(modm8.Settings.Performance.GPUAcceleration),
 		LogLevel: logger.INFO,
 		Bind: IList{

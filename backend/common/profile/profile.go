@@ -1,9 +1,9 @@
 package profile
 
 type Profile struct {
-	Name       string
-	Favourited bool
-	Mods       ModStore
+	Name       string   `json:"name" mapstructure:"name"`
+	Favourited bool     `json:"favourited" mapstructure:"favourited"`
+	Mods       ModStore `json:"mods" mapstructure:"mods"`
 }
 
 func NewProfile(name string) Profile {
@@ -18,10 +18,6 @@ func (p *Profile) Favourite() {
 	p.Favourited = true
 }
 
-func (p *Profile) AddMod(name string, mod any) {
+func (p *Profile) AddMod(name string, mod IMod) {
 	p.Mods[name] = mod
-}
-
-func (p Profile) Delete() {
-	Profiles.Delete(p)
 }

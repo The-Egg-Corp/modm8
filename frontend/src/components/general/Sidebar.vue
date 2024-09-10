@@ -14,7 +14,7 @@ const ModDevTools = () => router.push('/mod-dev-tools')
 </script>
 
 <template>
-<div class="sidebar flex column">
+<div class="sidebar">
     <img class="icon no-select" src="../../assets/images/appicon.png">
 
     <div class="flex column h-full">
@@ -25,7 +25,7 @@ const ModDevTools = () => router.push('/mod-dev-tools')
                 v-tooltip="tooltipOpts(t('tooltips.sidebar.dashboard'))"
                 @click="Dashboard"
             />
-    
+
             <Button 
                 plain outlined 
                 class="btn margin-lr no-drag" 
@@ -75,20 +75,21 @@ const ModDevTools = () => router.push('/mod-dev-tools')
 
 <style scoped>
 .sidebar {
-    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: fixed;
     z-index: 999;
     height: 100vh;
-    width: fit-content;
+    width: 80px;
     border-right: rgba(231, 231, 231, 0.885) 1px outset;
     background-color: rgb(28, 29, 33);
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 .sidebar img {
-    margin: 15px 15px 15px 15px;
-}
-
-.margin-lr {
-    margin: 0px 15px 0px 15px;
+    margin: 15px 0px 15px 0px;
 }
 
 .icon {

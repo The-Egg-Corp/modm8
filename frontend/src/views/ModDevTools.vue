@@ -60,6 +60,7 @@ const items = ref([{
 
 <style scoped>
 .mod-dev-tools {
+    margin-left: 80px; /* Account for sidebar */
     top: 350px;
 }
 </style>

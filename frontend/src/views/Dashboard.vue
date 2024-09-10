@@ -55,6 +55,7 @@ async function PackagesByUser() {
 <!-- #region Style -->
 <style scoped>
 .dashboard {
+    margin-left: 80px; /* Account for sidebar */
     position: relative;
     text-align: center;
     user-select: none;

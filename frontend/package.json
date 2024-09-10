@@ -7,7 +7,7 @@
     "clean": "rimraf ./node_modules",
     "reinstall": "bun run clean && bun i",
     "copy-themes": "copy-folder ./node_modules/primevue/resources/themes ./src/assets/themes --summary",
-    "dev": "bun run copy-themes && bunx vite",
+    "dev": "bunx vite",
     "build": "bun run copy-themes && bunx vite build",
     "typecheck": "bunx vue-tsc --noEmit",
     "ci": "bun i && bun run typecheck"
@@ -32,5 +32,8 @@
     "typescript": "latest",
     "vite": "latest",
     "vue-tsc": "latest"
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "4.9.5"
   }
 }

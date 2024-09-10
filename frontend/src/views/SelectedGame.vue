@@ -4,7 +4,8 @@ import type { ComputedRef, Ref } from "vue"
 
 import { Nullable } from "primevue/ts-helpers"
 import DataView, { DataViewPageEvent } from 'primevue/dataview'
-import Breadcrumb from 'primevue/breadcrumb'
+//import Breadcrumb from 'primevue/breadcrumb'
+import TabMenu from 'primevue/tabmenu'
 
 // import Splitter from 'primevue/splitter'
 // import SplitterPanel from 'primevue/splitterpanel'
@@ -41,18 +42,18 @@ const selectedConfigName: Ref<Nullable<string>> = ref(null)
 const mods: Ref<thunderstore.StrippedPackage[]> = ref([])
 const currentPageMods: Ref<Package[]> = ref([])
 
-const homePage: Ref<BreadcrumbPage> = ref({
-    home: true,
-    route: '/game-selection',
-    icon: "stadia_controller",
-    class: "material-symbols-sharp text-color-secondary"
-})
+// const homePage: Ref<BreadcrumbPage> = ref({
+//     home: true,
+//     route: '/game-selection',
+//     icon: "stadia_controller",
+//     class: "material-symbols-sharp text-color-secondary"
+// })
 
-const pages: ComputedRef<BreadcrumbPage[]> = computed(() => [{ 
-    label: selectedGame.title,
-    route: '/selected-game',
-    class: "text-primary"
-}])
+// const pages: ComputedRef<BreadcrumbPage[]> = computed(() => [{ 
+//     label: selectedGame.title,
+//     route: '/selected-game',
+//     class: "text-primary"
+// }])
 
 const ROWS = 25
 let configFiles: string[] = []
@@ -189,7 +190,7 @@ const debouncedSearch = debounce(async () => {
 
 <template>
 <div :class="['selected-game', { 'no-drag': visible }]">
-    <Breadcrumb class="breadcrumb flex-full row" :home="homePage" :model="pages">
+    <!-- <Breadcrumb class="breadcrumb flex-full row" :home="homePage" :model="pages">
         <template #item="{ item, props }">
             <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
                 <a :href="href" v-bind="props.action" @click="navigate">
@@ -199,19 +200,19 @@ const debouncedSearch = debounce(async () => {
             </router-link>
         </template>
         <template #separator>/</template>
-    </Breadcrumb>
+    </Breadcrumb> -->
 
-    <div class="flex row no-drag">
-        <Card class="selected-game-card">
+    <div class="flex row">
+        <Card class="selected-game-card no-drag">
             <template #title>
-                <p style="font-size: 30px; font-weight: 520; user-select: none;" class="no-drag mt-0 mb-1">{{ $t('selected-game.currently-selected') }}</p>
+                <p style="font-size: 30px; font-weight: 520; user-select: none;" class="mt-0 mb-1">{{ $t('selected-game.currently-selected') }}</p>
             </template>
     
             <template #content>
-                <div class="flex no-drag sm:flex-column md:flex-column lg:flex-row xl:flex-row">
+                <div class="flex no-drag">
                     <img class="selected-game-thumbnail" :src="gameThumbnail()"/>
                     
-                    <div class="flex column">
+                    <div class="flex column no-drag">
                         <p style="font-size: 25px; font-weight: 330" class="mt-0 mb-0 ml-3">{{ selectedGame.title }}</p>
                         <div class="flex column gap-2 mt-3">
                             <Button 
@@ -245,13 +246,11 @@ const debouncedSearch = debounce(async () => {
     
         <h1 v-if="loading">{{ $t('selected-game.loading-mod-list') }}...</h1>
         <DataView lazy stripedRows 
-            v-else class="w-9"
-            style="padding: 70px 50px 0px 50px;"
+            v-else class="mod-list"
             layout="list" data-key="mod-list"
-            :rows="ROWS"
-            :paginator="mods.length > 0"
-            :value="mods"
-            @page="onPageChange"
+            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
+            :paginator="mods.length > 0" :rows="ROWS" 
+            :value="mods" @page="onPageChange"
         >
             <template #empty>
                 <div v-if="hasSearchInput()">
@@ -269,7 +268,7 @@ const debouncedSearch = debounce(async () => {
     
             <template #header>
                 <div class="flex row justify-content-between align-item-center">
-                    <div class="searchbar">
+                    <div class="searchbar no-drag">
                         <IconField iconPosition="left">
                             <InputIcon class="pi pi-search"></InputIcon>
                             <InputText type="text" :placeholder="$t('selected-game.search-mods')" 
@@ -280,15 +279,15 @@ const debouncedSearch = debounce(async () => {
                     </div>
 
                     <div>
-                        <ModListDropdown>
+                        <!-- <ModListDropdown>
                             
-                        </ModListDropdown>
+                        </ModListDropdown> -->
                     </div>
                 </div>
             </template>
     
             <template #list>
-                <div class="scrollable list list-nogutter">
+                <div class="scrollable list list-nogutter no-drag">
                     <div v-for="(mod, index) in currentPageMods" :key="index" class="list-item col-12">
                         <div class="flex column sm:flex-row sm:align-items-center pt-2 gap-3" :class="{ 'border-top-1 surface-border': index != 0 }">
                             <img class="mod-list-thumbnail block xl:block mx-auto w-full" :src="mod.latestVersion?.icon || ''"/>
@@ -349,7 +348,7 @@ const debouncedSearch = debounce(async () => {
                     </p>
         
                     <div v-if="configFiles.length < 1" class="flex justify-content-center align-items-center">
-                        <p class="mb-1 mt-2" style="font-size: 18.5px; font-weight: 450; user-select: none;">No config files found!</p>
+                        <p class="mb-3 mt-2" style="font-size: 18.5px; font-weight: 450; user-select: none;">No config files found!</p>
                     </div>
     
                     <div style="overflow-y: auto;">
@@ -428,11 +427,6 @@ const debouncedSearch = debounce(async () => {
     height: 140%;
 }*/
 
-.selected-game {
-    display: flex;
-    flex-direction: column;    
-}
-
 .breadcrumb {
     margin-top: 20px;
     padding: 5px;
@@ -456,19 +450,28 @@ const debouncedSearch = debounce(async () => {
     'opsz' 40
 }
 
+.selected-game {
+    display: flex;
+    flex-direction: column;
+    margin-left: 80px; /* Account for sidebar */
+    margin-top: 30px;
+}
+
 .selected-game-card {
     background: none;
     width: fit-content;
 }
 
-:deep(.selected-game-card .p-card-body) {
-    padding: 15px 0px 0px 40px;
+.selected-game-card :deep(.p-card-body) {
+    margin: 0px 30px 0px 30px;
+    padding: 0px;
 }
 
 .selected-game-thumbnail {
     user-select: none;
-    width: 162.5px;
-    max-height: 100%;
+    min-width: 160px;
+    max-width: 40%;
+    max-height: 200px;
     border-radius: 4px;
     border: 2px outset var(--primary-color);
 }
@@ -478,8 +481,13 @@ const debouncedSearch = debounce(async () => {
     text-align: left;
 }
 
+.mod-list {
+    width: 68%;
+    max-width: 100%;
+}
+
 .mod-list-title {
-    font-size: 21px;
+    font-size: 20px;
     font-weight: 460;
     padding-right: 5px;
 }
@@ -490,7 +498,7 @@ const debouncedSearch = debounce(async () => {
 }
 
 .mod-list-description {
-    font-size: 16.5px;
+    font-size: 16px;
     font-weight: 220;
 }
 
@@ -509,7 +517,7 @@ const debouncedSearch = debounce(async () => {
 .scrollable {
     overflow-y: scroll;
     scrollbar-width: none;
-    height: calc(100vh - 265px);
+    height: calc(100vh - 170px);
 }
 
 .dataview-empty {
@@ -554,7 +562,7 @@ const debouncedSearch = debounce(async () => {
 
 :deep(.p-paginator) {
     background: none !important;
-    padding-top: 1rem;
+    padding-top: 1.1rem;
 }
 
 .list-item {

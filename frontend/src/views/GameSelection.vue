@@ -375,6 +375,7 @@ onMounted(async () => {
 <style scoped>
 .game-selection {
     padding-top: 0px;
+    margin-left: 80px; /* Account for sidebar */
 }
 
 .game-selection .header {

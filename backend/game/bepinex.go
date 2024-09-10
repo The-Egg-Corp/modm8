@@ -3,8 +3,12 @@ package game
 import (
 	"fmt"
 	backend "modm8/backend"
+	"modm8/backend/common/downloader"
+	"modm8/backend/common/fileutil"
 	"path/filepath"
 	"strings"
+
+	"github.com/cavaliergopher/grab/v3"
 )
 
 type BepinexConfig struct {
@@ -139,4 +143,31 @@ func BepinexInstalled(absPath string) (bool, []string) {
 
 	// If no missing files, BepInEx is likely installed.
 	return len(missing) == 0, missing
+}
+
+type PlatformArch string
+
+const (
+	X64 PlatformArch = "x64"
+	X86 PlatformArch = "x86"
+)
+
+func InstallBepinexPack(dir string, gameArch PlatformArch) (*grab.Response, error) {
+	resp, err := downloader.DownloadZip("", dir, "BepInEx-Setup")
+	if err != nil {
+		return resp, err
+	}
+
+	if err = resp.Err(); err != nil {
+		return resp, err
+	}
+
+	path := filepath.Join(dir, "BepInEx-Setup")
+
+	err = fileutil.Unzip(path+".zip", path, true)
+	if err != nil {
+		return resp, err
+	}
+
+	return nil, err
 }

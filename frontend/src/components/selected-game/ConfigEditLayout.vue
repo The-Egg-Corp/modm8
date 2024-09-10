@@ -25,8 +25,6 @@ const groupedEntries = computed(() => {
             grouped[section] = {}
         }
 
-        console.log(entry[1])
-
         const newEntry = entry[1] as BepinexConfigEntry
         newEntry.checked = asBool(newEntry.default_value)
 

@@ -1,4 +1,4 @@
-import { Game } from '@types'
+import { ThunderstoreGame } from '@types'
 import { defineStore } from 'pinia'
 
 import { Save, SetFavouriteGames } from '@backend/app/Persistence'
@@ -6,24 +6,24 @@ import { Ref, computed, ref } from 'vue'
 import { thunderstore } from '@backend/models.js'
 
 export interface GameState {
-    selectedGame: Game,
-    games: Map<string, Game>
+    selectedGame: ThunderstoreGame,
+    games: Map<string, ThunderstoreGame>
 }
 
 export const useGameStore = defineStore('GameStore', () => {
     //#region State
     const selectedGame = ref({
         identifier: ''
-    }) as Ref<Game>
+    }) as Ref<ThunderstoreGame>
 
-    const games = ref(new Map()) as Ref<Map<string, Game>>
+    const games = ref(new Map()) as Ref<Map<string, ThunderstoreGame>>
     //#endregion
 
     //#region Getters
     const _gameByID = (id: string) => games.value.get(id)
     const gameByID = computed(() => _gameByID)
 
-    const gamesAsArray = computed(() => [...games.value.values()] as Game[])
+    const gamesAsArray = computed(() => [...games.value.values()] as ThunderstoreGame[])
 
     const isGameInstalled = computed(() => (id: string) => _gameByID(id)?.installed || false)
     const isFavouriteGame = computed(() => (id: string) => {
@@ -39,7 +39,7 @@ export const useGameStore = defineStore('GameStore', () => {
 
     //#region Actions
     // TODO: Possibly need to take in ID, then get from `games` instead ?
-    function setSelectedGame(game: Game) {
+    function setSelectedGame(game: ThunderstoreGame) {
         selectedGame.value = _gameByID(game.identifier) ?? game
     }
 

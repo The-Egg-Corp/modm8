@@ -8,7 +8,12 @@ import Skeleton from 'primevue/skeleton'
 // TODO: Replace with real external service.
 import { getGameList } from '../mocks/GameService'
 
-import { Game, Layout, OptionItem, ValueItem, ValueItemLabeled } from '@types'
+import { 
+    ThunderstoreGame, 
+    Layout, OptionItem, 
+    ValueItem, ValueItemLabeled 
+} from '@types'
+
 import { Nullable } from 'primevue/ts-helpers'
 
 import { t } from '@i18n'
@@ -57,16 +62,16 @@ const filters: ComputedRef<ValueItemLabeled<string>[]> = computed(() => [{
 
 
 
-const alphabetSort = (games: Game[]) => {
+const alphabetSort = (games: ThunderstoreGame[]) => {
     if ((searchInput.value?.length ?? 0) < 1) return games
     return games.sort((g1, g2) => g1 > g2 ? 1 : (g1 === g2 ? 0 : -1))
 }
 
-const getThumbnail = (game: Game) => game.image
+const getThumbnail = (game: ThunderstoreGame) => game.image
     ? `https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/${game.image}` 
     : "https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/Titanfall2.jpg"
 
-const filterBySearch = (games: Game[]) => {
+const filterBySearch = (games: ThunderstoreGame[]) => {
     if (!searchInput.value) return games
 
     const input = searchInput.value.trim()
@@ -123,7 +128,7 @@ const getGames = (sort = true, searchFilter = true) => {
     return out
 }
 
-const selectGame = (game: Game) => {
+const selectGame = (game: ThunderstoreGame) => {
     setSelectedGame(game)
     router.push('/selected-game')
 }

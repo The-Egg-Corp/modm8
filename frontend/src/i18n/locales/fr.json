@@ -48,7 +48,8 @@
     "favourite": "Préféré",
     "favourites": "Favoris",
     "unfavourite": "Défavorisé",
-    "install": "Installer"
+    "install": "Installer",
+    "cancel": "Annuler"
   },
   "languages": {
     "en": "Anglais",

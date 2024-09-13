@@ -72,7 +72,8 @@
     "no": "No",
     "favourites": "Favourites",
     "unfavourite": "Unfavourite",
-    "install": "Install"
+    "install": "Install",
+    "cancel": "Cancel"
   },
   "languages": {
     "en": "English",

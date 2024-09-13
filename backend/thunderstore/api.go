@@ -19,6 +19,8 @@ import (
 	v1 "github.com/the-egg-corp/thundergo/v1"
 )
 
+var curModCacheDir string
+
 type StrippedPackage struct {
 	Name           string        `json:"name"`
 	FullName       string        `json:"full_name"`
@@ -60,13 +62,17 @@ func (a *API) RemoveFromCache(community string) {
 	delete(a.Cache, community)
 }
 
-func (a *API) GetCachedPackages(community string) ([]v1.Package, error) {
+func (a *API) getCachedPackageList(community string) (v1.PackageList, error) {
 	pkgs, exists := a.Cache[community]
 	if !exists {
 		return nil, errors.New("specified community has not been cached")
 	}
 
 	return pkgs, nil
+}
+
+func (a *API) GetCachedPackages(community string) ([]v1.Package, error) {
+	return a.getCachedPackageList(community)
 }
 
 func (a *API) GetCommunities() (exp.CommunityList, error) {
@@ -105,11 +111,7 @@ func (a *API) GetPackagesInCommunity(community string, skipCache bool) ([]v1.Pac
 		}
 	}
 
-	comm := v1.Community{
-		Identifier: community,
-	}
-
-	pkgs, err := comm.AllPackages()
+	pkgs, err := v1.PackagesFromCommunity(community)
 	if err != nil {
 		return nil, err
 	}
@@ -220,15 +222,40 @@ func (a *API) InstallPackage(fullName, dir string) (*grab.Response, error) {
 	return resp, nil
 }
 
-var testDir = GetProfileDir("LethalCompany", "test")
+func (a *API) InstallWithDependencies(gameTitle, community, fullName string) error {
+	curModCacheDir = ModCacheDir(gameTitle)
 
-func GetProfileDir(game, profile string) string {
+	// Get cached package list, if empty, try to fill it.
+	pkgs, _ := a.getCachedPackageList(community)
+	if pkgs == nil {
+		commPkgs, err := v1.PackagesFromCommunity(community)
+		if err != nil {
+			return fmt.Errorf("error getting packages: %s", err)
+		}
+
+		a.Cache[community] = commPkgs
+	}
+
+	pkg := pkgs.GetExact(fullName)
+	if pkg == nil {
+		return fmt.Errorf("could not find package in community")
+	}
+
+	var errs []error
+	var downloadCount int
+
+	InstallWithDependencies(pkg.LatestVersion(), a.Cache[community], &errs, &downloadCount)
+
+	return nil
+}
+
+func ModCacheDir(game string) string {
 	cacheDir, _ := os.UserConfigDir()
-	return filepath.Join(cacheDir, fmt.Sprintf("modm8\\Games\\%s\\Profiles\\%s\\BepInEx\\plugins", game, profile))
+	return filepath.Join(cacheDir, fmt.Sprintf("modm8\\Thunderstore\\%s\\ModCache", game))
 }
 
 func InstallWithDependencies(ver v1.PackageVersion, pkgs v1.PackageList, errs *[]error, downloadCount *int) {
-	_, err := Install(ver, testDir)
+	_, err := Install(ver, curModCacheDir)
 	if err == nil {
 		*downloadCount += 1
 	}

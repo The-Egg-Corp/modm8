@@ -26,6 +26,12 @@ func WalkDirExt(root string, exts []string) ([]string, error) {
 	return files, err
 }
 
+// Platform-independent way of checking a file/dir exists in a directory.
+func ExistsInDir(dir string, item string) (bool, error) {
+	path := filepath.Join(filepath.Clean(dir), item)
+	return ExistsAtPath(path)
+}
+
 func ExistsAtPath(absPath string) (bool, error) {
 	_, err := os.Stat(absPath)
 	if os.IsNotExist(err) {

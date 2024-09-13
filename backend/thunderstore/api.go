@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"modm8/backend"
 	"modm8/backend/common/downloader"
 	"modm8/backend/common/fileutil"
 	"os"
@@ -276,6 +277,11 @@ func InstallWithDependencies(ver v1.PackageVersion, pkgs v1.PackageList, errs *[
 
 // Downloads the given package version as a zip and unpacks it to the specified directory (expected to be absolute).
 func Install(pkg v1.PackageVersion, dir string) (*grab.Response, error) {
+	if exists, _ := backend.ExistsInDir(dir, pkg.FullName); exists {
+		fmt.Printf("%s is already installed", pkg.FullName)
+		return nil, fmt.Errorf("%s is already installed", pkg.FullName)
+	}
+
 	resp, err := downloader.DownloadZip(pkg.DownloadURL, dir, pkg.FullName)
 	if err != nil {
 		return resp, err

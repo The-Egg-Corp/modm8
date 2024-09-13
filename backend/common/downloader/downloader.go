@@ -23,15 +23,11 @@ func DownloadZip(url, dirPath, fileName string) (*grab.Response, error) {
 
 // Makes a GET request to a download URL and saves it to the specified directory (created if it doesn't exist).
 //
-// Notes:
-//
-// - The directory path is normalized and cleaned to be platform-independent.
-//
-// - While the download is in progress, the file is renamed with the specified extension (if not nil) plus ".tmp".
+// The directory path is normalized and cleaned to be platform-independent.
 func DownloadFile(url, dirPath string, fi fileutil.FileMetadata) (*grab.Response, error) {
 	outputPath := filepath.Join(filepath.Clean(dirPath), fi.GetCombined())
 	if exists, _ := backend.ExistsAtPath(outputPath); exists {
-		return nil, fmt.Errorf("file already exists: %s", outputPath)
+		return nil, fmt.Errorf("file/dir already exists: %s", outputPath)
 	}
 
 	res, err := grab.Get(outputPath, url)

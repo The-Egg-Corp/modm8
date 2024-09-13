@@ -186,7 +186,7 @@ const installMod = async (fullName: string) => {
 
     const start = performance.now()
     await InstallWithDependencies(selectedGame.title, selectedGame.identifier, fullName)
-    console.log(`Installed mod: ${fullName}. Took ${performance.now() - start}`)
+    console.log(`Installed mod: ${fullName}. Took ${((performance.now() - start) / 1000).toFixed(2)}s`)
 
     installing.value = false
     installingModDialog.setClosable(true)
@@ -389,12 +389,6 @@ const installMod = async (fullName: string) => {
 
             <template #dialogContent>
                 <div style="position: sticky; bottom: 0;" class="flex justify-content-center w-full">
-                    <!-- <Button v-if="installing"
-                        class="flex flex-grow-1" type="button" severity="danger" icon="pi pi-ban"
-                        :label="$t('keywords.cancel')" 
-                        @click=""
-                    /> -->
-
                     <div v-if="!installing" class="flex row gap-1 flex-grow-1">
                         <Button class="w-full"
                             type="button" severity="secondary"
@@ -402,10 +396,14 @@ const installMod = async (fullName: string) => {
                         />
                         <Button class="w-6"
                             type="button" severity="danger" icon="pi pi-trash"
-                            label="Uninstall" @click="installingModDialog.setVisible(false)"
+                            label="Uninstall"
                         />
                     </div>
-
+                    <!-- <Button v-else class="flex flex-grow-1" 
+                        type="button" severity="danger" icon="pi pi-ban"
+                        :label="$t('keywords.cancel')" 
+                        @click=""
+                    /> -->
                 </div>
             </template>
         </CardOverlay>
@@ -611,7 +609,6 @@ const installMod = async (fullName: string) => {
     overflow-y: scroll;
     scrollbar-width: none;
     height: calc(100vh - 170px);
-    display: grid;
 }
 
 .dataview-empty {

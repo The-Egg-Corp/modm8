@@ -5,7 +5,7 @@ import type { Ref } from "vue"
 import { Nullable } from "primevue/ts-helpers"
 import DataView, { DataViewPageEvent } from 'primevue/dataview'
 
-//import TabMenu from 'primevue/tabmenu'
+import TabMenu from 'primevue/tabmenu'
 // import Splitter from 'primevue/splitter'
 // import SplitterPanel from 'primevue/splitterpanel'
 
@@ -44,6 +44,11 @@ const currentPageMods: Ref<Package[]> = ref([])
 
 const installing = ref(false)
 const lastInstalledMod: Ref<Nullable<string>> = ref(null)
+
+const tabMenuItems = ref([
+    { label: 'Current Profile', icon: 'pi pi-box' },
+    { label: 'Thunderstore', icon: 'pi pi-globe' }
+])
 
 const ROWS = 25
 let configFiles: string[] = []
@@ -249,116 +254,124 @@ const installMod = async (fullName: string) => {
             </template>
         </Card>
     
-        <!-- Show skeleton of mod list while loading -->
-        <DataView v-if="loading" data-key="mod-list-loading" layout="list">
-            <template #empty>
-                <div class="list-nogutter pt-4">
-                    <div v-for="i in 6" :key="i" class="list-item">
-                        <div style="width: 1200px;" class="flex flex-row p-3 border-1 surface-border border-round">
-                            <Skeleton size="6.4rem"/>
-                            <div class="flex column gap-1 ml-2">
-                                <Skeleton height="1.5rem" width="20rem"/>
-                                <Skeleton width="65rem"/>
+        <div class="flex mod-list-container">
+            <!-- Show skeleton of mod list while loading -->
+            <DataView v-if="loading" data-key="mod-list-loading" layout="list">
+                <template #empty>
+                    <div class="list-nogutter pt-4">
+                        <div v-for="i in 6" :key="i" class="list-item">
+                            <div style="width: 1200px;" class="flex flex-row p-3 border-1 surface-border border-round">
+                                <Skeleton size="6.4rem"/>
+                                <div class="flex column gap-1 ml-2">
+                                    <Skeleton height="1.5rem" width="20rem"/>
+                                    <Skeleton width="65rem"/>
 
-                                <div class="flex row gap-2">
-                                    <Skeleton class="mt-3" width="6.8rem" height="2.2rem"/>
-                                    <div class="flex row gap-1">
-                                        <Skeleton class="mt-3" width="2.8rem" height="2.2rem"/>
-                                        <Skeleton class="mt-4" width="1.8rem" height="1.3rem"/>
+                                    <div class="flex row gap-2">
+                                        <Skeleton class="mt-3" width="6.8rem" height="2.2rem"/>
+                                        <div class="flex row gap-1">
+                                            <Skeleton class="mt-3" width="2.8rem" height="2.2rem"/>
+                                            <Skeleton class="mt-4" width="1.8rem" height="1.3rem"/>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </template>
-        </DataView>
+                </template>
+            </DataView>
 
-        <DataView class="mod-list"
-            v-else lazy stripedRows
-            layout="list" data-key="mod-list"
-            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
-            :paginator="mods.length > 0" :rows="ROWS"
-            :value="mods" @page="onPageChange"
-        >
-            <template #empty>
-                <div v-if="hasSearchInput()">
-                    <p>{{ $t('selected-game.empty-results') }}.</p>
+            <DataView
+                v-else lazy stripedRows
+                layout="list" data-key="mod-list"
+                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
+                :paginator="mods.length > 0" :rows="ROWS"
+                :value="mods" @page="onPageChange"
+            >
+                <template #empty>
+                    <div v-if="hasSearchInput()">
+                        <p>{{ $t('selected-game.empty-results') }}.</p>
 
-                    <!-- Sadge -->
-                    <img class="pt-3" src="https://cdn.7tv.app/emote/603cac391cd55c0014d989be/2x.png">
-                </div>
-
-                <!-- TODO: If failed, make this show regardless of search input. --> 
-                <div v-else class="dataview-empty flex flex-column">
-                    <p>No mods available! Something probably went wrong.</p>
-                </div>
-            </template>
-    
-            <template #header>
-                <div class="flex row justify-content-between align-item-center">
-                    <div class="searchbar no-drag">
-                        <IconField iconPosition="left">
-                            <InputIcon class="pi pi-search"></InputIcon>
-                            <InputText type="text" :placeholder="$t('selected-game.search-mods')" 
-                                v-model="searchInput" 
-                                @input="onInputChanged"
-                            />
-                        </IconField>
+                        <!-- Sadge -->
+                        <img class="pt-3" src="https://cdn.7tv.app/emote/603cac391cd55c0014d989be/2x.png">
                     </div>
 
-                    <div>
-                        <!-- <ModListDropdown>
-                            
-                        </ModListDropdown> -->
+                    <!-- TODO: If failed, make this show regardless of search input. --> 
+                    <div v-else class="dataview-empty flex flex-column">
+                        <p>No mods available! Something probably went wrong.</p>
                     </div>
-                </div>
-            </template>
-    
-            <template #list>
-                <div class="scrollable list-nogutter no-drag">
-                    <div v-for="(mod, index) in currentPageMods" :key="index" class="list-item col-12">
-                        <div class="flex column flex-grow-1 sm:flex-row align-items-center pt-2 gap-3" :class="{ 'border-top-1 surface-border': index != 0 }">
-                            <img class="mod-list-thumbnail block xl:block" :src="mod.latestVersion?.icon || ''"/>
-                            
-                            <div class="flex column md:flex-row md:align-items-center">
-                                <div class="flex column justify-content-between">
-                                    <div class="flex row align-items-baseline">
-                                        <div class="mod-list-title">{{ mod.name }}</div>
-                                        <div class="mod-list-author">({{ mod.owner }})</div>
-                                    </div>
+                </template>
+        
+                <template #header>
+                    <div class="flex row align-items-center">
+                        <div class="searchbar no-drag">
+                            <IconField iconPosition="left">
+                                <InputIcon class="pi pi-search"></InputIcon>
+                                <InputText type="text" :placeholder="$t('selected-game.search-mods')" 
+                                    v-model="searchInput" 
+                                    @input="onInputChanged"
+                                />
+                            </IconField>
+                        </div>
 
-                                    <div class="mod-list-description mb-1">{{ mod.latestVersion.description }}</div>
+                        <div class="ml-2 justify-self-end">
+                            <TabMenu class="header-tab-menu" :model="tabMenuItems">
 
-                                    <!--
-                                        :icon="isFavouriteGame(game.identifier) ? 'pi pi-heart-fill' : 'pi pi-heart'"
-                                        :style="isFavouriteGame(game.identifier) ? { color: 'var(--primary-color)' } : {}"
-                                        @click="toggleFavouriteGame(game.identifier)"
-                                    /> -->
+                            </TabMenu>
+                        </div>
 
-                                    <div class="mod-list-bottom-row"> 
-                                        <div class="flex row gap-2">
-                                            <Button plain
-                                                class="btn w-full" 
-                                                icon="pi pi-download"
-                                                :label="$t('keywords.install')"
-                                                @click="installMod(mod.full_name)"
-                                            />
+                        <!-- <div class="flex row">
+                            <ModListDropdown>
+                                
+                            </ModListDropdown>
+                        </div> -->
+                    </div>
+                </template>
+        
+                <template #list>
+                    <div class="scrollable list-nogutter no-drag">
+                        <div v-for="(mod, index) in currentPageMods" :key="index" class="list-item col-12">
+                            <div class="flex-grow-1 flex column sm:flex-row align-items-center pt-2 gap-3" :class="{ 'border-top-1 surface-border': index != 0 }">
+                                <img class="mod-list-thumbnail block xl:block" :src="mod.latestVersion?.icon || ''"/>
+                                
+                                <div class="flex-grow-1 flex column md:flex-row md:align-items-center">
+                                    <div class="flex-grow-1 flex column justify-content-between">
+                                        <div class="flex row align-items-baseline">
+                                            <div class="mod-list-title">{{ mod.name }}</div>
+                                            <div class="mod-list-author">({{ mod.owner }})</div>
+                                        </div>
 
-                                            <div class="flex row align-items-center">
-                                                <Button outlined plain 
-                                                    style="margin-right: 6.5px;"
-                                                    :icon="'pi pi-thumbs-up'"
+                                        <div class="mod-list-description mb-1">{{ mod.latestVersion.description }}</div>
+
+                                        <!--
+                                            :icon="isFavouriteGame(game.identifier) ? 'pi pi-heart-fill' : 'pi pi-heart'"
+                                            :style="isFavouriteGame(game.identifier) ? { color: 'var(--primary-color)' } : {}"
+                                            @click="toggleFavouriteGame(game.identifier)"
+                                        /> -->
+
+                                        <div class="mod-list-bottom-row"> 
+                                            <div class="flex row gap-2">
+                                                <Button plain
+                                                    class="btn w-full" 
+                                                    icon="pi pi-download"
+                                                    :label="$t('keywords.install')"
+                                                    @click="installMod(mod.full_name)"
                                                 />
-                                                
-                                                <div class="mod-list-rating">{{ mod.rating_score }}</div>
-                                            </div>
-                                        </div>
 
-                                        <!-- TODO: Ensure the tags flex to the end of the DataView and not the item content. -->
-                                        <div class="flex row flex-shrink-0 gap-1">
-                                            <div v-for="category in mod.categories.filter(c => c.toLowerCase() != 'mods')">
-                                                <Tag :value="category"></Tag>
+                                                <div class="flex row align-items-center">
+                                                    <Button outlined plain 
+                                                        style="margin-right: 6.5px;"
+                                                        :icon="'pi pi-thumbs-up'"
+                                                    />
+                                                    
+                                                    <div class="mod-list-rating">{{ mod.rating_score }}</div>
+                                                </div>
+                                            </div>
+
+                                            <!-- TODO: Ensure the tags flex to the end of the DataView and not the item content. -->
+                                            <div class="flex row flex-shrink-0 gap-1">
+                                                <div v-for="category in mod.categories.filter(c => c.toLowerCase() != 'mods')">
+                                                    <Tag :value="category"></Tag>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -366,12 +379,13 @@ const installMod = async (fullName: string) => {
                             </div>
                         </div>
                     </div>
-                </div>
-            </template>
-        </DataView>
+                </template>
+            </DataView>
+
+        </div>
 
         <CardOverlay
-            class="no-drag"
+            class="installing-mod-card no-drag"
             v-model:visible="installingModDialog.visible"
             v-model:closable="installingModDialog.closable"
             v-model:draggable="installingModDialog.draggable"
@@ -557,14 +571,9 @@ const installMod = async (fullName: string) => {
     text-align: left;
 }
 
-/* 
-   It probably isn't a good idea to use `calc` to keep the DataView offset from the screen edge, 
-   but I couldn't find a better alternative, so feel free to propose a solution. (I hate CSS)
-*/
-.mod-list {
-    flex-grow: 1;
+.mod-list-container {
+    max-width: 100vw;
     width: 100vw;
-    max-width: calc(100vw - 520px);
 }
 
 .mod-list-thumbnail {
@@ -608,7 +617,8 @@ const installMod = async (fullName: string) => {
 .scrollable {
     overflow-y: scroll;
     scrollbar-width: none;
-    height: calc(100vh - 170px);
+    height: calc(100vh - 150px);
+    margin-bottom: 0.25rem;
 }
 
 .dataview-empty {
@@ -653,13 +663,26 @@ const installMod = async (fullName: string) => {
 
 :deep(.p-paginator) {
     background: none !important;
-    padding-top: 1.1rem;
+    padding: 0 0 0 0;
+    justify-content: start;
 }
 
 .list-item {
     display: flex;
-    width: 100%;
+    width: 100vw;
     padding-bottom: 15px;
     padding-top: 0px;
+}
+
+.installing-mod-card {
+    padding: 0 1rem 1rem 1rem;
+}
+
+:deep(.p-tabmenu-nav) {
+    background: none;
+}
+
+:deep(.p-menuitem-link) {
+    background: none;
 }
 </style>

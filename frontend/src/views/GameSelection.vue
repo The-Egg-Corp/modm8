@@ -412,8 +412,8 @@ onMounted(async () => {
 
 .game-list-thumbnail {
     user-select: none;
-    max-width: 111px;
-    min-width: 30px;
+    max-width: 115px;
+    min-width: 35px;
     opacity: 0;
     border-radius: 3px;
 }

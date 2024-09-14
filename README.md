@@ -9,38 +9,58 @@ Built with [Wails](https://wails.io) for an Electron-like experience but without
 >
 > Until a release is ready, please build from source. PRs and contributions are very much welcome!
 
-
-<details>
-  <summary>View Showcase</summary>
-
-  ### Game Selection
-  <img src="./screenshots/game-selection-grid.png"/>
-
-  ### Current Game Screen
-  <img src="./screenshots/selected-game.png"/>
-
-  ### Config Editor
-  <img src="./screenshots/config-editor.png"/>
-
-  ### Settings
-  <img src="./screenshots/settings.png"/>
-</details>
+## Installation
+1. Head to the [latest release](../../releases/latest) page and find the correct installer for your platform.
+2. Download and run it, then continue with the setup process.
 
 ## Features
 - Multiple themes + dark mode by default.
 - Go as the backend for concurrency and responsiveness.
 - No browser bundled, uses native browser to render content.
 - App settings can be easily changed. No need to go through unnecessary menus.
-- Includes handy features for mod developers. (Publishing, validation etc.)
 - Familiar frontend. Similar to existing apps like `r2modman`.
 - Supports multiple languages with the help of `vue-i18n`.
   - Currently implemented: **English**, **German**, **French**, **Spanish**, **Italian**
   - Language PRs are greatly appreciated as some keys may have been wrongly translated!
 
-## Installation
-1. Head to the [latest release](../../releases/latest) page.
-2. Find and download the correct installer for your platform.
-3. Run the installer and continue with the setup.
+## Roadmap
+🟩 Completed / Released.\
+🟨 In progress / Waiting release.\
+🟥 Not started / Evaluating.
+
+- Handy features for mod developers. (Publishing, validation etc.)\
+  🟨 Backend\
+  🟥 Frontend
+
+## Showcase
+<details>
+  <summary>Game Selection</summary>
+
+  - Useful buttons and insightful info layed out in a sleek and compact manner.
+  - Flexible query matching ensures you can search for a game without being exact.
+  - Filter by your favourite or installed games - no more tedious searching.
+  - Switch between List and Grid layouts for a better viewing experience.
+
+  <img src="./screenshots/game-selection-grid.png"/>
+</details>
+
+<details>
+  <summary>Selected Game Screen</summary>
+
+  <img src="./screenshots/selected-game.png"/>
+</details>
+
+<details>
+  <summary>Config Editor</summary>
+
+  <img src="./screenshots/config-editor.png"/>
+</details>
+
+<details>
+  <summary>Settings</summary>
+
+  <img src="./screenshots/settings.png"/>
+</details>
 
 ## Contact
 Feel free to join the [discord](https://discord.gg/psBXpXF2JZ) for support, suggestions or anything mod related!

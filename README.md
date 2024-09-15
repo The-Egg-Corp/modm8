@@ -8,9 +8,11 @@ Built with [Wails](https://wails.io) for an Electron-like experience but without
 > Once officially released, a proper FOSS license will be added. Meanwhile, there is no license, meaning all rights are reserved.
 
 ## Installation
-No installer or executable currently exists yet, please build from source instead. 
+No installer or executable currently exists yet, please build from source instead.
+
 1. Clone this repository.
-2. Install [Wails](https://wails.io/docs/gettingstarted/installation) and run one of the following:
+2. Install [Go](https://go.dev/doc/install), [Bun](https://bun.sh) and [Wails](https://wails.io/docs/gettingstarted/installation).
+3. Run one of the following commands:
    - `wails build` - Generates an executable in **/build/bin**.
    - `wails dev` - Opens a preview of the app with DevTools enabled.
 
@@ -63,7 +65,7 @@ All I ask is you follow some simple guidelines to maintain a healthy, productive
 - Bumping/rushing an issue does not help and only creates unnecessary notifications, please be patient.
 - Promptly address any CI failures, a maintainer is not obliged to do this for you.
 
-A lot of time and effort went into this project as a single person.\
+A lot of time and effort has been put into this project as a single person.\
 If you find it useful or like where it's headed, please consider sponsoring it. 💛
 
 ## Contact

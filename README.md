@@ -1,4 +1,4 @@
-# modm8 <img align="right" width="132" height="135" src="./frontend/src/assets/images/appicon.png">
+# modm8 <img align="right" width="128" height="128" src="./frontend/src/assets/images/appicon.png">
 
 Lightweight and intuitive mod manager. Currently supports [Thunderstore](https://thunderstore.io/).\
 Built with [Wails](https://wails.io) for an Electron-like experience but without the bloat.

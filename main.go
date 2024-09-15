@@ -5,6 +5,7 @@ import (
 	"runtime"
 
 	"github.com/leaanthony/u"
+	"github.com/samber/lo"
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/logger"
 	"github.com/wailsapp/wails/v2/pkg/options"
@@ -67,7 +68,10 @@ func main() {
 		}
 	}
 
-	runtime.GOMAXPROCS(int(modm8.Settings.Performance.ThreadCount))
+	// Set the num of procs (OS threads) to the value from `settings.toml`.
+	// Num is clamped between 1 and NumCPU*2 as any further unnecessary and will cause overhead.
+	threads := int(modm8.Settings.Performance.ThreadCount)
+	runtime.GOMAXPROCS(lo.Clamp(threads, 1, runtime.NumCPU()*2))
 
 	nexusAPI := nexus.NewAPI()
 	tsAPI := thunderstore.NewAPI(modm8.Ctx)

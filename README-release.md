@@ -1,14 +1,17 @@
 # modm8 <img align="right" width="132" height="135" src="./frontend/src/assets/images/appicon.png">
 
-Lightweight and intuitive mod manager. Currently supports [Thunderstore](https://thunderstore.io/).\
+Lightweight and intuitive mod manager with support for [Thunderstore](https://thunderstore.io) and [Nexus Mods](https://nexusmods.com).\
 Built with [Wails](https://wails.io) for an Electron-like experience but without the bloat.
 
+> [!WARNING]
+> This project is heavily **WIP** and as such, missing functionality or bugs will be commonplace until there is a stable release.
+> Once officially released, a proper FOSS license will be added. Meanwhile, there is no license, meaning all rights are reserved.
+>
+> Until a release is ready, please build from source. PRs and contributions are very much welcome!
+
 ## Installation
-No installer or executable currently exists yet, please build from source instead. 
-1. Clone this repository.
-2. Install [Wails](https://wails.io/docs/gettingstarted/installation) and run one of the following:
-   - `wails build` - Generates an executable in **/build/bin**.
-   - `wails dev` - Opens a preview of the app with DevTools enabled.
+1. Head to the [latest release](../../releases/latest) page and find the correct installer for your platform.
+2. Download and run it, then continue with the setup process.
 
 ## Features
 - Multiple themes + dark mode by default.
@@ -19,6 +22,15 @@ No installer or executable currently exists yet, please build from source instea
 - Supports multiple languages with the help of `vue-i18n`.
   - Currently implemented: **English**, **German**, **French**, **Spanish**, **Italian**
   - Language PRs are greatly appreciated as some keys may have been wrongly translated!
+
+## Roadmap
+🟩 Completed / Released.\
+🟨 In progress / Waiting release.\
+🟥 Not started / Evaluating.
+
+- Handy features for mod developers. (Publishing, validation etc.)\
+  🟨 Backend\
+  🟥 Frontend
 
 ## Showcase
 <details>
@@ -49,18 +61,6 @@ No installer or executable currently exists yet, please build from source instea
 
   <img src="./screenshots/settings.png"/>
 </details>
-
-## Contributing
-Pull requests and issues are very much welcome and are essential to keeping this project working and evolving!\
-All I ask is you follow some simple guidelines to maintain a healthy environment where everyone and their ideas are welcome.
-
-- Please be polite and keep critisicm constructive.
-- Provide as much detail as possible so the issue or idea can be easily understood.
-- Bumping/rushing an issue does not help and only creates unnecessary notifications, please be patient.
-- Promptly address any CI failures, a maintainer is not obliged to do this for you.
-
-A lot of time and effort went into this project as a single person.\
-If you find it useful or like where it's headed, please consider sponsoring it. <3
 
 ## Contact
 Feel free to join the [discord](https://discord.gg/psBXpXF2JZ) for support, suggestions or anything mod related!

@@ -1,7 +1,11 @@
 # modm8 <img align="right" width="128" height="128" src="./frontend/src/assets/images/appicon.png">
 
-Lightweight and intuitive mod manager. Currently supports [Thunderstore](https://thunderstore.io/).\
+Lightweight and intuitive mod manager. Currently supports [Thunderstore](https://thunderstore.io/), Nexus soon™.\
 Built with [Wails](https://wails.io) for an Electron-like experience but without the bloat.
+
+> [!WARNING]
+> This project is heavily **WIP** and as such, missing functionality or bugs will be commonplace until there is a stable release.
+> Once officially released, a proper FOSS license will be added. Meanwhile, there is no license, meaning all rights are reserved.
 
 ## Installation
 No installer or executable currently exists yet, please build from source instead. 
@@ -54,7 +58,7 @@ No installer or executable currently exists yet, please build from source instea
 Pull requests and issues are very much welcome and are essential to keeping this project working and evolving!\
 All I ask is you follow some simple guidelines to maintain a healthy, productive environment.
 
-- Please be polite and keep critisicm constructive toward the project and other contributors.
+- Please be polite and keep critisicm toward the project and other contributors constructive.
 - Provide as much detail as possible so the issue or idea can be easily understood.
 - Bumping/rushing an issue does not help and only creates unnecessary notifications, please be patient.
 - Promptly address any CI failures, a maintainer is not obliged to do this for you.
@@ -63,4 +67,9 @@ A lot of time and effort went into this project as a single person.\
 If you find it useful or like where it's headed, please consider sponsoring it. 💛
 
 ## Contact
-Feel free to join the [discord](https://discord.gg/psBXpXF2JZ) for support, suggestions or anything mod related!
+Feel free to join the [discord](https://discord.gg/psBXpXF2JZ) to contact me! Here you will get to:
+
+- See first-hand updates about the project and its progress.
+- Chat about the project's development or anything mod related.
+- Suggest ideas and get support if you are stuck.
+- View the **TODO** list to see what needs fixing/implementing and if it's being currently worked on.

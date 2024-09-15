@@ -52,15 +52,15 @@ No installer or executable currently exists yet, please build from source instea
 
 ## Contributing
 Pull requests and issues are very much welcome and are essential to keeping this project working and evolving!\
-All I ask is you follow some simple guidelines to maintain a healthy environment where everyone and their ideas are welcome.
+All I ask is you follow some simple guidelines to maintain a healthy, productive environment.
 
-- Please be polite and keep critisicm constructive.
+- Please be polite and keep critisicm constructive toward the project and other contributors.
 - Provide as much detail as possible so the issue or idea can be easily understood.
 - Bumping/rushing an issue does not help and only creates unnecessary notifications, please be patient.
 - Promptly address any CI failures, a maintainer is not obliged to do this for you.
 
 A lot of time and effort went into this project as a single person.\
-If you find it useful or like where it's headed, please consider sponsoring it. <3
+If you find it useful or like where it's headed, please consider sponsoring it. 💛
 
 ## Contact
 Feel free to join the [discord](https://discord.gg/psBXpXF2JZ) for support, suggestions or anything mod related!

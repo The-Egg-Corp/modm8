@@ -8,6 +8,7 @@ import (
 	"runtime"
 
 	gocmd "github.com/go-cmd/cmd"
+	"github.com/samber/lo"
 	wRuntime "github.com/wailsapp/wails/v2/pkg/runtime"
 
 	"modm8/backend"
@@ -143,6 +144,11 @@ func (app *Application) NumCPU() uint8 {
 
 func NumCPU() uint8 {
 	return uint8(runtime.NumCPU())
+}
+
+// Num is clamped between 1 and NumCPU*2 as any further is unnecessary and may cause overhead.
+func SetMaxProcs(num uint8) int {
+	return runtime.GOMAXPROCS(lo.Clamp(int(num), 1, runtime.NumCPU()*2))
 }
 
 func ConfigDir() string {

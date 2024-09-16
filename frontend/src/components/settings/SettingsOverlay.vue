@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { 
-    Save,
+    SaveAndApply
 } from "@backend/app/AppSettings"
 
 import { app } from "@backend/models"
+import { GetSettings } from "@backend/app/Application"
 
 import Divider from "primevue/divider"
 import SelectButton from "primevue/selectbutton"
@@ -12,7 +13,7 @@ import CardOverlay from "../reusable/CardOverlay.vue"
 import LanguageDropdown from "./LanguageDropdown.vue"
 import ThemeDropdown from "./ThemeDropdown.vue"
 
-import { Ref, computed, ref } from "vue"
+import { Ref, computed, onMounted, ref } from "vue"
 import { storeToRefs } from "pinia"
 
 import { useDialog } from "@composables"
@@ -64,13 +65,20 @@ const behaviours: Ref<Behaviour[]> = computed(() => [{
     label: t('settings.update-behaviour.option-3'),
     value: app.UpdateBehaviour.AUTO
 }])
+
+onMounted(async () => {
+    const { general, performance } = await GetSettings()
+
+    animationsEnabled.value = general.animations_enabled
+    accelChecked.value = performance.gpu_acceleration
+    threadCount.value = performance.thread_count
+})
 //#endregion
 
 const applySettings = async() => {
     const t0 = performance.now()
-    await Save()
-    
-    console.info(`Settings saved. Took ${performance.now() - t0}ms`)
+    await SaveAndApply()
+    console.info(`Settings saved and applied. Took ${performance.now() - t0}ms`)
 }
 
 const dividerAlignment: Alignment = "center"

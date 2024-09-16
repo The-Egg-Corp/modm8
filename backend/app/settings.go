@@ -1,6 +1,8 @@
 package app
 
-import "github.com/spf13/viper"
+import (
+	"github.com/spf13/viper"
+)
 
 type UpdateBehaviour uint8
 
@@ -80,6 +82,10 @@ func NewSettings() *AppSettings {
 	}
 }
 
+// func (settings *AppSettings) WriteToConfig() error {
+// 	return WriteToConfig(settingsCfg, settings)
+// }
+
 func (settings *AppSettings) Load() error {
 	SetupConfig(settingsCfg, "settings", "toml")
 	return ReadOrCreate(settingsCfg, settings, SettingsPath())
@@ -89,8 +95,15 @@ func (settings *AppSettings) Save() error {
 	return Save(settingsCfg, settings, SettingsPath())
 }
 
-func (settings *AppSettings) WriteToConfig() error {
-	return WriteToConfig(settingsCfg, settings)
+func (settings *AppSettings) SaveAndApply() error {
+	settings.Apply()
+	return settings.Save()
+}
+
+// Any backend setting that can be updated without needing a restart should go here.
+func (settings *AppSettings) Apply() {
+	// Set the max number of processes (OS threads) to the value from the settings.toml file.
+	SetMaxProcs(settings.Performance.ThreadCount)
 }
 
 func (settings *AppSettings) SetLocale(locale string) {

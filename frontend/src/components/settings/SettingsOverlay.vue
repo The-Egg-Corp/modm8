@@ -1,10 +1,7 @@
 <script lang="ts" setup>
-import { 
-    SaveAndApply
-} from "@backend/app/AppSettings"
-
 import { app } from "@backend/models"
 import { GetSettings } from "@backend/app/Application"
+import { Load, SaveAndApply } from "@backend/app/AppSettings"
 
 import Divider from "primevue/divider"
 import SelectButton from "primevue/selectbutton"
@@ -13,7 +10,7 @@ import CardOverlay from "../reusable/CardOverlay.vue"
 import LanguageDropdown from "./LanguageDropdown.vue"
 import ThemeDropdown from "./ThemeDropdown.vue"
 
-import { Ref, computed, onMounted, ref } from "vue"
+import { Ref, computed, ref, watch } from "vue"
 import { storeToRefs } from "pinia"
 
 import { useDialog } from "@composables"
@@ -22,7 +19,7 @@ import { Alignment, ValueItemLabeled } from "@types"
 import { t } from "@i18n"
 
 const { 
-    setVisible, 
+    setVisible,
     visible, closable, draggable 
 } = useDialog('settings')
 
@@ -66,13 +63,21 @@ const behaviours: Ref<Behaviour[]> = computed(() => [{
     value: app.UpdateBehaviour.AUTO
 }])
 
-onMounted(async () => {
+// Every time the overlay is opened.
+watch(visible, async (newVal: boolean) => {
+    if (!newVal) return
+
+    await Load() // Load the `settings.toml` file.
+    await updateValues() // Refresh the refs with their respective loaded value.
+})
+
+const updateValues = async () => {
     const { general, performance } = await GetSettings()
 
     animationsEnabled.value = general.animations_enabled
     accelChecked.value = performance.gpu_acceleration
     threadCount.value = performance.thread_count
-})
+}
 //#endregion
 
 const applySettings = async() => {

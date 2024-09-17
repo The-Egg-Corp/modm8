@@ -1,22 +1,23 @@
 <script lang="ts" setup>
+import { Ref, computed, ref, watch } from "vue"
+import { storeToRefs } from "pinia"
+
 import { app } from "@backend/models"
 import { GetSettings } from "@backend/app/Application"
 import { Load, SaveAndApply } from "@backend/app/AppSettings"
 
-import Divider from "primevue/divider"
-import SelectButton from "primevue/selectbutton"
-import CardOverlay from "../reusable/CardOverlay.vue"
-
-import LanguageDropdown from "./LanguageDropdown.vue"
-import ThemeDropdown from "./ThemeDropdown.vue"
-
-import { Ref, computed, ref, watch } from "vue"
-import { storeToRefs } from "pinia"
+import { 
+    CardOverlay, ModInstallationOverlay,
+    LanguageDropdown, ThemeDropdown 
+} from "@components"
 
 import { useDialog } from "@composables"
 import { useAppStore, useSettingsStore } from "@stores"
 import { Alignment, ValueItemLabeled } from "@types"
 import { t } from "@i18n"
+
+import Divider from "primevue/divider"
+import SelectButton from "primevue/selectbutton"
 
 const { 
     setVisible,
@@ -100,7 +101,7 @@ const dividerAlignment: Alignment = "center"
         <template #cardContent>
             <div class="flex flex-column">
                 <h1 class="header">{{ $t('keywords.settings') }}</h1>
-                <p style="font-weight: 305; margin-bottom: 10px; margin-top: 10px; padding-left: 2px;">
+                <p class="subheading">
                     Values set here are saved to the <b>settings.toml</b> file upon applying.
                 </p>
             </div>
@@ -227,6 +228,11 @@ const dividerAlignment: Alignment = "center"
 :global(.p-dialog-content) {
     background: none;
     border-radius: 9px;
+    padding: 1rem;
+}
+
+:global(.p-card-body) {
+    padding-top: 0rem;
 }
 
 :global(.p-divider-content) {
@@ -241,16 +247,18 @@ const dividerAlignment: Alignment = "center"
     display: flex;
 }
 
-.settings-dialog {
-    width: 42rem;
-}
-
 .setting {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
     padding-left: 5px;
+    padding-right: 5px;
+}
+
+.setting:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 5px;
 }
 
 .flex-item {
@@ -260,6 +268,8 @@ const dividerAlignment: Alignment = "center"
 .flex-item h3 {
     font-weight: 300;
     text-wrap: balance;
+    margin-top: 15px;
+    margin-bottom: 15px;
 }
 
 .category-divider {
@@ -268,5 +278,12 @@ const dividerAlignment: Alignment = "center"
     margin-top: -2px;
     margin-bottom: -2px;
     user-select: none;
+}
+
+.subheading {
+    font-weight: 305;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    padding-left: 2px;
 }
 </style>

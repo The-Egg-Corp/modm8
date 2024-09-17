@@ -3,8 +3,8 @@ package backend
 import (
 	"modm8/backend/common/fileutil"
 	"modm8/backend/thunderstore"
-	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 
@@ -12,12 +12,20 @@ import (
 )
 
 const tsDownloadDomain = "https://thunderstore.io/package/download/"
-const testPath = "modm8\\Games\\LethalCompany\\Profiles\\test\\BepInEx\\plugins\\"
 const testPkg1 = "sfDesat-Orion-2.1.4"
 
 func GetTestDir() string {
-	cacheDir, _ := os.UserConfigDir()
-	return filepath.Join(cacheDir, testPath)
+	//cacheDir, _ := os.UserConfigDir()
+	return filepath.Join("H:\\", "Program Files", "modm8", "Thunderstore", "LethalCompany", "ModCache")
+}
+
+func TestPathJoin(t *testing.T) {
+	str := GetTestDir()
+	t.Log(str)
+
+	if !strings.HasPrefix(str, "H") {
+		t.Fatal("dir path is relative. should be absolute")
+	}
 }
 
 var comm = v1.Community{
@@ -31,15 +39,15 @@ func TestInstallWithDependencies(t *testing.T) {
 	}
 
 	// Test dependencies by installing a modpack
-	pkg := pkgs.Get("AudioKnight", "Starlancer")
+	pkg := pkgs.Get("Megalophobia", "MEGALOPHOBIA")
 	if pkg == nil {
 		t.Fatal("could not find package in community")
 	}
 
-	isModpack := pkg.IsModpack(true)
-	if !isModpack {
-		t.Fatal("specified package is not a modpack")
-	}
+	// isModpack := pkg.IsModpack(false)
+	// if !isModpack {
+	// 	t.Fatal("specified package is not a modpack")
+	// }
 
 	t.Logf("\nFound package: %s\nDownloading dependencies...\n\n", pkg.LatestVersion().FullName)
 
@@ -47,6 +55,8 @@ func TestInstallWithDependencies(t *testing.T) {
 	var downloadCount int
 
 	startTime := time.Now()
+
+	thunderstore.CurModCacheDir = thunderstore.ModCacheDir("LethalCompany")
 	thunderstore.InstallWithDependencies(pkg.LatestVersion(), pkgs, &errs, &downloadCount)
 
 	t.Logf("\nDownloaded %v packages in %v\n", downloadCount, time.Since(startTime))

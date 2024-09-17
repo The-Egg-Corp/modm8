@@ -6,8 +6,6 @@ import { Nullable } from "primevue/ts-helpers"
 import DataView, { DataViewPageEvent } from 'primevue/dataview'
 
 import TabMenu from 'primevue/tabmenu'
-// import Splitter from 'primevue/splitter'
-// import SplitterPanel from 'primevue/splitterpanel'
 
 import Card from 'primevue/card'
 import Button from 'primevue/button'
@@ -15,17 +13,16 @@ import Skeleton from 'primevue/skeleton'
 import Tag from 'primevue/tag'
 
 import * as Steam from '@backend/steam/SteamRunner'
-import { BepinexConfigFiles, ParseBepinexConfig } from '@backend/game/GameManager'
 import { GetLatestPackageVersion, GetPackagesStripped } from '@backend/thunderstore/API'
-import { thunderstore, game } from "@backend/models"
+import { thunderstore } from "@backend/models"
 import { InstallWithDependencies } from '@backend/thunderstore/API.js'
 
 import { useDialog } from '@composables'
-import { CardOverlay, ConfigEditLayout } from "@components"
+import { ModInstallationOverlay, ConfigEditorOverlay } from "@components"
 import { Package } from "@types"
 import { useGameStore } from "@stores"
 
-import { debounce, openLink } from "../util"
+import { debounce } from "../util"
 
 const gameStore = useGameStore()
 const { selectedGame, updateModCache } = gameStore
@@ -35,9 +32,6 @@ const installingModDialog = useDialog('selected-game-installing-mod')
 
 const loading = ref(false)
 const searchInput: Ref<Nullable<string>> = ref(null)
-
-const selectedConfig: Ref<Nullable<game.BepinexConfig>> = ref(null)
-const selectedConfigName: Ref<Nullable<string>> = ref(null)
 
 const mods: Ref<thunderstore.StrippedPackage[]> = ref([])
 const currentPageMods: Ref<Package[]> = ref([])
@@ -51,13 +45,10 @@ const tabMenuItems = ref([
 ])
 
 const ROWS = 25
-let configFiles: string[] = []
 
 onMounted(async () => {
     loading.value = true
 
-    configFiles = await getConfigFiles()
-    
     const t0 = performance.now()
     if (!selectedGame.modCache) {
         console.log(`Putting ${selectedGame.identifier} mods into cache...`)
@@ -85,41 +76,6 @@ const gameThumbnail = () => selectedGame.image
 
 const startVanilla = () => Steam.LaunchGame(selectedGame.steamID, ["--doorstop-enable", "false"])
 const startModded = () => Steam.LaunchGame(selectedGame.steamID, ["--doorstop-enable", "true"])
-
-const getConfigFiles = async () => {
-    if (!selectedGame.bepinexSetup || !selectedGame.path) return []
-    return await BepinexConfigFiles([selectedGame.path, "BepInEx", "config"])
-}
-
-const getRelativeConfigPath = (absPath: string) => {
-    const configPath = 'BepInEx/config'
-
-    const normalizedFile = absPath.replace(/\\/g, '/')
-    const startIndex = normalizedFile.indexOf(configPath) + configPath.length + 1
-
-    return normalizedFile.substring(startIndex)
-}
-
-const closeConfigEditor = () => {
-    configEditorDialog.setVisible(false)
-    resetSelectedConfig()
-}
-
-const resetSelectedConfig = () => {
-    selectedConfig.value = null
-    selectedConfigName.value = null
-}
-
-const editConfig = async (path: string) => {
-    // Read file contents from backend
-    try {
-        const config = await ParseBepinexConfig(path)
-        selectedConfig.value = config
-        selectedConfigName.value = getRelativeConfigPath(path)
-    } catch(err: any) {
-        // Show error toast
-    }
-}
 
 const onPageChange = (e: DataViewPageEvent) => updatePage(e.first, e.rows)
 const updatePage = async (first: number, rows: number) => {
@@ -200,30 +156,23 @@ const installMod = async (fullName: string) => {
 
 <template>
 <div :class="['selected-game', { 'no-drag': configEditorDialog.visible || installingModDialog.visible }]">
-    <!-- <Breadcrumb class="breadcrumb flex-full row" :home="homePage" :model="pages">
-        <template #item="{ item, props }">
-            <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
-                <a :href="href" v-bind="props.action" @click="navigate">
-                    <span v-if="item.icon" :class="item.class" :style="item.style">{{ item.icon }}</span>
-                    <span v-else-if="item.label" :class="item.class" :style="item.style">{{ item.label }}</span>
-                </a>
-            </router-link>
-        </template>
-        <template #separator>/</template>
-    </Breadcrumb> -->
-
     <div class="flex row">
         <Card class="selected-game-card no-drag">
             <template #title>
-                <p style="font-size: 30px; font-weight: 520; user-select: none;" class="mt-0 mb-1">{{ $t('selected-game.currently-selected') }}</p>
+                <p class="mt-0 mb-1" style="font-size: 32px; font-weight: 540; user-select: none;">
+                    {{ $t('selected-game.currently-selected') }}
+                </p>
             </template>
     
             <template #content>
                 <div class="flex no-drag">
-                    <img class="selected-game-thumbnail" :src="gameThumbnail()"/>
-                    
+                    <div class="game-thumbnail-container">
+                        <img class="selected-game-thumbnail-background" :src="gameThumbnail()"/>
+                        <img class="selected-game-thumbnail-foreground" :src="gameThumbnail()"/>
+                    </div>
+
                     <div class="flex column ml-3 no-drag">
-                        <p style="font-size: 25px; font-weight: 330" class="mt-0 mb-0">{{ selectedGame.title }}</p>
+                        <p class="selected-game-title mt-0 mb-0">{{ selectedGame.title }}</p>
                         <div class="flex column gap-2 mt-3">
                             <Button 
                                 plain
@@ -384,129 +333,12 @@ const installMod = async (fullName: string) => {
 
         </div>
 
-        <CardOverlay
-            class="installing-mod-card no-drag"
-            v-model:visible="installingModDialog.visible"
-            v-model:closable="installingModDialog.closable"
-            v-model:draggable="installingModDialog.draggable"
-        >
-            <template #cardContent>
-                <div v-if="installing" class="flex column justify-content-center align-items-baseline">
-                    <h1 class="mb-1 mt-2">Installing...</h1>
-                    <p class="mt-1" style="font-size: 18px">{{ lastInstalledMod }}</p>
-                </div>
-                <div v-else>
-                    <h1 class="mb-1 mt-2">Installed</h1>
-                    <p class="mt-1" style="font-size: 18px">{{ lastInstalledMod }}</p>
-                </div>
-            </template>
+        <ModInstallationOverlay :dialog="installingModDialog" 
+            :installing="installing" :lastInstalledMod="lastInstalledMod!"
+        />
 
-            <template #dialogContent>
-                <div style="position: sticky; bottom: 0;" class="flex justify-content-center w-full">
-                    <div v-if="!installing" class="flex row gap-1 flex-grow-1">
-                        <Button class="w-full"
-                            type="button" severity="secondary"
-                            :label="$t('keywords.close')" @click="installingModDialog.setVisible(false)"
-                        />
-                        <Button class="w-6"
-                            type="button" severity="danger" icon="pi pi-trash"
-                            label="Uninstall"
-                        />
-                    </div>
-                    <!-- <Button v-else class="flex flex-grow-1" 
-                        type="button" severity="danger" icon="pi pi-ban"
-                        :label="$t('keywords.cancel')" 
-                        @click=""
-                    /> -->
-                </div>
-            </template>
-        </CardOverlay>
-
-        <CardOverlay 
-            class="no-drag"
-            v-model:visible="configEditorDialog.visible"
-            v-model:closable="configEditorDialog.closable"
-            v-model:draggable="configEditorDialog.draggable"
-        >
-            <template #cardContent>
-                <div v-if="!selectedConfig" class="flex flex-column" style="max-height: calc(100vh - 180px);">
-                    <!-- #region Heading & Subheading -->
-                    <h1 class="header">{{ $t('selected-game.config-editor.title') }}</h1>
-                    <p style="font-weight: 340; margin-bottom: 15px; margin-top: 3px; padding-left: 5px; user-select: none;">
-                        Choose the configuration file you would like to edit values for.
-                    </p>
-        
-                    <div v-if="configFiles.length < 1" class="flex justify-content-center align-items-center">
-                        <p class="mb-3 mt-2" style="font-size: 18.5px; font-weight: 450; user-select: none;">No config files found!</p>
-                    </div>
-    
-                    <div style="overflow-y: auto;">
-                        <div 
-                            v-if="configFiles.length > 0"
-                            v-for="(path, index) in configFiles" :key="index" 
-                            class="flex flex-row pl-2 pr-2 justify-content-between align-items-center"
-                            style="height: 58.5px"
-                        >
-                            <p style="font-size: 18.5px; font-weight: 285; user-select: none;">{{ getRelativeConfigPath(path) }}</p>
-    
-                            <div class="flex gap-2">
-                                <Button outlined plain
-                                    icon="pi pi-folder"
-                                    style="font-size: 17px; width: 3rem;"
-                                    v-tooltip.top="'Open in Explorer'"
-                                    @click="openLink(`file://${path}`)"
-                                />
-    
-                                <Button plain
-                                    class="justify-content-center"
-                                    style="font-size: 17px; width: 5rem; height: 2.5rem;"
-                                    :label="$t('selected-game.config-editor.edit-button')"
-                                    @click="editConfig(path)"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <!-- #endregion -->
-                </div>
-
-                <ConfigEditLayout v-else :config="selectedConfig" :fileName="selectedConfigName">
-                    
-                </ConfigEditLayout>
-            </template>
-        
-            <template #dialogContent>
-                <div style="position: sticky; bottom: 0;" class="flex justify-content-end gap-2">
-                    <Button v-if="!selectedConfig" 
-                        class="w-full" type="button" severity="secondary" 
-                        :label="$t('keywords.close')" @click="closeConfigEditor()"
-                    />
-
-                    <Button v-else 
-                        class="w-5" type="button" severity="secondary" 
-                        icon="pi pi-arrow-left" :label="$t('keywords.back')"
-                        @click="resetSelectedConfig"
-                    />
-
-                    <Button v-if="selectedConfig"
-                        class="w-full" type="button" 
-                        :label="$t('keywords.apply')" @click=""
-                    />
-                </div>
-            </template>
-        </CardOverlay>
+        <ConfigEditorOverlay :dialog="configEditorDialog" :selectedGame="selectedGame"/>
     </div>
-
-    <!-- <Splitter style="height: 350px; background: none; border: none;" class="mb-9 no-drag mx-auto">
-        <SplitterPanel class="flex" :minSize="33">
-
-        </SplitterPanel>
-
-        <SplitterPanel class="flex align-items-center"> 
-            <DataView data-key="profile-selection">
-
-            </DataView>
-        </SplitterPanel>
-    </Splitter> -->
 </div>
 </template>
 
@@ -516,19 +348,19 @@ const installMod = async (fullName: string) => {
     height: 140%;
 }*/
 
-.breadcrumb {
+/*.breadcrumb {
     margin-top: 20px;
     padding: 5px;
     justify-content: center;
     height: auto;
     background: none;
-}
+}*/
 
-:deep(.breadcrumb *) {
+/*:deep(.breadcrumb *) {
     font-size: 19px;
     user-select: none;
     --wails-draggable: none;
-}
+}*/
 
 .material-symbols-sharp {
     font-size: 26.5px;
@@ -557,13 +389,34 @@ const installMod = async (fullName: string) => {
     padding: 0px;
 }
 
-.selected-game-thumbnail {
-    user-select: none;
+.game-thumbnail-container {
+    position: relative;
+}
+
+.selected-game-thumbnail-foreground {
+    position: relative;
     min-width: 160px;
     max-width: 40%;
     max-height: 200px;
-    border-radius: 4px;
-    border: 2px outset var(--primary-color);
+    border-radius: 3px;
+    user-select: none;
+    border: 1px ridge rgba(255, 255, 255, 0.45);
+}
+
+.selected-game-thumbnail-background {
+    position: absolute;
+    z-index: -1;
+    filter: blur(15px);
+    width: 100%;
+    height: 100%;
+}
+
+.selected-game-title {
+    font-size: 25px;
+    font-weight: 330;
+    text-shadow: 0px 0px 4px white;
+    text-rendering: optimizeLegibility;
+    font-smooth: antialiased;
 }
 
 .btn {
@@ -672,10 +525,6 @@ const installMod = async (fullName: string) => {
     width: 100vw;
     padding-bottom: 15px;
     padding-top: 0px;
-}
-
-.installing-mod-card {
-    padding: 0 1rem 1rem 1rem;
 }
 
 :deep(.p-tabmenu-nav) {

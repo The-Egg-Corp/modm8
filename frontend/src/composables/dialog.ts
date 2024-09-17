@@ -1,6 +1,12 @@
 import { Ref, ref } from "vue"
 
-interface DialogState {
+export interface Dialog extends DialogState {
+    setVisible: (val?: boolean) => void
+    setDraggable: (val?: boolean) => void
+    setClosable: (val?: boolean) => void
+}
+
+export interface DialogState {
     visible: Ref<boolean>
     draggable: Ref<boolean>
     closable: Ref<boolean>
@@ -8,7 +14,7 @@ interface DialogState {
 
 const dialogs: Record<string, DialogState> = {}
 
-export const useDialog = (id: string) => {
+export const useDialog = (id: string): Dialog => {
     // Initialize the dialog state if it doesn't exist
     if (!dialogs[id]) {
         dialogs[id] = {

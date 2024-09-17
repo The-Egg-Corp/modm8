@@ -7,7 +7,6 @@ import (
 	"modm8/backend"
 	"modm8/backend/common/downloader"
 	"modm8/backend/common/fileutil"
-	"os"
 	"path/filepath"
 	"strings"
 	"sync"
@@ -20,7 +19,7 @@ import (
 	v1 "github.com/the-egg-corp/thundergo/v1"
 )
 
-var curModCacheDir string
+var CurModCacheDir string
 
 type StrippedPackage struct {
 	Name           string        `json:"name"`
@@ -224,8 +223,6 @@ func (a *API) InstallPackage(fullName, dir string) (*grab.Response, error) {
 }
 
 func (a *API) InstallWithDependencies(gameTitle, community, fullName string) error {
-	curModCacheDir = ModCacheDir(gameTitle)
-
 	// Get cached package list, if empty, try to fill it.
 	pkgs, _ := a.getCachedPackageList(community)
 	if pkgs == nil {
@@ -245,18 +242,19 @@ func (a *API) InstallWithDependencies(gameTitle, community, fullName string) err
 	var errs []error
 	var downloadCount int
 
+	CurModCacheDir = ModCacheDir(gameTitle)
 	InstallWithDependencies(pkg.LatestVersion(), a.Cache[community], &errs, &downloadCount)
 
 	return nil
 }
 
-func ModCacheDir(game string) string {
-	cacheDir, _ := os.UserConfigDir()
-	return filepath.Join(cacheDir, fmt.Sprintf("modm8\\Thunderstore\\%s\\ModCache", game))
+func ModCacheDir(gameTitle string) string {
+	//cacheDir, _ := os.UserConfigDir()
+	return filepath.Join("H:\\", "modm8", "Thunderstore", gameTitle, "ModCache")
 }
 
 func InstallWithDependencies(ver v1.PackageVersion, pkgs v1.PackageList, errs *[]error, downloadCount *int) {
-	_, err := Install(ver, curModCacheDir)
+	_, err := Install(ver, CurModCacheDir)
 	if err == nil {
 		*downloadCount += 1
 	}
@@ -293,7 +291,7 @@ func Install(pkg v1.PackageVersion, dir string) (*grab.Response, error) {
 
 	path := filepath.Join(dir, pkg.FullName)
 
-	err = fileutil.Unzip(path+".zip", path, true)
+	err = fileutil.Unzip(path+".zip.tmp", path, true)
 	if err != nil {
 		return resp, err
 	}

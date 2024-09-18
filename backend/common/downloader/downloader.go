@@ -17,7 +17,7 @@ import (
 type DownloadPool = map[string]fileutil.FileMetadata
 
 func DownloadZip(url, dirPath, fileName string) (*grab.Response, error) {
-	ext := ".zip.tmp"
+	ext := ".m8z"
 	return DownloadFile(url, dirPath, fileutil.NewFileInfo(fileName, &ext, dirPath))
 }
 

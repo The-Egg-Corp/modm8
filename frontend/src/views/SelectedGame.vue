@@ -13,9 +13,9 @@ import Skeleton from 'primevue/skeleton'
 import Tag from 'primevue/tag'
 
 import * as Steam from '@backend/steam/SteamRunner'
-import { GetLatestPackageVersion, GetPackagesStripped } from '@backend/thunderstore/API'
-import { thunderstore } from "@backend/models"
-import { InstallWithDependencies } from '@backend/thunderstore/API.js'
+import { GetLatestPackageVersion, GetStrippedPackages } from '@backend/thunderstore/API'
+import { thunderstore, v1 } from "@backend/models"
+import { InstallByName } from '@backend/thunderstore/API.js'
 
 import { useDialog } from '@composables'
 import { ModInstallationOverlay, ConfigEditorOverlay } from "@components"
@@ -37,7 +37,7 @@ const mods: Ref<thunderstore.StrippedPackage[]> = ref([])
 const currentPageMods: Ref<Package[]> = ref([])
 
 const installing = ref(false)
-const lastInstalledMod: Ref<Nullable<string>> = ref(null)
+const lastInstalledMod: Ref<Nullable<v1.PackageVersion>> = ref(null)
 
 const tabMenuItems = ref([
     { label: 'Current Profile', icon: 'pi pi-box' },
@@ -47,13 +47,17 @@ const tabMenuItems = ref([
 const ROWS = 25
 
 onMounted(async () => {
-    loading.value = true
+    // Ensure no overlays are still shown when opening.
+    configEditorDialog.setVisible(false)
+    installingModDialog.setVisible(false)
 
     const t0 = performance.now()
+    loading.value = true
+
     if (!selectedGame.modCache) {
         console.log(`Putting ${selectedGame.identifier} mods into cache...`)
 
-        const pkgs = await GetPackagesStripped(selectedGame.identifier, false)
+        const pkgs = await GetStrippedPackages(selectedGame.identifier, false)
         updateModCache(pkgs)
 
         console.log(`Cached ${pkgs?.length} mods. Took: ${performance.now() - t0}ms`)
@@ -140,14 +144,17 @@ const debouncedSearch = debounce(async () => {
 
 const installMod = async (fullName: string) => {
     installing.value = true
-    lastInstalledMod.value = fullName
 
     installingModDialog.setClosable(false)
     installingModDialog.setVisible(true)
 
-    const start = performance.now()
-    await InstallWithDependencies(selectedGame.title, selectedGame.identifier, fullName)
-    console.log(`Installed mod: ${fullName}. Took ${((performance.now() - start) / 1000).toFixed(2)}s`)
+    try {
+        const start = performance.now()
+        lastInstalledMod.value = await InstallByName(selectedGame.title, selectedGame.identifier, fullName)
+        console.info(`Installed mod: ${fullName}. Took ${((performance.now() - start) / 1000).toFixed(2)}s`)
+    } catch(e: any) {
+        console.error(`Failed to install mod.\n${e.message}`)
+    }
 
     installing.value = false
     installingModDialog.setClosable(true)
@@ -299,11 +306,8 @@ const installMod = async (fullName: string) => {
 
                                         <div class="mod-list-bottom-row"> 
                                             <div class="flex row gap-2">
-                                                <Button plain
-                                                    class="btn w-full" 
-                                                    icon="pi pi-download"
-                                                    :label="$t('keywords.install')"
-                                                    @click="installMod(mod.full_name)"
+                                                <Button plain class="btn w-full" icon="pi pi-download"
+                                                    :label="$t('keywords.install')" @click="installMod(mod.full_name)"
                                                 />
 
                                                 <div class="flex row align-items-center">
@@ -343,25 +347,6 @@ const installMod = async (fullName: string) => {
 </template>
 
 <style scoped>
-/*.breadcrumb-container {
-    width: 140%;
-    height: 140%;
-}*/
-
-/*.breadcrumb {
-    margin-top: 20px;
-    padding: 5px;
-    justify-content: center;
-    height: auto;
-    background: none;
-}*/
-
-/*:deep(.breadcrumb *) {
-    font-size: 19px;
-    user-select: none;
-    --wails-draggable: none;
-}*/
-
 .material-symbols-sharp {
     font-size: 26.5px;
     font-variation-settings:
@@ -406,7 +391,7 @@ const installMod = async (fullName: string) => {
 .selected-game-thumbnail-background {
     position: absolute;
     z-index: -1;
-    filter: blur(15px);
+    filter: blur(7px);
     width: 100%;
     height: 100%;
 }
@@ -414,9 +399,7 @@ const installMod = async (fullName: string) => {
 .selected-game-title {
     font-size: 25px;
     font-weight: 330;
-    text-shadow: 0px 0px 4px white;
-    text-rendering: optimizeLegibility;
-    font-smooth: antialiased;
+    text-shadow: 0px 0px 10px white;
 }
 
 .btn {
@@ -430,10 +413,11 @@ const installMod = async (fullName: string) => {
 }
 
 .mod-list-thumbnail {
-    user-select: none;
-    max-width: 85px;
-    min-width: 60px;
+    min-width: 80px;
+    width: 4%;
+    max-width: 140px;
     border-radius: 2.5px;
+    user-select: none;
 }
 
 .mod-list-title {
@@ -501,10 +485,6 @@ const installMod = async (fullName: string) => {
 :deep(.p-dataview-content) {
     background: none !important;
 }
-
-/*.searchbar {
-    
-}*/
 
 :deep(.searchbar .p-inputtext) {
     background: rgba(0, 0, 0, 0.2);

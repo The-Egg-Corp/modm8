@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"modm8/backend/common/downloader"
 	"modm8/backend/common/fileutil"
+	"modm8/backend/thunderstore"
 	"strings"
 	"testing"
 	"time"
@@ -11,6 +12,8 @@ import (
 
 var zip = ".zip"
 var rar = ".rar"
+
+var TestDir = thunderstore.ModCacheDir("Lethal Company")
 
 var testPool = downloader.DownloadPool{
 	"https://thunderstore.io/package/download/Owen3H/CSync/3.0.1": fileutil.FileMetadata{
@@ -32,7 +35,7 @@ var testPool = downloader.DownloadPool{
 }
 
 func TestDownloadMultipleFiles(t *testing.T) {
-	errs, err := downloader.DownloadMultipleFiles(GetTestDir(), testPool)
+	errs, err := downloader.DownloadMultipleFiles(TestDir, testPool)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -49,14 +52,14 @@ func TestDownloadMultipleFiles(t *testing.T) {
 
 func TestDownloadFile(t *testing.T) {
 	url := tsDownloadDomain + strings.ReplaceAll(testPkg1, "-", "/")
-	ext := ".zip"
+	ext := "zip"
 
 	ticker := time.NewTicker(1 * time.Millisecond)
 	defer ticker.Stop()
 
 	startTime := time.Now()
 
-	resp, err := downloader.DownloadFile(url, GetTestDir(), fileutil.NewFileInfo(testPkg1, &ext, GetTestDir()))
+	resp, err := downloader.DownloadFile(url, TestDir, fileutil.NewFileInfo(testPkg1, &ext, TestDir))
 	if err != nil {
 		t.Skip("\n", err)
 	}

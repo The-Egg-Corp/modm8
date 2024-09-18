@@ -7,9 +7,9 @@ import (
 	"modm8/backend"
 	"modm8/backend/common/downloader"
 	"modm8/backend/common/fileutil"
+	"os"
 	"path/filepath"
 	"strings"
-	"sync"
 
 	"github.com/cavaliergopher/grab/v3"
 	"github.com/samber/lo"
@@ -20,6 +20,11 @@ import (
 )
 
 var CurModCacheDir string
+
+func ModCacheDir(gameTitle string) string {
+	cacheDir, _ := os.UserConfigDir()
+	return filepath.Join(cacheDir, "modm8", "Thunderstore", gameTitle, "ModCache")
+}
 
 type StrippedPackage struct {
 	Name           string        `json:"name"`
@@ -38,14 +43,12 @@ type StrippedPackage struct {
 type API struct {
 	Ctx   context.Context
 	Cache map[string]v1.PackageList
-	mutex sync.RWMutex
 }
 
 func NewAPI(ctx context.Context) *API {
 	return &API{
 		Ctx:   ctx,
 		Cache: NewCache(),
-		mutex: sync.RWMutex{},
 	}
 }
 
@@ -120,7 +123,7 @@ func (a *API) GetPackagesInCommunity(community string, skipCache bool) ([]v1.Pac
 	return pkgs, nil
 }
 
-func (a *API) GetPackagesStripped(community string, skipCache bool) ([]StrippedPackage, error) {
+func (a *API) GetStrippedPackages(community string, skipCache bool) ([]StrippedPackage, error) {
 	pkgs, err := a.GetPackagesInCommunity(community, skipCache)
 	if err != nil {
 		return nil, err
@@ -177,58 +180,56 @@ func (a *API) GetUserPackages(communities []string, owner string) string {
 	return strings.Join(names, ", ")
 }
 
-// Returns the progress as a percentage
-func (a *API) GetProgress(response grab.Response) float64 {
-	return 100 * response.Progress()
-}
-
 // Downloads the specified package as a zip file and unpacks it under the specified directory (absolute path).
 //
 // The `fullName` parameter expects a string in the format: "Author-Package-Major.Minor.Patch"
-func (a *API) InstallPackage(fullName, dir string) (*grab.Response, error) {
-	url := "https://thunderstore.io/package/download/" + strings.ReplaceAll(fullName, "-", "/")
+// func (a *API) InstallPackage(fullName, dir string) (*grab.Response, error) {
+// 	url := "https://thunderstore.io/package/download/" + strings.ReplaceAll(fullName, "-", "/")
 
-	resp, err := downloader.DownloadZip(url, dir, fullName)
-	if err != nil {
-		return resp, err
-	}
+// 	resp, err := downloader.DownloadZip(url, dir, fullName)
+// 	if err != nil {
+// 		return resp, err
+// 	}
 
-	// 	ticker := time.NewTicker(5 * time.Millisecond)
-	// 	defer ticker.Stop()
+// 	// 	ticker := time.NewTicker(5 * time.Millisecond)
+// 	// 	defer ticker.Stop()
 
-	// Loop:
-	// 	for {
-	// 		select {
-	// 		case <-resp.Done:
-	// 			//timeTaken = time.Since(startTime)
-	// 			break Loop
-	// 		case <-ticker.C:
-	// 			wRuntime.EventsEmit(a.Ctx, resp.Filename, 100*resp.Progress())
-	// 		}
-	// 	}
+// 	// Loop:
+// 	// 	for {
+// 	// 		select {
+// 	// 		case <-resp.Done:
+// 	// 			//timeTaken = time.Since(startTime)
+// 	// 			break Loop
+// 	// 		case <-ticker.C:
+// 	// 			wRuntime.EventsEmit(a.Ctx, resp.Filename, 100*resp.Progress())
+// 	// 		}
+// 	// 	}
 
-	// Finished, check for errors.
-	if err = resp.Err(); err != nil {
-		return resp, err
-	}
+// 	// Finished, check for errors.
+// 	if err = resp.Err(); err != nil {
+// 		return resp, err
+// 	}
 
-	path := filepath.Join(dir, fullName)
+// 	path := filepath.Join(dir, fullName)
 
-	err = fileutil.Unzip(path+".zip", path, true)
-	if err != nil {
-		return resp, err
-	}
+// 	err = fileutil.Unzip(path+".zip", path, true)
+// 	if err != nil {
+// 		return resp, err
+// 	}
 
-	return resp, nil
-}
+// 	return resp, nil
+// }
 
-func (a *API) InstallWithDependencies(gameTitle, community, fullName string) error {
+// Installs the latest version of a package by its full name (Owner-PkgName) and all of its dependencies.
+//
+// The game identifier (aka community) must be correctly specified for the package to be found.
+func (a *API) InstallByName(gameTitle, community, fullName string) (*v1.PackageVersion, error) {
 	// Get cached package list, if empty, try to fill it.
 	pkgs, _ := a.getCachedPackageList(community)
 	if pkgs == nil {
 		commPkgs, err := v1.PackagesFromCommunity(community)
 		if err != nil {
-			return fmt.Errorf("error getting packages: %s", err)
+			return nil, fmt.Errorf("error getting packages: %s", err)
 		}
 
 		a.Cache[community] = commPkgs
@@ -236,21 +237,18 @@ func (a *API) InstallWithDependencies(gameTitle, community, fullName string) err
 
 	pkg := pkgs.GetExact(fullName)
 	if pkg == nil {
-		return fmt.Errorf("could not find package in community")
+		return nil, fmt.Errorf("could not find package in community")
 	}
 
 	var errs []error
 	var downloadCount int
 
 	CurModCacheDir = ModCacheDir(gameTitle)
-	InstallWithDependencies(pkg.LatestVersion(), a.Cache[community], &errs, &downloadCount)
 
-	return nil
-}
+	latestVer := pkg.LatestVersion()
+	InstallWithDependencies(latestVer, a.Cache[community], &errs, &downloadCount)
 
-func ModCacheDir(gameTitle string) string {
-	//cacheDir, _ := os.UserConfigDir()
-	return filepath.Join("H:\\", "modm8", "Thunderstore", gameTitle, "ModCache")
+	return &latestVer, nil
 }
 
 func InstallWithDependencies(ver v1.PackageVersion, pkgs v1.PackageList, errs *[]error, downloadCount *int) {
@@ -291,7 +289,7 @@ func Install(pkg v1.PackageVersion, dir string) (*grab.Response, error) {
 
 	path := filepath.Join(dir, pkg.FullName)
 
-	err = fileutil.Unzip(path+".zip.tmp", path, true)
+	err = fileutil.Unzip(path+".m8z", path, true)
 	if err != nil {
 		return resp, err
 	}

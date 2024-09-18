@@ -15,20 +15,16 @@ import { ThunderstoreGame } from '@types'
 const selectedConfig: Ref<Nullable<game.BepinexConfig>> = ref(null)
 const selectedConfigName: Ref<Nullable<string>> = ref(null)
 
-let configFiles: string[]
+const configFiles: Ref<string[]> = ref([])
 
 const props = defineProps<{
     dialog: Dialog
     selectedGame: ThunderstoreGame
 }>()
 
-onMounted(async () => {
-    configFiles = await getConfigFiles()
-})
-
 watch(props.dialog.visible, async (newVal: boolean) => {
     if (!newVal) return
-    configFiles = await getConfigFiles()
+    configFiles.value = await getConfigFiles()
 })
 
 const closeConfigEditor = () => {
@@ -98,7 +94,7 @@ const getRelativeConfigPath = (absPath: string) => {
 
                     <div class="flex gap-2">
                         <Button outlined plain
-                            icon="pi pi-edit-file"
+                            icon="pi pi-file-edit"
                             style="font-size: 17px; width: 3rem;"
                             v-tooltip.top="'Open File'"
                             @click="openLink(`file://${path}`)"

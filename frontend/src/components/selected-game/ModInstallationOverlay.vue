@@ -1,12 +1,15 @@
 <script lang="ts" setup>
+import { v1 } from "@backend/models"
 import { CardOverlay } from "@components"
 import { Dialog } from "@composables"
 
-defineProps<{
+const props = defineProps<{
     dialog: Dialog
     installing: boolean
-    lastInstalledMod: string
+    lastInstalledMod: v1.PackageVersion
 }>()
+
+const installStatus = () => props.installing ? "Installing..." : "Installed"
 </script>
 
 <template>
@@ -17,26 +20,24 @@ defineProps<{
     v-model:draggable="dialog.draggable"
 >
     <template #cardContent>
-        <div v-if="installing" class="flex column justify-content-center align-items-baseline">
-            <h1 class="mb-1 mt-2">Installing...</h1>
-            <p class="mt-1" style="font-size: 18px">{{ lastInstalledMod }}</p>
-        </div>
-        <div v-else>
-            <h1 class="mb-1 mt-2">Installed</h1>
-            <p class="mt-1" style="font-size: 18px">{{ lastInstalledMod }}</p>
+        <div class="flex column justify-content-center align-items-baseline">
+            <h1 class="mb-0 mt-2">{{ installStatus() }} </h1>
+            <p class="mt-1 mb-1" style="font-size: 18px">{{ lastInstalledMod.name }}</p>
+
         </div>
     </template>
 
     <template #dialogContent>
         <div style="position: sticky; bottom: 0;" class="flex justify-content-center w-full">
-            <div v-if="!installing" class="flex row gap-1 flex-grow-1">
+            <div class="flex row gap-1 flex-grow-1">
                 <Button class="w-full"
                     type="button" severity="secondary"
                     :label="$t('keywords.close')" @click="dialog.setVisible(false)"
+                    :disabled="installing"
                 />
                 <Button class="w-6"
                     type="button" severity="danger" icon="pi pi-trash"
-                    label="Uninstall"
+                    label="Uninstall" :disabled="installing"
                 />
             </div>
             <!-- <Button v-else class="flex flex-grow-1" 

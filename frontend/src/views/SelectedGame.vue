@@ -2,15 +2,15 @@
 import { onMounted, ref } from "vue"
 import type { Ref } from "vue"
 
-import { Nullable } from "primevue/ts-helpers"
-import DataView, { DataViewPageEvent } from 'primevue/dataview'
-
-import TabMenu from 'primevue/tabmenu'
-
 import Card from 'primevue/card'
 import Button from 'primevue/button'
 import Skeleton from 'primevue/skeleton'
 import Tag from 'primevue/tag'
+
+import { Nullable } from "primevue/ts-helpers"
+
+import DataView, { DataViewPageEvent } from 'primevue/dataview'
+import TabMenu, { TabMenuChangeEvent } from 'primevue/tabmenu'
 
 import * as Steam from '@backend/steam/SteamRunner'
 import { GetLatestPackageVersion, GetStrippedPackages } from '@backend/thunderstore/API'
@@ -18,7 +18,12 @@ import { thunderstore, v1 } from "@backend/models"
 import { InstallByName } from '@backend/thunderstore/API.js'
 
 import { useDialog } from '@composables'
-import { ModInstallationOverlay, ConfigEditorOverlay } from "@components"
+import {
+    ProfileManager,
+    ModInstallationOverlay, 
+    ConfigEditorOverlay
+} from "@components"
+
 import { Package } from "@types"
 import { useGameStore } from "@stores"
 
@@ -30,6 +35,8 @@ const { selectedGame, updateModCache } = gameStore
 const configEditorDialog = useDialog('selected-game-config-editor')
 const installingModDialog = useDialog('selected-game-installing-mod')
 
+const ROWS = 25
+
 const loading = ref(false)
 const searchInput: Ref<Nullable<string>> = ref(null)
 
@@ -39,12 +46,16 @@ const currentPageMods: Ref<Package[]> = ref([])
 const installing = ref(false)
 const lastInstalledMod: Ref<Nullable<v1.PackageVersion>> = ref(null)
 
-const tabMenuItems = ref([
-    { label: 'Current Profile', icon: 'pi pi-box' },
-    { label: 'Thunderstore', icon: 'pi pi-globe' }
+const activeTabIndex = ref(0)
+const tabs = ref([
+    { label: 'This Profile', icon: 'pi pi-box' },
+    { label: 'Thunderstore', icon: 'pi pi-globe' },
+    { label: 'Nexus', icon: 'pi pi-globe' }
 ])
 
-const ROWS = 25
+const onTabChange = (e: TabMenuChangeEvent) => {
+    activeTabIndex.value = e.index
+}
 
 onMounted(async () => {
     // Ensure no overlays are still shown when opening.
@@ -126,7 +137,7 @@ const getMods = (searchFilter = true, defaultSort = true) => {
 }
 
 const hasSearchInput = () => searchInput.value ? searchInput.value.length > 0 : undefined
-const onInputChanged = async () => {
+const onInputChange = async () => {
     // No input, no need to debounce.
     if (!searchInput.value?.trim()) {
         // Show all mods without filtering.
@@ -164,51 +175,55 @@ const installMod = async (fullName: string) => {
 <template>
 <div :class="['selected-game', { 'no-drag': configEditorDialog.visible || installingModDialog.visible }]">
     <div class="flex row">
-        <Card class="selected-game-card no-drag">
-            <template #title>
-                <p class="mt-0 mb-1" style="font-size: 32px; font-weight: 540; user-select: none;">
-                    {{ $t('selected-game.currently-selected') }}
-                </p>
-            </template>
+        <div class="flex column">
+            <Card class="selected-game-card no-drag">
+                <template #title>
+                    <p class="selected-game-card-header mt-0 mb-1">
+                        {{ $t('selected-game.currently-selected') }}
+                    </p>
+                </template>
+        
+                <template #content>
+                    <div class="flex no-drag">
+                        <div class="game-thumbnail-container">
+                            <img class="selected-game-thumbnail-background" :src="gameThumbnail()"/>
+                            <img class="selected-game-thumbnail-foreground" :src="gameThumbnail()"/>
+                        </div>
     
-            <template #content>
-                <div class="flex no-drag">
-                    <div class="game-thumbnail-container">
-                        <img class="selected-game-thumbnail-background" :src="gameThumbnail()"/>
-                        <img class="selected-game-thumbnail-foreground" :src="gameThumbnail()"/>
-                    </div>
-
-                    <div class="flex column ml-3 no-drag">
-                        <p class="selected-game-title mt-0 mb-0">{{ selectedGame.title }}</p>
-                        <div class="flex column gap-2 mt-3">
-                            <Button 
-                                plain
-                                class="btn" 
-                                icon="pi pi-caret-right"
-                                :label="$t('selected-game.start-modded-button')"
-                                @click="startModded"
-                            />
-    
-                            <Button 
-                                plain outlined
-                                class="btn" 
-                                icon="pi pi-caret-right"
-                                :label="$t('selected-game.start-vanilla-button')"
-                                @click="startVanilla"
-                            />
-    
-                            <Button 
-                                plain outlined
-                                class="btn mt-4" 
-                                icon="pi pi-file-edit"
-                                :label="$t('selected-game.config-button')"
-                                @click="configEditorDialog.setVisible(true)"
-                            />
+                        <div class="flex column ml-3 no-drag">
+                            <p class="selected-game-title mt-0 mb-0">{{ selectedGame.title }}</p>
+                            <div class="flex column gap-2 mt-3">
+                                <Button 
+                                    plain
+                                    class="btn" 
+                                    icon="pi pi-caret-right"
+                                    :label="$t('selected-game.start-modded-button')"
+                                    @click="startModded"
+                                />
+        
+                                <Button 
+                                    plain outlined
+                                    class="btn" 
+                                    icon="pi pi-caret-right"
+                                    :label="$t('selected-game.start-vanilla-button')"
+                                    @click="startVanilla"
+                                />
+        
+                                <Button 
+                                    plain outlined
+                                    class="btn mt-4" 
+                                    icon="pi pi-file-edit"
+                                    :label="$t('selected-game.config-button')"
+                                    @click="configEditorDialog.setVisible(true)"
+                                />
+                            </div>
                         </div>
                     </div>
-                </div>
-            </template>
-        </Card>
+                </template>
+            </Card>
+
+            <ProfileManager/>
+        </div>
     
         <div class="flex mod-list-container">
             <!-- Show skeleton of mod list while loading -->
@@ -244,16 +259,18 @@ const installMod = async (fullName: string) => {
                 :value="mods" @page="onPageChange"
             >
                 <template #empty>
-                    <div v-if="hasSearchInput()">
-                        <p>{{ $t('selected-game.empty-results') }}.</p>
+                    <div v-if="hasSearchInput()" class="pl-2">
+                        <h2>{{ $t('selected-game.empty-results') }}.</h2>
 
                         <!-- Sadge -->
-                        <img class="pt-3" src="https://cdn.7tv.app/emote/603cac391cd55c0014d989be/2x.png">
+                        <img class="pt-3" src="https://cdn.7tv.app/emote/603cac391cd55c0014d989be/3x.png">
                     </div>
 
                     <!-- TODO: If failed, make this show regardless of search input. --> 
-                    <div v-else class="dataview-empty flex flex-column">
-                        <p>No mods available! Something probably went wrong.</p>
+                    <div v-else>
+                        <h2 style="padding-top: 15px; font-size: 22px; margin: 0 auto;">
+                            No mods available! Something probably went wrong.
+                        </h2>
                     </div>
                 </template>
         
@@ -263,16 +280,13 @@ const installMod = async (fullName: string) => {
                             <IconField iconPosition="left">
                                 <InputIcon class="pi pi-search"></InputIcon>
                                 <InputText type="text" :placeholder="$t('selected-game.search-mods')" 
-                                    v-model="searchInput" 
-                                    @input="onInputChanged"
+                                    v-model="searchInput" @input="onInputChange"
                                 />
                             </IconField>
                         </div>
 
                         <div class="ml-2 justify-self-end">
-                            <TabMenu class="header-tab-menu" :model="tabMenuItems">
-
-                            </TabMenu>
+                            <TabMenu :model="tabs" @tab-change="onTabChange"/>
                         </div>
 
                         <!-- <div class="flex row">
@@ -369,8 +383,14 @@ const installMod = async (fullName: string) => {
     flex-shrink: 0;
 }
 
+.selected-game-card-header {
+    font-size: 30px;
+    font-weight: 540;
+    user-select: none;
+}
+
 .selected-game-card :deep(.p-card-body) {
-    margin: 0px 30px 0px 30px;
+    margin: 0px 15px 0px 30px;
     padding: 0px;
 }
 
@@ -456,18 +476,6 @@ const installMod = async (fullName: string) => {
     scrollbar-width: none;
     height: calc(100vh - 150px);
     margin-bottom: 0.25rem;
-}
-
-.dataview-empty {
-    justify-content: center;
-    align-items: center;
-    display: flex;
-}
-
-.dataview-empty p {
-    padding-top: 15px;
-    font-size: 22px;
-    margin: 0 auto;
 }
 
 :deep(.p-dataview-layout-options .p-button) {

@@ -94,7 +94,7 @@ const getRelativeConfigPath = (absPath: string) => {
 
                     <div class="flex gap-2">
                         <Button outlined plain
-                            icon="pi pi-file-edit"
+                            icon="pi pi-pen-to-square"
                             style="font-size: 17px; width: 3rem;"
                             v-tooltip.top="'Open File'"
                             @click="openLink(`file://${path}`)"

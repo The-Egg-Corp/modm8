@@ -11,7 +11,11 @@
     "bepinex-setup": "BepInEx Setup"
   },
   "selected-game": {
-    "currently-selected": "Currently Selected",
+    "currently-selected": "Selected Game",
+    "profile-manager": {
+      "search-placeholder": "Search profiles",
+      "header": "Profile Manager"
+    },
     "start-modded-button": "Start Modded",
     "start-vanilla-button": "Start Vanilla",
     "search-mods": "Search mods",
@@ -73,7 +77,9 @@
     "favourites": "Favourites",
     "unfavourite": "Unfavourite",
     "install": "Install",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "import": "Import",
+    "export": "Export"
   },
   "languages": {
     "en": "English",

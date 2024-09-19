@@ -47,3 +47,7 @@ body::before {
 .center {
     justify-content: center;
 }
+
+.p-tooltip-arrow {
+    border-left-color: transparent !important;
+}

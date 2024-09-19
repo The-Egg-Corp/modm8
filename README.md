@@ -6,6 +6,8 @@ Built with [Wails](https://wails.io) for an Electron-like experience but without
 > [!WARNING]
 > This project is heavily **WIP** and as such, missing functionality or bugs will be commonplace until there is a stable release.
 > Once officially released, a proper FOSS license will be added. Meanwhile, there is no license, meaning all rights are reserved.
+>
+> **CURRENT STATUS:** Unusable
 
 ## Installation
 No installer or executable currently exists yet, please build from source instead.

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { game } from '@backend/models'
-import { computed, ref, Ref } from 'vue'
+import { computed } from 'vue'
 
 import Divider from 'primevue/divider'
 import { Nullable } from 'primevue/ts-helpers'
@@ -54,37 +54,55 @@ const asBool = (str: string) => {
 </script>
 
 <template>
-    <div class="flex column" style="max-height: calc(100vh - 180px);">
-        <div class="flex flex-column">
-            <h1 class="header mb-2">Config Editor</h1>
-            <h3 class="mt-0 mb-3">Currently editing: {{ fileName?.replace('.cfg', '') }}</h3>
-        </div>
+<div class="config-edit-layout">
+    <div class="flex flex-column">
+        <h1 class="header mb-2">Config Editor</h1>
+        <h3 class="mt-0 mb-3">Currently editing: {{ fileName?.replace('.cfg', '') }}</h3>
+    </div>
 
-        <div style="overflow-y: auto; scrollbar-width: none;">
-            <div v-for="(entries, section) in groupedEntries">
-                <Divider v-if="section != '__root'" align="center" type="solid" class="mb-0 mt-1">
-                    <h3 class="category-divider mb-0 mt-0" style="position: sticky">{{ section }}</h3>
-                </Divider>
-    
-                <!-- Loop through each entry in the section -->
-                <div v-for="(entry, key) in entries" :key="key">
-                    <div class="flex row pt-2 justify-content-between align-items-center">
-                        <div class="flex column">
-                            <p class="mt-0 mb-0" style="font-size: 18px; color: var(--primary-color)">{{ key }}</p>
-                            <div v-for="comment in getEntryDescription(entry.comments)"> 
-                                
-                            </div>
+    <div class="scroll-hidden">
+        <div v-for="(entries, section) in groupedEntries">
+            <Divider v-if="section != '__root'" align="center" type="solid" class="mb-0 mt-1">
+                <h3 class="category-divider mb-0 mt-0">{{ section }}</h3>
+            </Divider>
+
+            <!-- Loop through each entry in the section -->
+            <div v-for="(entry, key) in entries" :key="key">
+                <div class="flex row pt-2 justify-content-between align-items-center">
+                    <div class="flex column">
+                        <p class="entry-key mt-0 mb-0">{{ key }}</p>
+                        <div v-for="comment in getEntryDescription(entry.comments)"> 
+                            
                         </div>
-
-                        <InputSwitch v-if="isBool(entry.default_value)" v-model="entry.checked"></InputSwitch>
-                        <InputText v-else class="ml-3" style="font-size: 16.5px;" :value="entry.value"/>
                     </div>
+
+                    <InputSwitch v-if="isBool(entry.default_value)" v-model="entry.checked"/>
+                    <InputText v-else class="ml-3" style="font-size: 16.5px;" :value="entry.value"/>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </template>
 
 <style scoped>
+.config-edit-layout {
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 180px);
+}
 
+.scroll-hidden {
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+.entry-key {
+    font-size: 18px;
+    color: var(--primary-color);
+}
+
+.category-divider {
+    position: sticky;
+}
 </style>

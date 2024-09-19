@@ -65,4 +65,8 @@ onMounted(async () => {
 .no-drag-all-children > * {
     --wails-draggable: no-drag;
 }
+
+:global(.p-tooltip-arrow) {
+    border-left-color: transparent !important;
+}
 </style>

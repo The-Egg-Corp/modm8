@@ -49,7 +49,9 @@
     "favourites": "Preferiti",
     "unfavourite": "Sfavorito",
     "install": "Installare",
-    "cancel": "Cancellare"
+    "cancel": "Cancellare",
+    "import": "Importare",
+    "export": "Esportare"
   },
   "languages": {
     "en": "Inglese",
@@ -80,12 +82,16 @@
     "config-editor": {
       "title": "Editor di configurazione"
     },
-    "currently-selected": "Attualmente selezionato",
+    "currently-selected": "Gioco selezionato",
     "start-modded-button": "Inizia modificato",
     "start-vanilla-button": "Inizia con la vaniglia",
     "config-button": "Modifica configurazioni",
     "search-mods": "Cerca mod",
     "empty-results": "Nessuna mod corrisponde alla query di ricerca",
-    "loading-mod-list": "Caricamento elenco mod"
+    "loading-mod-list": "Caricamento elenco mod",
+    "profile-manager": {
+      "header": "Gestore del profilo",
+      "search-placeholder": "Cerca profili"
+    }
   }
 }

@@ -62,11 +62,20 @@ const getRelativeConfigPath = (absPath: string) => {
 
     return normalizedFile.substring(startIndex)
 }
+
+const dialogStyle = () => {
+    if (selectedConfig) return {
+        "margin-left": "10px",
+        "width": 'auto',
+        "min-width": '45rem',
+        "max-width": '50rem'
+    }
+}
 </script>
 
 <template>
-<CardOverlay 
-    class="no-drag"
+<CardOverlay class="no-drag"
+    :dialogStyle="dialogStyle()"
     v-model:visible="dialog.visible"
     v-model:closable="dialog.closable"
     v-model:draggable="dialog.draggable"
@@ -93,16 +102,16 @@ const getRelativeConfigPath = (absPath: string) => {
                     <p style="font-size: 18.5px; font-weight: 285; user-select: none;">{{ getRelativeConfigPath(path) }}</p>
 
                     <div class="flex gap-2">
-                        <Button outlined plain
-                            icon="pi pi-pen-to-square"
-                            style="font-size: 17px; width: 3rem;"
+                        <Button outlined plain 
+                            icon="pi pi-file-edit"
+                            style="width: 3rem; height: 2.6rem;"
                             v-tooltip.top="'Open File'"
                             @click="openLink(`file://${path}`)"
                         />
 
                         <Button plain
                             class="justify-content-center"
-                            style="font-size: 17px; width: 5rem; height: 2.5rem;"
+                            style="font-size: 18px; width: 6rem; height: 2.6rem;"
                             :label="t('selected-game.config-editor.edit-button')"
                             @click="editConfig(path)"
                         />

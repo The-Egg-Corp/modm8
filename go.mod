@@ -9,7 +9,7 @@ require (
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/spf13/viper v1.19.0
 	github.com/the-egg-corp/thundergo v0.7.2
-	github.com/wailsapp/wails/v2 v2.9.2
+	github.com/wailsapp/wails/v2 v2.9.1
 )
 
 require (

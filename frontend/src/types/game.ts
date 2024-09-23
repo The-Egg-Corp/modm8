@@ -1,6 +1,6 @@
 import { thunderstore } from "@backend/models.js"
 
-export interface BaseGame {
+export interface Game {
     steamID: number
     identifier: string
     title: string
@@ -13,6 +13,6 @@ export interface BaseGame {
     aliases?: string[]
 }
 
-export interface ThunderstoreGame extends BaseGame {
+export interface ThunderstoreGame extends Game {
     modCache?: thunderstore.StrippedPackage[]
 }

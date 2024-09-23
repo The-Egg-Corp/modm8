@@ -4,6 +4,8 @@ import { defineStore } from 'pinia'
 import { Save, SetFavouriteGames } from '@backend/app/Persistence'
 import { Ref, computed, ref } from 'vue'
 import { thunderstore } from '@backend/models.js'
+import { GetPersistence } from '@backend/app/Application.js'
+import { BepinexInstalled } from '@backend/game/GameManager.js'
 
 export interface GameState {
     selectedGame: ThunderstoreGame,
@@ -25,11 +27,10 @@ export const useGameStore = defineStore('GameStore', () => {
 
     const gamesAsArray = computed(() => [...games.value.values()] as ThunderstoreGame[])
 
-    const isGameInstalled = computed(() => (id: string) => _gameByID(id)?.installed || false)
-    const isFavouriteGame = computed(() => (id: string) => {
-        const game = _gameByID(id)
-        return game?.favourited || false
-    })
+    // TODO: Evaluate if these are even useful.
+    // const isBepinexSetup = computed(() => (id: string) => _gameByID(id)?.bepinexSetup || false)
+    // const isGameInstalled = computed(() => (id: string) => _gameByID(id)?.installed || false)
+    // const isFavouriteGame = computed(() => (id: string) => _gameByID(id)?.favourited || false)
 
     const favouriteGameIds = computed(() => gamesAsArray.value.reduce((acc: string[], game) => {
         if (game.favourited) acc.push(game.identifier)
@@ -60,6 +61,31 @@ export const useGameStore = defineStore('GameStore', () => {
         await SetFavouriteGames(favouriteGameIds.value)
         await Save()
     }
+
+    async function initGames(gameList: ThunderstoreGame[]) {
+        games.value = new Map<string, ThunderstoreGame>()
+        const persistence = await GetPersistence()
+
+        // Init game props.
+        for (const game of gameList) {
+            game.favourited = await persistence.favourite_games.includes(game.identifier)
+            game.installed = !!game.path // TODO: Check game executable exists. For now, assume installed if path specified.
+
+            if (game.path) {
+                game.bepinexSetup = await BepinexInstalled(game.path)
+            }
+
+            // Ensure modCache is kept between mounts.
+            const cachedGame = _gameByID(game.identifier)
+            if (cachedGame?.modCache) {
+                game.modCache = cachedGame.modCache
+            }
+
+            games.value.set(game.identifier, game)
+        }
+
+        return games.value.size
+    }
     //#endregion
 
     return {
@@ -67,11 +93,13 @@ export const useGameStore = defineStore('GameStore', () => {
         games,
         gamesAsArray,
         gameByID,
-        isGameInstalled,
-        isFavouriteGame,
+        // isBepinexSetup,
+        // isGameInstalled,
+        // isFavouriteGame,
         favouriteGameIds,
         setSelectedGame,
         toggleFavouriteGame,
-        updateModCache
+        updateModCache,
+        initGames
     }
 })

@@ -6,19 +6,17 @@ import DataViewLayoutOptions from 'primevue/dataviewlayoutoptions'
 import Skeleton from 'primevue/skeleton'
 
 // TODO: Replace with real external service.
-import { getGameList } from '../mocks/GameService'
+import { mockGameList } from '../mocks/GameService'
 
 import { 
     ThunderstoreGame, 
     Layout, OptionItem, 
-    ValueItem, ValueItemLabeled 
+    ValueItem, ValueItemLabeled,
 } from '@types'
 
 import { Nullable } from 'primevue/ts-helpers'
 
 import { t } from '@i18n'
-import { BepinexInstalled } from '@backend/game/GameManager'
-import { GetPersistence,  } from '@backend/app/Application'
 import { tooltipOpts, openLink } from "../../src/util"
 
 import { useGameStore } from '@stores'
@@ -27,17 +25,14 @@ import { storeToRefs } from 'pinia'
 import router from '../router'
 
 const store = useGameStore()
-const { 
-    games,
-    isGameInstalled, 
-    isFavouriteGame,
-    gamesAsArray
+const {
+    gamesAsArray,
 } = storeToRefs(store)
 
 const {
     toggleFavouriteGame,
     setSelectedGame,
-    gameByID
+    initGames
 } = store
 
 const loading = ref(true)
@@ -59,8 +54,6 @@ const filters: ComputedRef<ValueItemLabeled<string>[]> = computed(() => [{
     label: "FAVOURITES",
     value: t('keywords.favourites')
 }])
-
-
 
 const alphabetSort = (games: ThunderstoreGame[]) => {
     if ((searchInput.value?.length ?? 0) < 1) return games
@@ -134,29 +127,8 @@ const selectGame = (game: ThunderstoreGame) => {
 }
 
 onMounted(async () => {
-    loading.value = true
-
-    const persistence = await GetPersistence()
-    const gameList = getGameList()
-
-    for (const g of gameList) {
-        if (!!g.path) {
-            // TODO: Make sure the game executable exists (call backend)
-            g.installed = true
-            g.bepinexSetup = await BepinexInstalled(g.path)
-        }
-
-        // TODO: Set `g.favourited` using backend
-        g.favourited = persistence.favourite_games.includes(g.identifier)
-    }
-
-    games.value = new Map(gameList.map(g => {
-        // Make sure the cache persists through mounts
-        const modCache = gameByID(g.identifier)?.modCache
-        if (modCache) g.modCache = modCache
-
-        return [g.identifier, g]
-    }))
+    const size = await initGames(mockGameList)
+    console.info(`GameStore: Populated games map with ${size} items.`)
 
     loading.value = false
 })
@@ -167,7 +139,6 @@ onMounted(async () => {
         <h2 class="header no-select">{{ $t('game-selection.header') }}</h2>
 
         <div class="card game-container no-drag">
-
             <!-- While loading, show a skeleton of a grid. -->
             <DataView v-if="loading" data-key="game-selection-loading" layout="grid">
                 <template #empty>
@@ -286,8 +257,8 @@ onMounted(async () => {
                                         <div class="flex gap-2 justify-content-center align-items-baseline">
                                             <p class="m-0" style="font-size: 16.5px">{{ t('game-selection.bepinex-setup') }}</p>
                                             <i
-                                                :class="['pi', isGameInstalled(game.identifier) ? 'pi-check' : 'pi-times']" 
-                                                :style="{ color: isGameInstalled(game.identifier) ? 'lime' : 'red' }"
+                                                :class="['pi', game.bepinexSetup ? 'pi-check' : 'pi-times']" 
+                                                :style="{ color: game.bepinexSetup  ? 'lime' : 'red' }"
                                             />
                                         </div>
 
@@ -309,9 +280,9 @@ onMounted(async () => {
                                             
                                             <Button
                                                 outlined plain
-                                                v-tooltip.top="tooltipOpts(isFavouriteGame(game.identifier) ? t('keywords.unfavourite') : t('keywords.favourite'))"
-                                                :icon="isFavouriteGame(game.identifier) ? 'pi pi-heart-fill' : 'pi pi-heart'"
-                                                :style="isFavouriteGame(game.identifier) ? { color: 'var(--primary-color)' } : {}"
+                                                v-tooltip.top="tooltipOpts(game.favourited ? t('keywords.unfavourite') : t('keywords.favourite'))"
+                                                :icon="game.favourited ? 'pi pi-heart-fill' : 'pi pi-heart'"
+                                                :style="game.favourited ? { color: 'var(--primary-color)' } : {}"
                                                 @click="toggleFavouriteGame(game.identifier)"
                                             />
                                         </div>
@@ -336,8 +307,8 @@ onMounted(async () => {
                                         <div class="flex gap-2 justify-content-center align-items-baseline">
                                             <p class="m-0" style="font-size: 16.5px">{{ t('game-selection.bepinex-setup') }}</p>
                                             <i
-                                                :class="['pi', isGameInstalled(game.identifier) ? 'pi-check' : 'pi-times']" 
-                                                :style="{ color: isGameInstalled(game.identifier) ? 'lime' : 'red' }"
+                                                :class="['pi', game.installed ? 'pi-check' : 'pi-times']" 
+                                                :style="{ color: game.installed ? 'lime' : 'red' }"
                                             />
                                         </div>
                                     </div>
@@ -354,8 +325,8 @@ onMounted(async () => {
 
                                             <Button
                                                 outlined plain
-                                                :icon="isFavouriteGame(game.identifier) ? 'pi pi-heart-fill' : 'pi pi-heart'"
-                                                :style="isFavouriteGame(game.identifier) ? { color: 'var(--primary-color)' } : {}"
+                                                :icon="game.favourited ? 'pi pi-heart-fill' : 'pi pi-heart'"
+                                                :style="game.favourited ? { color: 'var(--primary-color)' } : {}"
                                                 @click="toggleFavouriteGame(game.identifier)"
                                             />
 

@@ -1,7 +1,6 @@
 import { ThunderstoreGame } from "@types"
 
-// TODO: Replace with a call to a real service.
-export const getGameList = (): ThunderstoreGame[] => [{
+export const mockGameList: ThunderstoreGame[] = [{
   title: "Lethal Company",
   identifier: 'lethal-company',
   image: "LethalCompany.png",
@@ -14,7 +13,7 @@ export const getGameList = (): ThunderstoreGame[] => [{
   image: "RiskOfRain2.jpg",
   path: "H:\\Program Files (x86)\\Steam\\steamapps\\common\\Risk of Rain 2",
   aliases: ["ror2"],
-  steamID: 248820
+  steamID: 248820,
 }, {
   title: "Content Warning",
   identifier: 'content-warning',

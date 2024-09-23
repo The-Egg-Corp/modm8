@@ -193,25 +193,19 @@ const installMod = async (fullName: string) => {
                         <div class="flex column ml-3 no-drag">
                             <p class="selected-game-title mt-0 mb-0">{{ selectedGame.title }}</p>
                             <div class="flex column gap-2 mt-3">
-                                <Button 
-                                    plain
-                                    class="btn" 
+                                <Button plain class="btn" 
                                     icon="pi pi-caret-right"
                                     :label="$t('selected-game.start-modded-button')"
                                     @click="startModded"
                                 />
         
-                                <Button 
-                                    plain outlined
-                                    class="btn" 
+                                <Button plain class="btn" severity="secondary"
                                     icon="pi pi-caret-right"
                                     :label="$t('selected-game.start-vanilla-button')"
                                     @click="startVanilla"
                                 />
         
-                                <Button 
-                                    plain outlined
-                                    class="btn mt-4" 
+                                <Button plain class="btn mt-4"
                                     icon="pi pi-file-edit"
                                     :label="$t('selected-game.config-button')"
                                     @click="configEditorDialog.setVisible(true)"

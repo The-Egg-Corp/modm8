@@ -1,10 +1,13 @@
-name: Crossplatform Build Workflow
+name: Crossplatform Build
 
 # on:
 #   push:
 #     tags:
 #       - '*'
-on: [push, pull_request]
+on: 
+  push:
+    tags:
+      - "v*.*.*"
 
 env:
   # Necessary for most environments as build failure can occur due to OOM issues.

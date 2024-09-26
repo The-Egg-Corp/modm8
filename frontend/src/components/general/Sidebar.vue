@@ -56,7 +56,6 @@ const ModDevTools = () => router.push('/mod-dev-tools')
         <div class="bottom flex column">
             <Button plain outlined
                 class="btn margin-lr no-drag"
-                style="border: none;"
                 icon="pi pi-info-circle"
                 @click="appInfo.setVisible()"
             />
@@ -84,8 +83,6 @@ const ModDevTools = () => router.push('/mod-dev-tools')
     width: 80px;
     border-right: rgba(231, 231, 231, 0.885) 1px outset;
     background-color: rgb(28, 29, 33);
-    padding-left: 15px;
-    padding-right: 15px;
 }
 
 .sidebar img {
@@ -108,6 +105,11 @@ const ModDevTools = () => router.push('/mod-dev-tools')
 .btn {
     position: relative;
     border-radius: 3px;
+}
+
+.btn-no-outline {
+    position: relative;
+    border: none;
 }
 
 /*.plain-btn {

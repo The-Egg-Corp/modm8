@@ -1,13 +1,17 @@
 name: Crossplatform Build
-
-# on:
-#   push:
-#     tags:
-#       - '*'
 on: 
-  push:
-    tags:
-      - "v*.*.*"
+  # Require workflow to be manually triggered.
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: "Log level"
+        required: true
+        default: "warning"
+        type: choice
+        options: 
+          - info
+          - warning
+          - debug
 
 env:
   # Necessary for most environments as build failure can occur due to OOM issues.
@@ -16,7 +20,6 @@ env:
 jobs:
   build:
     strategy:
-      # Failure in one platform build won't impact the others
       fail-fast: false
       matrix:
         build:
@@ -27,7 +30,7 @@ jobs:
           - name: 'Linux'
             platform:  'linux/amd64'
             os: 'ubuntu-latest'
-            
+          
           - name: 'MacOS'
             platform:  'darwin/universal'
             os: 'macos-latest'

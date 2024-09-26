@@ -19,13 +19,14 @@
     "types": ["node"],
     "baseUrl": ".",
     "paths": {
+      "@frontend/*": ["./*"],
+      "@backend/*": ["./wailsjs/go/*"],
       "@assets": ["./src/assets", "./src/assets/*"],
       "@components": ["./src/components"],
       "@composables": ["./src/composables", "./src/composables/*"],
       "@stores": ["./src/stores"],
       "@types": ["./src/types"],
       "@i18n": ["./src/i18n"],
-      "@backend/*": ["./wailsjs/go/*"],
       "@runtime": ["./wailsjs/runtime/runtime", "./wailsjs/runtime/runtime/*"],
       "rollup/parseAst": ["./node_modules/rollup/dist/parseAst"]
     }

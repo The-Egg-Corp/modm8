@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { version } from "@frontend/package.json"
+
 import { CardOverlay } from "@components"
 import { useDialog } from "@composables"
 
@@ -19,9 +21,7 @@ const {
         <template #cardContent>
             <div class="flex column align-items-center">
                 <h1 class="header">App Info</h1>
-                <p style="font-weight: 305; margin-bottom: 10px; margin-top: 5px;">
-                    v0.0.1
-                </p>
+                <p style="font-weight: 305; margin-bottom: 10px; margin-top: 5px;">{{ version }}</p>
 
                 <Button plain outlined severity="help" class="flex w-2" icon="pi pi-heart" label="Donate">
                 </Button>

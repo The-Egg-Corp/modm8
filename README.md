@@ -59,12 +59,11 @@ No installer or executable currently exists yet, please build from source instea
 
 ## Contributing
 Pull requests and issues are very much welcome and are essential to keeping this project working and evolving!\
-All I ask is you follow some simple guidelines to maintain a healthy, productive environment.
+All I ask is you follow a few simple guidelines to maintain a respectful and productive environment.
 
 - Please be polite and keep critisicm toward the project and other contributors constructive.
 - Provide as much detail as possible so the issue or idea can be easily understood.
 - Bumping/rushing an issue does not help and only creates unnecessary notifications, please be patient.
-- Promptly address any CI failures, a maintainer is not obliged to do this for you.
 
 A lot of time and effort has been put into this project as a single person.\
 If you find it useful or like where it's headed, please consider sponsoring it. 💛

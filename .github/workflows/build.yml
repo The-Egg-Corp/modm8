@@ -16,19 +16,19 @@ env:
 jobs:
   build:
     strategy:
-    # Failure in one platform build won't impact the others
+      # Failure in one platform build won't impact the others
       fail-fast: false
       matrix:
         build:
-          - name: 'modm8'
+          - name: 'Windows'
             platform:  'windows/amd64'
             os: 'windows-latest'
 
-          - name: 'modm8'
+          - name: 'Linux'
             platform:  'linux/amd64'
             os: 'ubuntu-latest'
             
-          - name: 'modm8'
+          - name: 'MacOS'
             platform:  'darwin/universal'
             os: 'macos-latest'
 

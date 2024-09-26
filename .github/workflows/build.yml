@@ -36,7 +36,7 @@ jobs:
           submodules: recursive
 
       - name: Wails Build
-        uses: The-Egg-Corp/wails-build-action@v1
+        uses: The-Egg-Corp/wails-build-action@v1.1
         id: build
         with:
           build-name: ${{ matrix.build.name }}
@@ -45,4 +45,4 @@ jobs:
           node-version: 20
           use-bun: true
           nsis: true
-          package: true
+          package: false

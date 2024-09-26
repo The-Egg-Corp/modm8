@@ -92,7 +92,7 @@ func main() {
 		SingleInstanceLock: &options.SingleInstanceLock{
 			UniqueId: "7465fe36-08e3-478b-853b-0f8676f724b7",
 		},
-		//Mac:      NewMacOptions(),
+		Mac:      NewMacOptions(),
 		Linux:    NewLinuxOptions(),
 		Windows:  NewWindowsOptions(modm8.Settings.Performance.GPUAcceleration),
 		LogLevel: logger.INFO,

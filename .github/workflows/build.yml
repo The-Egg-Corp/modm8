@@ -23,15 +23,15 @@ jobs:
       fail-fast: false
       matrix:
         build:
-          - name: 'Windows'
+          - name: 'modm8'
             platform:  'windows/amd64'
             os: 'windows-latest'
 
-          - name: 'Linux'
+          - name: 'modm8'
             platform:  'linux/amd64'
             os: 'ubuntu-latest'
           
-          - name: 'MacOS'
+          - name: 'modm8'
             platform:  'darwin/universal'
             os: 'macos-latest'
 

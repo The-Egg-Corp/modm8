@@ -29,3 +29,5 @@ frontend/dist/
 frontend/wailsjs/
 frontend/src/archive
 frontend/src/assets/themes
+
+README-release.md

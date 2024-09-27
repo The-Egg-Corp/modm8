@@ -1,17 +1,14 @@
 name: Crossplatform Build
 on: 
-  # Require workflow to be manually triggered.
+  # Allows workflow to be manually triggered.
   workflow_dispatch:
     inputs:
       logLevel:
         description: "Log level"
         required: true
-        default: "warning"
         type: choice
-        options: 
-          - info
-          - warning
-          - debug
+        options: [info, warning, debug]
+        default: "warning"
 
 env:
   # Necessary for most environments as build failure can occur due to OOM issues.
@@ -23,9 +20,9 @@ jobs:
       fail-fast: false
       matrix:
         build: [
-          { name: 'modm8', platform: 'linux/amd64', os: 'ubuntu-latest' },
-          { name: 'modm8', platform: 'windows/amd64', os: 'windows-latest' },
-          { name: 'modm8', platform: 'darwin/universal', os: 'macos-latest' }
+          { name: "modm8", platform: "linux/amd64", os: "ubuntu-latest" },
+          { name: "modm8", platform: "windows/amd64", os: "windows-latest" },
+          { name: "modm8", platform: "darwin/universal", os: "macos-latest" }
         ]
 
     runs-on: ${{ matrix.build.os }}
@@ -45,4 +42,4 @@ jobs:
           node-version: 20
           use-bun: true
           nsis: true
-          package: false
+          package: true

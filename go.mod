@@ -9,11 +9,11 @@ require (
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/spf13/viper v1.19.0
 	github.com/the-egg-corp/thundergo v0.7.2
-	github.com/wailsapp/wails/v2 v2.9.1
+	github.com/wailsapp/wails/v2 v2.9.2
 )
 
 require (
-	github.com/klauspost/compress v1.17.9 // indirect
+	github.com/klauspost/compress v1.17.10 // indirect
 	github.com/saracen/fastzip v0.1.11
 	github.com/saracen/zipextra v0.0.0-20220303013732-0187cb0159ea // indirect
 )

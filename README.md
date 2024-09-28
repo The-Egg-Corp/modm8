@@ -8,15 +8,6 @@ Built with [Wails](https://wails.io) for an Electron-like experience but without
 >
 > **CURRENT STATUS:** Unusable
 
-## Installation
-No installer or executable currently exists yet, please build from source instead.
-
-1. Clone this repository.
-2. Install [Go](https://go.dev/doc/install), [Bun](https://bun.sh) and [Wails](https://wails.io/docs/gettingstarted/installation).
-3. Run one of the following commands:
-   - `wails build` - Generates an executable in **/build/bin**.
-   - `wails dev` - Opens a preview of the app with DevTools enabled.
-
 ## Features
 - Multiple themes + dark mode by default.
 - Go as the backend for concurrency and responsiveness.
@@ -57,6 +48,16 @@ No installer or executable currently exists yet, please build from source instea
   <img src="./screenshots/settings.png"/>
 </details>
 
+## Installing
+While there are currently no official releases, you can dev builds under the latest [Crossplatform Build](https://github.com/The-Egg-Corp/modm8/actions/workflows/build.yml) action.
+
+## Building from source
+1. Clone this repository.
+2. Install [Go](https://go.dev/doc/install), [Bun](https://bun.sh) and [Wails](https://wails.io/docs/gettingstarted/installation).
+3. Run one of the following commands:
+   - `wails build` - Generates an executable in **/build/bin**.
+   - `wails dev` - Opens a preview of the app with DevTools enabled.
+
 ## Contributing
 Pull requests and issues are very much welcome and are essential to keeping this project working and evolving!\
 All I ask is you follow a few simple guidelines to maintain a respectful and productive environment.
@@ -65,8 +66,7 @@ All I ask is you follow a few simple guidelines to maintain a respectful and pro
 - Provide as much detail as possible so the issue or idea can be easily understood.
 - Bumping/rushing an issue does not help and only creates unnecessary notifications, please be patient.
 
-A lot of time and effort has been put into this project as a single person.\
-If you find it useful or like where it's headed, please consider sponsoring it. 💛
+To get started, see the **Building from source** section above.
 
 ## Contact
 Feel free to join the [discord](https://discord.gg/psBXpXF2JZ) to contact me! Here you will get to:

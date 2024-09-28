@@ -9,10 +9,12 @@ import {
     ValidateReadme
 } from '@backend/thunderstore/Tools'
 
+import { experimental } from '@frontend/wailsjs/go/models'
+
 import { TSPackageManifest, TSPackageFile } from '@types'
 
 // Validates each required file for uploading a Thunderstore mod.
-function ValidateFiles(icon: TSPackageFile, readme: TSPackageFile, manifest: TSPackageManifest) {
+function ValidateFiles(icon: experimental.IconValidatorParams, readme: TSPackageFile, manifest: TSPackageManifest) {
     ValidateIcon(icon)
     ValidateReadme(readme.data)
 

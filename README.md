@@ -49,7 +49,7 @@ Built with [Wails](https://wails.io) for an Electron-like experience but without
 </details>
 
 ## Installing
-While there are currently no official releases, you can dev builds under the latest [Crossplatform Build](https://github.com/The-Egg-Corp/modm8/actions/workflows/build.yml) action.
+There are currently no official releases. You can download dev builds under the latest [Crossplatform Build](https://github.com/The-Egg-Corp/modm8/actions/workflows/build.yml) action.
 
 ## Building from source
 1. Clone this repository.

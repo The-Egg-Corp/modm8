@@ -68,7 +68,7 @@ func main() {
 
 	modm8.Settings.Apply()
 
-	nexusAPI := nexus.NewAPI()
+	nexusAPI := nexus.NewAPI(modm8.Ctx)
 	tsAPI := thunderstore.NewAPI(modm8.Ctx)
 	tsTools := thunderstore.NewTools()
 

@@ -30,4 +30,6 @@ frontend/wailsjs/
 frontend/src/archive
 frontend/src/assets/themes
 
+# Temporary
 README-release.md
+upload-artifacts.yml

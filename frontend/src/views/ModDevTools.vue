@@ -1,5 +1,10 @@
 <script lang="ts" setup>
+import { ref } from "vue"
+
 //import FileUpload from 'primevue/fileupload'
+
+import { TSPackageManifest, TSPackageFile } from '@types'
+import { experimental } from '@frontend/wailsjs/go/models'
 
 // TODO: Finish implementing pack/unpack functionality
 import { 
@@ -9,10 +14,6 @@ import {
     ValidateReadme
 } from '@backend/thunderstore/Tools'
 
-import { experimental } from '@frontend/wailsjs/go/models'
-
-import { TSPackageManifest, TSPackageFile } from '@types'
-
 // Validates each required file for uploading a Thunderstore mod.
 function ValidateFiles(icon: experimental.IconValidatorParams, readme: TSPackageFile, manifest: TSPackageManifest) {
     ValidateIcon(icon)
@@ -21,8 +22,6 @@ function ValidateFiles(icon: experimental.IconValidatorParams, readme: TSPackage
     if (!manifest.author) return
     ValidateManifest(manifest.author, manifest.data)
 }
-
-import { ref } from "vue"
 
 const items = ref([{ 
     label: 'Your Packages', 
@@ -38,18 +37,19 @@ const items = ref([{
         <DataView dataKey="dev-package-list"></DataView>
     </div>
     
-<!-- <div class="card no-drag">
+<div class="card no-drag">
     <FileUpload
         name="demo[]"
         accept=".zip"
         :multiple="false"
         :maxFileSize="1000000"
         :showUploadButton="false"
-        @select="UnpackZip()"
+        @select=""
     >
         <template #content>
-            <div class="pi pi-upload"></div>
+            <div class="pi pi-upload">
 
+            </div>
         </template>
 
         <template #empty>
@@ -57,7 +57,7 @@ const items = ref([{
         </template>
 
     </FileUpload>
-</div> -->
+</div>
 </template>
 
 <style scoped>

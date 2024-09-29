@@ -20,7 +20,7 @@ body::before {
     right: 0;
     bottom: 0;
     left: 0;
-    background-color: rgba(14, 14, 17, 0.98);
+    background-color: rgb(12, 12, 14);
     z-index: -1;
 }
 

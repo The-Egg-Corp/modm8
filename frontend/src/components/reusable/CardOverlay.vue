@@ -1,7 +1,4 @@
 <script lang="ts" setup>
-import Dialog from 'primevue/dialog'
-import Card from 'primevue/card'
-
 interface Props {
     dialogStyle?: any
     cardStyle?: any

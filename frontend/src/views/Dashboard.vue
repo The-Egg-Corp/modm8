@@ -1,10 +1,13 @@
 <script lang="ts" setup>
+import { GetUserPackages } from '@backend/thunderstore/API'
+
+import TabView from 'primevue/tabview'
+import TabPanel from 'primevue/tabpanel'
+
 import { reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
-
-import { GetUserPackages } from '@backend/thunderstore/API'
 
 interface PackageInfo {
     name: string

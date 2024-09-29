@@ -39,6 +39,8 @@ const loading = ref(true)
 const searchInput: Ref<Nullable<string>> = ref(null)
 const layout: Ref<Layout> = ref('grid')
 
+const scrollableList = ref<HTMLElement | null>(null)
+
 const selectedFilter: Ref<ValueItemLabeled<string>> = ref({
     label: "ALL",
     value: t('keywords.all')
@@ -127,6 +129,11 @@ const selectGame = (game: ThunderstoreGame) => {
 }
 
 onMounted(async () => {
+    // scrollableList.value?.addEventListener('wheel', e => {
+    //     e.preventDefault()
+    //     scrollableList.value?.scrollBy(0, Math.sign(e.deltaY) * 160)
+    // })
+
     const size = await initGames(mockGameList)
     console.info(`GameStore: Populated games map with ${size} items.`)
 
@@ -239,9 +246,9 @@ onMounted(async () => {
 
                 <!-- Grid layout -->
                 <template #grid>
-                    <div class="scrollable grid grid-nogutter">
+                    <div class="scrollable-grid grid grid-nogutter">
                         <div v-for="(game, index) in getGames()" :key="index" class="grid-item col-6 sm:col-5 md:col-4 lg:col-3 xl:col-2">
-                            <div class="flex flex-column p-3 border-1 surface-border border-round">
+                            <div class="flex flex-column border-1 p-3 surface-border border-round">
                                 <div class="flex flex-column align-items-center interact-section pb-3">
                                     <div class="game-grid-title">{{ game.title }}</div>
                                 </div>
@@ -252,19 +259,18 @@ onMounted(async () => {
                                     </div>
                                 </div>
 
-                                <div class="flex flex-column align-items-center interact-section pt-2">
-                                    <div class="flex flex-column gap-3">
-                                        <div class="flex gap-2 justify-content-center align-items-baseline">
-                                            <p class="m-0" style="font-size: 16.5px">{{ t('game-selection.bepinex-setup') }}</p>
+                                <div class="flex flex-column interact-section">
+                                    <div class="flex flex-column">
+                                        <div class="flex gap-2 justify-content-center align-items-baseline mt-2 mb-3">
+                                            <p class="m-0" style="font-size: 16px">{{ t('game-selection.bepinex-setup') }}</p>
                                             <i
                                                 :class="['pi', game.bepinexSetup ? 'pi-check' : 'pi-times']" 
                                                 :style="{ color: game.bepinexSetup  ? 'lime' : 'red' }"
                                             />
                                         </div>
 
-                                        <div class="flex flex-row gap-2">
-                                            <Button
-                                                outlined plain 
+                                        <div class="flex flex-row gap-1">
+                                            <Button severity="primary"
                                                 class="grid-select-game-btn"
                                                 :label="$t('game-selection.select-button')" 
                                                 @click="selectGame(game)"
@@ -295,8 +301,8 @@ onMounted(async () => {
 
                 <!-- List layout -->
                 <template #list>
-                    <div class="scrollable list list-nogutter">
-                        <div v-for="(game, index) in getGames()" :key="index" class="col-12">
+                    <div ref="scrollableList" class="scrollable-list list list-nogutter">
+                        <div v-for="(game, index) in getGames()" :key="index" class="snap-top col-12">
                             <div class="flex flex-column sm:flex-row sm:align-items-center p-2 gap-5" :class="{ 'border-top-1 surface-border': index !== 0 }">
                                 <img class="game-list-thumbnail fadeinleft fadeinleft-thumbnail block xl:block mx-auto w-full" :src="getThumbnail(game)"/>
 
@@ -368,10 +374,22 @@ onMounted(async () => {
     margin-right: 50px;
 }
 
-.scrollable {
+.snap-top {
+    height: 160px;
+    scroll-snap-align: start; /* Align each item perfectly when scrolling */
+}
+
+.scrollable-list {
+    max-height: calc(160px * 5);
+    overflow-y: scroll; /* Enable vertical scrolling */
+    scroll-snap-type: y mandatory; /* Ensure smooth snap to items */
+    scrollbar-width: none;
+}
+
+.scrollable-grid {
     overflow-y: scroll;
     scrollbar-width: none;
-    height: calc(100vh - 155px); /* 100vh alone causes issues */
+    height: calc(100vh - 150px); /* 100vh alone causes issues */
 }
 
 .grid-item {
@@ -383,7 +401,7 @@ onMounted(async () => {
 
 .game-list-thumbnail {
     user-select: none;
-    max-width: 115px;
+    max-width: 105px;
     min-width: 35px;
     opacity: 0;
     border-radius: 3px;
@@ -391,7 +409,7 @@ onMounted(async () => {
 
 .game-grid-thumbnail {
     user-select: none;
-    width: 185px;
+    width: 180px;
     border-radius: 3px;
 }
 
@@ -401,8 +419,9 @@ onMounted(async () => {
 }
 
 .game-grid-title {
-    font-size: 23px;
-    font-weight: 400;
+    font-size: 24px;
+    font-weight: 350;
+    text-shadow: 0px 0px 12px rgba(255, 255, 255, 0.35);
 }
 
 .grid-select-game-btn {

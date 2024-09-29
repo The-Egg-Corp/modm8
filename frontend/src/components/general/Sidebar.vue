@@ -20,14 +20,14 @@ const ModDevTools = () => router.push('/mod-dev-tools')
     <div class="flex column h-full">
         <div class="top flex column">
             <Button 
-                plain outlined 
+                plain severity="secondary"
                 class="btn margin-lr no-drag" icon="pi pi-home" 
                 v-tooltip="tooltipOpts(t('tooltips.sidebar.dashboard'))"
                 @click="Dashboard"
             />
 
             <Button 
-                plain outlined 
+                plain severity="secondary"
                 class="btn margin-lr no-drag" 
                 v-tooltip="tooltipOpts(t('tooltips.sidebar.game-selection'))"
                 @click="GameSelection"
@@ -42,7 +42,7 @@ const ModDevTools = () => router.push('/mod-dev-tools')
 
         <div class="top flex column">
             <Button 
-                plain outlined 
+                plain severity="secondary"
                 class="btn margin-lr no-drag" icon="pi pi-wrench"
                 v-tooltip="tooltipOpts(t('tooltips.sidebar.mod-dev-tools'))"
                 @click="ModDevTools"
@@ -54,15 +54,15 @@ const ModDevTools = () => router.push('/mod-dev-tools')
         <div class="spacer"></div>
  
         <div class="bottom flex column">
-            <Button plain outlined
-                class="btn margin-lr no-drag"
+            <Button outlined
+                class="btn-no-outline margin-lr no-drag"
                 icon="pi pi-info-circle"
                 @click="appInfo.setVisible()"
             />
 
             <!-- <Button text class="btn margin-lr no-drag" :icon="themeMode === 'dark' ? 'pi pi-sun' : 'pi pi-moon'" @click="ToggleThemeMode"/> -->
-            <Button 
-                plain outlined 
+            <Button
+                plain severity="secondary"
                 class="btn margin-lr spin-hover no-drag" icon="pi pi-cog" 
                 v-tooltip="tooltipOpts(t('keywords.settings'))"
                 @click="settings.setVisible()"
@@ -83,15 +83,23 @@ const ModDevTools = () => router.push('/mod-dev-tools')
     width: 80px;
     border-right: rgba(231, 231, 231, 0.885) 1px outset;
     background-color: rgb(28, 29, 33);
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.btn {
+    position: relative;
+    border-radius: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
 }
 
 .sidebar img {
-    margin: 15px 0px 15px 0px;
+    margin: 15px 0px 20px 0px;
 }
 
 .icon {
-    width: 41px;
-    height: 47.5px;
+    width: 55px;
+    height: 64px;
 }
 
 .top .p-button {
@@ -105,10 +113,12 @@ const ModDevTools = () => router.push('/mod-dev-tools')
 .btn {
     position: relative;
     border-radius: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
 }
 
 .btn-no-outline {
     position: relative;
+    border-radius: 3px;
     border: none;
 }
 
@@ -118,6 +128,23 @@ const ModDevTools = () => router.push('/mod-dev-tools')
     border: solid rgba(139, 139, 139, 0.712) 1px;
     border-radius: 3px;
 }*/
+
+.sidebar img {
+    margin: 15px 0px 20px 0px;
+}
+
+.icon {
+    width: 55px;
+    height: 64px;
+}
+
+.top .p-button {
+    margin-bottom: 10px;
+}
+
+.bottom .p-button {
+    margin-top: 10px;
+}
 
 .spacer {
     flex: 1;

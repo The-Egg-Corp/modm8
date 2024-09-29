@@ -405,7 +405,7 @@ const installMod = async (fullName: string) => {
 .selected-game-thumbnail-background {
     position: absolute;
     z-index: -1;
-    filter: blur(7px);
+    filter: blur(6px);
     width: 100%;
     height: 100%;
 }
@@ -413,7 +413,7 @@ const installMod = async (fullName: string) => {
 .selected-game-title {
     font-size: 25px;
     font-weight: 330;
-    text-shadow: 0px 0px 10px white;
+    text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.45);
 }
 
 .btn {

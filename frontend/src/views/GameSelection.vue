@@ -247,7 +247,7 @@ onMounted(async () => {
                 <!-- Grid layout -->
                 <template #grid>
                     <div class="scrollable-grid grid grid-nogutter">
-                        <div v-for="(game, index) in getGames()" :key="index" class="grid-item col-6 sm:col-5 md:col-4 lg:col-3 xl:col-2">
+                        <div v-for="(game, index) in getGames()" :key="index" class="grid-item col-2 sm:col-5 md:col-4 lg:col-3 xl:col-2">
                             <div class="flex flex-column border-1 p-3 surface-border border-round">
                                 <div class="flex flex-column align-items-center interact-section pb-3">
                                     <div class="game-grid-title">{{ game.title }}</div>
@@ -261,19 +261,21 @@ onMounted(async () => {
 
                                 <div class="flex flex-column interact-section">
                                     <div class="flex flex-column">
-                                        <div class="flex gap-2 justify-content-center align-items-baseline mt-2 mb-3">
+                                        <!-- <div class="flex gap-2 justify-content-center align-items-baseline mt-2 mb-3">
                                             <p class="m-0" style="font-size: 16px">{{ t('game-selection.bepinex-setup') }}</p>
                                             <i
                                                 :class="['pi', game.bepinexSetup ? 'pi-check' : 'pi-times']" 
                                                 :style="{ color: game.bepinexSetup  ? 'lime' : 'red' }"
                                             />
-                                        </div>
+                                        </div> -->
 
-                                        <div class="flex flex-row gap-1">
-                                            <Button severity="primary"
-                                                class="grid-select-game-btn"
-                                                :label="$t('game-selection.select-button')" 
-                                                @click="selectGame(game)"
+                                        <div class="flex gap-2 justify-content-center pt-2 pb-2">                                    
+                                            <Button
+                                                outlined plain
+                                                v-tooltip.top="tooltipOpts(game.favourited ? t('keywords.unfavourite') : t('keywords.favourite'))"
+                                                :icon="game.favourited ? 'pi pi-heart-fill' : 'pi pi-heart'"
+                                                :style="game.favourited ? { color: 'var(--primary-color)' } : {}"
+                                                @click="toggleFavouriteGame(game.identifier)"
                                             />
 
                                             <Button
@@ -283,14 +285,17 @@ onMounted(async () => {
                                                 v-tooltip.top="tooltipOpts(t('tooltips.game-selection.open-folder-location'))"
                                                 @click="openLink(`file://${game.path}`)"
                                             />
-                                            
-                                            <Button
-                                                outlined plain
-                                                v-tooltip.top="tooltipOpts(game.favourited ? t('keywords.unfavourite') : t('keywords.favourite'))"
-                                                :icon="game.favourited ? 'pi pi-heart-fill' : 'pi pi-heart'"
-                                                :style="game.favourited ? { color: 'var(--primary-color)' } : {}"
-                                                @click="toggleFavouriteGame(game.identifier)"
+                                        </div>
+
+                                        <div class="flex flex-row gap-3">
+                                            <Button severity="primary"
+                                                class="grid-select-game-btn"
+                                                :label="$t('game-selection.select-button')" 
+                                                @click="selectGame(game)"
                                             />
+
+
+
                                         </div>
                                     </div>
                                 </div>
@@ -320,7 +325,7 @@ onMounted(async () => {
                                     </div>
 
                                     <div class="flex flex-column md:align-items-end gap-5">
-                                        <div class="flex flex-row md:flex-row gap-3">
+                                        <div class="flex flex-row md:flex-row gap-2">
                                             <Button
                                                 outlined plain
                                                 icon="pi pi-folder"
@@ -337,7 +342,6 @@ onMounted(async () => {
                                             />
 
                                             <Button
-                                                outlined plain
                                                 :label="$t('game-selection.select-button')"
                                                 class="list-select-game-btn flex-auto md:flex-initial"
                                                 @click="setSelectedGame(game)"

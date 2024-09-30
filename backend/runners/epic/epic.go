@@ -6,11 +6,12 @@ import (
 	gocmd "github.com/go-cmd/cmd"
 )
 
+const launchCmd = "com.epicgames.launcher://apps/%s?action=launch&silent=true"
+
 type EpicRunner struct {
 }
 
 func NewRunner() *EpicRunner {
-
 	return &EpicRunner{}
 }
 
@@ -19,8 +20,7 @@ func (runner *EpicRunner) LaunchGame(id string) (*gocmd.Cmd, error) {
 }
 
 func LaunchGame(id string) (*gocmd.Cmd, error) {
-	uri := fmt.Sprintf("com.epicgames.launcher://apps/%s?action=launch&silent=true", id)
-	cmd := GetPlatformCommand(uri)
+	cmd := GetPlatformCommand(fmt.Sprintf(launchCmd, id))
 
 	// TODO: Check if EGS supports launch args and implement them here.
 

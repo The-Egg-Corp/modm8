@@ -14,6 +14,7 @@
     "currently-selected": "Selected Game",
     "profile-manager": {
       "search-placeholder": "Search profiles",
+      "new-profile": "New profile",
       "header": "Profile Manager"
     },
     "start-modded-button": "Start Modded",

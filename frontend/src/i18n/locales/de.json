@@ -91,7 +91,8 @@
     "loading-mod-list": "Mod-Liste wird geladen",
     "profile-manager": {
       "header": "Profilmanager",
-      "search-placeholder": "Suchprofile"
+      "search-placeholder": "Suchprofile",
+      "new-profile": "Neues Profil"
     }
   }
 }

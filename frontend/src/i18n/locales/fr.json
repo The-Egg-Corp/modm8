@@ -91,7 +91,8 @@
     "loading-mod-list": "Chargement de la liste des mods",
     "profile-manager": {
       "header": "Gestionnaire de profil",
-      "search-placeholder": "Rechercher des profils"
+      "search-placeholder": "Rechercher des profils",
+      "new-profile": "Nouveau profil"
     }
   }
 }

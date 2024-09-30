@@ -4,6 +4,7 @@ import DataView from 'primevue/dataview'
 
 import { Ref, ref } from 'vue'
 import { t } from '@i18n'
+import { tooltipOpts } from '@frontend/src/util'
 
 interface Profile {
     name: string
@@ -28,14 +29,34 @@ const profiles: Ref<Profile[]> = ref([
 
 <template>
 <div class="profile-manager">
-    <p class="header mt-4 mb-3">{{ t('selected-game.profile-manager.header') }}</p>
+    <p class="header mt-4 mb-1">{{ t('selected-game.profile-manager.header') }}</p>
     
-    <DataView data-key="profile-manager-list" layout="list">
+    <DataView class="profile-manager-list" data-key="profile-manager-list" layout="list">
         <template #header>
-            <div class="flex row justify-content-betwen">
-                <Button icon="pi pi-plus" class="mr-2" severity="primary"/>
-                <InputText :placeholder="t('selected-game.profile-manager.search-placeholder')"/>
+            <div class="flex column">
+                <div class="flex row gap-1">
+                    <Button 
+                        icon="pi pi-plus" severity="primary"
+                        v-tooltip.top="tooltipOpts($t('selected-game.profile-manager.new-profile'))"
+                    />
+
+                    <Button 
+                        icon="pi pi-download" severity="secondary"
+                        v-tooltip.top="tooltipOpts($t('keywords.import'))"
+                    />
+    
+                    <Button 
+                        icon="pi pi-upload" severity="secondary"
+                        v-tooltip.top="tooltipOpts($t('keywords.export'))"
+                    />
+
+                    <InputText class="w-8" :placeholder="t('selected-game.profile-manager.search-placeholder')"/>
+                </div>
             </div>
+        </template>
+
+        <template #empty>
+            <div></div>
         </template>
     </DataView>
 
@@ -74,7 +95,11 @@ const profiles: Ref<Profile[]> = ref([
 
 <style scoped>
 .profile-manager {
-    margin: 0px 15px 0px 30px;
+    margin: 0px 10px 0px 30px;
+}
+
+:deep(.p-dataview-header) {
+    margin: 0 !important;
 }
 
 .header {

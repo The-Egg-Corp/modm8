@@ -2,8 +2,6 @@
 import { onMounted, ref } from "vue"
 import type { Ref } from "vue"
 
-import Card from 'primevue/card'
-import Button from 'primevue/button'
 import Skeleton from 'primevue/skeleton'
 import Tag from 'primevue/tag'
 

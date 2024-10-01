@@ -35,7 +35,7 @@ const { selectedGame, updateModCache } = gameStore
 const configEditorDialog = useDialog('selected-game-config-editor')
 const installingModDialog = useDialog('selected-game-installing-mod')
 
-const ROWS = 25
+const ROWS = 40
 
 const loading = ref(false)
 const searchInput: Ref<Nullable<string>> = ref(null)
@@ -427,7 +427,7 @@ const installMod = async (fullName: string) => {
 }
 
 .mod-list-thumbnail {
-    min-width: 80px;
+    min-width: 85px;
     width: 4%;
     max-width: 140px;
     border-radius: 2.5px;
@@ -505,6 +505,7 @@ const installMod = async (fullName: string) => {
 .list-item {
     display: flex;
     width: 100vw;
+    height: 115px;
     padding-bottom: 15px;
     padding-top: 0px;
 }

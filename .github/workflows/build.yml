@@ -13,7 +13,6 @@ on:
         description: "Create installer"
         type: boolean
         required: true
-        default: false
       package: 
         description: "Upload artifacts"
         type: boolean

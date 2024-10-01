@@ -19,12 +19,7 @@ Built with [Wails](https://wails.io) for an Electron-like experience but without
 ## Showcase
 <details>
   <summary>Game Selection</summary>
-
-  - Useful buttons and insightful info layed out in a sleek and compact manner.
-  - Flexible query matching ensures you can search for a game without being exact.
-  - Filter by your favourite or installed games - no more tedious searching.
-  - Switch between List and Grid layouts for a better viewing experience.
-
+  
   <img src="./screenshots/game-selection-grid.png"/>
 </details>
 

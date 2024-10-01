@@ -3,10 +3,10 @@ A mod manager for the modern age. Fast ✅ Intuitive ✅ Ad-free ✅ Multiple la
 Built with [Wails](https://wails.io) for an Electron-like experience but without the bloat.
 
 > [!WARNING]
-> This project is heavily **WIP** and as such, missing functionality or bugs will be commonplace until there is a stable release.
-> Once officially released, a proper FOSS license will be added. Meanwhile, there is no license, meaning all rights are reserved.
->
 > **CURRENT STATUS:** Not yet ready.
+> 
+> This project is heavily **WIP** and as such, missing functionality or bugs will be commonplace until there is a stable release (v1).
+> Once officially released, a proper FOSS license will be added. There is no license in the meantime - though contributions are still welcome!
 
 ## Features
 - Multiple themes + dark mode by default.

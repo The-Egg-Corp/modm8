@@ -1,13 +1,29 @@
 <script lang="ts" setup>
-import { version } from "@frontend/package.json"
+import { version } from "@frontend/package.json" with { type: "json" }
 
 import { CardOverlay } from "@components"
 import { useDialog } from "@composables"
+import { onMounted, onUnmounted } from "vue"
 
 const { 
     setVisible,
     visible, closable, draggable
 } = useDialog('app-info')
+
+const onEscape = (e: KeyboardEvent) => {
+    if (!visible.value) return
+    if (e.key == "Escape") setVisible(false)
+
+    console.log(e)
+}
+
+onMounted(() => {
+    window.addEventListener("keydown", onEscape)
+})
+
+onUnmounted(() => {
+    window.removeEventListener("keydown", onEscape)
+})
 </script>
 
 <template>
@@ -19,26 +35,64 @@ const {
         v-model:draggable="draggable"
     >
         <template #cardContent>
-            <div class="flex column align-items-center">
-                <h1 class="header">App Info</h1>
-                <p style="font-weight: 305; margin-bottom: 10px; margin-top: 5px;">{{ version }}</p>
+            <div class="flex column">
+                <div class="flex row justify-content-between align-items-center" style="padding-top: 1rem;">
+                    <h1 class="heading">App Information</h1>
+                    <Button 
+                        style="height: 40px;" icon="pi pi-times" severity="secondary"
+                        @click="setVisible(false)" 
+                    />
+                </div>
 
-                <Button plain outlined severity="help" class="flex w-2" icon="pi pi-heart" label="Donate">
-                </Button>
-            </div>
-        </template>
+                <div class="flex column">
+                    <div>
+                        <h3 class="subheading mb-0 mt-2">Version</h3>
+                        <p style="margin-top: 5px; font-weight: 250;">v{{ version }}</p>
+                    </div>
 
-        <template #dialogContent>
-            <div class="flex justify-content-end gap-3 mt-3">
-                <Button class="w-full" type="button" :label="$t('keywords.close')" severity="secondary" @click="setVisible(false)"></Button>
+                    <div>
+                        <h3 class="subheading">Links</h3>
+                        <div class="flex row gap-1">
+                            <Button class="outlined-btn w-6" severity="help" 
+                                icon="pi pi-heart-fill" label="Donate"
+                                as="a" href="https://github.com/sponsors/Owen3H" target="_blank" rel="noopener" 
+                            />
+    
+                            <Button class="outlined-btn w-full" severity="primary"
+                                icon="pi pi-github" label="View source code"
+                            />
+
+                            <Button class="outlined-btn w-full" style="background-color: #7289da;"
+                                icon="pi pi-discord" label="Join the community"
+                            />
+                        </div>
+                    </div>
+                </div>
             </div>
-        </template>
+        </template> 
     </CardOverlay>
 </div>
 </template>
 
 <style scoped>
+.heading {
+    font-weight: 590;
+    font-size: 34px;
+    margin: 0;
+}
+
+.subheading {
+    font-weight: 440;
+    font-size: 22px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
 .app-info-container {
     display: flex;
+}
+
+.outlined-btn {
+    border: 1px solid rgba(255, 255, 255, 0.4);
 }
 </style>

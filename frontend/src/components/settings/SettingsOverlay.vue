@@ -7,7 +7,7 @@ import { GetSettings } from "@backend/app/Application"
 import { Load, SaveAndApply } from "@backend/app/AppSettings"
 
 import { 
-    CardOverlay, ModInstallationOverlay,
+    CardOverlay, 
     LanguageDropdown, ThemeDropdown 
 } from "@components"
 
@@ -18,6 +18,7 @@ import { t } from "@i18n"
 
 import Divider from "primevue/divider"
 import SelectButton from "primevue/selectbutton"
+import Slider from "primevue/slider"
 
 const { 
     setVisible,
@@ -84,7 +85,9 @@ const updateValues = async () => {
 const applySettings = async() => {
     const t0 = performance.now()
     await SaveAndApply()
+
     console.info(`Settings saved and applied. Took ${performance.now() - t0}ms`)
+    //console.info(`GOMAXPROCS: ${await GetMaxProcs()}`)
 }
 
 const dividerAlignment: Alignment = "center"
@@ -166,13 +169,18 @@ const dividerAlignment: Alignment = "center"
                     <div class="flex-item">
                         <h3>{{ $t('settings.threads') }}</h3>
                     </div>
-                    <div class="flex flex-row justify-content-end align-items-center gap-5">
-                        <!-- @vue-ignore -->
-                        <InputText class="w-2" v-model.number="threadCount"/>
+                    <div class="w-5 flex flex-row align-items-center gap-4 justify-content-end">
+                        <div style="font-size: 18px">{{ threadCount }}</div>
                         <Slider 
                             class="w-12rem" :min="2" :max="maxThreads"
                             v-model="threadCount" @change="setThreads(threadCount)"
                         />
+
+                        <!-- @vue-ignore -->
+                        <!-- <InputText type="number" style="max-width: 65px;" 
+                            v-model.number="threadCount"
+                            :min="2" :max="maxThreads" 
+                        /> -->
                     </div>
                 </div>
             </div>
@@ -188,7 +196,7 @@ const dividerAlignment: Alignment = "center"
                     <div class="flex-item">
                         <h3>{{ $t('settings.update-behaviour.label') }}</h3>
                     </div>
-                    <div class="flex-item">
+                    <div class="flex-item ml-3">
                         <SelectButton 
                             aria-labelledby="basic" :options="behaviours.map(b => b.label)"
                             v-model="updateBehaviour" @change="setUpdateBehaviour(updateBehaviour.value)"
@@ -209,9 +217,9 @@ const dividerAlignment: Alignment = "center"
         </template>
 
         <template #dialogContent>
-            <div class="flex justify-content-end gap-3 mt-3">
-                <Button class="w-full" type="button" :label="$t('keywords.close')" severity="secondary" @click="setVisible(false)"></Button>
-                <Button class="w-full" type="button" :label="$t('phrases.reset-all-default')" severity="secondary"></Button>
+            <div class="flex gap-2 mt-3 justify-content-center">
+                <Button class="w-7" type="button" :label="$t('keywords.close')" severity="secondary" @click="setVisible(false)"></Button>
+                <Button class="w-full" type="button" icon="pi pi-refresh" :label="$t('phrases.reset-all-default')" severity="secondary"></Button>
                 <Button class="w-full" type="button" :label="$t('keywords.apply')" @click="applySettings"></Button>
             </div>
         </template>

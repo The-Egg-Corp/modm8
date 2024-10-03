@@ -146,6 +146,10 @@ func NumCPU() uint8 {
 	return uint8(runtime.NumCPU())
 }
 
+func (app *Application) GetMaxProcs() int {
+	return runtime.GOMAXPROCS(0)
+}
+
 // Num is clamped between 1 and NumCPU*2 as any further is unnecessary and may cause overhead.
 func SetMaxProcs(num uint8) int {
 	return runtime.GOMAXPROCS(lo.Clamp(int(num), 1, runtime.NumCPU()*2))

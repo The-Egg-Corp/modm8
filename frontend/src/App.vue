@@ -1,9 +1,4 @@
 <script lang="ts" setup>
-import { 
-    Sidebar, ControlButtons,
-    SettingsOverlay, AppInfoOverlay
-} from '@components'
-
 import { onMounted } from 'vue'
 import { changeLocale } from '@i18n'
 
@@ -11,6 +6,11 @@ import {
     NumCPU,
     GetSettings
 } from '@backend/app/Application'
+
+import { 
+    Sidebar, ControlButtons,
+    SettingsOverlay, AppInfoOverlay
+} from '@components'
 
 import { useAppStore } from '@stores'
 

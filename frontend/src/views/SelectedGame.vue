@@ -222,18 +222,20 @@ const installMod = async (fullName: string) => {
             <DataView v-if="loading" data-key="mod-list-loading" layout="list">
                 <template #empty>
                     <div class="list-nogutter pt-4">
-                        <div v-for="i in 6" :key="i" class="list-item">
-                            <div style="width: 1200px;" class="flex flex-row p-3 border-1 surface-border border-round">
-                                <Skeleton size="6.4rem"/>
+                        <div v-for="i in 6" :key="i" class="loading-list-item">
+                            <div style="width: 1280px;" class="flex flex-row ml-1 p-3 border-1 surface-border border-round">
+                                <Skeleton size="6.5rem"/> <!-- Thumbnail -->
+                                
                                 <div class="flex column gap-1 ml-2">
-                                    <Skeleton height="1.5rem" width="20rem"/>
-                                    <Skeleton width="65rem"/>
+                                    <Skeleton height="1.5rem" width="20rem"/> <!-- Title -->
+                                    <Skeleton width="65rem"/> <!-- Description -->
 
                                     <div class="flex row gap-2">
-                                        <Skeleton class="mt-3" width="6.8rem" height="2.2rem"/>
-                                        <div class="flex row gap-1">
-                                            <Skeleton class="mt-3" width="2.8rem" height="2.2rem"/>
-                                            <Skeleton class="mt-4" width="1.8rem" height="1.3rem"/>
+                                        <Skeleton class="mt-3" width="6.8rem" height="2.2rem"/> <!-- Install Button -->
+                                        
+                                        <div class="flex row gap-1 align-items-center">
+                                            <Skeleton class="mt-3" width="2.8rem" height="2.2rem"/> <!-- Like button -->
+                                            <Skeleton class="mt-3" width="1.8rem" height="1.6rem"/> <!-- Likes -->
                                         </div>
                                     </div>
                                 </div>
@@ -504,6 +506,13 @@ const installMod = async (fullName: string) => {
     display: flex;
     width: 100vw;
     height: 115px;
+    padding-bottom: 15px;
+    padding-top: 0px;
+}
+
+.loading-list-item {
+    display: flex;
+    width: 100vw;
     padding-bottom: 15px;
     padding-top: 0px;
 }

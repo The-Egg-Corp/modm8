@@ -9,7 +9,7 @@ const props = withDefaults(defineProps<Props>(), {
     dialogStyle: {
         "margin-left": "10px",
         "width": 'auto',
-        "min-width": '45rem',
+        "min-width": '40rem',
         "max-width": '65rem'
     },
     cardStyle: {
@@ -26,7 +26,7 @@ const props = withDefaults(defineProps<Props>(), {
     :class="props.class"
     :style="props.dialogStyle"
     :block-scroll="true"
-    :dismissable-mask="true"
+    :dismissable-mask="false"
     :show-header="false"
 >
     <Card :style="props.cardStyle">

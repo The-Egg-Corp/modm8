@@ -20,15 +20,25 @@
 # Go workspace file
 go.work
 
-# Custom
+# Editor
 .vscode/
 
+# Frontend
 node_modules/
 frontend/node_modules/
 frontend/dist/
 frontend/wailsjs/
 frontend/src/archive
 frontend/src/assets/themes
+frontend/package.json.md5
+
+# Wails
+build/windows/icon.ico
+build/*/info.json
+/**/*/tmp
+build/bin
+build/**/*/wails_tools.nsh
+*-res.syso
 
 # Temporary
 README-release.md

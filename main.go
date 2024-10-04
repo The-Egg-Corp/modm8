@@ -51,7 +51,7 @@ func NewMacOptions() *mac.Options {
 		WindowIsTranslucent:  true,
 		WebviewIsTransparent: true,
 		Preferences: &mac.Preferences{
-			TabFocusesLinks: u.NewBool(false),
+			TabFocusesLinks: u.False,
 		},
 	}
 }

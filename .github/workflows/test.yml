@@ -3,16 +3,7 @@ on: [push, pull_request]
 
 jobs:
   build:
-    strategy:
-      fail-fast: false
-      matrix:
-        build: [
-          { name: "modm8.exe", platform: "windows/amd64", os: "windows-latest" },
-          { name: "modm8", platform: "linux/amd64", os: "ubuntu-latest" },
-          { name: "modm8", platform: "darwin/universal", os: "macos-latest" }
-        ]
-
-    runs-on: ${{ matrix.build.os }}
+    runs-on: "ubuntu-latest" 
     steps:
       - name: Checkout
         uses: actions/checkout@v4

@@ -1,5 +1,6 @@
-name: Test Action
+name: Verify Configuration
 on: 
+  
   # Allows workflow to be manually triggered.
   workflow_dispatch:
     inputs:
@@ -32,7 +33,7 @@ jobs:
         shell: bash
         run: |
           if [ ! -f ./wails.json ]; then
-            echo "Error: wails.json not found in the root directory!"
+            echo -e "\033[31mError: wails.json not found in the root directory!"
             exit 1
           fi
 
@@ -42,17 +43,17 @@ jobs:
           PROJ_NAME=$(jq -r '.name' ./wails.json)
             
           if [ -z "$PROJ_NAME" ]; then
-            echo "\033[31mError: key `outputfilename` empty or not found in wails.json!"
+            echo -e "\033[31mError: key `name` empty or not found in wails.json!"
             exit 1
           fi
 
-          echo "\033[32mProject name is '$OUTPUT_NAME'"
+          echo -e "\033[32mProject name is '$PROJ_NAME'"
 
-          OUTPUT_NAME=$(jq -r '.name' ./wails.json)
+          OUTPUT_NAME=$(jq -r '.outputfilename' ./wails.json)
             
           if [ -z "$OUTPUT_NAME" ]; then
-            echo "\033[31mError: key `outputfilename` empty or not found in wails.json!"
+            echo -e "\033[31mError: key `outputfilename` empty or not found in wails.json!"
             exit 1
           fi
             
-          echo "\033[32mOutput file (binary) name is '$OUTPUT_NAME'"
+          echo -e "\033[32mOutput file (binary) name is '$OUTPUT_NAME'"

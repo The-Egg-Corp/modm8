@@ -37,6 +37,7 @@ jobs:
           fi
 
       - name: Read properties.
+        shell: bash
         run: |
           PROJ_NAME=$(jq -r '.name' ./wails.json)
             

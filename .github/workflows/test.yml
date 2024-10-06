@@ -1,15 +1,5 @@
 name: Verify Configuration
-on: 
-  
-  # Allows workflow to be manually triggered.
-  workflow_dispatch:
-    inputs:
-      logLevel:
-        description: "Log level"
-        required: true
-        type: choice
-        options: [info, warning, debug]
-        default: "warning"
+on: [push, pull_request]
 
 jobs:
   build:

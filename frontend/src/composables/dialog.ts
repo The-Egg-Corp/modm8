@@ -14,6 +14,7 @@ export interface DialogState {
 
 const dialogs: Record<string, DialogState> = {}
 
+export const openDialogCount = () => Object.keys(dialogs).reduce((amt, key) => amt + (dialogs[key].visible.value ? 1 : 0), 0)
 export const useDialog = (id: string): Dialog => {
     // Initialize the dialog state if it doesn't exist
     if (!dialogs[id]) {

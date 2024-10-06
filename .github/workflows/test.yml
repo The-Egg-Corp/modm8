@@ -27,21 +27,31 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: recursive
-
-      - name: Verify wails.json exists
+ 
+      - name: Verify 'wails.json' file exists.
+        shell: bash
         run: |
           if [ ! -f ./wails.json ]; then
             echo "Error: wails.json not found in the root directory!"
             exit 1
           fi
 
-      - name: Read outputfilename from wails.json using jq
+      - name: Read properties.
         run: |
-          OUTPUT_FILENAME=$(jq -r '.outputfilename' ./wails.json)
+          PROJ_NAME=$(jq -r '.name' ./wails.json)
             
-          if [ -z "$OUTPUT_FILENAME" ]; then
-            echo "Error: outputfilename key not found or empty in wails.json!"
+          if [ -z "$PROJ_NAME" ]; then
+            echo "\033[31mError: key `outputfilename` empty or not found in wails.json!"
+            exit 1
+          fi
+
+          echo "\033[32mProject name is '$OUTPUT_NAME'"
+
+          OUTPUT_NAME=$(jq -r '.name' ./wails.json)
+            
+          if [ -z "$OUTPUT_NAME" ]; then
+            echo "\033[31mError: key `outputfilename` empty or not found in wails.json!"
             exit 1
           fi
             
-          echo "Output file name: $OUTPUT_FILENAME"
+          echo "\033[32mOutput file (binary) name is '$OUTPUT_NAME'"

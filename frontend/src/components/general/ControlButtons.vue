@@ -7,8 +7,6 @@ import {
     WindowIsMaximised,
 } from '@runtime'
 
-import ButtonGroup from 'primevue/buttongroup'
-
 let windowMaximised: boolean
 
 const CustomMinimise = async () => {
@@ -21,25 +19,22 @@ const CustomMinimise = async () => {
 </script>
 
 <template>
-<div class="control-buttons no-drag">
-    <ButtonGroup>
-        <Button text icon="pi pi-minus" @click="WindowMinimise"/>
-        <Button text :icon="`pi ${windowMaximised ? 'pi-minimise' : 'pi-expand'}`" @click="CustomMinimise"/>
-        <Button text icon="pi pi-times" @click="Quit"/>
-    </ButtonGroup>
+<div class="control-buttons no-drag gap-2">
+    <Button text icon="pi pi-minus" @click="WindowMinimise"/>
+    <Button text :icon="`pi ${windowMaximised ? 'pi-minimise' : 'pi-expand'}`" @click="CustomMinimise"/>
+    <Button text icon="pi pi-times" @click="Quit"/>
 </div>
 </template>
 
 <style scoped>
 .control-buttons {
-    margin-top: 4px;
-    margin-right: 4px;
     z-index: 9999;
-    position: fixed;
     top: 0;
     right: 0;
     display: flex;
     align-items: center;
+    margin-right: 5px;
+    margin-top: 2px;
     /* border-left: rgba(211, 211, 211, 0.823) 1px solid; */
     /* border-bottom: rgba(211, 211, 211, 0.823) 1px solid; */
     /* border-bottom-left-radius: 5px; */
@@ -53,7 +48,7 @@ const CustomMinimise = async () => {
 .control-buttons .p-button {
     cursor: pointer;
     color: rgba(201, 201, 201, 0.905);
-    width: 40px;
+    width: 30px;
 }
 
 .control-buttons :hover {

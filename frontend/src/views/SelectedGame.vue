@@ -367,7 +367,7 @@ const installMod = async (fullName: string) => {
 .selected-game {
     display: flex;
     flex-direction: column;
-    margin-left: 80px; /* Account for sidebar */
+    margin-left: 75px; /* Account for sidebar */
     margin-top: 30px;
 }
 

@@ -79,8 +79,8 @@ func main() {
 		Title:     "modm8",
 		Width:     int(modm8.Persistence.Window.Width),
 		Height:    int(modm8.Persistence.Window.Height),
-		MinWidth:  800,
-		MinHeight: 600,
+		MinWidth:  850,
+		MinHeight: 500,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},

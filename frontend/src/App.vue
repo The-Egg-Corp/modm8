@@ -28,8 +28,10 @@ onMounted(async () => {
 </script>
 
 <template>
-<ControlButtons/>
-  
+<div class="topbar drag">
+    <ControlButtons/>
+</div>
+
 <div class="app-container">
     <Sidebar/>
 
@@ -41,6 +43,14 @@ onMounted(async () => {
 </template>
 
 <style>
+.topbar {
+    position: fixed;
+    display: flex;
+    justify-content: end;
+    z-index: 0;
+    width: 100%;
+}
+
 .app-container {
     display: flex;
 }

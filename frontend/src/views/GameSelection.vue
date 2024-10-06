@@ -207,8 +207,7 @@ onMounted(async () => {
                 <template #header>
                     <div class="flex flex-row justify-content-between align-items-center">
                         <div>
-                            <Dropdown 
-                                checkmark
+                            <Dropdown checkmark
                                 class="no-drag filter-dropdown"
                                 :options="filters"
                                 v-model="selectedFilter"
@@ -361,7 +360,7 @@ onMounted(async () => {
 <style scoped>
 .game-selection {
     padding-top: 0px;
-    margin-left: 80px; /* Account for sidebar */
+    margin-left: 75px; /* Account for sidebar */
 }
 
 .game-selection .header {

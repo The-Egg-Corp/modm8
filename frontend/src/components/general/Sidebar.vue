@@ -14,7 +14,7 @@ const ModDevTools = () => router.push('/mod-dev-tools')
 </script>
 
 <template>
-<div class="sidebar">
+<div class="sidebar drag">
     <img class="icon no-select" src="../../assets/images/appicon.png">
 
     <div class="flex column h-full">
@@ -80,17 +80,11 @@ const ModDevTools = () => router.push('/mod-dev-tools')
     position: fixed;
     z-index: 999;
     height: 100vh;
-    width: 80px;
-    border-right: rgba(231, 231, 231, 0.885) 1px outset;
+    width: 75px;
+    border-right: rgba(255, 255, 255, 0.45) 1px outset;
     background-color: rgb(28, 29, 33);
     padding-left: 15px;
     padding-right: 15px;
-}
-
-.btn {
-    position: relative;
-    border-radius: 3px;
-    border: 1px solid rgba(255, 255, 255, 0.35);
 }
 
 .sidebar img {
@@ -98,22 +92,14 @@ const ModDevTools = () => router.push('/mod-dev-tools')
 }
 
 .icon {
-    width: 55px;
-    height: 64px;
-}
-
-.top .p-button {
-    margin-bottom: 10px;
-}
-
-.bottom .p-button {
-    margin-top: 10px;
+    width: 50px;
+    height: 58px;
 }
 
 .btn {
     position: relative;
     border-radius: 3px;
-    border: 1px solid rgba(255, 255, 255, 0.35);
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .btn-no-outline {
@@ -122,22 +108,6 @@ const ModDevTools = () => router.push('/mod-dev-tools')
     border: none;
 }
 
-/*.plain-btn {
-    color: rgba(218, 218, 218, 0.921);
-    background-color: #18181bcd;
-    border: solid rgba(139, 139, 139, 0.712) 1px;
-    border-radius: 3px;
-}*/
-
-.sidebar img {
-    margin: 15px 0px 20px 0px;
-}
-
-.icon {
-    width: 55px;
-    height: 64px;
-}
-
 .top .p-button {
     margin-bottom: 10px;
 }
@@ -145,6 +115,13 @@ const ModDevTools = () => router.push('/mod-dev-tools')
 .bottom .p-button {
     margin-top: 10px;
 }
+
+/*.plain-btn {
+    color: rgba(218, 218, 218, 0.921);
+    background-color: #18181bcd;
+    border: solid rgba(139, 139, 139, 0.712) 1px;
+    border-radius: 3px;
+}*/
 
 .spacer {
     flex: 1;

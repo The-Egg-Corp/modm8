@@ -1,0 +1,47 @@
+name: Test Action
+on: 
+  # Allows workflow to be manually triggered.
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: "Log level"
+        required: true
+        type: choice
+        options: [info, warning, debug]
+        default: "warning"
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        build: [
+          { name: "modm8.exe", platform: "windows/amd64", os: "windows-latest" },
+          { name: "modm8", platform: "linux/amd64", os: "ubuntu-latest" },
+          { name: "modm8", platform: "darwin/universal", os: "macos-latest" }
+        ]
+
+    runs-on: ${{ matrix.build.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Verify wails.json exists
+        run: |
+          if [ ! -f ./wails.json ]; then
+            echo "Error: wails.json not found in the root directory!"
+            exit 1
+          fi
+
+      - name: Read outputfilename from wails.json using jq
+        run: |
+          OUTPUT_FILENAME=$(jq -r '.outputfilename' ./wails.json)
+            
+          if [ -z "$OUTPUT_FILENAME" ]; then
+            echo "Error: outputfilename key not found or empty in wails.json!"
+            exit 1
+          fi
+            
+          echo "Output file name: $OUTPUT_FILENAME"

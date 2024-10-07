@@ -30,7 +30,7 @@ const groupedEntries = computed(() => {
 
         grouped[section][key] = newEntry
     }
-
+    
     return grouped
 })
 
@@ -79,9 +79,9 @@ const asBool = (str: string) => {
                     <div class="mb-1" style="width: 45rem;">
                         <p class="entry-key mt-0 mb-1">{{ key }}</p>
                         
-                        <div>{{ entry.comments[0].replaceAll('#', '') }}</div>
-                        <div v-for="comment in getEntryDescription(entry.comments)"> 
-                            {{ comment }}
+                        <div v-if="entry.comments">
+                            <div>{{ entry.comments[0].replaceAll('#', '') }}</div>
+                            <div v-for="comment in getEntryDescription(entry.comments)">{{ comment }}</div>
                         </div>
                     </div>
 

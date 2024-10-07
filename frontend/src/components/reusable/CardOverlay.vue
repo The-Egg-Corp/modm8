@@ -7,7 +7,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
     dialogStyle: {
-        "margin-left": "10px",
+        "margin-left": "40px",
         "width": 'auto',
         "min-width": '40rem',
         "max-width": '65rem'

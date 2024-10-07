@@ -44,10 +44,10 @@ onMounted(async () => {
 
 <style>
 .topbar {
+    z-index: 9999;
     position: fixed;
     display: flex;
     justify-content: end;
-    z-index: 0;
     width: 100%;
 }
 

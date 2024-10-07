@@ -30,7 +30,7 @@ const groupedEntries = computed(() => {
 
         grouped[section][key] = newEntry
     }
-    
+
     return grouped
 })
 
@@ -60,8 +60,7 @@ const asBool = (str: string) => {
         <div class="flex row align-items-center justify-content-between">
             <h1 class="header mb-1">Config Editor</h1>
             <div class="flex row gap-2 align-items-baseline">
-
-                <p class="mt-0 mb-0" style="font-size: 24px; color: var(--primary-color); text-shadow: 0px 0px 18px rgba(255, 255, 255, 0.3);">{{ fileName }}</p>
+                <p class="file-name mt-0 mb-0">{{ fileName }}</p>
             </div>
         </div>
     </div>
@@ -117,5 +116,11 @@ const asBool = (str: string) => {
     position: sticky;
     font-size: 22px;
     font-weight: 600;
+}
+
+.file-name {
+    font-size: 24px;
+    color: var(--primary-color);
+    text-shadow: 0px 0px 18px rgba(255, 255, 255, 0.3);
 }
 </style>

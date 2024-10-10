@@ -2,11 +2,12 @@
 import { v1 } from "@backend/models"
 import { CardOverlay } from "@components"
 import { Dialog } from "@composables"
+import { Nullable } from "primevue/ts-helpers"
 
 const props = defineProps<{
     dialog: Dialog
     installing: boolean
-    lastInstalledMod: v1.PackageVersion
+    lastInstalledMod: Nullable<v1.PackageVersion>
 }>()
 
 const installStatus = () => props.installing ? "Installing..." : "Installed"
@@ -15,15 +16,14 @@ const installStatus = () => props.installing ? "Installing..." : "Installed"
 <template>
 <CardOverlay
     class="installing-mod-card no-drag"
-    v-model:visible="dialog.visible"
-    v-model:closable="dialog.closable"
-    v-model:draggable="dialog.draggable"
+    v-model:visible="dialog.visible.value"
+    v-model:closable="dialog.closable.value"
+    v-model:draggable="dialog.draggable.value"
 >
     <template #cardContent>
         <div class="flex column justify-content-center align-items-baseline">
             <h1 class="mb-0 mt-2">{{ installStatus() }} </h1>
-            <p class="mt-1 mb-1" style="font-size: 18px">{{ lastInstalledMod.name }}</p>
-
+            <p v-if="lastInstalledMod" class="mt-1 mb-1" style="font-size: 18px">{{ lastInstalledMod.name }}</p>
         </div>
     </template>
 

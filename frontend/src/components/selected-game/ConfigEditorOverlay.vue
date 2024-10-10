@@ -76,9 +76,9 @@ const dialogStyle = () => {
 <template>
 <CardOverlay class="no-drag"
     :dialogStyle="dialogStyle()"
-    v-model:visible="dialog.visible"
-    v-model:closable="dialog.closable"
-    v-model:draggable="dialog.draggable"
+    v-model:visible="dialog.visible.value"
+    v-model:closable="dialog.closable.value"
+    v-model:draggable="dialog.draggable.value"
 >
     <template #cardContent>
         <div v-if="!selectedConfig" class="flex flex-column" style="max-height: calc(100vh - 180px);">

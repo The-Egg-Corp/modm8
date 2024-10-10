@@ -292,9 +292,6 @@ onMounted(async () => {
                                                 :label="$t('game-selection.select-button')" 
                                                 @click="selectGame(game)"
                                             />
-
-
-
                                         </div>
                                     </div>
                                 </div>
@@ -366,10 +363,10 @@ onMounted(async () => {
 .game-selection .header {
     text-wrap: wrap;
     text-align: center;
-    font-size: 33px;
+    font-size: 32px;
     font-weight: 420;
-    margin: 40px 0px 10px 0px;
-    padding: 0px 20px 0px 20px; /* Makes text get wrapped earlier */
+    margin: 35px 0px 10px 0px;
+    padding: 0px 20px 0px 20px; /* Make the text get wrap earlier */
 }
 
 .game-container {

@@ -7,22 +7,19 @@ import {
     WindowIsMaximised,
 } from '@runtime'
 
-let windowMaximised: boolean
-
 const CustomMinimise = async () => {
     const maximised = await WindowIsMaximised() 
+    
     if (maximised) WindowUnmaximise()
     else WindowMaximise()
-
-    windowMaximised = maximised
 }
 </script>
 
 <template>
-<div class="control-buttons no-drag gap-2">
+<div class="control-buttons no-drag gap-1">
     <Button text icon="pi pi-minus" @click="WindowMinimise"/>
-    <Button text :icon="`pi ${windowMaximised ? 'pi-minimise' : 'pi-expand'}`" @click="CustomMinimise"/>
-    <Button text icon="pi pi-times" @click="Quit"/>
+    <Button text icon="pi pi-expand" @click="CustomMinimise"/>
+    <Button text icon="pi pi-times" class="exit-btn" @click="Quit"/>
 </div>
 </template>
 
@@ -34,7 +31,7 @@ const CustomMinimise = async () => {
     display: flex;
     align-items: center;
     margin-right: 5px;
-    margin-top: 2px;
+    margin-top: 5px;
     /* border-left: rgba(211, 211, 211, 0.823) 1px solid; */
     /* border-bottom: rgba(211, 211, 211, 0.823) 1px solid; */
     /* border-bottom-left-radius: 5px; */
@@ -47,12 +44,20 @@ const CustomMinimise = async () => {
 
 .control-buttons .p-button {
     cursor: pointer;
-    color: rgba(201, 201, 201, 0.905);
-    width: 30px;
+    color: rgba(201, 201, 201, 0.8);
+    width: 32px;
+    padding: 0.25rem;
 }
 
-.control-buttons :hover {
-    color: rgba(166, 105, 246, 0.863);
-    background-color: transparent;
+.control-buttons :nth-child(1) :hover {
+    color: rgba(166, 105, 246, 1);
+}
+
+.control-buttons :nth-child(2) :hover {
+    color: rgba(166, 105, 246, 1);
+}
+
+.control-buttons :nth-child(3) :hover {
+    color: rgba(255, 93, 93, 1);
 }
 </style>

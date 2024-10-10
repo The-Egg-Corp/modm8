@@ -37,6 +37,7 @@ const ROWS = 40
 
 const loading = ref(false)
 const searchInput: Ref<Nullable<string>> = ref(null)
+const first = ref(0) // Starting index of the current page
 
 const mods: Ref<thunderstore.StrippedPackage[]> = ref([])
 const currentPageMods: Ref<Package[]> = ref([])
@@ -48,36 +49,50 @@ const activeTabIndex = ref(0)
 const tabs = ref([
     { label: 'This Profile', icon: 'pi pi-box' },
     { label: 'Thunderstore', icon: 'pi pi-globe' },
-    { label: 'Nexus', icon: 'pi pi-globe' }
+    //{ label: 'Nexus', icon: 'pi pi-globe' } // Uncomment when Nexus is implemented.
 ])
 
 const onTabChange = (e: TabMenuChangeEvent) => {
     activeTabIndex.value = e.index
+
+    if (e.index == 1) refreshMods(false)
+    else mods.value = []
 }
 
-onMounted(async () => {
-    // Ensure no overlays are still shown when opening.
-    configEditorDialog.setVisible(false)
-    installingModDialog.setVisible(false)
+/** 
+ * Refreshes the page with the currently cached mods.
+ * @param fetch Whether to fetch mods from the API and update the cache (if isnt populated already) before refreshing the page.
+*/
+const refreshMods = async (fetch: boolean) => {
+    if (fetch && !selectedGame.modCache) {
+        loading.value = true // Fetching might take a while, let the user know we are doing something.
 
-    const t0 = performance.now()
-    loading.value = true
+        try {
+            const t0 = performance.now()
 
-    if (!selectedGame.modCache) {
-        console.log(`Putting ${selectedGame.identifier} mods into cache...`)
+            const pkgs = await GetStrippedPackages(selectedGame.identifier, false)
+            console.log(`[${selectedGame.identifier}] Putting mods into cache...`)
 
-        const pkgs = await GetStrippedPackages(selectedGame.identifier, false)
-        updateModCache(pkgs)
-
-        console.log(`Cached ${pkgs?.length} mods. Took: ${performance.now() - t0}ms`)
-    } else {
-        console.log(`Got ${selectedGame.modCache.length} mods from cache. Took: ${performance.now() - t0}ms`)
+            updateModCache(pkgs)
+            console.log(`Cached ${pkgs.length} mods. Took: ${performance.now() - t0}ms`)
+        } catch(e: any) {
+            console.error(`[${selectedGame.identifier}] Failed to update mod cache!\n${e.message}`)
+        }
     }
 
     mods.value = getMods()
     await updatePage(0, ROWS)
 
+    // We are done regardless of outcome, stop loading.
     loading.value = false
+}
+
+onMounted(async () => {
+    // Ensure no overlays are still shown.
+    configEditorDialog.setVisible(false)
+    installingModDialog.setVisible(false)
+
+    //await refreshMods(true)
 })
 
 const latestModVersion = (mod: thunderstore.StrippedPackage) => 
@@ -91,8 +106,10 @@ const startVanilla = () => Steam.LaunchGame(selectedGame.steamID, ["--doorstop-e
 const startModded = () => Steam.LaunchGame(selectedGame.steamID, ["--doorstop-enable", "true"])
 
 const onPageChange = (e: DataViewPageEvent) => updatePage(e.first, e.rows)
-const updatePage = async (first: number, rows: number) => {
-    const filtered = mods.value.slice(first, first + rows) as Package[]
+const updatePage = async (newFirst: number, rows: number) => {
+    first.value = newFirst
+
+    const filtered = mods.value.slice(newFirst, newFirst + rows) as Package[]
 
     // TODO: This could be potentially VERY slow. Consider replacing with Map/Set instead.
     const promises = filtered.map(async mod => {
@@ -146,10 +163,7 @@ const onInputChange = async () => {
     debouncedSearch()
 }
 
-const debouncedSearch = debounce(async () => {
-    mods.value = getMods()
-    await updatePage(0, ROWS)
-}, 250)
+const debouncedSearch = debounce(() => refreshMods(false), 250)
 
 const installMod = async (fullName: string) => {
     installing.value = true
@@ -162,7 +176,7 @@ const installMod = async (fullName: string) => {
         lastInstalledMod.value = await InstallByName(selectedGame.title, selectedGame.identifier, fullName)
         console.info(`Installed mod: ${fullName}. Took ${((performance.now() - start) / 1000).toFixed(2)}s`)
     } catch(e: any) {
-        console.error(`Failed to install mod.\n${e.message}`)
+        console.error(`[${selectedGame.identifier}] Failed to install mod.\n${e.message}`)
     }
 
     installing.value = false
@@ -250,26 +264,33 @@ const installMod = async (fullName: string) => {
                 layout="list" data-key="mod-list"
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
                 :paginator="mods.length > 0" :rows="ROWS"
-                :value="mods" @page="onPageChange"
+                :value="mods" @page="onPageChange" :first="first"
             >
                 <template #empty>
                     <div v-if="hasSearchInput()" class="pl-2">
-                        <h2>{{ $t('selected-game.empty-results') }}.</h2>
+                        <h2 class="m-0 mt-1">{{ $t('selected-game.empty-results') }}.</h2>
 
                         <!-- Sadge -->
-                        <img class="pt-3" src="https://cdn.7tv.app/emote/603cac391cd55c0014d989be/3x.png">
+                        <img class="mt-2" src="https://cdn.7tv.app/emote/603cac391cd55c0014d989be/3x.png">
                     </div>
 
                     <!-- TODO: If failed, make this show regardless of search input. --> 
                     <div v-else>
-                        <h2 style="padding-top: 15px; font-size: 22px; margin: 0 auto;">
-                            No mods available! Something probably went wrong.
+                        <h2 v-if="activeTabIndex == 0" class="ml-1" style="color: orange; font-size: 24px; margin: 0;">
+                            No mods installed.
                         </h2>
+
+                        <div v-else class="ml-1">
+                            <h2 class="mb-2" style="color: red; font-size: 24px; margin: 0 auto;">
+                                No mods available! Something probably went wrong.
+                            </h2>
+                            <Button class="mt-1" label="Refresh" icon="pi pi-refresh" @click="refreshMods(true)"/>
+                        </div>
                     </div>
                 </template>
         
                 <template #header>
-                    <div class="flex row align-items-center">
+                    <div class="flex row align-items-center gap-2">
                         <div class="searchbar no-drag">
                             <IconField iconPosition="left">
                                 <InputIcon class="pi pi-search"></InputIcon>
@@ -279,10 +300,9 @@ const installMod = async (fullName: string) => {
                             </IconField>
                         </div>
 
-                        <div class="ml-2 justify-self-end">
+                        <div class="justify-self-end">
                             <TabMenu :model="tabs" @tab-change="onTabChange"/>
                         </div>
-
                         <!-- <div class="flex row">
                             <ModListDropdown>
                                 
@@ -505,7 +525,6 @@ const installMod = async (fullName: string) => {
 .list-item {
     display: flex;
     width: 100vw;
-    height: 115px;
     padding-bottom: 15px;
     padding-top: 0px;
 }

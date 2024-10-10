@@ -82,7 +82,7 @@ const ModDevTools = () => router.push('/mod-dev-tools')
     height: 100vh;
     width: 75px;
     border-right: rgba(255, 255, 255, 0.45) 1px outset;
-    background-color: rgb(28, 29, 33);
+    background-color: #202125;
     padding-left: 15px;
     padding-right: 15px;
 }

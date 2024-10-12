@@ -1,5 +1,9 @@
 <script lang="ts" setup>
-import { ref, onMounted, Ref, computed, ComputedRef } from 'vue'
+import { 
+    ref, Ref, 
+    computed, ComputedRef, 
+    nextTick, onMounted,
+} from 'vue'
 
 import DataView from 'primevue/dataview'
 import DataViewLayoutOptions from 'primevue/dataviewlayoutoptions'
@@ -128,12 +132,36 @@ const selectGame = (game: ThunderstoreGame) => {
     router.push('/selected-game')
 }
 
-onMounted(async () => {
-    // scrollableList.value?.addEventListener('wheel', e => {
-    //     e.preventDefault()
-    //     scrollableList.value?.scrollBy(0, Math.sign(e.deltaY) * 160)
-    // })
+const gameElements = ref<any[]>([])
+const scrollIndex = ref(0)
 
+const scrollToGame = () => {
+    const i = scrollIndex.value
+    if (i < 0 || i >= gameElements.value.length) return // Ensure no OOB
+
+    const game = gameElements.value[i]
+    if (!game) return
+
+    (game as Element).scrollIntoView({ block: 'start' })
+}
+
+const handleScroll = (e: WheelEvent) => {
+    e.preventDefault()
+
+    if (e.deltaY > 0) {
+        // Scrolling down
+        if (scrollIndex.value < gameElements.value.length - 1) {
+            scrollIndex.value++
+        }
+    } else if (scrollIndex.value > 0) {
+        scrollIndex.value--
+    }
+
+    // Scroll to the corresponding section
+    nextTick(() => scrollToGame())
+}
+
+onMounted(async () => {
     const size = await initGames(mockGameList)
     console.info(`GameStore: Populated games map with ${size} items.`)
 
@@ -302,8 +330,11 @@ onMounted(async () => {
 
                 <!-- List layout -->
                 <template #list>
-                    <div ref="scrollableList" class="scrollable-list list list-nogutter">
-                        <div v-for="(game, index) in getGames()" :key="index" class="snap-top col-12">
+                    <div class="scrollable-list list list-nogutter" ref="scrollableList" tabindex="0" @wheel.prevent="handleScroll">
+                        <div 
+                            v-for="(game, index) in getGames()" class="snap-top col-12" 
+                            :key="index" :ref="el => gameElements[index] = el"
+                        >
                             <div class="flex flex-column sm:flex-row sm:align-items-center p-2 gap-5" :class="{ 'border-top-1 surface-border': index !== 0 }">
                                 <img class="game-list-thumbnail fadeinleft fadeinleft-thumbnail block xl:block mx-auto w-full" :src="getThumbnail(game)"/>
 
@@ -376,13 +407,11 @@ onMounted(async () => {
 
 .snap-top {
     height: 160px;
-    scroll-snap-align: start; /* Align each item perfectly when scrolling */
 }
 
 .scrollable-list {
     max-height: calc(160px * 5);
     overflow-y: scroll; /* Enable vertical scrolling */
-    scroll-snap-type: y mandatory; /* Ensure smooth snap to items */
     scrollbar-width: none;
 }
 

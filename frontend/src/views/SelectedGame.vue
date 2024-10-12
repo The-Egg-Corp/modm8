@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, ref } from "vue"
+import { nextTick, onMounted, ref } from "vue"
 import type { Ref } from "vue"
 
 import Skeleton from 'primevue/skeleton'
@@ -38,6 +38,9 @@ const ROWS = 40
 const loading = ref(false)
 const searchInput: Ref<Nullable<string>> = ref(null)
 const first = ref(0) // Starting index of the current page
+
+const modElements = ref<any[]>([])
+const scrollIndex = ref(0)
 
 const mods: Ref<thunderstore.StrippedPackage[]> = ref([])
 const currentPageMods: Ref<Package[]> = ref([])
@@ -182,6 +185,30 @@ const installMod = async (fullName: string) => {
     installing.value = false
     installingModDialog.setClosable(true)
 }
+
+const scrollToMod = () => {
+    const i = scrollIndex.value
+    if (i < 0 || i >= modElements.value.length) return // Ensure no OOB
+
+    const game = modElements.value[i]
+    if (!game) return
+
+    (game as Element).scrollIntoView({ block: 'start' })
+}
+
+const handleScroll = (e: WheelEvent) => {
+    if (e.deltaY > 0) {
+        // Scrolling down
+        if (scrollIndex.value < modElements.value.length - 1) {
+            scrollIndex.value++
+        }
+    } else if (scrollIndex.value > 0) {
+        scrollIndex.value--
+    }
+
+    // Scroll to the corresponding section
+    nextTick(() => scrollToMod())
+}
 </script>
 
 <template>
@@ -312,8 +339,11 @@ const installMod = async (fullName: string) => {
                 </template>
         
                 <template #list>
-                    <div class="scrollable list-nogutter no-drag">
-                        <div v-for="(mod, index) in currentPageMods" :key="index" class="list-item col-12">
+                    <div class="scrollable-list list-nogutter no-drag" @wheel.prevent="handleScroll">
+                        <div 
+                            v-for="(mod, index) in currentPageMods" class="list-item col-12"
+                            :key="index" :ref="el => modElements[index] = el"
+                        >
                             <div class="flex-grow-1 flex column sm:flex-row align-items-center pt-2 gap-3" :class="{ 'border-top-1 surface-border': index != 0 }">
                                 <img class="mod-list-thumbnail block xl:block" :src="mod.latestVersion?.icon || ''"/>
                                 
@@ -485,7 +515,7 @@ const installMod = async (fullName: string) => {
     flex-grow: 1;
 }
 
-.scrollable {
+.scrollable-list {
     overflow-y: scroll;
     scrollbar-width: none;
     height: calc(100vh - 150px);
@@ -524,7 +554,7 @@ const installMod = async (fullName: string) => {
 
 .list-item {
     display: flex;
-    width: 100vw;
+    width: 1300px; /* TODO: Make this calc from right edge minus 30px. 100vw and 100% dont work? */
     padding-bottom: 15px;
     padding-top: 0px;
 }

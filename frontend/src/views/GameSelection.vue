@@ -146,8 +146,6 @@ const scrollToGame = () => {
 }
 
 const handleScroll = (e: WheelEvent) => {
-    e.preventDefault()
-
     if (e.deltaY > 0) {
         // Scrolling down
         if (scrollIndex.value < gameElements.value.length - 1) {
@@ -330,7 +328,7 @@ onMounted(async () => {
 
                 <!-- List layout -->
                 <template #list>
-                    <div class="scrollable-list list list-nogutter" ref="scrollableList" tabindex="0" @wheel.prevent="handleScroll">
+                    <div class="scrollable-list list-nogutter" ref="scrollableList" tabindex="0" @wheel.prevent="handleScroll">
                         <div 
                             v-for="(game, index) in getGames()" class="snap-top col-12" 
                             :key="index" :ref="el => gameElements[index] = el"

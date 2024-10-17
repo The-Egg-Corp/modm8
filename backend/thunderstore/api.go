@@ -125,11 +125,11 @@ func (a *API) GetPackagesInCommunity(community string, skipCache bool) ([]v1.Pac
 	if !skipCache {
 		pkgs, exists := a.Cache[community]
 		if exists {
-			println("Cache hit")
-			return pkgs, nil
+			return pkgs, nil // Cache hit
 		}
 	}
 
+	// Cache miss, refill.
 	pkgs, err := v1.PackagesFromCommunity(community)
 	if err != nil {
 		return nil, err
@@ -150,7 +150,8 @@ func (a *API) GetStrippedPackages(community string, skipCache bool) ([]StrippedP
 	// Loops over all pkgs, stripping some unecessary fields, massively improving
 	// time to serialize/deserialize to avoid blocking the frontend.
 	for _, pkg := range pkgs {
-		if backend.ContainsEqualFold(modExceptions, pkg.Name) {
+		// Strip any apps/utils that aren't strictly mods.
+		if backend.ContainsEqualFold(modExceptions, pkg.FullName) {
 			continue
 		}
 
@@ -172,7 +173,7 @@ func (a *API) GetStrippedPackages(community string, skipCache bool) ([]StrippedP
 	return strippedPkgs, nil
 }
 
-func (a *API) GetUserPackages(communities []string, owner string) string {
+func (a *API) GetPackagesByUser(communities []string, owner string) string {
 	pkgs, err := v1.PackagesFromCommunities(v1.NewCommunityList(communities...))
 	if err != nil {
 		return "An error occurred getting packages!"

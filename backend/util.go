@@ -50,3 +50,15 @@ func ReadFile(path string) (*string, error) {
 	out := string(content)
 	return &out, nil
 }
+
+func ContainsEqualFold(arr []string, item string) bool {
+	lowerItem := strings.ToLower(item)
+
+	for _, str := range arr {
+		if strings.ToLower(str) == lowerItem {
+			return true
+		}
+	}
+
+	return false
+}

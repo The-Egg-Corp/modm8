@@ -23,6 +23,7 @@ onMounted(async () => {
     const settings = await GetSettings()
     changeLocale(settings.general.locale)
 
+    // We don't use `navigator.hardwareConcurrency` as it is known to be unreliable.
     setMaxThreads(await NumCPU())
 })
 </script>

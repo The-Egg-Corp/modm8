@@ -19,6 +19,22 @@ import (
 	v1 "github.com/the-egg-corp/thundergo/v1"
 )
 
+var modExceptions = []string{
+	"Foldex-r2mod_cli",
+	"ebkr-r2modman",
+	"ebkr-r2modman_dsp",
+	"ebkr-BT2TS",
+	"ethanbrews-RiskOfRainModManager",
+	"ethanbrews-Forecast_Mod_Manager",
+	"scottbot95-RoR2ModManager",
+	"HoodedDeath-RiskOfDeathModManager",
+	"MythicManiac-MythicModManager",
+	"Kesomannen-GaleModManager",
+	"Elaviers-GCManager",
+	"MADH95Mods-JSONRenameUtility",
+	"Higgs1-Lighthouse",
+}
+
 var CurModCacheDir string
 
 func ModCacheDir(gameTitle string) string {
@@ -134,7 +150,7 @@ func (a *API) GetStrippedPackages(community string, skipCache bool) ([]StrippedP
 	// Loops over all pkgs, stripping some unecessary fields, massively improving
 	// time to serialize/deserialize to avoid blocking the frontend.
 	for _, pkg := range pkgs {
-		if strings.EqualFold(pkg.Name, "r2modman") {
+		if backend.ContainsEqualFold(modExceptions, pkg.Name) {
 			continue
 		}
 

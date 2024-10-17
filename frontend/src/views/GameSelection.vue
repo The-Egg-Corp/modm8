@@ -155,7 +155,7 @@ const handleScroll = (e: WheelEvent) => {
         scrollIndex.value--
     }
 
-    // Scroll to the corresponding section
+    // Scroll to the next div element in game list.
     nextTick(() => scrollToGame())
 }
 

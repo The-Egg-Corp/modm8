@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { GetUserPackages } from '@backend/thunderstore/API'
+import { GetPackagesByUser } from '@backend/thunderstore/API'
 
 import TabView from 'primevue/tabview'
 import TabPanel from 'primevue/tabpanel'
@@ -19,13 +19,13 @@ const data: PackageInfo = reactive({
     name: ""
 })
 
-async function PackagesByUser() {
+async function getPackages() {
     if (data.name == "") {
         data.resultText = t('search-packages.empty-input')
         return
     }
 
-    const pkgs = await GetUserPackages(["lethal-company"], data.name)
+    const pkgs = await GetPackagesByUser(["lethal-company"], data.name)
     data.resultText = pkgs
 }
 </script>
@@ -42,7 +42,7 @@ async function PackagesByUser() {
                         <InputText id="name" v-model="data.name" autocomplete="off"/>
                         <!-- <label for="name">Owner</label> -->
                     
-                        <Button class="search-btn" severity="help" outlined icon="pi pi-search" @click="PackagesByUser"/>
+                        <Button class="search-btn" severity="help" outlined icon="pi pi-search" @click="getPackages"/>
                     </FloatLabel>
                 </div>
 

@@ -121,15 +121,16 @@ func (a *API) GetPackageVersions(community, owner, name string) ([]v1.PackageVer
 	return pkg.Versions, nil
 }
 
+// Get packages for a specific community given its identifier.
+// If the cache is not hit, it will be populated automatically.
 func (a *API) GetPackagesInCommunity(community string, skipCache bool) ([]v1.Package, error) {
 	if !skipCache {
 		pkgs, exists := a.Cache[community]
 		if exists {
-			return pkgs, nil // Cache hit
+			return pkgs, nil
 		}
 	}
 
-	// Cache miss, refill.
 	pkgs, err := v1.PackagesFromCommunity(community)
 	if err != nil {
 		return nil, err
@@ -139,6 +140,11 @@ func (a *API) GetPackagesInCommunity(community string, skipCache bool) ([]v1.Pac
 	return pkgs, nil
 }
 
+// Similar to GetPackagesInCommunity, but every package is stripped of some info,
+// massively decreasing the time spent sending data to the frontend to preventing it from blocking.
+// The following keys are stripped (though retained in the cache):
+//
+// # Versions, DonationLink, Pinned
 func (a *API) GetStrippedPackages(community string, skipCache bool) ([]StrippedPackage, error) {
 	pkgs, err := a.GetPackagesInCommunity(community, skipCache)
 	if err != nil {
@@ -147,8 +153,7 @@ func (a *API) GetStrippedPackages(community string, skipCache bool) ([]StrippedP
 
 	strippedPkgs := make([]StrippedPackage, 0, len(pkgs))
 
-	// Loops over all pkgs, stripping some unecessary fields, massively improving
-	// time to serialize/deserialize to avoid blocking the frontend.
+	// Loops over all pkgs, stripping some unnecessary fields to avoid blocking frontend.
 	for _, pkg := range pkgs {
 		// Strip any apps/utils that aren't strictly mods.
 		if backend.ContainsEqualFold(modExceptions, pkg.FullName) {

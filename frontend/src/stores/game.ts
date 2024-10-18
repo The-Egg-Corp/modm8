@@ -7,6 +7,8 @@ import { thunderstore } from '@backend/models.js'
 import { GetPersistence } from '@backend/app/Application.js'
 import { BepinexInstalled } from '@backend/game/GameManager.js'
 
+import { ExistsAtPath } from '@backend/app/Utils.js'
+
 export interface GameState {
     selectedGame: ThunderstoreGame,
     games: Map<string, ThunderstoreGame>
@@ -69,7 +71,9 @@ export const useGameStore = defineStore('GameStore', () => {
         // Init game props.
         for (const game of gameList) {
             game.favourited = await persistence.favourite_games.includes(game.identifier)
-            game.installed = !!game.path // TODO: Check game executable exists. For now, assume installed if path specified.
+
+            // TODO: Check game executable exists. For now, assume installed if game path is specified and exists.
+            game.installed = !game.path ? false : await ExistsAtPath(game.path, true)
 
             if (game.path) {
                 game.bepinexSetup = await BepinexInstalled(game.path)

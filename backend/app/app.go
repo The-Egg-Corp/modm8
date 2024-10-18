@@ -37,11 +37,23 @@ func NewUtils() *Utils {
 	return &Utils{}
 }
 
-func (util *Utils) WalkDirExt(root string, exts []string) ([]string, error) {
+func (u *Utils) ExistsInDir(dir, item string) (bool, error) {
+	return backend.ExistsInDir(dir, item)
+}
+
+func (u Utils) ExistsAtPath(path string, clean bool) (bool, error) {
+	if clean {
+		path = filepath.Clean(path)
+	}
+
+	return backend.ExistsAtPath(path)
+}
+
+func (u *Utils) WalkDirExt(root string, exts []string) ([]string, error) {
 	return backend.WalkDirExt(root, exts)
 }
 
-func (util *Utils) ReadFile(path string) (*string, error) {
+func (u *Utils) ReadFile(path string) (*string, error) {
 	return backend.ReadFile(path)
 }
 

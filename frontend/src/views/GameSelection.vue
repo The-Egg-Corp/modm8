@@ -306,7 +306,7 @@ onMounted(async () => {
                                             <Button
                                                 outlined plain
                                                 icon="pi pi-folder"
-                                                v-if="game.path"
+                                                v-if="game.installed"
                                                 v-tooltip.top="tooltipOpts(t('tooltips.game-selection.open-folder-location'))"
                                                 @click="openLink(`file://${game.path}`)"
                                             />

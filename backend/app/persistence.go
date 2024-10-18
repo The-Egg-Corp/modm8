@@ -49,38 +49,42 @@ func (persistence *Persistence) Save() error {
 }
 
 // The frontend must still be loaded to call these runtime methods.
-func (ws *Persistence) ApplyCurrentWindowState(ctx context.Context) {
-	ws.SetMaximized(wRuntime.WindowIsMaximised(ctx))
+func (persistence *Persistence) ApplyCurrentWindowState(ctx context.Context) {
+	maximized := wRuntime.WindowIsMaximised(ctx)
+	persistence.SetMaximized(maximized)
 
-	w, h := wRuntime.WindowGetSize(ctx)
-	ws.SetWindowWidth(uint16(w))
-	ws.SetWindowHeight(uint16(h))
+	if !maximized {
+		w, h := wRuntime.WindowGetSize(ctx)
+		x, y := wRuntime.WindowGetPosition(ctx)
 
-	x, y := wRuntime.WindowGetPosition(ctx)
-	ws.SetWindowX(x)
-	ws.SetWindowY(y)
+		persistence.SetWindowWidth(uint16(w))
+		persistence.SetWindowHeight(uint16(h))
+
+		persistence.SetWindowX(x)
+		persistence.SetWindowY(y)
+	}
 }
 
-func (ws *Persistence) SetWindowWidth(width uint16) {
-	ws.Window.Width = width
+func (persistence *Persistence) SetWindowWidth(width uint16) {
+	persistence.Window.Width = width
 }
 
-func (ws *Persistence) SetWindowHeight(height uint16) {
-	ws.Window.Height = height
+func (persistence *Persistence) SetWindowHeight(height uint16) {
+	persistence.Window.Height = height
 }
 
-func (ws *Persistence) SetWindowX(xPos int) {
-	ws.Window.X = xPos
+func (persistence *Persistence) SetWindowX(xPos int) {
+	persistence.Window.X = xPos
 }
 
-func (ws *Persistence) SetWindowY(yPos int) {
-	ws.Window.Y = yPos
+func (persistence *Persistence) SetWindowY(yPos int) {
+	persistence.Window.Y = yPos
 }
 
-func (ws *Persistence) SetMaximized(maximized bool) {
-	ws.Window.Maximized = maximized
+func (persistence *Persistence) SetMaximized(maximized bool) {
+	persistence.Window.Maximized = maximized
 }
 
-func (ws *Persistence) SetFavouriteGames(identifiers []string) {
-	ws.FavouriteGames = identifiers
+func (persistence *Persistence) SetFavouriteGames(identifiers []string) {
+	persistence.FavouriteGames = identifiers
 }

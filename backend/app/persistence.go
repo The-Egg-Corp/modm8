@@ -50,18 +50,17 @@ func (persistence *Persistence) Save() error {
 
 // The frontend must still be loaded to call these runtime methods.
 func (persistence *Persistence) ApplyCurrentWindowState(ctx context.Context) {
+	x, y := wRuntime.WindowGetPosition(ctx)
+	persistence.SetWindowX(x)
+	persistence.SetWindowY(y)
+
 	maximized := wRuntime.WindowIsMaximised(ctx)
 	persistence.SetMaximized(maximized)
 
 	if !maximized {
 		w, h := wRuntime.WindowGetSize(ctx)
-		x, y := wRuntime.WindowGetPosition(ctx)
-
 		persistence.SetWindowWidth(uint16(w))
 		persistence.SetWindowHeight(uint16(h))
-
-		persistence.SetWindowX(x)
-		persistence.SetWindowY(y)
 	}
 }
 

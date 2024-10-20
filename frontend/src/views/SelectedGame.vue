@@ -5,7 +5,7 @@ import type { Ref } from "vue"
 import Skeleton from 'primevue/skeleton'
 import Tag from 'primevue/tag'
 
-import { Nullable } from "primevue/ts-helpers"
+import type { Nullable } from "primevue/ts-helpers"
 
 import DataView, { DataViewPageEvent } from 'primevue/dataview'
 import TabMenu, { TabMenuChangeEvent } from 'primevue/tabmenu'
@@ -22,7 +22,7 @@ import {
     ConfigEditorOverlay
 } from "@components"
 
-import { Package } from "@types"
+import type { Package } from "@types"
 import { useGameStore } from "@stores"
 
 import { debounce } from "../util"

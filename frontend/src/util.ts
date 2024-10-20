@@ -1,5 +1,5 @@
 import { OpenExternal } from "@backend/app/Application.js"
-import { TooltipOptions } from "primevue/tooltip"
+import { type TooltipOptions } from "primevue/tooltip"
 
 const tooltipTextStyle = {
     fontSize: '14.5px'

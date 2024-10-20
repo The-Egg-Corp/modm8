@@ -11,8 +11,8 @@ import {
     SetGameSelectionLayout
 } from '@backend/app/AppSettings.js'
 
-import { app } from "@backend/models.js"
-import { Theme } from "@types"
+import type { app } from "@backend/models.js"
+import type { Theme } from "@types"
 import { ref } from 'vue'
 
 export interface SettingsState {
@@ -27,7 +27,7 @@ export const useSettingsStore = defineStore("SettingsStore", () => {
             label: 'Dark',
             value: 'aura-dark-purple'
         } as Theme,
-        animations_enabled: true,
+        animations_enabled: true
     })
     
     const performance = ref({
@@ -38,7 +38,7 @@ export const useSettingsStore = defineStore("SettingsStore", () => {
     const misc = ref({
         nexus_personal_key: '',
         update_behaviour: 2,
-        game_selection_layout: 'grid',
+        game_selection_layout: 'grid'
     })
     //#endregion
 

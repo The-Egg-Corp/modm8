@@ -1,4 +1,4 @@
-import { ThunderstoreGame } from "@types"
+import type { ThunderstoreGame } from "@types"
 
 export const mockGameList: ThunderstoreGame[] = [{
   title: "Lethal Company",
@@ -13,7 +13,7 @@ export const mockGameList: ThunderstoreGame[] = [{
   image: "RiskOfRain2.jpg",
   path: "H:\\Program Files (x86)\\Steam\\steamapps\\common\\Risk of Rain 2",
   aliases: ["ror2"],
-  steamID: 248820,
+  steamID: 248820
 }, {
   title: "Content Warning",
   identifier: 'content-warning',

@@ -3,7 +3,7 @@ import { ComputedRef, computed } from 'vue'
 import { usePrimeVue } from 'primevue/config'
 
 import { useSettingsStore } from '@stores'
-import { 
+import type { 
     ChangeEvent, 
     OptionItem, ValueItem,
     Theme, ThemeGroup

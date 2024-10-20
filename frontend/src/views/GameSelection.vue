@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { 
-    ref, Ref, 
-    computed, ComputedRef, 
-    nextTick, onMounted,
+    type Ref, ref, 
+    type ComputedRef, computed, 
+    nextTick, onMounted
 } from 'vue'
 
 import DataView from 'primevue/dataview'
@@ -12,13 +12,13 @@ import Skeleton from 'primevue/skeleton'
 // TODO: Replace with real external service.
 import { mockGameList } from '../mocks/GameService'
 
-import { 
+import type { 
     ThunderstoreGame, 
     Layout, OptionItem, 
     ValueItem, ValueItemLabeled,
 } from '@types'
 
-import { Nullable } from 'primevue/ts-helpers'
+import type { Nullable } from 'primevue/ts-helpers'
 
 import { t } from '@i18n'
 import { tooltipOpts, openLink } from "../../src/util"

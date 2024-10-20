@@ -1,9 +1,9 @@
-import { Country } from "@types"
+import type { Country } from "@types"
 
 import { useSettingsStore } from "@stores"
 import { storeToRefs } from "pinia"
 
-import { ComputedRef, computed } from "vue"
+import { type ComputedRef, computed } from "vue"
 import { createI18n } from "vue-i18n"
 
 import en from "./locales/en.json"
@@ -33,10 +33,10 @@ export const countries: ComputedRef<Country[]> = computed(() => [{
 }, {
   name: t('languages.fr'),
   code: 'fr'
-},{
+}, {
   name: t('languages.it'),
   code: 'it'
-},{
+}, {
   name: t('languages.es'),
   code: 'es'
 }])

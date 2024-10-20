@@ -1,4 +1,4 @@
-import { RouteRecordRaw } from 'vue-router'
+import type { RouteRecordRaw } from 'vue-router'
 
 const Dashboard = () => import('../views/Dashboard.vue')
 const GameSelection = () => import('../views/GameSelection.vue')

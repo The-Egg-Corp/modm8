@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { thunderstore, v1 } from "@backend/models.js"
 
 export type Package = thunderstore.StrippedPackage & {

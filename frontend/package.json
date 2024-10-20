@@ -10,7 +10,8 @@
     "dev": "bunx vite",
     "build": "bun run copy-themes && bunx vite build",
     "typecheck": "bunx vue-tsc --noEmit",
-    "ci": "bun i && bun run typecheck"
+    "ci": "bun i && bun run typecheck",
+    "lint": "bunx eslint ./src"
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",
@@ -31,7 +32,11 @@
     "rimraf": "latest",
     "typescript": "latest",
     "vite": "latest",
-    "vue-tsc": "latest"
+    "vue-tsc": "latest",
+    "@typescript-eslint/eslint-plugin": "^6.7.5",
+    "@typescript-eslint/parser": "^6.7.5",
+    "eslint": "^8.49.0",
+    "eslint-plugin-named-import-spacing": "^1.0.3"
   },
   "optionalDependencies": {
     "@rollup/rollup-linux-x64-gnu": "4.9.5"

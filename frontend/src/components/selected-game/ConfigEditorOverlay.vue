@@ -1,16 +1,16 @@
 <script lang="ts" setup>
-import { onMounted, Ref, ref, watch } from 'vue'
-import { Nullable } from 'primevue/ts-helpers'
+import { type Ref, ref, watch } from 'vue'
+import type { Nullable } from 'primevue/ts-helpers'
 
 import { BepinexConfigFiles, ParseBepinexConfig } from '@backend/game/GameManager'
 import { game } from '@backend/models'
 
-import { Dialog } from '@composables'
+import type { Dialog } from '@composables'
 import { CardOverlay, ConfigEditLayout } from '@components'
 
 import { t } from '@i18n'
 import { openLink } from "../../util"
-import { ThunderstoreGame } from '@types'
+import type { ThunderstoreGame } from '@types'
 
 const selectedConfig: Ref<Nullable<game.BepinexConfig>> = ref(null)
 const selectedConfigName: Ref<Nullable<string>> = ref(null)

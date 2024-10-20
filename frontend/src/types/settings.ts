@@ -1,4 +1,4 @@
-import { ValueItemLabeled } from "./primevue.js"
+import type { ValueItemLabeled } from "./primevue.js"
 
 export interface Country {
     name: string

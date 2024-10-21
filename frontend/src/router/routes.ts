@@ -3,7 +3,7 @@ import type { RouteRecordRaw } from 'vue-router'
 const Dashboard = () => import('../views/Dashboard.vue')
 const GameSelection = () => import('../views/GameSelection.vue')
 const SelectedGame = () => import('../views/SelectedGame.vue')
-const ModDevTools = () => import('../views/ModDevTools.vue')
+const ModDevTools = () => import('../views/mod-dev-tools/ModDevTools.vue')
 
 const ROUTES: RouteRecordRaw[] = [{
     path: '/', 

@@ -56,13 +56,13 @@ const updateBehaviour: Ref<Behaviour> = ref({
 
 const behaviours: Ref<Behaviour[]> = computed(() => [{
     label: t('settings.update-behaviour.option-1'),
-    value: app.UpdateBehaviour.OFF
+    value: app.UpdateBehaviour.AUTO
 }, {
     label: t('settings.update-behaviour.option-2'),
     value: app.UpdateBehaviour.NOTIFY
 }, {
     label: t('settings.update-behaviour.option-3'),
-    value: app.UpdateBehaviour.AUTO
+    value: app.UpdateBehaviour.OFF
 }])
 
 // Every time the overlay is opened.

@@ -35,6 +35,8 @@ const items = ref([{
     label: 'Package Validater',
     icon: 'pi pi-check-square' 
 }])
+
+const props = defineEmits(['selectThunderstore', 'selectNexus'])
 </script>
 
 <template>
@@ -48,7 +50,7 @@ const items = ref([{
         <div class="blur w-full h-full">
             <div class="flex column panel-text">
                 Thunderstore
-                <Button class="mt-3" label="Select"/>
+                <Button class="mt-3" label="Select" @click="$emit('selectThunderstore')"/>
             </div>
         </div>
     </SplitterPanel>
@@ -57,7 +59,7 @@ const items = ref([{
         <div class="blur w-full h-full">
             <div class="flex column panel-text">
                 Nexus Mods
-                <Button class="mt-3" label="Select"/>    
+                <Button class="mt-3" label="Select" @click="$emit('selectNexus')"/>
             </div>
         </div>
     </SplitterPanel>

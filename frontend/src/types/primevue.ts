@@ -2,11 +2,6 @@ export type Layout = 'grid' | 'list'
 
 export type Alignment = "center" | "left" | "right"
 
-export interface ChangeEvent<V> {
-    originalEvent: Event
-    value: V
-}
-
 export interface OptionItem<T> {
     index: number
     option: T
@@ -24,6 +19,11 @@ export interface ValueItemLabeled<V> {
 
 export interface ItemProps<V> {
     items: V[]
+}
+
+export interface ChangeEvent<V> {
+    originalEvent: Event
+    value: V
 }
 
 export interface BreadcrumbPage {

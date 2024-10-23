@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { BrowserOpenURL } from "@runtime"
+
 import { version } from "@frontend/package.json" with { type: "json" }
 
 import { CardOverlay } from "@components"
@@ -39,15 +41,17 @@ const {
                         <div class="flex row gap-1">
                             <Button class="outlined-btn w-6" severity="help" 
                                 icon="pi pi-heart-fill" label="Donate"
-                                as="a" href="https://github.com/sponsors/Owen3H" target="_blank" rel="noopener" 
+                                @click="BrowserOpenURL('https://github.com/sponsors/Owen3H')"
                             />
     
                             <Button class="outlined-btn w-full" severity="primary"
                                 icon="pi pi-github" label="View source code"
+                                @click="BrowserOpenURL('https://github.com/The-Egg-Corp/modm8')"
                             />
 
                             <Button class="outlined-btn w-full" style="background-color: #7289da;"
                                 icon="pi pi-discord" label="Join the community"
+                                @click="BrowserOpenURL('https://discord.gg/64Vq7cpdGV')"
                             />
                         </div>
                     </div>

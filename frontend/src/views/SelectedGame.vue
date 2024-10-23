@@ -1,11 +1,8 @@
 <script lang="ts" setup>
 import { nextTick, onMounted, ref } from "vue"
-import type { Ref } from "vue"
 
 import Skeleton from 'primevue/skeleton'
 import Tag from 'primevue/tag'
-
-import type { Nullable } from "primevue/ts-helpers"
 
 import DataView, { DataViewPageEvent } from 'primevue/dataview'
 import TabMenu, { TabMenuChangeEvent } from 'primevue/tabmenu'
@@ -22,7 +19,7 @@ import {
     ConfigEditorOverlay
 } from "@components"
 
-import type { Package } from "@types"
+import type { Package, Nullable } from "@types"
 import { useGameStore } from "@stores"
 
 import { debounce } from "../util"
@@ -36,17 +33,17 @@ const installingModDialog = useDialog('selected-game-installing-mod')
 const ROWS = 40
 
 const loading = ref(false)
-const searchInput: Ref<Nullable<string>> = ref(null)
+const searchInput = ref<Nullable<string>>(null)
 const first = ref(0) // Starting index of the current page
 
 const modElements = ref<any[]>([])
 const scrollIndex = ref(0)
 
-const mods: Ref<thunderstore.StrippedPackage[]> = ref([])
-const currentPageMods: Ref<Package[]> = ref([])
+const mods = ref<thunderstore.StrippedPackage[]>([])
+const currentPageMods= ref<Package[]>([])
 
 const installing = ref(false)
-const lastInstalledMod: Ref<Nullable<v1.PackageVersion>> = ref(null)
+const lastInstalledMod = ref<Nullable<v1.PackageVersion>>(null)
 
 const activeTabIndex = ref(0)
 const tabs = ref([

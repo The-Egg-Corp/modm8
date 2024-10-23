@@ -42,7 +42,7 @@ const ModDevTools = () => router.push('/mod-dev-tools')
 
         <div class="top flex column">
             <Button 
-                plain severity="secondary"
+                severity="secondary"
                 class="btn margin-lr no-drag" icon="pi pi-wrench"
                 v-tooltip="tooltipOpts(t('tooltips.sidebar.mod-dev-tools'))"
                 @click="ModDevTools"
@@ -54,15 +54,15 @@ const ModDevTools = () => router.push('/mod-dev-tools')
         <div class="spacer"></div>
  
         <div class="bottom flex column">
-            <Button outlined
-                class="btn-no-outline margin-lr no-drag"
+            <Button severity="secondary"
+                class="btn margin-lr no-drag"
                 icon="pi pi-info-circle"
                 @click="appInfo.setVisible()"
             />
 
             <!-- <Button text class="btn margin-lr no-drag" :icon="themeMode === 'dark' ? 'pi pi-sun' : 'pi pi-moon'" @click="ToggleThemeMode"/> -->
             <Button
-                plain severity="secondary"
+                severity="secondary"
                 class="btn margin-lr spin-hover no-drag" icon="pi pi-cog" 
                 v-tooltip="tooltipOpts(t('keywords.settings'))"
                 @click="settings.setVisible()"
@@ -81,10 +81,8 @@ const ModDevTools = () => router.push('/mod-dev-tools')
     z-index: 999;
     height: 100vh;
     width: 75px;
-    border-right: rgba(255, 255, 255, 0.45) 1px outset;
+    border-right: 1px outset rgba(255, 255, 255, 0.45);
     background-color: #202125;
-    padding-left: 15px;
-    padding-right: 15px;
 }
 
 .sidebar img {
@@ -99,13 +97,7 @@ const ModDevTools = () => router.push('/mod-dev-tools')
 .btn {
     position: relative;
     border-radius: 3px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.btn-no-outline {
-    position: relative;
-    border-radius: 3px;
-    border: none;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
 }
 
 .top .p-button {

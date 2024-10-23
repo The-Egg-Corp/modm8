@@ -1,12 +1,11 @@
 <script lang="ts" setup>
 import { 
-    type Ref, ref, 
-    type ComputedRef, computed, 
+    ref, computed, 
     nextTick, onMounted
 } from 'vue'
 
 import DataView from 'primevue/dataview'
-import DataViewLayoutOptions from 'primevue/dataviewlayoutoptions'
+import SelectButton from 'primevue/selectbutton'
 import Skeleton from 'primevue/skeleton'
 
 // TODO: Replace with real external service.
@@ -16,9 +15,8 @@ import type {
     ThunderstoreGame, 
     Layout, OptionItem, 
     ValueItem, ValueItemLabeled,
+    Nullable,
 } from '@types'
-
-import type { Nullable } from 'primevue/ts-helpers'
 
 import { t } from '@i18n'
 import { tooltipOpts, openLink } from "../../src/util"
@@ -40,17 +38,19 @@ const {
 } = store
 
 const loading = ref(true)
-const searchInput: Ref<Nullable<string>> = ref(null)
-const layout: Ref<Layout> = ref('grid')
+const searchInput = ref<Nullable<string>>(null)
+
+const layout = ref<Layout>('grid')
+const options = ref(['list', 'grid'])
 
 const scrollableList = ref<HTMLElement | null>(null)
 
-const selectedFilter: Ref<ValueItemLabeled<string>> = ref({
+const selectedFilter = ref<ValueItemLabeled<string>>({
     label: "ALL",
     value: t('keywords.all')
 })
 
-const filters: ComputedRef<ValueItemLabeled<string>[]> = computed(() => [{
+const filters = computed<ValueItemLabeled<string>[]>(() => [{
     label: "ALL",
     value: t('keywords.all')
 }, {
@@ -260,11 +260,11 @@ onMounted(async () => {
                         </div>
                         
                         <div class="flex flex-row">
-                            <DataViewLayoutOptions v-model="layout">
-                                <template #listicon>
-                                    <div class="pi pi-list"></div>
+                            <SelectButton v-model="layout" :options="options" :allowEmpty="false">
+                                <template #option="{ option }">
+                                    <i :class="[option === 'list' ? 'pi pi-list' : 'pi pi-th-large']" />
                                 </template>
-                            </DataViewLayoutOptions>
+                            </SelectButton>
                         </div>
                     </div>
                 </template>
@@ -273,7 +273,7 @@ onMounted(async () => {
                 <template #grid>
                     <div class="scrollable-grid grid grid-nogutter">
                         <div v-for="(game, index) in getGames()" :key="index" class="grid-item col-2 sm:col-5 md:col-4 lg:col-3 xl:col-2">
-                            <div class="flex flex-column border-1 p-3 surface-border border-round">
+                            <div class="flex flex-column game-card">
                                 <div class="flex flex-column align-items-center interact-section pb-3">
                                     <div class="game-grid-title">{{ game.title }}</div>
                                 </div>
@@ -392,15 +392,20 @@ onMounted(async () => {
 .game-selection .header {
     text-wrap: wrap;
     text-align: center;
-    font-size: 32px;
-    font-weight: 420;
-    margin: 35px 0px 10px 0px;
+    font-size: 36px;
+    font-weight: 450;
+    margin: 30px 0px 10px 0px;
     padding: 0px 20px 0px 20px; /* Make the text get wrap earlier */
 }
 
 .game-container {
     margin-left: 50px;
     margin-right: 50px;
+}
+
+.game-card {
+    border-radius: 4px;
+    padding: 10px;
 }
 
 .snap-top {
@@ -431,13 +436,13 @@ onMounted(async () => {
     max-width: 105px;
     min-width: 35px;
     opacity: 0;
-    border-radius: 3px;
+    border-radius: 2px;
 }
 
 .game-grid-thumbnail {
     user-select: none;
-    width: 180px;
-    border-radius: 3px;
+    width: 190px;
+    border-radius: 4px;
 }
 
 .game-list-title {

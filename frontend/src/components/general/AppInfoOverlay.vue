@@ -39,7 +39,7 @@ const {
                         <div class="flex row gap-1">
                             <Button class="outlined-btn w-6" severity="help" 
                                 icon="pi pi-heart-fill" label="Donate"
-                                as="a" href="https://github.com/sponsors/Owen3H" target="_blank" rel="noopener" 
+                                href="https://github.com/sponsors/Owen3H" as="a" target="_blank" rel="noopener"
                             />
     
                             <Button class="outlined-btn w-full" severity="primary"

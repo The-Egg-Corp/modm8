@@ -2,7 +2,7 @@
 import { v1 } from "@backend/models"
 import { CardOverlay } from "@components"
 import { Dialog } from "@composables"
-import { Nullable } from "primevue/ts-helpers"
+import type { Nullable } from "@types"
 
 const props = defineProps<{
     dialog: Dialog

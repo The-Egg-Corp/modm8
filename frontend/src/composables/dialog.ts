@@ -14,7 +14,10 @@ export interface DialogState {
 
 const dialogs: Record<string, DialogState> = {}
 
+export const closeAllDialogs = () => Object.values(dialogs).forEach(d => d.visible.value = false)
 export const openDialogCount = () => Object.keys(dialogs).reduce((amt, key) => amt + (dialogs[key].visible.value ? 1 : 0), 0)
+export const getOpenDialogs = () => Object.values(dialogs).filter(d => d.visible.value)
+
 export const useDialog = (id: string): Dialog => {
     // Initialize the dialog state if it doesn't exist.
     if (!dialogs[id]) {
@@ -25,17 +28,9 @@ export const useDialog = (id: string): Dialog => {
         }
     }
 
-    const setVisible = (val = true) => {
-        dialogs[id].visible.value = val
-    }
-    
-    const setDraggable = (val = true) => {
-        dialogs[id].draggable.value = val
-    }
-    
-    const setClosable = (val = true) => {
-        dialogs[id].closable.value = val
-    }
+    const setVisible = (val = true) => dialogs[id].visible.value = val
+    const setDraggable = (val = true) => dialogs[id].draggable.value = val
+    const setClosable = (val = true) => dialogs[id].closable.value = val
     
     return {
         visible: dialogs[id].visible,

@@ -3,27 +3,11 @@ import { version } from "@frontend/package.json" with { type: "json" }
 
 import { CardOverlay } from "@components"
 import { useDialog } from "@composables"
-import { onMounted, onUnmounted } from "vue"
 
 const { 
     setVisible,
     visible, closable, draggable
 } = useDialog('app-info')
-
-const onEscape = (e: KeyboardEvent) => {
-    if (!visible.value) return
-    if (e.key == "Escape") setVisible(false)
-
-    console.log(e)
-}
-
-onMounted(() => {
-    window.addEventListener("keydown", onEscape)
-})
-
-onUnmounted(() => {
-    window.removeEventListener("keydown", onEscape)
-})
 </script>
 
 <template>

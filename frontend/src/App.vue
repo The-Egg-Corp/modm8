@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted } from 'vue'
+import { onBeforeUnmount, onMounted } from 'vue'
 import { changeLocale } from '@i18n'
 
 import { 
@@ -13,11 +13,33 @@ import {
 } from '@components'
 
 import { useAppStore } from '@stores'
+import { getOpenDialogs } from '@composables'
 
 const appStore = useAppStore()
 const {
     setMaxThreads
 } = appStore
+
+//const settingsDialog = useDialog('settings')
+
+// Keydown event listener
+const onKeydown = (event: KeyboardEvent) => {
+    console.log('Keydown fired!\n', event.key)
+
+    const openDialogs = getOpenDialogs()
+    if (openDialogs.length > 0) {
+        for (const dialog of openDialogs) {
+            dialog.visible.value = false
+        }
+
+        return
+    }
+
+    // No dialogs open + pressing ESC -> open settings overlay.
+    // if (event.key == 'Escape') {
+    //     settingsDialog.setVisible(!settingsDialog.visible.value)
+    // }
+}
 
 onMounted(async () => {
     const settings = await GetSettings()
@@ -25,6 +47,13 @@ onMounted(async () => {
 
     // We don't use `navigator.hardwareConcurrency` as it is known to be unreliable.
     setMaxThreads(await NumCPU())
+
+    // Add keydown event listener when the app mounts
+    window.addEventListener('keydown', onKeydown)
+})
+
+onBeforeUnmount(() => {
+    window.removeEventListener('keydown', onKeydown)
 })
 </script>
 

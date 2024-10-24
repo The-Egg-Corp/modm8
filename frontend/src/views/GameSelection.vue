@@ -369,7 +369,7 @@ onMounted(async () => {
                                             <Button
                                                 :label="$t('game-selection.select-button')"
                                                 class="list-select-game-btn flex-auto md:flex-initial"
-                                                @click="setSelectedGame(game)"
+                                                @click="selectGame(game)"
                                             />
                                         </div>
                                     </div>

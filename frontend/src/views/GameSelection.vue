@@ -137,7 +137,12 @@ const scrollIndex = ref(0)
 
 const scrollToGame = () => {
     const i = scrollIndex.value
-    if (i < 0 || i >= gameElements.value.length) return // Ensure no OOB
+
+    // This should never happen. If it does, shame the guy who gave scrollIndex a bad value. (Probably me)
+    if (i < 0 || i >= gameElements.value.length) {
+        console.warn(`Prevented OOB access of 'gameElements'. Scroll index: ${i}`)
+        return
+    }
 
     const game = gameElements.value[i]
     if (!game) return
@@ -145,14 +150,15 @@ const scrollToGame = () => {
     (game as Element).scrollIntoView({ block: 'start' })
 }
 
+// NOTE: Might want to make this a ref in future so it can be user defined.
+const SCROLL_STEP = 1
+
 const handleScroll = (e: WheelEvent) => {
-    if (e.deltaY > 0) {
-        // Scrolling down
-        if (scrollIndex.value < gameElements.value.length - 1) {
-            scrollIndex.value++
-        }
-    } else if (scrollIndex.value > 0) {
-        scrollIndex.value--
+    if (e.deltaY > 0) {     
+        const lastGameIndex = gameElements.value.length - 1
+        scrollIndex.value = Math.min(scrollIndex.value + SCROLL_STEP, lastGameIndex)
+    } else {
+        scrollIndex.value = Math.max(scrollIndex.value - SCROLL_STEP, 0)
     }
 
     // Scroll to the next div element in game list.
@@ -354,7 +360,7 @@ onMounted(async () => {
                                             <Button
                                                 outlined plain
                                                 icon="pi pi-folder"
-                                                v-if="game.path"
+                                                v-if="game.installed"
                                                 v-tooltip.top="tooltipOpts(t('tooltips.game-selection.open-folder-location'))"
                                                 @click="openLink(`file://${game.path}`)"
                                             />

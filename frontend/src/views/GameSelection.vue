@@ -135,6 +135,7 @@ const selectGame = (game: ThunderstoreGame) => {
 const gameElements = ref<any[]>([])
 const scrollIndex = ref(0)
 
+// Scroll to the next item in game list, assuming the scroll index has already been set.
 const scrollToGame = () => {
     const i = scrollIndex.value
 
@@ -147,6 +148,7 @@ const scrollToGame = () => {
     const game = gameElements.value[i]
     if (!game) return
 
+    // We only need Element for scroll methods.
     (game as Element).scrollIntoView({ block: 'start' })
 }
 
@@ -161,13 +163,17 @@ const handleScroll = (e: WheelEvent) => {
         scrollIndex.value = Math.max(scrollIndex.value - SCROLL_STEP, 0)
     }
 
-    // Scroll to the next div element in game list.
+    // On DOM update complete
     nextTick(() => scrollToGame())
 }
 
 onMounted(async () => {
     const size = await initGames(mockGameList)
-    console.info(`GameStore: Populated games map with ${size} items.`)
+
+    console.info(`GameStore: Populated cache with ${size} games.`)
+    if (size != mockGameList.length) {
+        console.warn("GameStore: Size of cache does not match original input.")
+    }
 
     loading.value = false
 })
@@ -182,7 +188,7 @@ onMounted(async () => {
             <DataView v-if="loading" data-key="game-selection-loading" layout="grid">
                 <template #empty>
                     <div class="scrollable grid-nogutter pt-4">
-                        <div v-for="i in 15" :key="i" class="grid-item col-6 sm:col-3 md:col-3 lg:col-2 xl:col-1">
+                        <div v-for="i in 15" :key="i" class="grid-item col-2 sm:col-6 md:col-5 lg:col-2 xl:col-2">
                             <div class="flex flex-column p-3 border-1 surface-border border-round">
                                 <div class="flex flex-column align-items-center interact-section pb-3">
                                     <Skeleton width="6rem" height="2rem" />
@@ -278,54 +284,45 @@ onMounted(async () => {
                 <!-- Grid layout -->
                 <template #grid>
                     <div class="scrollable-grid grid grid-nogutter">
-                        <div v-for="(game, index) in getGames()" :key="index" class="grid-item col-2 sm:col-5 md:col-4 lg:col-3 xl:col-2">
-                            <div class="flex flex-column game-card">
-                                <div class="flex flex-column align-items-center interact-section pb-3">
+                        <div v-for="(game, index) in getGames()" :key="index" class="grid-item col-2 sm:col-6 md:col-5 lg:col-2 xl:col-2">
+                            <div class="flex column game-card gap-2">
+                                <div class="flex column align-items-center">
                                     <div class="game-grid-title">{{ game.title }}</div>
                                 </div>
 
-                                <div class="flex justify-content-center border-round">
-                                    <div class="relative mx-auto">
-                                        <img class="game-grid-thumbnail" :src="getThumbnail(game)"/>
-                                    </div>
+                                <div class="flex column relative mx-auto">
+                                    <img class="game-grid-thumbnail" :src="getThumbnail(game)"/>
+
+                                    <!-- <div class="flex gap-2 justify-content-center align-items-baseline mt-2 mb-3">
+                                        <p class="m-0" style="font-size: 16px">{{ t('game-selection.bepinex-setup') }}</p>
+                                        <i
+                                            :class="['pi', game.bepinexSetup ? 'pi-check' : 'pi-times']" 
+                                            :style="{ color: game.bepinexSetup  ? 'lime' : 'red' }"
+                                        />
+                                    </div> -->
                                 </div>
 
-                                <div class="flex flex-column interact-section">
-                                    <div class="flex flex-column">
-                                        <!-- <div class="flex gap-2 justify-content-center align-items-baseline mt-2 mb-3">
-                                            <p class="m-0" style="font-size: 16px">{{ t('game-selection.bepinex-setup') }}</p>
-                                            <i
-                                                :class="['pi', game.bepinexSetup ? 'pi-check' : 'pi-times']" 
-                                                :style="{ color: game.bepinexSetup  ? 'lime' : 'red' }"
-                                            />
-                                        </div> -->
+                                <div class="flex row justify-content-center gap-2">
+                                    <Button outlined plain
+                                        v-tooltip.top="tooltipOpts(game.favourited ? t('keywords.unfavourite') : t('keywords.favourite'))"
+                                        :icon="game.favourited ? 'pi pi-heart-fill' : 'pi pi-heart'"
+                                        :style="game.favourited ? { color: 'var(--primary-color)' } : {}"
+                                        @click="toggleFavouriteGame(game.identifier)"
+                                    />
 
-                                        <div class="flex gap-2 justify-content-center pt-2 pb-2">                                    
-                                            <Button
-                                                outlined plain
-                                                v-tooltip.top="tooltipOpts(game.favourited ? t('keywords.unfavourite') : t('keywords.favourite'))"
-                                                :icon="game.favourited ? 'pi pi-heart-fill' : 'pi pi-heart'"
-                                                :style="game.favourited ? { color: 'var(--primary-color)' } : {}"
-                                                @click="toggleFavouriteGame(game.identifier)"
-                                            />
+                                    <Button outlined plain
+                                        v-if="game.installed"
+                                        v-tooltip.top="tooltipOpts(t('tooltips.game-selection.open-folder-location'))"
+                                        icon="pi pi-folder" @click="openLink(`file://${game.path}`)"
+                                    />
+                                </div>
 
-                                            <Button
-                                                outlined plain
-                                                icon="pi pi-folder"
-                                                v-if="game.installed"
-                                                v-tooltip.top="tooltipOpts(t('tooltips.game-selection.open-folder-location'))"
-                                                @click="openLink(`file://${game.path}`)"
-                                            />
-                                        </div>
-
-                                        <div class="flex flex-row gap-3">
-                                            <Button severity="primary"
-                                                class="grid-select-game-btn"
-                                                :label="$t('game-selection.select-button')" 
-                                                @click="selectGame(game)"
-                                            />
-                                        </div>
-                                    </div>
+                                <div class="grid-item-bottom-row justify-content-center">
+                                    <Button severity="primary"
+                                        class="grid-select-game-btn"
+                                        :label="$t('game-selection.select-button')" 
+                                        @click="selectGame(game)"
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -405,13 +402,12 @@ onMounted(async () => {
 }
 
 .game-container {
-    margin-left: 50px;
-    margin-right: 50px;
+    margin-left: 30px;
+    margin-right: 30px;
 }
 
 .game-card {
-    border-radius: 4px;
-    padding: 10px;
+    padding: 10px 25px 10px 25px;
 }
 
 .snap-top {
@@ -427,14 +423,21 @@ onMounted(async () => {
 .scrollable-grid {
     overflow-y: scroll;
     scrollbar-width: none;
-    height: calc(100vh - 150px); /* 100vh alone causes issues */
+    height: calc(100vh - 140px); /* TODO: Investigate why 100vh alone doesn't work */
 }
 
 .grid-item {
-    min-width: fit-content;
     flex: 1 0 auto;
-    padding: 5px;
-    margin: 0;
+    min-width: fit-content;
+    border: 1px solid rgba(182, 182, 182, 0.2);
+    border-radius: 3px;
+    margin: 5px;
+}
+
+.game-grid-thumbnail {
+    user-select: none;
+    width: 190px;
+    border-radius: 4px;
 }
 
 .game-list-thumbnail {
@@ -445,28 +448,27 @@ onMounted(async () => {
     border-radius: 2px;
 }
 
-.game-grid-thumbnail {
-    user-select: none;
-    width: 190px;
-    border-radius: 4px;
-}
-
 .game-list-title {
     font-size: 26px;
     font-weight: 380;
 }
 
 .game-grid-title {
-    font-size: 24px;
-    font-weight: 350;
-    text-shadow: 0px 0px 12px rgba(255, 255, 255, 0.35);
+    font-size: 25px;
+    font-weight: 380;
+    text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.45);
+    text-wrap: nowrap;
+}
+
+.grid-item-bottom-row {
+    display: flex;
+    flex: 1 0 0;
 }
 
 .grid-select-game-btn {
-    display: flex;
-    flex-grow: 1;
     white-space: nowrap;
-    font-size: 16px;
+    font-size: 18px;
+    min-width: 100%;
 }
 
 .list-select-game-btn {

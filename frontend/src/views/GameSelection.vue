@@ -156,6 +156,7 @@ const scrollToGame = () => {
 const SCROLL_STEP = 1
 
 const handleScroll = (e: WheelEvent) => {
+    // The vertical scroll amount. Positive = down | Negative = up
     if (e.deltaY > 0) {     
         const lastGameIndex = gameElements.value.length - 1
         scrollIndex.value = Math.min(scrollIndex.value + SCROLL_STEP, lastGameIndex)
@@ -168,11 +169,15 @@ const handleScroll = (e: WheelEvent) => {
 }
 
 onMounted(async () => {
+    const t0 = performance.now()
+
+    // NOTE: We currently need to initialize the game store cache every mount in-case properties (path, installed) change.
+    //       This may be an issue in future, ignore it until we transition from a static mock list.
     const size = await initGames(mockGameList)
 
-    console.info(`GameStore: Populated cache with ${size} games.`)
+    console.info(`Populated GameStore cache with ${size} games. Took: ${performance.now() - t0}ms`)
     if (size != mockGameList.length) {
-        console.warn("GameStore: Size of cache does not match original input.")
+        console.warn("Size of GameStore cache does not match original input.")
     }
 
     loading.value = false
@@ -187,28 +192,26 @@ onMounted(async () => {
             <!-- While loading, show a skeleton of a grid. -->
             <DataView v-if="loading" data-key="game-selection-loading" layout="grid">
                 <template #empty>
-                    <div class="scrollable grid-nogutter pt-4">
+                    <div class="grid grid-nogutter pt-1">
                         <div v-for="i in 15" :key="i" class="grid-item col-2 sm:col-6 md:col-5 lg:col-2 xl:col-2">
-                            <div class="flex flex-column p-3 border-1 surface-border border-round">
-                                <div class="flex flex-column align-items-center interact-section pb-3">
-                                    <Skeleton width="6rem" height="2rem" />
+                            <div class="flex flex-column p-3">
+                                <div class="flex flex-column align-items-center pb-2">
+                                    <Skeleton width="8rem" height="2.3rem" />
                                 </div>
                 
                                 <div class="flex justify-content-center border-round">
-                                    <Skeleton width="75%" height="10rem" />
+                                    <Skeleton width="75%" height="16.5rem" />
                                 </div>
                 
-                                <div class="flex flex-column align-items-center interact-section pt-2">
-                                    <div class="flex flex-column gap-3">
-                                        <div class="flex gap-2 justify-content-center align-items-baseline">
-                                            <Skeleton width="10rem" height="1.5rem" />
-                                            <Skeleton width="1.5rem" height="1.5rem" shape="circle" />
+                                <div class="flex flex-column align-items-center pt-2">
+                                    <div class="flex flex-column gap-2">
+                                        <div class="flex flex-row gap-2 justify-content-center">
+                                            <Skeleton width="2.5rem" height="2rem" />
+                                            <Skeleton width="2.5rem" height="2rem" />
                                         </div>
-                
-                                        <div class="flex flex-row gap-2">
-                                            <Skeleton width="4rem" height="2rem" />
-                                            <Skeleton width="2rem" height="2rem" shape="circle" />
-                                            <Skeleton width="2rem" height="2rem" shape="circle" />
+
+                                        <div class="flex gap-2 justify-content-center align-items-baseline">
+                                            <Skeleton width="16rem" height="2.5rem" />
                                         </div>
                                     </div>
                                 </div>
@@ -423,7 +426,7 @@ onMounted(async () => {
 .scrollable-grid {
     overflow-y: scroll;
     scrollbar-width: none;
-    height: calc(100vh - 140px); /* TODO: Investigate why 100vh alone doesn't work */
+    height: calc(100vh - 145px); /* TODO: Investigate why 100vh alone prevents scrolling to bottom. */
 }
 
 .grid-item {

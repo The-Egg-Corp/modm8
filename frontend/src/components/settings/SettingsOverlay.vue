@@ -228,6 +228,7 @@ const dividerAlignment: Alignment = "center"
 </template>
 
 <style scoped>
+/* TODO: Are these even needed now, if so they should be in App.vue 
 :global(.p-dialog) {
     border: 1px solid #4d4d4d;
     border-radius: 9px;
@@ -245,7 +246,7 @@ const dividerAlignment: Alignment = "center"
 
 :global(.p-divider-content) {
     background: none;
-}
+}*/
 
 :deep(.p-dialog-title) {
     user-select: none;

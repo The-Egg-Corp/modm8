@@ -2,7 +2,7 @@
 import DataView from 'primevue/dataview'
 //import Toolbar from 'primevue/toolbar'
 
-import { Ref, ref } from 'vue'
+import { ref } from 'vue'
 import { t } from '@i18n'
 import { tooltipOpts } from '@frontend/src/util'
 
@@ -14,12 +14,12 @@ interface Profile {
     }
 }
 
-const selectedProfile: Ref<Profile> = ref({
+const selectedProfile = ref<Profile>({
     name: "Default", 
     mods: {}
 })
 
-const profiles: Ref<Profile[]> = ref([
+const profiles = ref<Profile[]>([
     { name: 'Default', mods: {} },
     { name: 'testing', mods: {} },
     { name: 'MEGALOPHOBIA', mods: {} },

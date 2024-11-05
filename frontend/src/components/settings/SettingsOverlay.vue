@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Ref, computed, ref, watch } from "vue"
+import { computed, ref, watch } from "vue"
 import { storeToRefs } from "pinia"
 
 import { app } from "@backend/models"
@@ -49,12 +49,12 @@ const setAccel = (value: boolean) => {
 //#region Update Behaviour
 type Behaviour = ValueItemLabeled<app.UpdateBehaviour>
 
-const updateBehaviour: Ref<Behaviour> = ref({ 
+const updateBehaviour = ref<Behaviour>({ 
     label: t('settings.update-behaviour.option-1'),
     value: app.UpdateBehaviour.AUTO
 })
 
-const behaviours: Ref<Behaviour[]> = computed(() => [{
+const behaviours = computed<Behaviour[]>(() => [{
     label: t('settings.update-behaviour.option-1'),
     value: app.UpdateBehaviour.AUTO
 }, {
@@ -138,7 +138,7 @@ const dividerAlignment: Alignment = "center"
                         <h3>{{ $t('settings.animations-enabled') }}</h3>
                     </div>
                     <div class="flex-item">
-                        <InputSwitch 
+                        <ToggleSwitch 
                             v-model="animationsEnabled" 
                             @update:model-value="setAnimationsEnabled(animationsEnabled)"
                         />
@@ -158,7 +158,7 @@ const dividerAlignment: Alignment = "center"
                         <h3>{{ $t('settings.gpu-acceleration') }}</h3>
                     </div>
                     <div class="flex-item">
-                        <InputSwitch 
+                        <ToggleSwitch 
                             v-model="accelChecked" 
                             @update:model-value="setAccel(accelChecked)"
                         />
@@ -228,6 +228,7 @@ const dividerAlignment: Alignment = "center"
 </template>
 
 <style scoped>
+/* TODO: Are these even needed now, if so they should be in App.vue 
 :global(.p-dialog) {
     border: 1px solid #4d4d4d;
     border-radius: 9px;
@@ -245,7 +246,7 @@ const dividerAlignment: Alignment = "center"
 
 :global(.p-divider-content) {
     background: none;
-}
+}*/
 
 :deep(.p-dialog-title) {
     user-select: none;

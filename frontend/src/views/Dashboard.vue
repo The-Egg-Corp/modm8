@@ -31,7 +31,7 @@ async function getPackages() {
 </script>
 
 <template>
-<div class="dashboard flex-full column">
+<!-- <div class="dashboard flex-full column">
     <TabView>
         <TabPanel header="Thunderstore">
             <div class="search-user-packages">
@@ -40,7 +40,7 @@ async function getPackages() {
                 <div id="input" class="input-box no-drag">
                     <FloatLabel>
                         <InputText id="name" v-model="data.name" autocomplete="off"/>
-                        <!-- <label for="name">Owner</label> -->
+                        // <label for="name">Owner</label>
                     
                         <Button class="search-btn" severity="help" outlined icon="pi pi-search" @click="getPackages"/>
                     </FloatLabel>
@@ -53,7 +53,7 @@ async function getPackages() {
             <p class="m-0">buh</p>
         </TabPanel>
     </TabView>
-</div>
+</div> -->
 </template>
 
 <!-- #region Style -->

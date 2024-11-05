@@ -1,12 +1,38 @@
+:root {
+    font-family: "Inter var", sans-serif;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    font-variation-settings: normal;
+    --font-family: "Inter var", sans-serif;
+    --font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+@font-face {
+    font-family: "Inter var";
+    font-weight: 200 900;
+    font-display: swap;
+    font-style: normal;
+    font-named-instance: "Regular";
+    src: url("../fonts/Inter-roman.var.woff2?v=3.19") format("woff2");
+}
+
+@font-face {
+    font-family: "Inter var";
+    font-weight: 200 900;
+    font-display: swap;
+    font-style: italic;
+    font-named-instance: "Italic";
+    src: url("../fonts/Inter-italic.var.woff2?v=3.19") format("woff2");
+}
+
 html {
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     overflow: hidden;
 }
 
 body {
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     position: relative;
     box-sizing: border-box;
     margin: 0;
@@ -20,8 +46,12 @@ body::before {
     right: 0;
     bottom: 0;
     left: 0;
-    background-color: rgb(12, 12, 14);
+    background-color: rgba(14, 14, 16);
     z-index: -1;
+}
+
+a {
+    text-decoration: none;
 }
 
 .flex-span {
@@ -50,4 +80,12 @@ body::before {
 
 .p-tooltip-arrow {
     border-left-color: transparent !important;
+}
+
+.border-faint {
+    border: 1px solid rgba(190, 190, 190, 0.2);
+}
+
+.border-top-faint {
+    border-top: 1px solid rgba(190, 190, 190, 0.2);
 }

@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { game } from '@backend/models'
 import { computed } from 'vue'
 
 import Divider from 'primevue/divider'
-import { Nullable } from 'primevue/ts-helpers'
+
+import { game } from '@backend/models'
+import type { Nullable } from '@types'
 
 interface ConfigProps {
     config: game.BepinexConfig
@@ -85,7 +86,7 @@ const asBool = (str: string) => {
                     </div>
 
                     <div>
-                        <InputSwitch v-if="isBool(entry.default_value)" v-model="entry.checked"/>
+                        <ToggleSwitch v-if="isBool(entry.default_value)" v-model="entry.checked"/>
                         <InputText v-else class="ml-3 flex-grow-1" style="font-size: 16px;" :value="entry.value"/>
                     </div>
                 </div>

@@ -34,3 +34,16 @@ export interface BreadcrumbPage {
     class?: string
     style?: string
 }
+
+export interface SemanticColorScheme {
+    colorScheme?: {
+        light?: any
+        dark?: any
+    }
+}
+
+export interface PresetOptions<PrimitiveTokens, SemanticTokens> {
+    primitive?: Partial<PrimitiveTokens>
+    semantic?: Partial<SemanticTokens> & SemanticColorScheme
+    [key: string]: any // For 'components' etc.
+}

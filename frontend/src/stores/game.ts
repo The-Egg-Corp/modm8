@@ -29,6 +29,7 @@ export const useGameStore = defineStore('GameStore', () => {
     const _gameByID = (id: string) => games.value.get(id)
     const gameByID = computed(() => _gameByID)
 
+    // TODO: Consider renaming this?
     const gamesAsArray = computed(() => [...games.value.values()] as ThunderstoreGame[])
 
     // TODO: Evaluate if these are even useful.
@@ -68,14 +69,17 @@ export const useGameStore = defineStore('GameStore', () => {
 
     async function initGames(gameList: ThunderstoreGame[]) {
         games.value = new Map<string, ThunderstoreGame>()
+
         const persistence = await GetPersistence()
-
+        const len = gameList.length
+        
         // Init game props.
-        for (const game of gameList) {
-            game.favourited = await persistence.favourite_games.includes(game.identifier)
-
+        for (let i = 0; i < len; i++) {
+            const game = gameList[i]
+            
             // TODO: Check game executable exists. For now, assume installed if game path is specified and exists.
             game.installed = !game.path ? false : await ExistsAtPath(game.path, true)
+            game.favourited = await persistence.favourite_games.includes(game.identifier)
 
             if (game.path) {
                 game.bepinexSetup = await BepinexInstalled(game.path)

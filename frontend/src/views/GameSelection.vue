@@ -186,7 +186,7 @@ onMounted(async () => {
 
 <template>
     <div class="game-selection flex-span column">
-        <h2 class="header no-select">{{ $t('game-selection.header') }}</h2>
+        <h2 class="header no-select">{{ t('game-selection.header') }}</h2>
 
         <div class="card game-container no-drag">
             <!-- While loading, show a skeleton of a grid. -->
@@ -231,7 +231,7 @@ onMounted(async () => {
                         <p>No games installed!</p>
                     </div>
                     <div v-else-if="searchInput && searchInput.length > 0" class="dataview-empty flex flex-column">
-                        <p>{{ `${$t('game-selection.empty-results')}.` }}</p>
+                        <p>{{ `${t('game-selection.empty-results')}.` }}</p>
 
                         <!-- Sadge -->
                         <!-- <img class="pt-3" src="https://cdn.7tv.app/emote/603cac391cd55c0014d989be/2x.png"> -->
@@ -247,7 +247,14 @@ onMounted(async () => {
                 <!-- Header (filter, search, layout) -->
                 <template #header>
                     <div class="flex flex-row justify-content-between align-items-center">
-                        <div>
+                        <div class="flex row gap-2">
+                            <div class="searchbar">
+                                <IconField iconPosition="left">
+                                    <InputIcon class="pi pi-search"/>
+                                    <InputText type="text" :placeholder="t('game-selection.search-placeholder')" v-model="searchInput"/>
+                                </IconField>
+                            </div>
+    
                             <Dropdown checkmark
                                 class="no-drag filter-dropdown"
                                 :options="filters"
@@ -266,13 +273,6 @@ onMounted(async () => {
                                 </template>
                             </Dropdown>
                         </div>
-
-                        <div class="searchbar">
-                            <IconField iconPosition="left">
-                                <InputIcon class="pi pi-search"></InputIcon>
-                                <InputText type="text" :placeholder="$t('game-selection.search-placeholder')" v-model="searchInput"/>
-                            </IconField>
-                        </div>
                         
                         <div class="flex flex-row">
                             <SelectButton v-model="layout" :options="options" :allowEmpty="false">
@@ -287,7 +287,7 @@ onMounted(async () => {
                 <!-- Grid layout -->
                 <template #grid>
                     <div class="scrollable-grid grid grid-nogutter">
-                        <div v-for="(game, index) in getGames()" :key="index" class="grid-item col-2 sm:col-6 md:col-5 lg:col-2 xl:col-2">
+                        <div v-for="(game, index) in getGames()" :key="index" class="grid-item border-faint col-2 sm:col-6 md:col-5 lg:col-2 xl:col-2">
                             <div class="flex column game-card gap-2">
                                 <div class="flex column align-items-center">
                                     <div class="game-grid-title">{{ game.title }}</div>
@@ -323,7 +323,7 @@ onMounted(async () => {
                                 <div class="grid-item-bottom-row justify-content-center">
                                     <Button severity="primary"
                                         class="grid-select-game-btn"
-                                        :label="$t('game-selection.select-button')" 
+                                        :label="t('game-selection.select-button')" 
                                         @click="selectGame(game)"
                                     />
                                 </div>
@@ -339,15 +339,15 @@ onMounted(async () => {
                             v-for="(game, index) in getGames()" class="snap-top col-12" 
                             :key="index" :ref="el => gameElements[index] = el"
                         >
-                            <div class="flex flex-column sm:flex-row sm:align-items-center p-2 gap-5" :class="{ 'border-top-1 surface-border': index !== 0 }">
+                            <div class="flex flex-column sm:flex-row sm:align-items-center p-2 gap-4" :class="{ 'border-top-faint': index !== 0 }">
                                 <img class="game-list-thumbnail fadeinleft fadeinleft-thumbnail block xl:block mx-auto w-full" :src="getThumbnail(game)"/>
 
-                                <div class="flex flex-column md:flex-row justify-content-between md:align-items-center flex-1 gap-4">
-                                    <div class="fadeinleft fadeinleft-title flex flex-row md:flex-column justify-content-between align-items-start gap-2">
+                                <div class="flex flex-column md:flex-row justify-content-between md:align-items-center flex-1">
+                                    <div class="fadeinleft fadeinleft-title flex flex-row md:flex-column justify-content-between align-items-start gap-1">
                                         <div class="game-list-title">{{ game.title }}</div>
 
                                         <div class="flex gap-2 justify-content-center align-items-baseline">
-                                            <p class="m-0" style="font-size: 16.5px">{{ t('game-selection.bepinex-setup') }}</p>
+                                            <p class="m-0" style="font-size: 16px">{{ t('game-selection.bepinex-setup') }}</p>
                                             <i
                                                 :class="['pi', game.installed ? 'pi-check' : 'pi-times']" 
                                                 :style="{ color: game.installed ? 'lime' : 'red' }"
@@ -373,7 +373,7 @@ onMounted(async () => {
                                             />
 
                                             <Button
-                                                :label="$t('game-selection.select-button')"
+                                                :label="t('game-selection.select-button')"
                                                 class="list-select-game-btn flex-auto md:flex-initial"
                                                 @click="selectGame(game)"
                                             />
@@ -397,11 +397,10 @@ onMounted(async () => {
 
 .game-selection .header {
     text-wrap: wrap;
-    text-align: center;
-    font-size: 36px;
+    text-align: left;
+    font-size: 38px;
     font-weight: 450;
-    margin: 30px 0px 10px 0px;
-    padding: 0px 20px 0px 20px; /* Make the text get wrap earlier */
+    margin: 30px 0px 10px 35px;
 }
 
 .game-container {
@@ -418,28 +417,27 @@ onMounted(async () => {
 }
 
 .scrollable-list {
-    max-height: calc(160px * 5);
     overflow-y: scroll; /* Enable vertical scrolling */
     scrollbar-width: none;
+    max-height: calc(160px * 5); /* Height of single item * amount of items */
 }
 
 .scrollable-grid {
     overflow-y: scroll;
     scrollbar-width: none;
-    height: calc(100vh - 145px); /* TODO: Investigate why 100vh alone prevents scrolling to bottom. */
+    max-height: calc(100vh - 145px); /* TODO: Investigate why 100vh alone prevents scrolling to bottom. */
 }
 
 .grid-item {
     flex: 1 0 auto;
     min-width: fit-content;
-    border: 1px solid rgba(182, 182, 182, 0.2);
     border-radius: 3px;
     margin: 5px;
 }
 
 .game-grid-thumbnail {
     user-select: none;
-    width: 190px;
+    width: 180px;
     border-radius: 4px;
 }
 
@@ -448,17 +446,17 @@ onMounted(async () => {
     max-width: 105px;
     min-width: 35px;
     opacity: 0;
-    border-radius: 2px;
+    border-radius: 1px;
 }
 
 .game-list-title {
     font-size: 26px;
-    font-weight: 380;
+    font-weight: 360;
 }
 
 .game-grid-title {
-    font-size: 25px;
-    font-weight: 380;
+    font-size: 24px;
+    font-weight: 360;
     text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.45);
     text-wrap: nowrap;
 }
@@ -490,18 +488,12 @@ onMounted(async () => {
     margin-left: auto;
     margin-right: auto;
     width: 350px;
-    min-width: 200px;
 }
 
 :deep(.p-dataview-header) {
     background: transparent !important;
-    padding: 10px 0px 10px 0px;
+    padding: 5px 0px 5px 0px;
     margin: 0px 5px 0px 5px;
-    border: none;
-}
-
-:deep(.p-dataview-layout-options .p-button) {
-    background: none !important;
     border: none;
 }
 

@@ -81,3 +81,11 @@ a {
 .p-tooltip-arrow {
     border-left-color: transparent !important;
 }
+
+.border-faint {
+    border: 1px solid rgba(190, 190, 190, 0.2);
+}
+
+.border-top-faint {
+    border-top: 1px solid rgba(190, 190, 190, 0.2);
+}

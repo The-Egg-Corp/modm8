@@ -1,11 +1,8 @@
 <script lang="ts" setup>
 import { nextTick, onMounted, ref } from "vue"
-import type { Ref } from "vue"
 
 import Skeleton from 'primevue/skeleton'
 import Tag from 'primevue/tag'
-
-import type { Nullable } from "primevue/ts-helpers"
 
 import DataView, { DataViewPageEvent } from 'primevue/dataview'
 import TabMenu, { TabMenuChangeEvent } from 'primevue/tabmenu'
@@ -22,7 +19,7 @@ import {
     ConfigEditorOverlay
 } from "@components"
 
-import type { Package } from "@types"
+import type { Package, Nullable } from "@types"
 import { useGameStore } from "@stores"
 
 import { debounce } from "../util"
@@ -36,17 +33,17 @@ const installingModDialog = useDialog('selected-game-installing-mod')
 const ROWS = 40
 
 const loading = ref(false)
-const searchInput: Ref<Nullable<string>> = ref(null)
+const searchInput = ref<Nullable<string>>(null)
 const first = ref(0) // Starting index of the current page
 
 const modElements = ref<any[]>([])
 const scrollIndex = ref(0)
 
-const mods: Ref<thunderstore.StrippedPackage[]> = ref([])
-const currentPageMods: Ref<Package[]> = ref([])
+const mods = ref<thunderstore.StrippedPackage[]>([])
+const currentPageMods= ref<Package[]>([])
 
 const installing = ref(false)
-const lastInstalledMod: Ref<Nullable<v1.PackageVersion>> = ref(null)
+const lastInstalledMod = ref<Nullable<v1.PackageVersion>>(null)
 
 const activeTabIndex = ref(0)
 const tabs = ref([
@@ -232,19 +229,19 @@ const handleScroll = (e: WheelEvent) => {
                         <div class="flex column ml-3 no-drag">
                             <p class="selected-game-title mt-0 mb-0">{{ selectedGame.title }}</p>
                             <div class="flex column gap-2 mt-3">
-                                <Button plain class="btn" 
+                                <Button plain class="btn justify-left" 
                                     icon="pi pi-caret-right"
                                     :label="$t('selected-game.start-modded-button')"
                                     @click="startModded"
                                 />
         
-                                <Button plain class="btn" severity="secondary"
+                                <Button plain class="btn justify-left" severity="secondary"
                                     icon="pi pi-caret-right"
                                     :label="$t('selected-game.start-vanilla-button')"
                                     @click="startVanilla"
                                 />
         
-                                <Button plain class="btn mt-4"
+                                <Button plain class="btn justify-left mt-4"
                                     icon="pi pi-file-edit"
                                     :label="$t('selected-game.config-button')"
                                     @click="configEditorDialog.setVisible(true)"
@@ -264,7 +261,7 @@ const handleScroll = (e: WheelEvent) => {
                 <template #empty>
                     <div class="list-nogutter pt-4">
                         <div v-for="i in 6" :key="i" class="loading-list-item">
-                            <div style="width: 1280px;" class="flex flex-row ml-1 p-3 border-1 surface-border border-round">
+                            <div style="width: 1280px;" class="flex flex-row ml-1 p-3 border-faint border-round">
                                 <Skeleton size="6.5rem"/> <!-- Thumbnail -->
                                 
                                 <div class="flex column gap-1 ml-2">
@@ -327,9 +324,7 @@ const handleScroll = (e: WheelEvent) => {
                             </IconField>
                         </div>
 
-                        <div class="justify-self-end">
-                            <TabMenu :model="tabs" @tab-change="onTabChange"/>
-                        </div>
+                        <TabMenu :model="tabs" @tab-change="onTabChange"/>
                         <!-- <div class="flex row">
                             <ModListDropdown>
                                 
@@ -344,7 +339,7 @@ const handleScroll = (e: WheelEvent) => {
                             v-for="(mod, index) in currentPageMods" class="list-item col-12"
                             :key="index" :ref="el => modElements[index] = el"
                         >
-                            <div class="flex-grow-1 flex column sm:flex-row align-items-center pt-2 gap-3" :class="{ 'border-top-1 surface-border': index != 0 }">
+                            <div class="flex-grow-1 flex column sm:flex-row align-items-center pt-2 gap-3" :class="{ 'border-top-faint': index != 0 }">
                                 <img class="mod-list-thumbnail block xl:block" :src="mod.latestVersion?.icon || ''"/>
                                 
                                 <div class="flex-grow-1 flex column md:flex-row md:align-items-center">
@@ -428,13 +423,13 @@ const handleScroll = (e: WheelEvent) => {
 }
 
 .selected-game-card-header {
-    font-size: 30px;
+    font-size: 34px;
     font-weight: 540;
     user-select: none;
 }
 
 .selected-game-card :deep(.p-card-body) {
-    margin: 0px 15px 0px 30px;
+    margin: 0px 20px 0px 30px;
     padding: 0px;
 }
 
@@ -461,7 +456,7 @@ const handleScroll = (e: WheelEvent) => {
 }
 
 .selected-game-title {
-    font-size: 25px;
+    font-size: 26px;
     font-weight: 330;
     text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.45);
 }
@@ -469,6 +464,10 @@ const handleScroll = (e: WheelEvent) => {
 .btn {
     border-radius: 4px;
     text-align: left;
+}
+
+.justify-left {
+    justify-content: left !important;
 }
 
 .mod-list-container {
@@ -518,13 +517,16 @@ const handleScroll = (e: WheelEvent) => {
 .scrollable-list {
     overflow-y: scroll;
     scrollbar-width: none;
-    height: calc(100vh - 150px);
-    margin-bottom: 0.25rem;
+    max-height: calc(100vh - 150px);
 }
 
-:deep(.p-dataview-layout-options .p-button) {
+/*:deep(.p-dataview-layout-options .p-button) {
     background: none !important;
     border: none;
+}*/
+
+:deep(.p-tabmenu-tablist) {
+    background: none !important;
 }
 
 :deep(.p-dataview-header) {
@@ -548,8 +550,12 @@ const handleScroll = (e: WheelEvent) => {
 
 :deep(.p-paginator) {
     background: none !important;
-    padding: 0 0 0 0;
     justify-content: start;
+    padding: 0;
+}
+
+:deep(.p-dataview-paginator-bottom) {
+    border: none;
 }
 
 .list-item {

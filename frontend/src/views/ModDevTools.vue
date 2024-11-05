@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { ref } from "vue"
 
-//import FileUpload from 'primevue/fileupload'
+import FileUpload from 'primevue/fileupload'
+import DataView from 'primevue/dataview'
 
 import { TSPackageManifest, TSPackageFile } from '@types'
 import { experimental } from '@frontend/wailsjs/go/models'
@@ -33,30 +34,30 @@ const items = ref([{
 </script>
 
 <template>
-    <div class="mod-dev-tools flex-span column">
-        <DataView dataKey="dev-package-list"></DataView>
-    </div>
+<div class="mod-dev-tools column mt-5 pl-5">
+    <div class="mb-4">
+        <FileUpload
+            name="demo[]"
+            accept=".zip"
+            :multiple="false"
+            :maxFileSize="1000000"
+            :showUploadButton="false"
+            @select=""
+        >
+            <template #content>
+                <div class="pi pi-upload">
+                    
+                </div>
+            </template>
     
-<div class="card no-drag">
-    <FileUpload
-        name="demo[]"
-        accept=".zip"
-        :multiple="false"
-        :maxFileSize="1000000"
-        :showUploadButton="false"
-        @select=""
-    >
-        <template #content>
-            <div class="pi pi-upload">
+            <template #empty>
+                <p>Drag and drop your mod zip file here.</p>
+            </template>
+    
+        </FileUpload>
+    </div>
 
-            </div>
-        </template>
-
-        <template #empty>
-            <p>Drag and drop your mod zip file here.</p>
-        </template>
-
-    </FileUpload>
+    <DataView dataKey="dev-package-list"></DataView>
 </div>
 </template>
 

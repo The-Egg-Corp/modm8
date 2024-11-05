@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { computed, ComputedRef } from 'vue'
+import { computed } from 'vue'
+import { ValueItemLabeled } from '@types'
 
-const filters: ComputedRef<{ label: string, value: string }[]> = computed(() => [{ 
+const filters = computed<ValueItemLabeled<string>[]>(() => [{ 
     label: "Most Rated",
     value: "most-rated"
 }, {
@@ -17,17 +18,13 @@ const filters: ComputedRef<{ label: string, value: string }[]> = computed(() => 
 </script>
 
 <template>
-    <Dropdown 
-        class="no-drag"
-        :options="filters"
-        @change=""
-    >
+    <Dropdown  class="no-drag" :options="filters" @change="">
         <template #option>
             
         </template>
 
         <template #value>
-
+            
         </template>
     </Dropdown>
 </template>

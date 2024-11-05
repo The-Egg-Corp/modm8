@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ComputedRef, computed } from 'vue'
+import { computed } from 'vue'
 import { usePrimeVue } from 'primevue/config'
 
 import { useSettingsStore } from '@stores'
@@ -14,8 +14,8 @@ const currentTheme = () => {
     return general.theme as Theme || groupedThemes.value[0]
 }
 
-const selectedTheme: ComputedRef<Theme> = computed(currentTheme)
-const groupedThemes: ComputedRef<ThemeGroup[]> = computed(() => [{
+const selectedTheme = computed<Theme>(currentTheme)
+const groupedThemes = computed<ThemeGroup[]>(() => [{
     label: 'Aura Purple',
     themes: [{
         label: 'Dark',
@@ -35,12 +35,13 @@ const groupedThemes: ComputedRef<ThemeGroup[]> = computed(() => [{
     }]
 }])
 
-const PrimeVue = usePrimeVue()
+//const PrimeVue = usePrimeVue()
 
 const change = (e: ChangeEvent<Theme>) => {
     const newTheme = e.value
     
-    PrimeVue.changeTheme(currentTheme().value, newTheme.value, 'theme-link')
+    // TODO: Use presets instead
+    //PrimeVue.changeTheme(currentTheme().value, newTheme.value, 'theme-link')
 
     const { setTheme } = useSettingsStore()
     setTheme(newTheme)

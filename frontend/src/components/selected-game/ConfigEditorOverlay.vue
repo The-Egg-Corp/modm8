@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { type Ref, ref, watch } from 'vue'
-import type { Nullable } from 'primevue/ts-helpers'
+import { ref, watch } from 'vue'
 
 import { BepinexConfigFiles, ParseBepinexConfig } from '@backend/game/GameManager'
 import { game } from '@backend/models'
@@ -10,12 +9,12 @@ import { CardOverlay, ConfigEditLayout } from '@components'
 
 import { t } from '@i18n'
 import { openLink } from "../../util"
-import type { ThunderstoreGame } from '@types'
+import type { ThunderstoreGame, Nullable } from '@types'
 
-const selectedConfig: Ref<Nullable<game.BepinexConfig>> = ref(null)
-const selectedConfigName: Ref<Nullable<string>> = ref(null)
+const selectedConfig = ref<Nullable<game.BepinexConfig>>(null)
+const selectedConfigName = ref<Nullable<string>>(null)
 
-const configFiles: Ref<string[]> = ref([])
+const configFiles = ref<string[]>([])
 
 const props = defineProps<{
     dialog: Dialog

@@ -46,7 +46,7 @@ There are currently no official releases. You can download dev builds under the 
 
 ## Building from source
 1. Clone this repository.
-2. Install [Go](https://go.dev/doc/install), [Bun](https://bun.sh) and [Wails](https://wails.io/docs/gettingstarted/installation).
+2. Install dependencies ([Node 20+](https://nodejs.org/en/download), [Bun](https://bun.sh), [Go](https://go.dev/doc/install), [Wails](https://wails.io/docs/gettingstarted/installation)).
 3. Run one of the following commands:
    - `wails build` - Generates an executable in **/build/bin**.
    - `wails dev` - Opens a preview of the app with DevTools enabled.

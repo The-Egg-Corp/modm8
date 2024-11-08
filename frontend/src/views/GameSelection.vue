@@ -21,21 +21,24 @@ import type {
 import { t } from '@i18n'
 import { tooltipOpts, openLink } from "../../src/util"
 
-import { useGameStore } from '@stores'
+import { useGameStore, useAppStore } from '@stores'
 import { storeToRefs } from 'pinia'
 
 import router from '../router'
 
-const store = useGameStore()
+const appStore = useAppStore()
+const { sidebarWidth } = storeToRefs(appStore)
+
+const gameStore = useGameStore()
 const {
     gamesAsArray,
-} = storeToRefs(store)
+} = storeToRefs(gameStore)
 
 const {
     toggleFavouriteGame,
     setSelectedGame,
     initGames
-} = store
+} = gameStore
 
 const loading = ref(true)
 const searchInput = ref<Nullable<string>>(null)
@@ -82,7 +85,7 @@ const filterBySearch = (games: ThunderstoreGame[]) => {
     return games.filter(g => {
         const lowerTitle = g.title?.toLowerCase() ?? ""
 
-        // Necessary to not show irrelevent games with only 1 letter input.
+        // Only show relevent games that start with this (only) letter.
         if (input.length == 1 && !lowerTitle.startsWith(lowerInput)) {
             return false
         }
@@ -148,7 +151,7 @@ const scrollToGame = () => {
     const game = gameElements.value[i]
     if (!game) return
 
-    // We only need Element for scroll methods.
+    // We only need it as a base Element for the scroll methods.
     (game as Element).scrollIntoView({ block: 'start' })
 }
 
@@ -274,7 +277,7 @@ onMounted(async () => {
                             </Dropdown>
                         </div>
                         
-                        <div class="flex flex-row">
+                        <div class="flex flex-row" style="border: 1px solid var(--p-inputtext-border-color); border-radius: 6.5px;">
                             <SelectButton v-model="layout" :options="options" :allowEmpty="false">
                                 <template #option="{ option }">
                                     <i :class="[option === 'list' ? 'pi pi-list' : 'pi pi-th-large']" />
@@ -392,7 +395,7 @@ onMounted(async () => {
 <style scoped>
 .game-selection {
     padding-top: 0px;
-    margin-left: 75px; /* Account for sidebar */
+    margin-left: v-bind(sidebarWidth); /* Account for sidebar */
 }
 
 .game-selection .header {
@@ -484,7 +487,6 @@ onMounted(async () => {
 }
 
 :deep(.searchbar .p-inputtext) {
-    background: rgba(0, 0, 0, 0.2);
     margin-left: auto;
     margin-right: auto;
     width: 350px;

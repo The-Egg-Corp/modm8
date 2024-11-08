@@ -8,7 +8,13 @@ import FloatLabel from 'primevue/floatlabel'
 import { reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+import { useAppStore } from '@stores'
+import { storeToRefs } from 'pinia'
+
 const { t } = useI18n()
+
+const appStore = useAppStore()
+const { sidebarWidth } = storeToRefs(appStore)
 
 interface PackageInfo {
     name: string
@@ -59,7 +65,7 @@ async function getPackages() {
 <!-- #region Style -->
 <style scoped>
 .dashboard {
-    margin-left: 75px; /* Account for sidebar */
+    margin-left: v-bind(sidebarWidth); /* Account for sidebar */
     position: relative;
     text-align: center;
     user-select: none;

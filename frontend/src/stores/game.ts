@@ -2,7 +2,7 @@ import type { ThunderstoreGame } from '@types'
 import { defineStore } from 'pinia'
 
 import { Save, SetFavouriteGames } from '@backend/app/Persistence'
-import { type Ref, ref, computed } from 'vue'
+import { ref, computed } from 'vue'
 
 import { GetPersistence } from '@backend/app/Application.js'
 import { BepinexInstalled } from '@backend/game/GameManager.js'
@@ -18,11 +18,13 @@ export interface GameState {
 
 export const useGameStore = defineStore('GameStore', () => {
     //#region State
-    const selectedGame = ref({
-        identifier: ''
-    }) as Ref<ThunderstoreGame>
+    const selectedGame = ref<ThunderstoreGame>({
+        title: 'Placeholder',
+        identifier: '',
+        steamID: 0,
+    })
 
-    const games = ref(new Map()) as Ref<Map<string, ThunderstoreGame>>
+    const games = ref<Map<string, ThunderstoreGame>>(new Map())
     //#endregion
 
     //#region Getters

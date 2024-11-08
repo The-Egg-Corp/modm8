@@ -20,9 +20,13 @@ import {
 } from "@components"
 
 import type { Package, Nullable } from "@types"
-import { useGameStore } from "@stores"
+import { useAppStore, useGameStore } from "@stores"
 
 import { debounce } from "../util"
+import { storeToRefs } from "pinia"
+
+const appStore = useAppStore()
+const { sidebarWidth } = storeToRefs(appStore)
 
 const gameStore = useGameStore()
 const { selectedGame, updateModCache } = gameStore
@@ -40,7 +44,7 @@ const modElements = ref<any[]>([])
 const scrollIndex = ref(0)
 
 const mods = ref<thunderstore.StrippedPackage[]>([])
-const currentPageMods= ref<Package[]>([])
+const currentPageMods = ref<Package[]>([])
 
 const installing = ref(false)
 const lastInstalledMod = ref<Nullable<v1.PackageVersion>>(null)
@@ -190,7 +194,7 @@ const scrollToMod = () => {
     const game = modElements.value[i]
     if (!game) return
 
-    (game as Element).scrollIntoView({ block: 'start' })
+    game.scrollIntoView({ block: 'start' })
 }
 
 const handleScroll = (e: WheelEvent) => {
@@ -214,7 +218,7 @@ const handleScroll = (e: WheelEvent) => {
         <div class="flex column">
             <Card class="selected-game-card no-drag">
                 <template #title>
-                    <p class="selected-game-card-header mt-0 mb-1">
+                    <p class="selected-game-card-header mt-0 mb-2">
                         {{ $t('selected-game.currently-selected') }}
                     </p>
                 </template>
@@ -412,12 +416,13 @@ const handleScroll = (e: WheelEvent) => {
 .selected-game {
     display: flex;
     flex-direction: column;
-    margin-left: 75px; /* Account for sidebar */
+    margin-left: v-bind(sidebarWidth); /* Account for sidebar */
     margin-top: 30px;
 }
 
 .selected-game-card {
     background: none;
+    box-shadow: none;
     width: max-content;
     flex-shrink: 0;
 }
@@ -426,6 +431,8 @@ const handleScroll = (e: WheelEvent) => {
     font-size: 34px;
     font-weight: 540;
     user-select: none;
+    justify-self: start;
+    text-align: start;
 }
 
 .selected-game-card :deep(.p-card-body) {
@@ -529,6 +536,7 @@ const handleScroll = (e: WheelEvent) => {
     background: none !important;
 }
 
+/* TODO: Investigate why this padding affects profile manager. */
 :deep(.p-dataview-header) {
     background: none !important;
     padding: 10px 0px 10px 0px;

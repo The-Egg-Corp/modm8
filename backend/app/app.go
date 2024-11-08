@@ -162,7 +162,8 @@ func (app *Application) GetMaxProcs() int {
 	return runtime.GOMAXPROCS(0)
 }
 
-// Num is clamped between 1 and NumCPU*2 as any further is unnecessary and may cause overhead.
+// Sets GOMAXPROCS to given value and ensures it is clamped between 1 and NumCPU*2 as any further may degrade performance due to context switching.
+// Note that blocking syscalls can have their own threads regardless of the limit set here.
 func SetMaxProcs(num uint8) int {
 	return runtime.GOMAXPROCS(lo.Clamp(int(num), 1, runtime.NumCPU()*2))
 }

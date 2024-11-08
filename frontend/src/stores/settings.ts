@@ -15,9 +15,9 @@ import type { app } from "@backend/models.js"
 import type { Theme } from "@types"
 import { ref } from 'vue'
 
-export interface SettingsState {
+// export interface SettingsState {
 
-}
+// }
 
 export const useSettingsStore = defineStore("SettingsStore", () => {
     //#region State

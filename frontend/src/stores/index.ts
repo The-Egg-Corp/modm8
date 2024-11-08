@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 export interface AppState {
     maxThreads: number
@@ -8,12 +8,25 @@ export interface AppState {
 export const useAppStore = defineStore('AppStore', () => {
     const maxThreads = ref(2)
 
-    function setMaxThreads(num: number) {
-        maxThreads.value = num
+    const expanded = ref(false)
+    const sidebarWidth = computed(() => (expanded.value ? '180px' : '75px'))
+  
+    function toggleSidebar() {
+        expanded.value = !expanded.value
     }
 
-    return {
+    /**
+     * Updates value of `maxThreads` ref to make frontend aware of max logical CPUs.
+     */
+    async function setMaxThreads(count: number) {
+        maxThreads.value = count
+    }
+
+    return { 
         maxThreads,
+        expanded, 
+        sidebarWidth, 
+        toggleSidebar,
         setMaxThreads
     }
 })

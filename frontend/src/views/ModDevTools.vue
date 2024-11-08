@@ -15,6 +15,12 @@ import {
     ValidateReadme
 } from '@backend/thunderstore/Tools'
 
+import { useAppStore } from "@stores"
+import { storeToRefs } from "pinia"
+
+const appStore = useAppStore()
+const { sidebarWidth } = storeToRefs(appStore)
+
 // Validates each required file for uploading a Thunderstore mod.
 function ValidateFiles(icon: experimental.IconValidatorParams, readme: TSPackageFile, manifest: TSPackageManifest) {
     ValidateIcon(icon)
@@ -63,7 +69,7 @@ const items = ref([{
 
 <style scoped>
 .mod-dev-tools {
-    margin-left: 75px; /* Account for sidebar */
+    margin-left: v-bind(sidebarWidth); /* Account for sidebar */
     top: 350px;
 }
 </style>

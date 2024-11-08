@@ -15,10 +15,7 @@ import {
 import { useAppStore } from '@stores'
 import { getOpenDialogs } from '@composables'
 
-const appStore = useAppStore()
-const {
-    setMaxThreads
-} = appStore
+const { setMaxThreads } = useAppStore()
 
 //const settingsDialog = useDialog('settings')
 

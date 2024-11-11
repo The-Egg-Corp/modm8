@@ -70,6 +70,26 @@ onBeforeUnmount(() => {
 </template>
 
 <style>
+/* TODO: Are these even needed now?
+:global(.p-dialog) {
+    border: 1px solid #4d4d4d;
+    border-radius: 9px;
+}
+
+:global(.p-dialog-content) {
+    background: none;
+    border-radius: 9px;
+    padding: 1rem;
+}
+
+:global(.p-card-body) {
+    padding-top: 0rem;
+}
+
+:global(.p-divider-content) {
+    background: none;
+}*/
+
 .topbar {
     z-index: 9999;
     position: fixed;

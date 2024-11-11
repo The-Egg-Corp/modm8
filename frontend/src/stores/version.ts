@@ -19,9 +19,7 @@ export const useVersionStore = defineStore("VersionStore", () => {
     const newVersionAvailable = computed(() => remoteVer.value == '' ? false : compare(remoteVer.value, currentVer.value, ">"))
 
     async function updateRemoteVersion() {
-        // Call backend to fetch latest release version
-
-        // Temporary (requires auth while repo is private)
+        // TODO: Call backend to fetch latest version instead.
         const latest = await fetch("https://api.github.com/repos/The-Egg-Corp/modm8/releases/latest").then(res => res.json()) as GithubRelease
         remoteVer.value = !latest ? currentVer.value : latest.tag_name
     }

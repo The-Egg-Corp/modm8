@@ -148,7 +148,7 @@ const ModDevTools = () => router.push('/mod-dev-tools')
     height: 100vh;
     width: v-bind(sidebarWidth);
     border-right: 1px outset rgba(255, 255, 255, 0.45);
-    background-color: #252529;
+    background-color: var(--p-surface-800); /* #2c2d32; */
 }
 
 .sidebar-expanded {
@@ -169,9 +169,9 @@ const ModDevTools = () => router.push('/mod-dev-tools')
 }
 
 .icon-alt {
-    width: 53px;
-    height: 60px;
-    margin: 20px 0px 20px 0px;
+    width: 56px;
+    height: 63px;
+    margin: 15px 0px 20px 0px;
 }
 
 .btn {

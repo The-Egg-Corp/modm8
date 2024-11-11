@@ -46,7 +46,7 @@ body::before {
     right: 0;
     bottom: 0;
     left: 0;
-    background-color: rgba(14, 14, 16);
+    background-color: var(--p-surface-950);
     z-index: -1;
 }
 

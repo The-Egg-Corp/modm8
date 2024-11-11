@@ -23,10 +23,6 @@ export const useSettingsStore = defineStore("SettingsStore", () => {
     //#region State
     const general = ref({
         locale: 'en',
-        theme: {
-            label: 'Dark',
-            value: 'aura-dark-purple'
-        } as Theme,
         animations_enabled: true
     })
     
@@ -51,10 +47,10 @@ export const useSettingsStore = defineStore("SettingsStore", () => {
         if (save) SetLocale(code)
     }
 
-    function setTheme(theme: Theme, save = true) {
-        Object.assign(general.value.theme, theme)
-        if (save) SetTheme(theme.value)
-    }
+    // function setTheme(theme: Theme, save = true) {
+    //     Object.assign(general.value.theme, theme)
+    //     if (save) SetTheme(theme.value)
+    // }
 
     function setAnimationsEnabled(value: boolean, save = true) {
         general.value.animations_enabled = value
@@ -92,7 +88,7 @@ export const useSettingsStore = defineStore("SettingsStore", () => {
         performance,
         misc,
         setLocale,
-        setTheme,
+        //setTheme,
         setAnimationsEnabled,
         setThreads,
         setAcceleration,

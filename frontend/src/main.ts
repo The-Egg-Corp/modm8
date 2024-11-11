@@ -1,6 +1,5 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import Aura from '@primevue/themes/aura'
 
 import { createPinia } from 'pinia'
 import i18n from "./i18n"
@@ -31,57 +30,21 @@ import "primeicons/primeicons.css"
 import './assets/styles/global.css'
 import "./assets/styles/flags.css"
 
-import { definePreset } from '@primevue/themes'
-import { PresetOptions } from '@types'
+import { 
+    defineAuraPreset, 
+    createPalette 
+} from './util'
 //#endregion
 
 const pinia = createPinia()
 const app = createApp(App)
 
-type AuraOptions = PresetOptions<Aura.PrimitiveDesignTokens, Aura.SemanticDesignTokens>
-
-const palettes = {
-    zinc: {
-        0: '#ffffff',
-        50: '{zinc.50}',
-        100: '{zinc.100}',
-        200: '{zinc.200}',
-        300: '{zinc.300}',
-        400: '{zinc.400}',
-        500: '{zinc.500}',
-        600: '{zinc.600}',
-        700: '{zinc.700}',
-        800: '{zinc.800}',
-        900: '{zinc.900}',
-        950: '{zinc.950}'
-    },
-    violet: {
-        50: '{violet.50}',
-        100: '{violet.100}',
-        200: '{violet.200}',
-        300: '{violet.300}',
-        400: '{violet.400}',
-        500: '{violet.500}',
-        600: '{violet.600}',
-        700: '{violet.700}',
-        800: '{violet.800}',
-        900: '{violet.900}',
-        950: '{violet.950}'
-    }
-}
-
-// PrimeVue v4 does not provide typings for actions currently.
-const defineAuraPreset = (opts: AuraOptions) => definePreset(Aura, opts)
 const AuraViolet = defineAuraPreset({
     semantic: {
-        primary: palettes.violet,
+        primary: createPalette('violet'),
         colorScheme: {
-            light: {
-                surface: palettes.zinc
-            },
-            dark: {
-                surface: palettes.zinc
-            }
+            light: { surface: createPalette('zinc') },
+            dark:  { surface: createPalette('zinc') }
         }
     }
 })

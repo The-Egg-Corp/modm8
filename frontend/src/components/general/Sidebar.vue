@@ -12,7 +12,10 @@ const settings = useDialog('settings')
 const appInfo = useDialog('app-info')
 
 const appStore = useAppStore()
-const { expanded, sidebarWidth } = storeToRefs(appStore)
+const { 
+    sidebarExpanded, 
+    sidebarWidth 
+} = storeToRefs(appStore)
 
 const Dashboard = () => router.push('/')
 const GameSelection = () => router.push('/game-selection')
@@ -20,7 +23,7 @@ const ModDevTools = () => router.push('/mod-dev-tools')
 </script>
 
 <template>
-<div v-if="expanded" class="sidebar-expanded">
+<div v-if="sidebarExpanded" class="sidebar-expanded">
     <img class="icon no-select" src="../../assets/images/appicon.png">
 
     <div class="flex column h-full">

@@ -10,7 +10,8 @@ const props = withDefaults(defineProps<Props>(), {
         "margin-left": "40px",
         "width": 'auto',
         "min-width": '40rem',
-        "max-width": '65rem'
+        "max-width": '65rem',
+        "box-shadow": '0px 0px 15px rgb(0, 0, 0, 0.9)'
     },
     cardStyle: {
         "box-shadow": 'none',

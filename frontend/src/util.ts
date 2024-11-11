@@ -1,5 +1,29 @@
 import { OpenExternal } from "@backend/app/Application.js"
+
+import Aura from '@primevue/themes/aura'
+import { definePreset } from "@primevue/themes"
+import type { PresetOptions } from "@types"
+
 import { type TooltipOptions } from "primevue/tooltip"
+
+type AuraOptions = PresetOptions<Aura.PrimitiveDesignTokens, Aura.SemanticDesignTokens>
+
+// PrimeVue v4 does not provide typings for actions currently.
+export const defineAuraPreset = (opts: AuraOptions) => definePreset(Aura, opts)
+
+export const createPalette = (name: string) => ({
+    50: `{${name}.50}`,
+    100: `{${name}.100}`,
+    200: `{${name}.200}`,
+    300: `{${name}.300}`,
+    400: `{${name}.400}`,
+    500: `{${name}.500}`,
+    600: `{${name}.600}`,
+    700: `{${name}.700}`,
+    800: `{${name}.800}`,
+    900: `{${name}.900}`,
+    950: `{${name}.950}`
+})
 
 const tooltipTextStyle = {
     fontSize: '14.5px'

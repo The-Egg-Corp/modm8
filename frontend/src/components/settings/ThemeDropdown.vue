@@ -1,37 +1,47 @@
 <script lang="ts" setup>
 import { computed } from 'vue'
-import { usePrimeVue } from 'primevue/config'
 
-import { useSettingsStore } from '@stores'
 import type { 
     ChangeEvent, 
     OptionItem, ValueItem,
     Theme, ThemeGroup
 } from '@types'
 
-const currentTheme = () => {
-    const { general } = useSettingsStore()
-    return general.theme as Theme || groupedThemes.value[0]
-}
+import { usePreset } from '@primevue/themes'
 
-const selectedTheme = computed<Theme>(currentTheme)
+//const settingStore = useSettingsStore()
+//const { general } = settingStore
+
+//const currentTheme = () => general.theme as Theme || groupedThemes.value[0]
+
+const selectedTheme = computed<Theme>(() => ({
+    label: 'Violet',
+    value: 'aura-violet'
+}))
+
 const groupedThemes = computed<ThemeGroup[]>(() => [{
-    label: 'Aura Purple',
+    label: 'Aura',
     themes: [{
-        label: 'Dark',
-        value: 'aura-dark-purple',
+        label: 'Violet',
+        value: 'aura-violet'
     }, {
-        label: 'Light',
-        value: 'aura-light-purple'
+        label: 'Amber',
+        value: 'aura-amber'
+    }, {
+        label: 'Emerald',
+        value: 'aura-emerald'
+    }, {
+        label: 'Indigo',
+        value: 'aura-indigo'
     }]
 }, {
-    label: 'Aura Yellow',
+    label: 'Lara',
     themes: [{
-        label: 'Dark',
-        value: 'aura-dark-amber'
+        label: 'Violet',
+        value: 'lara-violet'
     }, {
-        label: 'Light',
-        value: 'aura-light-amber'
+        label: 'Amber',
+        value: 'lara-amber'
     }]
 }])
 
@@ -40,11 +50,11 @@ const groupedThemes = computed<ThemeGroup[]>(() => [{
 const change = (e: ChangeEvent<Theme>) => {
     const newTheme = e.value
     
-    // TODO: Use presets instead
+    // TODO: Use presets instead - https://primevue.org/theming/styled/#utils
     //PrimeVue.changeTheme(currentTheme().value, newTheme.value, 'theme-link')
-
-    const { setTheme } = useSettingsStore()
-    setTheme(newTheme)
+    usePreset(newTheme.value)
+    
+    //setTheme(newTheme)
 }
 
 const getGroup = (theme: Theme) => groupedThemes.value.find(g => g.themes.find(t => t.value == theme.value))

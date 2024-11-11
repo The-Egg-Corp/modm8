@@ -124,14 +124,14 @@ const dividerAlignment: Alignment = "center"
                     </div>
                 </div>
 
-                <div class="setting">
+                <!-- <div class="setting">
                     <div class="flex-item">
                         <h3>{{ $t('keywords.theme') }}</h3>
                     </div>
                     <div class="flex-item">
                         <ThemeDropdown/>
                     </div>
-                </div>
+                </div> -->
 
                 <div class="setting">
                     <div class="flex-item">
@@ -228,26 +228,6 @@ const dividerAlignment: Alignment = "center"
 </template>
 
 <style scoped>
-/* TODO: Are these even needed now, if so they should be in App.vue 
-:global(.p-dialog) {
-    border: 1px solid #4d4d4d;
-    border-radius: 9px;
-}
-
-:global(.p-dialog-content) {
-    background: none;
-    border-radius: 9px;
-    padding: 1rem;
-}
-
-:global(.p-card-body) {
-    padding-top: 0rem;
-}
-
-:global(.p-divider-content) {
-    background: none;
-}*/
-
 :deep(.p-dialog-title) {
     user-select: none;
 }

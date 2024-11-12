@@ -1,10 +1,10 @@
 import { OpenExternal } from "@backend/app/Application.js"
 
+import type { PresetOptions } from "@types"
+import { type TooltipOptions } from "primevue/tooltip"
+
 import Aura from '@primevue/themes/aura'
 import { definePreset } from "@primevue/themes"
-import type { PresetOptions } from "@types"
-
-import { type TooltipOptions } from "primevue/tooltip"
 
 type AuraOptions = PresetOptions<Aura.PrimitiveDesignTokens, Aura.SemanticDesignTokens>
 

@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 
+import FileUpload from 'primevue/fileupload'
+import DataView from 'primevue/dataview'
+
 import { TSPackageManifest, TSPackageFile } from '@types'
 import { experimental } from '@frontend/wailsjs/go/models'
 
@@ -11,6 +14,12 @@ import {
     ValidateManifest, 
     ValidateReadme
 } from '@backend/thunderstore/Tools'
+
+import { useAppStore } from "@stores"
+import { storeToRefs } from "pinia"
+
+const appStore = useAppStore()
+const { sidebarWidth } = storeToRefs(appStore)
 
 // Validates each required file for uploading a Thunderstore mod.
 function ValidateFiles(icon: experimental.IconValidatorParams, readme: TSPackageFile, manifest: TSPackageManifest) {
@@ -31,34 +40,38 @@ const items = ref([{
 </script>
 
 <template>
-<div class="mod-dev-tools column">
+<div class="mod-dev-tools column mt-5 pl-5">
+    <div class="mb-4">
+        <FileUpload
+            name="demo[]"
+            accept=".zip"
+            :multiple="false"
+            :maxFileSize="1000000"
+            :showUploadButton="false"
+            @select=""
+        >
+            <template #content>
+                <div class="pi pi-upload">
+                    
+                </div>
+            </template>
+    
+            <template #empty>
+                <p>Drag and drop your mod zip file here.</p>
+            </template>
+    
+        </FileUpload>
+    </div>
+
     <DataView dataKey="dev-package-list">
-
+        
     </DataView>
-</div>
-
-<div class="no-drag">
-    <FileUpload
-        name="demo[]"
-        accept=".zip"
-        :multiple="false"
-        :maxFileSize="1000000"
-        :showUploadButton="false"
-        @select=""
-    >
-        <template #content>
-
-        </template>
-
-        <template #empty>
-            <div class="flex row pi pi-upload gap-2">
-                <div>Drag and drop your mod zip file here.</div>
-            </div>
-        </template>
-    </FileUpload>
 </div>
 </template>
 
 <style scoped>
-
+.mod-dev-tools {
+    margin-left: v-bind(sidebarWidth); /* Account for sidebar */
+    top: 350px;
+}
 </style>

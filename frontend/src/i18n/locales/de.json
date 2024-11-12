@@ -51,7 +51,8 @@
     "install": "Installieren",
     "cancel": "Stornieren",
     "import": "Import",
-    "export": "Export"
+    "export": "Export",
+    "refresh": "Aktualisieren"
   },
   "languages": {
     "en": "Englisch",

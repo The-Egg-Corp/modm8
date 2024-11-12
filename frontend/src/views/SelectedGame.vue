@@ -96,12 +96,12 @@ onMounted(async () => {
     configEditorDialog.setVisible(false)
     installingModDialog.setVisible(false)
 
-    //await refreshMods(true)
+    await refreshMods(true)
 })
 
 const latestModVersion = (mod: thunderstore.StrippedPackage) => 
     GetLatestPackageVersion(selectedGame.identifier, mod.owner, mod.name)
-
+    
 const gameThumbnail = () => selectedGame.image
     ? `https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/${selectedGame.image}` 
     : "https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/Titanfall2.jpg"
@@ -130,17 +130,15 @@ const filterBySearch = (mods: thunderstore.StrippedPackage[]) => {
     const input = searchInput.value.trim()
     if (input == "") return mods
 
-    const lowerInput = input.toLowerCase()
-
     return mods.filter(mod => {
         const lowerTitle = mod.name?.toLowerCase() ?? ""
 
         // Necessary to not show irrelevent mods with only 1 letter input.
-        if (input.length == 1 && !lowerTitle.startsWith(lowerInput)) {
+        if (input.length == 1 && !lowerTitle.startsWith(input.toLowerCase())) {
             return false
         }
 
-        return lowerTitle.includes(lowerInput)
+        return lowerTitle.includes(input.toLowerCase())
     })
 }
 
@@ -312,7 +310,8 @@ const handleScroll = (e: WheelEvent) => {
                             <h2 class="mb-2" style="color: red; font-size: 24px; margin: 0 auto;">
                                 No mods available! Something probably went wrong.
                             </h2>
-                            <Button class="mt-1" label="Refresh" icon="pi pi-refresh" @click="refreshMods(true)"/>
+
+                            <Button class="mt-1" :label="$t('keywords.refresh')" icon="pi pi-refresh" @click="refreshMods(true)"/>
                         </div>
                     </div>
                 </template>

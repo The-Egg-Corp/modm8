@@ -55,6 +55,7 @@
     "reset-all-default": "Reset all to default"
   },
   "keywords": {
+    "refresh": "Refresh",
     "favourite": "Favourite",
     "installed": "Installed",
     "setup": "Setup",

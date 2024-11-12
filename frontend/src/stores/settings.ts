@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { ref } from 'vue'
 
 import {
     SetAnimationsEnabled, 
@@ -12,8 +13,8 @@ import {
 } from '@backend/app/AppSettings.js'
 
 import type { app } from "@backend/models.js"
-import type { Theme } from "@types"
-import { ref } from 'vue'
+
+//import type { Theme } from "@types"
 
 // export interface SettingsState {
 
@@ -40,8 +41,7 @@ export const useSettingsStore = defineStore("SettingsStore", () => {
 
     //#region Actions
 
-    // 'Save' here means updating the viper config in the backend.
-    // See: backend/core/settings.go
+    // 'Save' here means updating the viper config in the backend. Refer to the 'settings.go' file.
     function setLocale(code: string, save = true) {
         general.value.locale = code
         if (save) SetLocale(code)

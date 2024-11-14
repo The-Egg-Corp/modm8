@@ -32,19 +32,19 @@ import "./assets/styles/flags.css"
 
 import { 
     defineAuraPreset, 
-    createPalette 
+    presetPalette
 } from './util'
 //#endregion
 
 const pinia = createPinia()
 const app = createApp(App)
 
-const AuraViolet = defineAuraPreset({
+const DefaultPreset = defineAuraPreset({
     semantic: {
-        primary: createPalette('violet'),
+        primary: presetPalette('purple'),
         colorScheme: {
-            light: { surface: createPalette('zinc') },
-            dark:  { surface: createPalette('zinc') }
+            light: { surface: presetPalette('zinc') },
+            dark:  { surface: presetPalette('zinc') }
         }
     }
 })
@@ -55,7 +55,7 @@ app.use(router)
 app.use(PrimeVue, { 
     ripple: true,
     theme: {
-        preset: AuraViolet
+        preset: DefaultPreset
     }
 })
 

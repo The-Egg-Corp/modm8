@@ -405,11 +405,7 @@ const handleScroll = (e: WheelEvent) => {
 <style scoped>
 .material-symbols-sharp {
     font-size: 26.5px;
-    font-variation-settings:
-    'FILL' 0,
-    'wght' 270,
-    'GRAD' 100,
-    'opsz' 40
+    font-variation-settings: 'FILL' 0, 'wght' 270, 'GRAD' 100, 'opsz' 40
 }
 
 .selected-game {

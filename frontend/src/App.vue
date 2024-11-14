@@ -96,6 +96,7 @@ onBeforeUnmount(() => {
     display: flex;
     justify-content: end;
     width: 100%;
+    /* border-bottom: 1px solid var(--border-faint) */
 }
 
 .app-container {

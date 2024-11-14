@@ -4,6 +4,8 @@
     font-variation-settings: normal;
     --font-family: "Inter var", sans-serif;
     --font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    --border-faint: rgba(255, 255, 255, 0.2);
+    --border-faint-alt: rgba(255, 255, 255, 0.3);
 }
 
 @font-face {
@@ -83,9 +85,9 @@ a {
 }
 
 .border-faint {
-    border: 1px solid rgba(190, 190, 190, 0.2);
+    border: 1px solid var(--border-faint);
 }
 
 .border-top-faint {
-    border-top: 1px solid rgba(190, 190, 190, 0.2);
+    border-top: 1px solid var(--border-faint);
 }

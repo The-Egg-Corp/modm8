@@ -1,6 +1,7 @@
 <script lang="ts" setup>
+import { storeToRefs } from "pinia"
+import { useAppStore } from "@stores"
 import { PlatformSelectPanels } from "@components"
-import { onUnmounted, ref } from "vue"
 
 // enum Platform {
 //     THUNDERSTORE = 1,
@@ -16,15 +17,22 @@ import { onUnmounted, ref } from "vue"
 // onUnmounted(() => {
 //     selectedPlatform.value = 0
 // })
+
+const appStore = useAppStore()
+const { sidebarWidth } = storeToRefs(appStore)
 </script>
 
 <template>
-    <PlatformSelectPanels
-        @selectThunderstore="$router.push('/mod-dev-tools/thunderstore')" 
-        @selectNexus="$router.push('/mod-dev-tools/nexus')"
-    />
+    <div class="platform-selection">
+        <PlatformSelectPanels
+            @selectThunderstore="$router.push('/mod-dev-tools/thunderstore')" 
+            @selectNexus="$router.push('/mod-dev-tools/nexus')"
+        />
+    </div>
 </template>
 
 <style scoped>
-
+.platform-selection {
+    margin-left: v-bind(sidebarWidth);
+}
 </style>

@@ -13,7 +13,7 @@ const props = defineEmits(['selectThunderstore', 'selectNexus'])
     stateStorage="local"
     stateKey="platform-splitter-state"
 >
-    <SplitterPanel :min-size="1" class="platform-splitter-panel panel-ts">
+    <SplitterPanel :min-size="25" class="platform-splitter-panel panel-ts">
         <div class="blur w-full h-full">
             <div class="flex column panel-text">
                 Thunderstore
@@ -22,7 +22,7 @@ const props = defineEmits(['selectThunderstore', 'selectNexus'])
         </div>
     </SplitterPanel>
 
-    <SplitterPanel :min-size="1" class="platform-splitter-panel panel-nexus">
+    <SplitterPanel :min-size="35" class="platform-splitter-panel panel-nexus">
         <div class="blur w-full h-full">
             <div class="flex column panel-text">
                 Nexus Mods
@@ -35,7 +35,6 @@ const props = defineEmits(['selectThunderstore', 'selectNexus'])
 
 <style scoped>
 .platform-splitter {
-    margin-left: 75px;
     height: 100vh;
     width: 100vw;
     background: transparent !important;
@@ -76,7 +75,7 @@ const props = defineEmits(['selectThunderstore', 'selectNexus'])
     display: flex;
     justify-content: center;
     align-items: center;
-    backdrop-filter: brightness(26%); /* TODO: Also use blur here, but on GPU not CPU */
+    backdrop-filter: brightness(25%) blur(12px); /* TODO: Also use blur here, but on GPU not CPU */
 }
 
 :deep(.p-splitter-gutter) { 

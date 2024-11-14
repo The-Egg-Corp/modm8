@@ -23,21 +23,31 @@ const ModDevTools = () => router.push('/mod-dev-tools')
 </script>
 
 <template>
-<div v-if="sidebarExpanded" class="sidebar-expanded">
+<div v-if="sidebarExpanded" class="sidebar expanded">
     <img class="icon no-select" src="../../assets/images/appicon.png">
 
-    <div class="flex column h-full">
+    <div class="btn-container">
         <div class="top flex column">
-            <Button 
-                class="btn margin-lr no-drag" icon="pi pi-home" 
+            <Button outlined
+                class="btn no-drag"
+                icon="pi pi-info-circle" iconPos="top"
+                label="About" 
+                @click="appInfo.setVisible()"
+            />
+        </div>
+
+        <div class="spacer"/>
+
+        <div class="flex column gap-2">
+            <Button outlined 
+                class="btn no-drag" 
+                icon="pi pi-home"
                 :label="t('tooltips.sidebar.dashboard')"
                 @click="Dashboard"
             />
 
-            <Button 
-                plain severity="secondary"
-                class="btn margin-lr no-drag" 
-                v-tooltip="tooltipOpts(t('tooltips.sidebar.game-selection'))"
+            <Button outlined
+                class="btn no-drag"
                 label="Games"
                 @click="GameSelection"
             >
@@ -45,56 +55,46 @@ const ModDevTools = () => router.push('/mod-dev-tools')
                     <span class="material-symbols-sharp">stadia_controller</span>
                 </template>
             </Button>
-        </div>
-    
-        <div class="spacer"></div>
 
-        <div class="top flex column">
-            <Button 
-                severity="secondary"
-                class="btn margin-lr no-drag" icon="pi pi-wrench"
-                v-tooltip="tooltipOpts(t('tooltips.sidebar.mod-dev-tools'))"
+            <!-- <Button outlined
+                class="btn no-drag"
+                icon="pi pi-wrench" iconPos="top"
+                label="Mod Developer Tools" 
                 @click="ModDevTools"
-            />
+            /> -->
 
-            <!-- <Button plain outlined class="btn margin-lr no-drag" icon="pi pi-upload"/> -->
+            <!-- <Button plain outlined class="btn no-drag" icon="pi pi-upload"/> -->
         </div>
 
-        <div class="spacer"></div>
+        <div class="spacer"/>
  
         <div class="bottom flex column">
-            <Button severity="secondary"
-                class="btn margin-lr no-drag"
-                icon="pi pi-info-circle"
-                @click="appInfo.setVisible()"
-            />
-
-            <!-- <Button text class="btn margin-lr no-drag" :icon="themeMode === 'dark' ? 'pi pi-sun' : 'pi pi-moon'" @click="ToggleThemeMode"/> -->
-            <Button
-                severity="secondary"
-                class="btn margin-lr spin-hover no-drag" icon="pi pi-cog" 
-                :label="t('keywords.settings')"
+            <!-- <Button text iconPos="top" label=" " class="btn no-drag" :icon="themeMode === 'dark' ? 'pi pi-sun' : 'pi pi-moon'"/> -->
+            <Button outlined
+                class="btn no-drag" 
+                icon="pi pi-cog"
+                :label="$t('keywords.settings')"
                 @click="settings.setVisible()"
             />
         </div>
     </div>
 </div>
 
-<div v-else class="sidebar">
-    <img class="icon-alt no-select" src="../../assets/images/appicon.png">
+<div v-else class="sidebar collapsed">
+    <img class="icon no-select" src="../../assets/images/appicon.png">
 
-    <div class="flex column h-full">
+    <div class="flex column h-full mb-4">
         <div class="top flex column">
             <Button 
                 plain severity="secondary"
-                class="btn-alt margin-lr no-drag" icon="pi pi-home" 
+                class="btn no-drag" icon="pi pi-home" 
                 v-tooltip="tooltipOpts(t('tooltips.sidebar.dashboard'))"
                 @click="Dashboard"
             />
 
             <Button 
                 plain severity="secondary"
-                class="btn-alt margin-lr no-drag" 
+                class="btn no-drag" 
                 v-tooltip="tooltipOpts(t('tooltips.sidebar.game-selection'))"
                 @click="GameSelection"
             >
@@ -109,27 +109,27 @@ const ModDevTools = () => router.push('/mod-dev-tools')
         <div class="top flex column">
             <Button 
                 severity="secondary"
-                class="btn-alt margin-lr no-drag" icon="pi pi-wrench"
+                class="btn no-drag" icon="pi pi-wrench"
                 v-tooltip="tooltipOpts(t('tooltips.sidebar.mod-dev-tools'))"
                 @click="ModDevTools"
             />
 
-            <!-- <Button plain outlined class="btn margin-lr no-drag" icon="pi pi-upload"/> -->
+            <!-- <Button plain outlined class="btn no-drag" icon="pi pi-upload"/> -->
         </div>
 
         <div class="spacer"></div>
  
         <div class="bottom flex column">
-            <Button severity="secondary"
-                class="btn-alt margin-lr no-drag"
+            <Button outlined
+                class="btn no-drag"
                 icon="pi pi-info-circle"
                 @click="appInfo.setVisible()"
             />
 
-            <!-- <Button text class="btn margin-lr no-drag" :icon="themeMode === 'dark' ? 'pi pi-sun' : 'pi pi-moon'" @click="ToggleThemeMode"/> -->
+            <!-- <Button text class="btn no-drag" :icon="themeMode === 'dark' ? 'pi pi-sun' : 'pi pi-moon'" @click="ToggleThemeMode"/> -->
             <Button
-                severity="secondary"
-                class="btn-alt margin-lr spin-hover no-drag" icon="pi pi-cog" 
+                plain severity="secondary"
+                class="btn spin-hover no-drag" icon="pi pi-cog" 
                 v-tooltip="tooltipOpts(t('keywords.settings'))"
                 @click="settings.setVisible()"
             />
@@ -145,51 +145,49 @@ const ModDevTools = () => router.push('/mod-dev-tools')
     align-items: center;
     position: fixed;
     z-index: 999;
-    height: 100vh;
     width: v-bind(sidebarWidth);
-    border-right: 1px outset rgba(255, 255, 255, 0.45);
-    background-color: var(--p-surface-800); /* #2c2d32; */
 }
 
-.sidebar-expanded {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: fixed;
-    z-index: 999;
+.collapsed {
     height: 100vh;
-    width: v-bind(sidebarWidth);
-    padding-left: 20px;
+    border-right: 1px solid var(--border-faint);
+    background-color: var(--p-surface-900); /* #2c2d32; */
 }
 
-.icon {
-    width: 70px;
-    height: 77px;
-    margin: 20px 0px 20px 0px;
+.expanded {
+    height: 100vh;
+    border-right: 1px solid var(--border-faint);
+    background-color: var(--p-surface-900); /* #2c2d32; */
 }
 
-.icon-alt {
-    width: 56px;
-    height: 63px;
+.collapsed .icon {
+    width: 45px;
     margin: 15px 0px 20px 0px;
 }
 
-.btn {
+.expanded .icon {
+    width: 70px;
+}
+
+.btn-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    margin: 20px 0px 20px 0px;
+}
+
+.expanded .btn {
     position: relative;
     border-radius: 3px;
     background: transparent !important;
-    color: rgba(255, 255, 255, 0.85);
+    color: rgba(209, 209, 209, 0.971);
     border: none !important;
 }
 
-.btn-alt {
+.collapsed .btn {
     position: relative;
     border-radius: 3px;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-}
-
-.btn > * {
-    font-size: 20px;
+    border: none !important;
 }
 
 .top .p-button {
@@ -198,6 +196,10 @@ const ModDevTools = () => router.push('/mod-dev-tools')
 
 .bottom .p-button {
     margin-top: 10px;
+}
+
+.collapsed .btn :first-child {
+    font-size: 18px;
 }
 
 /*.plain-btn {
@@ -211,12 +213,8 @@ const ModDevTools = () => router.push('/mod-dev-tools')
     flex: 1;
 }
 
-.bottom {
-    padding-bottom: 20px;
-}
-
 .material-symbols-sharp {
-    font-size: 25px;
-    font-variation-settings: 'FILL' 0, 'wght' 270, 'GRAD' 100, 'opsz' 40
+    font-size: 25px !important;
+    font-variation-settings: 'FILL' 0, 'wght' 450, 'GRAD' 0, 'opsz' 48
 }
 </style>

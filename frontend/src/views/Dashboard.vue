@@ -1,20 +1,20 @@
 <script lang="ts" setup>
 import { GetPackagesByUser } from '@backend/thunderstore/API'
 
-import TabView from 'primevue/tabview'
-import TabPanel from 'primevue/tabpanel'
+import { Viewport } from '@components'
+
+import Tabs from 'primevue/tabs';
+import TabList from 'primevue/tablist';
+import Tab from 'primevue/tab';
+import TabPanels from 'primevue/tabpanels';
+import TabPanel from 'primevue/tabpanel';
+
 import FloatLabel from 'primevue/floatlabel'
 
 import { reactive } from 'vue'
 import { useI18n } from 'vue-i18n'
 
-import { useAppStore } from '@stores'
-import { storeToRefs } from 'pinia'
-
 const { t } = useI18n()
-
-const appStore = useAppStore()
-const { sidebarWidth } = storeToRefs(appStore)
 
 interface PackageInfo {
     name: string
@@ -37,35 +37,42 @@ async function getPackages() {
 </script>
 
 <template>
-<!-- <div class="dashboard flex-full column">
-    <TabView>
-        <TabPanel header="Thunderstore">
-            <div class="search-user-packages">
-                <h1>{{ t('search-packages.header') }}</h1>
+<Viewport class="dashboard flex-full column">
+    <Tabs :value="0">
+        <TabList>
+            <Tab :value="0">Thunderstore</Tab>
+            <Tab :value="1">Nexus</Tab>
+        </TabList>
 
-                <div id="input" class="input-box no-drag">
-                    <FloatLabel>
-                        <InputText id="name" v-model="data.name" autocomplete="off"/>
-                        // <label for="name">Owner</label>
-                    
-                        <Button class="search-btn" severity="help" outlined icon="pi pi-search" @click="getPackages"/>
-                    </FloatLabel>
+        <TabPanels>
+            <TabPanel :value="0">
+                <div class="search-user-packages">
+                    <h1>{{ t('search-packages.header') }}</h1>
+    
+                    <div id="input" class="input-box no-drag">
+                        <FloatLabel>
+                            <InputText id="name" v-model="data.name" autocomplete="off"/>
+                            <!-- <label for="name">Owner</label> -->
+                        
+                            <Button class="search-btn" severity="help" outlined icon="pi pi-search" @click="getPackages"/>
+                        </FloatLabel>
+                    </div>
+    
+                    <div id="result" class="result no-drag">{{ data.resultText }}</div>
                 </div>
+            </TabPanel>
 
-                <div id="result" class="result no-drag">{{ data.resultText }}</div>
-            </div>
-        </TabPanel>
-        <TabPanel header="Nexus">
-            <p class="m-0">buh</p>
-        </TabPanel>
-    </TabView>
-</div> -->
+            <TabPanel :value="1">
+                <p class="m-0">buh</p>
+            </TabPanel>
+        </TabPanels>
+    </Tabs>
+</Viewport>
 </template>
 
 <!-- #region Style -->
 <style scoped>
 .dashboard {
-    margin-left: v-bind(sidebarWidth); /* Account for sidebar */
     position: relative;
     text-align: center;
     user-select: none;
@@ -115,29 +122,6 @@ async function getPackages() {
     padding: 0 10px;
     background-color: rgb(43, 43, 43);
     -webkit-font-smoothing: antialiased;
-}
-
-:deep(.p-tabview-nav) {
-   justify-content: center;
-   background: none;
-   border: none;
-}
-
-:deep(.p-tabview-nav-link) {
-    background: none;
-    border: none;
-    color: white;
-    font-weight: 540;
-    font-size: 23px;
-}
-
-:deep(.p-tabview) > * {
-    background: none;
-}
-
-:deep(.p-tabview-header) {
-    user-select: none;
-    --wails-draggable: no-drag;
 }
 </style>
 <!-- #endregion -->

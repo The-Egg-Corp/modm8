@@ -4,6 +4,8 @@ import {
     nextTick, onMounted
 } from 'vue'
 
+import { Viewport } from '@components'
+
 import DataView from 'primevue/dataview'
 import SelectButton from 'primevue/selectbutton'
 import Skeleton from 'primevue/skeleton'
@@ -21,13 +23,10 @@ import type {
 import { t } from '@i18n'
 import { tooltipOpts, openLink } from "../../src/util"
 
-import { useGameStore, useAppStore } from '@stores'
+import { useGameStore } from '@stores'
 import { storeToRefs } from 'pinia'
 
 import router from '../router'
-
-const appStore = useAppStore()
-const { sidebarWidth } = storeToRefs(appStore)
 
 const gameStore = useGameStore()
 const {
@@ -188,10 +187,10 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div class="game-selection flex-span column">
+    <Viewport class="flex-span column">
         <h2 class="header no-select">{{ t('game-selection.header') }}</h2>
 
-        <div class="card game-container no-drag">
+        <div class="card no-drag">
             <!-- While loading, show a skeleton of a grid. -->
             <DataView v-if="loading" data-key="game-selection-loading" layout="grid">
                 <template #empty>
@@ -277,7 +276,7 @@ onMounted(async () => {
                             </Dropdown>
                         </div>
                         
-                        <div class="flex flex-row" style="border: 1px solid var(--p-inputtext-border-color); border-radius: 6.5px;">
+                        <div class="flex row layout-btns">
                             <SelectButton v-model="layout" :options="options" :allowEmpty="false">
                                 <template #option="{ option }">
                                     <i :class="[option === 'list' ? 'pi pi-list' : 'pi pi-th-large']" />
@@ -290,7 +289,7 @@ onMounted(async () => {
                 <!-- Grid layout -->
                 <template #grid>
                     <div class="scrollable-grid grid grid-nogutter">
-                        <div v-for="(game, index) in getGames()" :key="index" class="grid-item border-faint col-2 sm:col-6 md:col-5 lg:col-2 xl:col-2">
+                        <div v-for="(game, index) in getGames()" :key="index" class="grid-item border-faint col-6 sm:col-6 md:col-4 lg:col-3 xl:col-2">
                             <div class="flex column game-card gap-2">
                                 <div class="flex column align-items-center">
                                     <div class="game-grid-title">{{ game.title }}</div>
@@ -389,26 +388,16 @@ onMounted(async () => {
                 </template>
             </DataView>
         </div>
-    </div>
+    </Viewport>
 </template>
 
 <style scoped>
-.game-selection {
-    padding-top: 0px;
-    margin-left: v-bind(sidebarWidth); /* Account for sidebar */
-}
-
-.game-selection .header {
-    text-wrap: wrap;
+.header {
+    text-wrap: nowrap;
     text-align: left;
-    font-size: 38px;
+    font-size: 36px;
     font-weight: 450;
-    margin: 30px 0px 10px 35px;
-}
-
-.game-container {
-    margin-left: 30px;
-    margin-right: 30px;
+    margin: 30px 0px 10px 0px;
 }
 
 .game-card {
@@ -484,6 +473,11 @@ onMounted(async () => {
 .searchbar {
     margin-left: auto;
     margin-right: auto;
+}
+
+.layout-btns {
+    border: 1px solid var(--p-inputtext-border-color);
+    border-radius: 6.5px;
 }
 
 :deep(.searchbar .p-inputtext) {

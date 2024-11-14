@@ -11,7 +11,7 @@ type AuraOptions = PresetOptions<Aura.PrimitiveDesignTokens, Aura.SemanticDesign
 // PrimeVue v4 does not provide typings for actions currently.
 export const defineAuraPreset = (opts: AuraOptions) => definePreset(Aura, opts)
 
-export const createPalette = (name: string) => ({
+export const presetPalette = (name: string) => ({
     50: `{${name}.50}`,
     100: `{${name}.100}`,
     200: `{${name}.200}`,

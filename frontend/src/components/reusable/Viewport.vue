@@ -6,6 +6,8 @@ const appStore = useAppStore()
 const { 
     sidebarWidth 
 } = storeToRefs(appStore)
+
+const topbarHeight = '30px'
 </script>
 
 <template>
@@ -16,6 +18,7 @@ const {
 
 <style scoped>
 .viewport {
+    max-height: calc(100vh - v-bind(topbarHeight));
     margin-left: calc(v-bind(sidebarWidth) + 20px);
     margin-right: 20px;
 }

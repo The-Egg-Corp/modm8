@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { nextTick, onMounted, ref } from "vue"
+import { computed, nextTick, onMounted, ref } from "vue"
 
 import Skeleton from 'primevue/skeleton'
 import Tag from 'primevue/tag'
@@ -12,6 +12,7 @@ import { GetLatestPackageVersion, GetStrippedPackages } from '@backend/thunderst
 import { thunderstore, v1 } from "@backend/models"
 import { InstallByName } from '@backend/thunderstore/API.js'
 
+import { Viewport } from '@components'
 import { useDialog } from '@composables'
 import {
     ProfileManager,
@@ -20,13 +21,13 @@ import {
 } from "@components"
 
 import type { Package, Nullable } from "@types"
-import { useAppStore, useGameStore } from "@stores"
+import { useProfileStore, useGameStore } from "@stores"
 
 import { debounce } from "../util"
 import { storeToRefs } from "pinia"
 
-const appStore = useAppStore()
-const { sidebarWidth } = storeToRefs(appStore)
+const profileStore = useProfileStore()
+const { selectedProfile } = storeToRefs(profileStore)
 
 const gameStore = useGameStore()
 const { selectedGame, updateModCache } = gameStore
@@ -43,7 +44,9 @@ const first = ref(0) // Starting index of the current page
 const modElements = ref<any[]>([])
 const scrollIndex = ref(0)
 
-const mods = ref<thunderstore.StrippedPackage[]>([])
+const mods = computed(() => activeTabIndex.value == 0 ? filterByProfile(allMods.value) : allMods.value)
+
+const allMods = ref<thunderstore.StrippedPackage[]>([])
 const currentPageMods = ref<Package[]>([])
 
 const installing = ref(false)
@@ -56,11 +59,9 @@ const tabs = ref([
     //{ label: 'Nexus', icon: 'pi pi-globe' } // Uncomment when Nexus is implemented.
 ])
 
-const onTabChange = (e: TabMenuChangeEvent) => {
+const onTabChange = async (e: TabMenuChangeEvent) => {
     activeTabIndex.value = e.index
-
-    if (e.index == 1) refreshMods(false)
-    else mods.value = []
+    await updatePage(0, ROWS)
 }
 
 /** 
@@ -84,7 +85,7 @@ const refreshMods = async (fetch: boolean) => {
         }
     }
 
-    mods.value = getMods()
+    allMods.value = getMods()
     await updatePage(0, ROWS)
 
     // We are done regardless of outcome, stop loading.
@@ -142,6 +143,10 @@ const filterBySearch = (mods: thunderstore.StrippedPackage[]) => {
     })
 }
 
+const filterByProfile = (mods: thunderstore.StrippedPackage[]) => {
+    return mods.filter(mod => selectedProfile.value?.mods.thunderstore?.includes(mod.full_name))
+}
+
 const getMods = (searchFilter = true, defaultSort = true) => {
     if (!selectedGame.modCache) return []
     const mods = searchFilter ? filterBySearch(selectedGame.modCache) : selectedGame.modCache
@@ -158,7 +163,7 @@ const onInputChange = async () => {
     // No input, no need to debounce.
     if (!searchInput.value?.trim()) {
         // Show all mods without filtering.
-        mods.value = getMods(false)
+        allMods.value = getMods(false)
         return await updatePage(0, ROWS)
     }
 
@@ -211,7 +216,7 @@ const handleScroll = (e: WheelEvent) => {
 </script>
 
 <template>
-<div :class="['selected-game', { 'no-drag': configEditorDialog.visible || installingModDialog.visible }]">
+<Viewport :class="['selected-game', { 'no-drag': configEditorDialog.visible || installingModDialog.visible }]">
     <div class="flex row">
         <div class="flex column">
             <Card class="selected-game-card no-drag">
@@ -254,7 +259,7 @@ const handleScroll = (e: WheelEvent) => {
                 </template>
             </Card>
 
-            <ProfileManager/>
+            <ProfileManager @profileSelected="updatePage(0, ROWS)"/>
         </div>
     
         <div class="flex mod-list-container">
@@ -263,7 +268,7 @@ const handleScroll = (e: WheelEvent) => {
                 <template #empty>
                     <div class="list-nogutter pt-4">
                         <div v-for="i in 6" :key="i" class="loading-list-item">
-                            <div style="width: 1280px;" class="flex flex-row ml-1 p-3 border-faint border-round">
+                            <div style="width: 1280px;" class="flex flex-row ml-1 p-3 border-top-faint border-round">
                                 <Skeleton size="6.5rem"/> <!-- Thumbnail -->
                                 
                                 <div class="flex column gap-1 ml-2">
@@ -289,7 +294,7 @@ const handleScroll = (e: WheelEvent) => {
                 v-else lazy stripedRows
                 layout="list" data-key="mod-list"
                 paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
-                :paginator="mods.length > 0" :rows="ROWS"
+                :paginator="mods.length > ROWS" :rows="ROWS"
                 :value="mods" @page="onPageChange" :first="first"
             >
                 <template #empty>
@@ -362,7 +367,11 @@ const handleScroll = (e: WheelEvent) => {
 
                                         <div class="mod-list-bottom-row"> 
                                             <div class="flex row gap-2">
-                                                <Button plain class="btn w-full" icon="pi pi-download"
+                                                <Button v-if="activeTabIndex == 0" class="btn w-full"
+                                                    severity="danger" icon="pi pi-trash"
+                                                    :label="$t('keywords.uninstall')"
+                                                />
+                                                <Button v-else class="btn w-full" icon="pi pi-download"
                                                     :label="$t('keywords.install')" @click="installMod(mod.full_name)"
                                                 />
 
@@ -399,7 +408,7 @@ const handleScroll = (e: WheelEvent) => {
 
         <ConfigEditorOverlay :dialog="configEditorDialog" :selectedGame="selectedGame"/>
     </div>
-</div>
+</Viewport>
 </template>
 
 <style scoped>
@@ -411,15 +420,19 @@ const handleScroll = (e: WheelEvent) => {
 .selected-game {
     display: flex;
     flex-direction: column;
-    margin-left: v-bind(sidebarWidth); /* Account for sidebar */
     margin-top: 30px;
 }
 
+.selected-game > :first-child {
+    height: calc(100vh - 30px);
+}
+
 .selected-game-card {
-    background: none;
-    box-shadow: none;
+    margin: 0px 10px 0px 10px;
     width: max-content;
     flex-shrink: 0;
+    background: none;
+    box-shadow: none;
 }
 
 .selected-game-card-header {
@@ -431,7 +444,6 @@ const handleScroll = (e: WheelEvent) => {
 }
 
 .selected-game-card :deep(.p-card-body) {
-    margin: 0px 20px 0px 30px;
     padding: 0px;
 }
 
@@ -559,6 +571,7 @@ const handleScroll = (e: WheelEvent) => {
 
 :deep(.p-dataview-paginator-bottom) {
     border: none;
+    justify-self: center;
 }
 
 .list-item {
@@ -573,13 +586,5 @@ const handleScroll = (e: WheelEvent) => {
     width: 100vw;
     padding-bottom: 15px;
     padding-top: 0px;
-}
-
-:deep(.p-tabmenu-nav) {
-    background: none;
-}
-
-:deep(.p-menuitem-link) {
-    background: none;
 }
 </style>

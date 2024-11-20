@@ -52,7 +52,8 @@
     "cancel": "Cancelar",
     "import": "Importar",
     "export": "Exportar",
-    "refresh": "Refrescar"
+    "refresh": "Refrescar",
+    "uninstall": "Desinstalar"
   },
   "languages": {
     "en": "Inglés",

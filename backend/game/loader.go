@@ -27,7 +27,7 @@ type LoaderPackageInfo struct {
 	RootDirName        *string
 }
 
-// Note: Since Go can't do overloading, recommended version is kwargs - but only the first element will matter.
+// Note: Since Go can't do overloading, recommendedVer is kwargs - but only the first element will matter.
 func NewLoaderPackageInfo(loaderType ModLoader, rootDirName string, recommendedVer ...*semver.Version) LoaderPackageInfo {
 	var version *semver.Version
 	if len(recommendedVer) > 0 {

@@ -53,10 +53,6 @@ func (u *Utils) WalkDirExt(root string, exts []string) ([]string, error) {
 	return backend.WalkDirExt(root, exts)
 }
 
-func (u *Utils) ReadFile(path string) (*string, error) {
-	return backend.ReadFile(path)
-}
-
 func (app *Application) GetSettings() *AppSettings {
 	return app.Settings
 }

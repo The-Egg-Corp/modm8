@@ -18,13 +18,12 @@ export interface GameState {
 
 export const useGameStore = defineStore('GameStore', () => {
     //#region State
+    const games = ref<Map<string, ThunderstoreGame>>(new Map())
     const selectedGame = ref<ThunderstoreGame>({
         title: 'Placeholder',
         identifier: '',
         steamID: 0,
     })
-
-    const games = ref<Map<string, ThunderstoreGame>>(new Map())
     //#endregion
 
     //#region Getters

@@ -1,7 +1,6 @@
 package backend
 
 import (
-	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
@@ -9,8 +8,8 @@ import (
 
 func WalkDirExt(root string, exts []string) ([]string, error) {
 	var files []string
-	err := filepath.WalkDir(root, func(path string, d fs.DirEntry, err error) error {
-		if !d.IsDir() {
+	err := filepath.WalkDir(root, func(path string, entry os.DirEntry, err error) error {
+		if !entry.IsDir() {
 			for _, s := range exts {
 				if strings.HasSuffix(path, "."+s) {
 					files = append(files, path)
@@ -40,14 +39,12 @@ func ExistsAtPath(absPath string) (bool, error) {
 	return err == nil, err
 }
 
-func ReadFile(path string) (*string, error) {
-	content, err := os.ReadFile(filepath.Clean(path))
-	if err != nil {
-		return nil, nil
-	}
+func ReadFile(path string) ([]byte, error) {
+	return os.ReadFile(filepath.Clean(path))
+}
 
-	out := string(content)
-	return &out, nil
+func SaveFile(path string, data []byte) error {
+	return os.WriteFile(filepath.Clean(path), data, os.ModePerm)
 }
 
 func ContainsEqualFold(arr []string, item string) bool {

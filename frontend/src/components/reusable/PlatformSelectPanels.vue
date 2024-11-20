@@ -3,7 +3,7 @@ import Splitter from 'primevue/splitter'
 import SplitterPanel from 'primevue/splitterpanel'
 //import OutlineHoverButton from "./OutlineHoverButton.vue"
 
-const props = defineEmits(['selectThunderstore', 'selectNexus'])
+const emit = defineEmits(['selectThunderstore', 'selectNexus'])
 </script>
 
 <template>
@@ -17,7 +17,7 @@ const props = defineEmits(['selectThunderstore', 'selectNexus'])
         <div class="blur w-full h-full">
             <div class="flex column panel-text">
                 Thunderstore
-                <Button class="mt-3" label="Select" @click="$emit('selectThunderstore')"/>
+                <Button class="mt-3" label="Select" @click="emit('selectThunderstore')"/>
             </div>
         </div>
     </SplitterPanel>
@@ -26,7 +26,7 @@ const props = defineEmits(['selectThunderstore', 'selectNexus'])
         <div class="blur w-full h-full">
             <div class="flex column panel-text">
                 Nexus Mods
-                <Button class="mt-3" label="Select" @click="$emit('selectNexus')"/>
+                <Button class="mt-3" label="Select" @click="emit('selectNexus')"/>
             </div>
         </div>
     </SplitterPanel>

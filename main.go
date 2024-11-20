@@ -13,6 +13,7 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options/windows"
 
 	"modm8/backend/app"
+	"modm8/backend/common/profile"
 	"modm8/backend/game"
 	"modm8/backend/nexus"
 	"modm8/backend/thunderstore"
@@ -72,6 +73,7 @@ func main() {
 	tsAPI := thunderstore.NewAPI(modm8.Ctx)
 	tsTools := thunderstore.NewTools()
 
+	profileManager := profile.NewManager()
 	gameManager := game.NewManager()
 	steamRunner := steam.NewRunner()
 
@@ -105,6 +107,7 @@ func main() {
 			tsTools,
 			nexusAPI,
 			gameManager,
+			profileManager,
 			steamRunner,
 		},
 		EnumBind: IList{

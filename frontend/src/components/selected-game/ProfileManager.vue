@@ -1,132 +1,143 @@
 <script lang="ts" setup>
-import DataView from 'primevue/dataview'
-//import Toolbar from 'primevue/toolbar'
+import Listbox, { ListboxChangeEvent } from 'primevue/listbox'
 
-import { ref } from 'vue'
 import { t } from '@i18n'
 import { tooltipOpts } from '@frontend/src/util'
+import { Profile } from '@types'
 
-interface Profile {
-    name: string
-    mods: {
-        thunderstore?: string[]
-        nexus?: string[]
-    }
+import { useProfileStore } from '@stores'
+import { storeToRefs } from 'pinia'
+import { onMounted } from 'vue'
+
+const profileStore = useProfileStore()
+
+const { setSelectedProfile, initProfiles } = profileStore
+const { profiles, selectedProfile } = storeToRefs(profileStore)
+
+const getModsAmount = (prof: Profile) => {
+    const tsAmt = prof.mods.thunderstore?.length ?? 0
+    const nexusAmt = prof.mods.nexus?.length ?? 0
+
+    return tsAmt + nexusAmt
 }
 
-const selectedProfile = ref<Profile>({
-    name: "Default", 
-    mods: {}
-})
+const emit = defineEmits(['profileSelected'])
 
-const profiles = ref<Profile[]>([
-    { name: 'Default', mods: {} },
-    { name: 'testing', mods: {} },
-    { name: 'MEGALOPHOBIA', mods: {} },
-    { name: 'big futa cock mods', mods: {} },
-])
+const onChange = (e: ListboxChangeEvent) => {
+    setSelectedProfile(e.value)
+    emit('profileSelected', e.value)
+}
+
+onMounted(async () => {
+    await initProfiles()
+})
 </script>
 
 <template>
 <div class="profile-manager">
-    <p class="header mt-4 mb-1">{{ t('selected-game.profile-manager.header') }}</p>
-    
-    <DataView class="profile-manager-list" data-key="profile-manager-list" layout="list">
+    <p class="header">{{ t('selected-game.profile-manager.header') }}</p>
+
+    <div class="flex row gap-2">
+        <InputText class="w-full" :placeholder="t('selected-game.profile-manager.search-placeholder')"/>
+
+        <Dropdown :options="['hi']">
+
+        </Dropdown>
+    </div>
+
+    <Listbox class="profile-list" 
+        :modelValue="selectedProfile" :options="profiles" optionLabel="name" 
+        @change="onChange"
+    >
         <template #header>
-            <div class="flex column">
+            <div class="flex justify-content-between">
                 <div class="flex row gap-1">
-                    <Button 
+                    <Button
                         icon="pi pi-plus" severity="primary"
-                        v-tooltip.top="tooltipOpts($t('selected-game.profile-manager.new-profile'))"
+                        v-tooltip.top="tooltipOpts(t('selected-game.profile-manager.new-profile'))"
+                    />
+                </div>
+
+                <div class="flex row gap-1">
+                    <!-- <Button 
+                        icon="pi pi-download" severity="secondary"
+                        v-tooltip.top="tooltipOpts(t('keywords.import'))"
                     />
 
-                    <Button 
-                        icon="pi pi-download" severity="secondary"
-                        v-tooltip.top="tooltipOpts($t('keywords.import'))"
-                    />
-    
                     <Button 
                         icon="pi pi-upload" severity="secondary"
-                        v-tooltip.top="tooltipOpts($t('keywords.export'))"
-                    />
+                        v-tooltip.top="tooltipOpts(t('keywords.export'))"
+                    /> -->
 
-                    <InputText class="w-8" :placeholder="t('selected-game.profile-manager.search-placeholder')"/>
+                    <Button 
+                        icon="pi pi-refresh" severity="secondary"
+                        v-tooltip.top="tooltipOpts(t('keywords.refresh'))"
+                        @click="initProfiles()"
+                    />
                 </div>
             </div>
         </template>
 
         <template #empty>
-            <div></div>
-        </template>
-    </DataView>
+            <div class="flex column justify-content-center align-items-center mt-1">
+                <div style="font-weight: 500; color: var(--p-primary-color);">No profiles exist yet.</div>
+                <div style="font-weight: 350; color: lightgrey;">Click the plus icon to get started!</div>
 
-    <!-- <Card class="selector-card">
-        <template #title>
-            <Toolbar>
-                <template #start>
-                    <Button :label="$t('keywords.new')" icon="pi pi-plus" class="mr-2" severity="primary"/>
-                </template>
-            
-                <template #end>
-                    <div class="flex row gap-1">
-                        <Button 
-                            icon="pi pi-download" severity="secondary"
-                            v-tooltip.top="tooltipOpts($t('keywords.import'))"
-                        />
-
-                        <Button 
-                            icon="pi pi-upload" severity="secondary"
-                            v-tooltip.top="tooltipOpts($t('keywords.export'))"
-                        />
-                    </div>
-                    
-                </template>
-            </Toolbar>
+                <img class="mt-2" src="https://cdn.7tv.app/emote/01G7YR9X5G0003Z50SB3FM5WR4/3x.webp"></img>
+            </div>
         </template>
 
-        <template #content>
-            <List filter class="selector-list w-full" v-model="selectedProfile" 
-                :options="profiles" optionLabel="name"
-            />
+        <template #option="{ option: profile }">
+            <div class="flex row w-full justify-content-between align-items-center">
+                <div>[{{getModsAmount(profile)}}] {{ profile.name }}</div>
+                
+                <div class="flex gap-1">
+                    <Button style="width: 34px; height: 32px;" icon="pi pi-pencil" severity="secondacry"></Button>
+                    <Button style="width: 34px; height: 32px;" icon="pi pi-trash" severity="danger"></Button>
+                </div>
+            </div>
         </template>
-    </Card> -->
+    </Listbox>
 </div>
 </template>
 
 <style scoped>
 .profile-manager {
-    margin: 0px 10px 0px 30px;
+    margin: 30px 10px 20px 10px;
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 auto;
 }
 
-:deep(.p-dataview-header) {
-    margin: 0 !important;
+.profile-list {
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 auto;
+    margin-top: 10px;
+    border: var(--border-faint);
+}
+
+:deep(.p-listbox-list) {
+    padding: 0;
+}
+
+:deep(.p-listbox-list-container) {
+    overflow: scroll;
+    scrollbar-width: none;
+}
+
+:deep(.p-listbox-option) {
+    padding: 10px 5px 10px 5px;
+}
+
+:deep(.p-listbox-header) {
+    padding: 5px 0px 5px 0px;
 }
 
 .header {
-    font-size: 28px;
+    font-size: 32px;
     font-weight: 540;
     user-select: none;
-}
-
-.selector-card {
-    height: 100% !important;
-    background: none;
-}
-
-:deep(.p-toolbar) {
-    background: none;
-}
-
-.selector-card :deep(.p-card-body) {
-    padding: 0rem;
-    gap: 10px;
-}
-
-.selector-list {
-    background: none; 
-}
-
-:deep(.selector-list > *) {
-    background: none; 
+    margin: 0px 0px 15px 0px;
 }
 </style>

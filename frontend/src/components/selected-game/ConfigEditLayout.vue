@@ -74,18 +74,18 @@ const asBool = (str: string) => {
 
             <!-- Loop through each entry in the section -->
             <div v-for="(entry, key) in entries" :key="key">
-                <div class="flex row pt-2 justify-content-between align-items-baseline">
+                <div class="flex row pt-2 justify-content-between align-items-center">
                     <!-- Container of the key and comments -->
                     <div class="mb-1" style="width: 45rem;">
                         <p class="entry-key mt-0 mb-1">{{ key }}</p>
                         
                         <div v-if="entry.comments">
-                            <div>{{ entry.comments[0].replaceAll('#', '') }}</div>
-                            <div v-for="comment in getEntryDescription(entry.comments)">{{ comment }}</div>
+                            <div class="entry-description">{{ entry.comments[0].replaceAll('#', '') }}</div>
+                            <div class="entry-description" v-for="comment in getEntryDescription(entry.comments)">{{ comment }}</div>
                         </div>
                     </div>
 
-                    <div>
+                    <div class="flex align-items-center">
                         <ToggleSwitch v-if="isBool(entry.default_value)" v-model="entry.checked"/>
                         <InputText v-else class="ml-3 flex-grow-1" style="font-size: 16px;" :value="entry.value"/>
                     </div>
@@ -109,8 +109,14 @@ const asBool = (str: string) => {
 }
 
 .entry-key {
+    font-weight: 420;
     font-size: 18px;
-    color: var(--primary-color);
+    color: var(--p-primary-color);
+}
+
+.entry-description {
+    font-weight: 250;
+    font-size: 16px;
 }
 
 .category-divider {
@@ -121,7 +127,7 @@ const asBool = (str: string) => {
 
 .file-name {
     font-size: 24px;
-    color: var(--primary-color);
+    color: var(--p-primary-color);
     text-shadow: 0px 0px 18px rgba(255, 255, 255, 0.3);
 }
 </style>

@@ -187,208 +187,208 @@ onMounted(async () => {
 </script>
 
 <template>
-    <Viewport class="flex-span column">
-        <h2 class="header no-select">{{ t('game-selection.header') }}</h2>
+<Viewport class="flex-full column">
+    <h2 class="header no-select">{{ t('game-selection.header') }}</h2>
 
-        <div class="card no-drag">
-            <!-- While loading, show a skeleton of a grid. -->
-            <DataView v-if="loading" data-key="game-selection-loading" layout="grid">
-                <template #empty>
-                    <div class="grid grid-nogutter pt-1">
-                        <div v-for="i in 15" :key="i" class="grid-item col-2 sm:col-6 md:col-5 lg:col-2 xl:col-2">
-                            <div class="flex flex-column p-3">
-                                <div class="flex flex-column align-items-center pb-2">
-                                    <Skeleton width="8rem" height="2.3rem" />
-                                </div>
-                
-                                <div class="flex justify-content-center border-round">
-                                    <Skeleton width="75%" height="16.5rem" />
-                                </div>
-                
-                                <div class="flex flex-column align-items-center pt-2">
-                                    <div class="flex flex-column gap-2">
-                                        <div class="flex flex-row gap-2 justify-content-center">
-                                            <Skeleton width="2.5rem" height="2rem" />
-                                            <Skeleton width="2.5rem" height="2rem" />
-                                        </div>
+    <div class="card no-drag">
+        <!-- While loading, show a skeleton of a grid. -->
+        <DataView v-if="loading" data-key="game-selection-loading" layout="grid">
+            <template #empty>
+                <div class="grid grid-nogutter pt-1">
+                    <div v-for="i in 15" :key="i" class="grid-item col-2 sm:col-6 md:col-5 lg:col-2 xl:col-2">
+                        <div class="flex flex-column p-3">
+                            <div class="flex flex-column align-items-center pb-2">
+                                <Skeleton width="8rem" height="2.3rem" />
+                            </div>
+            
+                            <div class="flex justify-content-center border-round">
+                                <Skeleton width="75%" height="16.5rem" />
+                            </div>
+            
+                            <div class="flex flex-column align-items-center pt-2">
+                                <div class="flex flex-column gap-2">
+                                    <div class="flex flex-row gap-2 justify-content-center">
+                                        <Skeleton width="2.5rem" height="2rem" />
+                                        <Skeleton width="2.5rem" height="2rem" />
+                                    </div>
 
-                                        <div class="flex gap-2 justify-content-center align-items-baseline">
-                                            <Skeleton width="16rem" height="2.5rem" />
-                                        </div>
+                                    <div class="flex gap-2 justify-content-center align-items-baseline">
+                                        <Skeleton width="16rem" height="2.5rem" />
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </template>
-            </DataView>
+                </div>
+            </template>
+        </DataView>
 
-            <!-- Finished loading, render the DataView with proper info -->
-            <DataView v-else lazy data-key="game-selection" :value="getGames()" :layout="layout">
-                <template #empty>
-                    <div v-if="selectedFilter.label == 'FAVOURITES'" class="dataview-empty">
-                        <p>No games favourited!</p>
-                    </div>
-                    <div v-else-if="selectedFilter.label == 'INSTALLED'" class="dataview-empty">
-                        <p>No games installed!</p>
-                    </div>
-                    <div v-else-if="searchInput && searchInput.length > 0" class="dataview-empty flex flex-column">
-                        <p>{{ `${t('game-selection.empty-results')}.` }}</p>
+        <!-- Finished loading, render the DataView with proper info -->
+        <DataView v-else lazy data-key="game-selection" :value="getGames()" :layout="layout">
+            <template #empty>
+                <div v-if="selectedFilter.label == 'FAVOURITES'" class="dataview-empty">
+                    <p>No games favourited!</p>
+                </div>
+                <div v-else-if="selectedFilter.label == 'INSTALLED'" class="dataview-empty">
+                    <p>No games installed!</p>
+                </div>
+                <div v-else-if="searchInput && searchInput.length > 0" class="dataview-empty flex flex-column">
+                    <p>{{ `${t('game-selection.empty-results')}.` }}</p>
 
-                        <!-- Sadge -->
-                        <!-- <img class="pt-3" src="https://cdn.7tv.app/emote/603cac391cd55c0014d989be/2x.png"> -->
+                    <!-- Sadge -->
+                    <!-- <img class="pt-3" src="https://cdn.7tv.app/emote/603cac391cd55c0014d989be/2x.png"> -->
 
-                        <!-- modCheck -->
-                        <img class="pt-3" src="https://cdn.7tv.app/emote/60abf171870d317bef23d399/2x.gif">
-                    </div>
-                    <div v-else class="dataview-empty flex flex-column">
-                        <p>No games available! Something probably went wrong.</p>
-                    </div>
-                </template>
+                    <!-- modCheck -->
+                    <img class="pt-3" src="https://cdn.7tv.app/emote/60abf171870d317bef23d399/2x.gif">
+                </div>
+                <div v-else class="dataview-empty flex flex-column">
+                    <p>No games available! Something probably went wrong.</p>
+                </div>
+            </template>
 
-                <!-- Header (filter, search, layout) -->
-                <template #header>
-                    <div class="flex flex-row justify-content-between align-items-center">
-                        <div class="flex row gap-2">
-                            <div class="searchbar">
-                                <IconField iconPosition="left">
-                                    <InputIcon class="pi pi-search"/>
-                                    <InputText type="text" :placeholder="t('game-selection.search-placeholder')" v-model="searchInput"/>
-                                </IconField>
-                            </div>
-    
-                            <Dropdown checkmark
-                                class="no-drag filter-dropdown"
-                                :options="filters"
-                                v-model="selectedFilter"
-                            >
-                                <template #option="selectedItem: OptionItem<ValueItemLabeled<string>>">
-                                    <div class="flex no-drag align-items-center">
-                                        <div class="no-select">{{ selectedItem.option.value }}</div>
-                                    </div>
-                                </template>
-                                
-                                <template #value="selectedItem: ValueItem<ValueItemLabeled<string>>">
-                                    <div v-if="selectedItem.value" class="flex align-items-center">
-                                        <div>{{ selectedItem.value.value }}</div>
-                                    </div>
-                                </template>
-                            </Dropdown>
+            <!-- Header (filter, search, layout) -->
+            <template #header>
+                <div class="flex flex-row justify-content-between align-items-center">
+                    <div class="flex row gap-2">
+                        <div class="searchbar">
+                            <IconField iconPosition="left">
+                                <InputIcon class="pi pi-search"/>
+                                <InputText type="text" :placeholder="t('game-selection.search-placeholder')" v-model="searchInput"/>
+                            </IconField>
                         </div>
-                        
-                        <div class="flex row layout-btns">
-                            <SelectButton v-model="layout" :options="options" :allowEmpty="false">
-                                <template #option="{ option }">
-                                    <i :class="[option === 'list' ? 'pi pi-list' : 'pi pi-th-large']" />
-                                </template>
-                            </SelectButton>
-                        </div>
-                    </div>
-                </template>
 
-                <!-- Grid layout -->
-                <template #grid>
-                    <div class="scrollable-grid grid grid-nogutter">
-                        <div v-for="(game, index) in getGames()" :key="index" class="grid-item border-faint col-6 sm:col-6 md:col-4 lg:col-3 xl:col-2">
-                            <div class="flex column game-card gap-2">
-                                <div class="flex column align-items-center">
-                                    <div class="game-grid-title">{{ game.title }}</div>
+                        <Dropdown checkmark
+                            class="no-drag filter-dropdown"
+                            :options="filters"
+                            v-model="selectedFilter"
+                        >
+                            <template #option="selectedItem: OptionItem<ValueItemLabeled<string>>">
+                                <div class="flex no-drag align-items-center">
+                                    <div class="no-select">{{ selectedItem.option.value }}</div>
                                 </div>
+                            </template>
+                            
+                            <template #value="selectedItem: ValueItem<ValueItemLabeled<string>>">
+                                <div v-if="selectedItem.value" class="flex align-items-center">
+                                    <div>{{ selectedItem.value.value }}</div>
+                                </div>
+                            </template>
+                        </Dropdown>
+                    </div>
+                    
+                    <div class="flex row layout-btns">
+                        <SelectButton v-model="layout" :options="options" :allowEmpty="false">
+                            <template #option="{ option }">
+                                <i :class="[option === 'list' ? 'pi pi-list' : 'pi pi-th-large']" />
+                            </template>
+                        </SelectButton>
+                    </div>
+                </div>
+            </template>
 
-                                <div class="flex column relative mx-auto">
-                                    <img class="game-grid-thumbnail" :src="getThumbnail(game)"/>
+            <!-- Grid layout -->
+            <template #grid>
+                <div class="scrollable-grid grid grid-nogutter">
+                    <div v-for="(game, index) in getGames()" :key="index" class="grid-item border-faint col-6 sm:col-6 md:col-4 lg:col-3 xl:col-2">
+                        <div class="flex column game-card gap-2">
+                            <div class="flex column align-items-center">
+                                <div class="game-grid-title">{{ game.title }}</div>
+                            </div>
 
-                                    <!-- <div class="flex gap-2 justify-content-center align-items-baseline mt-2 mb-3">
+                            <div class="flex column relative mx-auto">
+                                <img class="game-grid-thumbnail" :src="getThumbnail(game)"/>
+
+                                <!-- <div class="flex gap-2 justify-content-center align-items-baseline mt-2 mb-3">
+                                    <p class="m-0" style="font-size: 16px">{{ t('game-selection.bepinex-setup') }}</p>
+                                    <i
+                                        :class="['pi', game.bepinexSetup ? 'pi-check' : 'pi-times']" 
+                                        :style="{ color: game.bepinexSetup  ? 'lime' : 'red' }"
+                                    />
+                                </div> -->
+                            </div>
+
+                            <div class="flex row justify-content-center gap-2">
+                                <Button outlined plain
+                                    v-tooltip.top="tooltipOpts(game.favourited ? t('keywords.unfavourite') : t('keywords.favourite'))"
+                                    :icon="game.favourited ? 'pi pi-heart-fill' : 'pi pi-heart'"
+                                    :style="game.favourited ? { color: 'var(--primary-color)' } : {}"
+                                    @click="toggleFavouriteGame(game.identifier)"
+                                />
+
+                                <Button outlined plain
+                                    v-if="game.installed"
+                                    v-tooltip.top="tooltipOpts(t('tooltips.game-selection.open-folder-location'))"
+                                    icon="pi pi-folder" @click="openLink(`file://${game.path}`)"
+                                />
+                            </div>
+
+                            <div class="grid-item-bottom-row justify-content-center">
+                                <Button severity="primary"
+                                    class="grid-select-game-btn"
+                                    :label="t('game-selection.select-button')" 
+                                    @click="selectGame(game)"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+            <!-- List layout -->
+            <template #list>
+                <div class="scrollable-list list-nogutter" ref="scrollableList" tabindex="0" @wheel.prevent="handleScroll">
+                    <div 
+                        v-for="(game, index) in getGames()" class="snap-top col-12" 
+                        :key="index" :ref="el => gameElements[index] = el"
+                    >
+                        <div class="flex flex-column sm:flex-row sm:align-items-center p-2 gap-4" :class="{ 'border-top-faint': index !== 0 }">
+                            <img class="game-list-thumbnail fadeinleft fadeinleft-thumbnail block xl:block mx-auto w-full" :src="getThumbnail(game)"/>
+
+                            <div class="flex flex-column md:flex-row justify-content-between md:align-items-center flex-1">
+                                <div class="fadeinleft fadeinleft-title flex flex-row md:flex-column justify-content-between align-items-start gap-1">
+                                    <div class="game-list-title">{{ game.title }}</div>
+
+                                    <div class="flex gap-2 justify-content-center align-items-baseline">
                                         <p class="m-0" style="font-size: 16px">{{ t('game-selection.bepinex-setup') }}</p>
                                         <i
-                                            :class="['pi', game.bepinexSetup ? 'pi-check' : 'pi-times']" 
-                                            :style="{ color: game.bepinexSetup  ? 'lime' : 'red' }"
+                                            :class="['pi', game.installed ? 'pi-check' : 'pi-times']" 
+                                            :style="{ color: game.installed ? 'lime' : 'red' }"
                                         />
-                                    </div> -->
+                                    </div>
                                 </div>
 
-                                <div class="flex row justify-content-center gap-2">
-                                    <Button outlined plain
-                                        v-tooltip.top="tooltipOpts(game.favourited ? t('keywords.unfavourite') : t('keywords.favourite'))"
-                                        :icon="game.favourited ? 'pi pi-heart-fill' : 'pi pi-heart'"
-                                        :style="game.favourited ? { color: 'var(--primary-color)' } : {}"
-                                        @click="toggleFavouriteGame(game.identifier)"
-                                    />
+                                <div class="flex flex-column md:align-items-end gap-5">
+                                    <div class="flex flex-row md:flex-row gap-2">
+                                        <Button
+                                            outlined plain
+                                            icon="pi pi-folder"
+                                            v-if="game.installed"
+                                            v-tooltip.top="tooltipOpts(t('tooltips.game-selection.open-folder-location'))"
+                                            @click="openLink(`file://${game.path}`)"
+                                        />
 
-                                    <Button outlined plain
-                                        v-if="game.installed"
-                                        v-tooltip.top="tooltipOpts(t('tooltips.game-selection.open-folder-location'))"
-                                        icon="pi pi-folder" @click="openLink(`file://${game.path}`)"
-                                    />
-                                </div>
+                                        <Button
+                                            outlined plain
+                                            :icon="game.favourited ? 'pi pi-heart-fill' : 'pi pi-heart'"
+                                            :style="game.favourited ? { color: 'var(--primary-color)' } : {}"
+                                            @click="toggleFavouriteGame(game.identifier)"
+                                        />
 
-                                <div class="grid-item-bottom-row justify-content-center">
-                                    <Button severity="primary"
-                                        class="grid-select-game-btn"
-                                        :label="t('game-selection.select-button')" 
-                                        @click="selectGame(game)"
-                                    />
+                                        <Button
+                                            :label="t('game-selection.select-button')"
+                                            class="list-select-game-btn flex-auto md:flex-initial"
+                                            @click="selectGame(game)"
+                                        />
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </div>  
                     </div>
-                </template>
-
-                <!-- List layout -->
-                <template #list>
-                    <div class="scrollable-list list-nogutter" ref="scrollableList" tabindex="0" @wheel.prevent="handleScroll">
-                        <div 
-                            v-for="(game, index) in getGames()" class="snap-top col-12" 
-                            :key="index" :ref="el => gameElements[index] = el"
-                        >
-                            <div class="flex flex-column sm:flex-row sm:align-items-center p-2 gap-4" :class="{ 'border-top-faint': index !== 0 }">
-                                <img class="game-list-thumbnail fadeinleft fadeinleft-thumbnail block xl:block mx-auto w-full" :src="getThumbnail(game)"/>
-
-                                <div class="flex flex-column md:flex-row justify-content-between md:align-items-center flex-1">
-                                    <div class="fadeinleft fadeinleft-title flex flex-row md:flex-column justify-content-between align-items-start gap-1">
-                                        <div class="game-list-title">{{ game.title }}</div>
-
-                                        <div class="flex gap-2 justify-content-center align-items-baseline">
-                                            <p class="m-0" style="font-size: 16px">{{ t('game-selection.bepinex-setup') }}</p>
-                                            <i
-                                                :class="['pi', game.installed ? 'pi-check' : 'pi-times']" 
-                                                :style="{ color: game.installed ? 'lime' : 'red' }"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div class="flex flex-column md:align-items-end gap-5">
-                                        <div class="flex flex-row md:flex-row gap-2">
-                                            <Button
-                                                outlined plain
-                                                icon="pi pi-folder"
-                                                v-if="game.installed"
-                                                v-tooltip.top="tooltipOpts(t('tooltips.game-selection.open-folder-location'))"
-                                                @click="openLink(`file://${game.path}`)"
-                                            />
-
-                                            <Button
-                                                outlined plain
-                                                :icon="game.favourited ? 'pi pi-heart-fill' : 'pi pi-heart'"
-                                                :style="game.favourited ? { color: 'var(--primary-color)' } : {}"
-                                                @click="toggleFavouriteGame(game.identifier)"
-                                            />
-
-                                            <Button
-                                                :label="t('game-selection.select-button')"
-                                                class="list-select-game-btn flex-auto md:flex-initial"
-                                                @click="selectGame(game)"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>  
-                        </div>
-                    </div>
-                </template>
-            </DataView>
-        </div>
-    </Viewport>
+                </div>
+            </template>
+        </DataView>
+    </div>
+</Viewport>
 </template>
 
 <style scoped>
@@ -417,7 +417,7 @@ onMounted(async () => {
 .scrollable-grid {
     overflow-y: scroll;
     scrollbar-width: none;
-    max-height: calc(100vh - 145px); /* TODO: Investigate why 100vh alone prevents scrolling to bottom. */
+    max-height: calc(100vh - 140px); /* TODO: Investigate why 100vh alone prevents scrolling to bottom. */
 }
 
 .grid-item {

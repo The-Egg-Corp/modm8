@@ -23,19 +23,19 @@ const { setMaxThreads } = useAppStore()
 const onKeydown = (event: KeyboardEvent) => {
     console.log('Keydown fired!\n', event.key)
 
-    const openDialogs = getOpenDialogs()
-    if (openDialogs.length > 0) {
-        for (const dialog of openDialogs) {
-            dialog.visible.value = false
+    if (event.key == "Escape") {
+        const openDialogs = getOpenDialogs()
+        if (openDialogs.length > 0) {
+            for (const dialog of openDialogs) {
+                dialog.visible.value = false
+            }
+        
+            return
         }
 
-        return
+        // No dialogs open + ESC -> open settings overlay.
+        // settingsDialog.setVisible(!settingsDialog.visible.value)
     }
-
-    // No dialogs open + pressing ESC -> open settings overlay.
-    // if (event.key == 'Escape') {
-    //     settingsDialog.setVisible(!settingsDialog.visible.value)
-    // }
 }
 
 onMounted(async () => {
@@ -45,7 +45,6 @@ onMounted(async () => {
     // We don't use `navigator.hardwareConcurrency` as it is known to be unreliable.
     setMaxThreads(await NumCPU())
 
-    // Add keydown event listener when the app mounts
     window.addEventListener('keydown', onKeydown)
 })
 

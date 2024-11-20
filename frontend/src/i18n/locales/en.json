@@ -81,7 +81,8 @@
     "install": "Install",
     "cancel": "Cancel",
     "import": "Import",
-    "export": "Export"
+    "export": "Export",
+    "uninstall": "Uninstall"
   },
   "languages": {
     "en": "English",

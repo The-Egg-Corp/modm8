@@ -39,7 +39,7 @@ var CurModCacheDir string
 
 func ModCacheDir(gameTitle string) string {
 	cacheDir, _ := os.UserConfigDir()
-	return filepath.Join(cacheDir, "modm8", "Thunderstore", gameTitle, "ModCache")
+	return filepath.Join(cacheDir, "modm8", "Games", gameTitle, "ModCache")
 }
 
 type StrippedPackage struct {

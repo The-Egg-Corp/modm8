@@ -45,7 +45,8 @@ func ParseBepinexConfig(path string) (*BepinexConfig, error) {
 		acceptableValues = make([]string, 0)
 	}
 
-	lines := strings.Split(*contents, "\n")
+	lines := strings.Split(string(contents), "\n")
+
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
 

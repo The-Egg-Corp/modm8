@@ -21,6 +21,7 @@ import InputIcon from 'primevue/inputicon'
 import IconField from 'primevue/iconfield'
 
 import Tooltip from 'primevue/tooltip'
+import KeyFilter from 'primevue/keyfilter'
 //#endregion
 
 //#region Import styles
@@ -71,5 +72,6 @@ app.component('InputIcon', InputIcon)
 app.component('IconField', IconField)
 
 app.directive('Tooltip', Tooltip)
+app.directive('keyfilter', KeyFilter);
 
 app.mount('#app')

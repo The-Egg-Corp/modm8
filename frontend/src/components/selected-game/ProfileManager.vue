@@ -4,7 +4,7 @@ import Listbox, { ListboxChangeEvent } from 'primevue/listbox'
 import InputGroup from 'primevue/inputgroup'
 import Popover from 'primevue/popover'
 
-import { NewProfile } from '@backend/profile/ProfileManager'
+import { NewProfile, DeleteProfile } from '@backend/profile/ProfileManager'
 import { tooltipOpts } from '@frontend/src/util'
 
 import { t } from '@i18n'
@@ -37,17 +37,28 @@ const onChange = (e: ListboxChangeEvent) => {
     emit('profileSelected', e)
 }
 
-const toggleProfilePopover = (e: MouseEvent) => {
+const togglePopover = (e: MouseEvent) => {
     pp?.value.show(e)
 }
 
-const createProfile = async (e: MouseEvent) => {
+const createNewProf = async (e: MouseEvent) => {
     await NewProfile(selectedGame.value.title, newProfNameInput.value!)
     await initProfiles()
 
     pp.value.hide(e)
 
     emit('profileCreated', e)
+}
+
+const renameProf = (_: MouseEvent, name: string) => {
+    
+}
+
+const deleteProf = async (e: MouseEvent, name: string) => {
+    e.stopPropagation()
+
+    await DeleteProfile(selectedGame.value.title, name)
+    await initProfiles()
 }
 
 const shouldDisableCreation = () => {
@@ -86,7 +97,7 @@ onMounted(async () => {
                     <Button
                         icon="pi pi-plus" severity="primary"
                         v-tooltip.top="tooltipOpts(t('selected-game.profile-manager.new-profile'))"
-                        @click="toggleProfilePopover"
+                        @click="togglePopover"
                     />
 
                     <Popover ref="pp">
@@ -97,7 +108,7 @@ onMounted(async () => {
                                     <InputText v-model="newProfNameInput" v-keyfilter="/^[^<>*!\/]+$/"/>
                                     <Button 
                                         label="Create" severity="success" icon="pi pi-check"
-                                        :disabled="shouldDisableCreation()" @click="createProfile"
+                                        :disabled="shouldDisableCreation()" @click="createNewProf"
                                     />
                                 </InputGroup>
                             </div>
@@ -141,12 +152,12 @@ onMounted(async () => {
                 <div class="flex gap-1">
                     <Button
                         style="width: 34px; height: 32px;" icon="pi pi-pencil"
-                        @click=""
+                        @click="e => renameProf(e, profile.name)"
                     />
 
                     <Button 
                         style="width: 34px; height: 32px;" icon="pi pi-trash" severity="danger"
-                        @click="e => e.stopPropagation()"
+                        @click="e => deleteProf(e, profile.name)"
                     />
                 </div>
             </div>

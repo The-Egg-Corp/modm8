@@ -51,6 +51,10 @@ func (pm *ProfileManager) SaveProfile(gameTitle, profileName string, prof Profil
 	return SaveManifest(gameTitle, profileName, prof)
 }
 
+func (pm *ProfileManager) DeleteProfile(gameTitle, profileName string) error {
+	return DeleteManifest(gameTitle, profileName)
+}
+
 func PathToProfilesDir(gameTitle string) string {
 	cacheDir, _ := os.UserConfigDir()
 	path := filepath.Join(cacheDir, "modm8", "Games", gameTitle, "Profiles")
@@ -92,6 +96,10 @@ func SaveManifest(gameTitle, profileName string, prof ProfileManifest) error {
 	}
 
 	return backend.SaveFile(PathToProfile(gameTitle, profileName), data)
+}
+
+func DeleteManifest(gameTitle, profileName string) error {
+	return os.Remove(PathToProfile(gameTitle, profileName))
 }
 
 func GetManifest(gameTitle, profileName string) (*ProfileManifest, error) {

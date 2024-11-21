@@ -26,12 +26,25 @@ type ProfileManifest struct {
 	Mods ProfileMods `json:"mods"`
 }
 
+func NewProfileManifest() ProfileManifest {
+	return ProfileManifest{
+		Mods: ProfileMods{
+			Thunderstore: []string{},
+			Nexus:        []string{},
+		},
+	}
+}
+
 func (pm *ProfileManager) GetProfiles(gameTitle string) (map[string]ProfileManifest, error) {
 	return GetProfiles(gameTitle)
 }
 
 func (pm *ProfileManager) GetProfile(gameTitle, profileName string) (*ProfileManifest, error) {
 	return GetManifest(gameTitle, profileName)
+}
+
+func (pm *ProfileManager) NewProfile(gameTitle, profileName string) error {
+	return SaveManifest(gameTitle, profileName, NewProfileManifest())
 }
 
 func (pm *ProfileManager) SaveProfile(gameTitle, profileName string, prof ProfileManifest) error {

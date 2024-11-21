@@ -123,5 +123,19 @@ async function getPackages() {
     background-color: rgb(43, 43, 43);
     -webkit-font-smoothing: antialiased;
 }
+
+:deep(.p-tabpanels) {
+    background: none;
+}
+
+:deep(.p-tablist-tab-list) {
+    background: none;
+    border: none;
+    justify-content: center;
+}
+
+:deep(.p-tab) {
+    font-size: 24px;
+}
 </style>
 <!-- #endregion -->

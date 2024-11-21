@@ -1,18 +1,29 @@
 <script lang="ts" setup>
-import Listbox, { ListboxChangeEvent } from 'primevue/listbox'
+import Listbox, { ListboxChangeEvent } from 'primevue/listbox' 
+
+import InputGroup from 'primevue/inputgroup'
+import Popover from 'primevue/popover'
+
+import { NewProfile } from '@backend/profile/ProfileManager'
+import { tooltipOpts } from '@frontend/src/util'
 
 import { t } from '@i18n'
-import { tooltipOpts } from '@frontend/src/util'
 import { Profile } from '@types'
+import { useGameStore, useProfileStore } from '@stores'
 
-import { useProfileStore } from '@stores'
 import { storeToRefs } from 'pinia'
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
+
+const gameStore = useGameStore()
+const { selectedGame } = storeToRefs(gameStore)
 
 const profileStore = useProfileStore()
 
 const { setSelectedProfile, initProfiles } = profileStore
 const { profiles, selectedProfile } = storeToRefs(profileStore)
+
+const pp = ref()
+const newProfNameInput = ref<string>('')
 
 const getModsAmount = (prof: Profile) => {
     const tsAmt = prof.mods.thunderstore?.length ?? 0
@@ -21,12 +32,32 @@ const getModsAmount = (prof: Profile) => {
     return tsAmt + nexusAmt
 }
 
-const emit = defineEmits(['profileSelected'])
-
 const onChange = (e: ListboxChangeEvent) => {
     setSelectedProfile(e.value)
-    emit('profileSelected', e.value)
+    emit('profileSelected', e)
 }
+
+const toggleProfilePopover = (e: MouseEvent) => {
+    pp?.value.show(e)
+}
+
+const createProfile = async (e: MouseEvent) => {
+    await NewProfile(selectedGame.value.title, newProfNameInput.value!)
+    await initProfiles()
+
+    pp.value.hide(e)
+
+    emit('profileCreated', e)
+}
+
+const shouldDisableCreation = () => {
+    if (newProfNameInput.value.length < 1) return true // No input yet
+
+    // Profile already exists 
+    return profiles.value.some(p => p.name == newProfNameInput.value)
+}
+
+const emit = defineEmits(['profileSelected', 'profileCreated'])
 
 onMounted(async () => {
     await initProfiles()
@@ -55,7 +86,23 @@ onMounted(async () => {
                     <Button
                         icon="pi pi-plus" severity="primary"
                         v-tooltip.top="tooltipOpts(t('selected-game.profile-manager.new-profile'))"
+                        @click="toggleProfilePopover"
                     />
+
+                    <Popover ref="pp">
+                        <div class="flex flex-col gap-4 w-[25rem]">
+                            <div>
+                                <span class="font-medium block mb-2">Profile Name</span>
+                                <InputGroup>
+                                    <InputText v-model="newProfNameInput" v-keyfilter="/^[^<>*!\/]+$/"/>
+                                    <Button 
+                                        label="Create" severity="success" icon="pi pi-check"
+                                        :disabled="shouldDisableCreation()" @click="createProfile"
+                                    />
+                                </InputGroup>
+                            </div>
+                        </div>
+                    </Popover>
                 </div>
 
                 <div class="flex row gap-1">
@@ -92,8 +139,15 @@ onMounted(async () => {
                 <div>[{{getModsAmount(profile)}}] {{ profile.name }}</div>
                 
                 <div class="flex gap-1">
-                    <Button style="width: 34px; height: 32px;" icon="pi pi-pencil" severity="secondacry"></Button>
-                    <Button style="width: 34px; height: 32px;" icon="pi pi-trash" severity="danger"></Button>
+                    <Button
+                        style="width: 34px; height: 32px;" icon="pi pi-pencil"
+                        @click=""
+                    />
+
+                    <Button 
+                        style="width: 34px; height: 32px;" icon="pi pi-trash" severity="danger"
+                        @click="e => e.stopPropagation()"
+                    />
                 </div>
             </div>
         </template>

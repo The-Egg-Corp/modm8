@@ -21,8 +21,8 @@ export const useProfileStore = defineStore("ProfileStore", () => {
     const gameStore = useGameStore()
 
     // Key is the identifier of the game the profiles exist on.
-    const profiles = ref<Profile[]>()
-    const selectedProfile = ref<Nullable<Profile>>()
+    const profiles = ref<Profile[]>([])
+    const selectedProfile = ref<Nullable<Profile>>(null)
 
     function setSelectedProfile(prof: Profile) {
         selectedProfile.value = profiles.value?.find(p => p.name == prof.name) ?? prof

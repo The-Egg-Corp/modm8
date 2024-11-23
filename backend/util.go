@@ -6,14 +6,43 @@ import (
 	"strings"
 )
 
-func WalkDirExt(root string, exts []string) ([]string, error) {
+// Takes a list of paths and returns their base file/folder names. Example:
+//
+// In: ["C:/Games/Game", "C:/SomeFolder/myfile.json"]
+//
+// Out: ["Game", "myfile.json"]
+func GetBaseNames(paths []string) []string {
+	names := make([]string, len(paths))
+	for i, path := range paths {
+		names[i] = filepath.Base(path)
+	}
+
+	return names
+}
+
+func GetDirsAtPath(path string) ([]string, error) {
+	var dirs []string
+	var name = filepath.Base(path)
+
+	err := filepath.WalkDir(path, func(path string, entry os.DirEntry, err error) error {
+		if entry.IsDir() && entry.Name() != name {
+			dirs = append(dirs, path)
+		}
+
+		return nil
+	})
+
+	return dirs, err
+}
+
+func GetFilesWithExts(path string, exts []string) ([]string, error) {
 	var files []string
-	err := filepath.WalkDir(root, func(path string, entry os.DirEntry, err error) error {
+	err := filepath.WalkDir(path, func(path string, entry os.DirEntry, err error) error {
 		if !entry.IsDir() {
 			for _, s := range exts {
 				if strings.HasSuffix(path, "."+s) {
 					files = append(files, path)
-					return nil
+					break
 				}
 			}
 		}
@@ -39,12 +68,19 @@ func ExistsAtPath(absPath string) (bool, error) {
 	return err == nil, err
 }
 
+// The same as os.ReadFile, but the path is cleaned automatically.
 func ReadFile(path string) ([]byte, error) {
 	return os.ReadFile(filepath.Clean(path))
 }
 
-func SaveFile(path string, data []byte) error {
+// The same as os.WriteFile, but the path is cleaned automatically.
+func WriteFile(path string, data []byte) error {
 	return os.WriteFile(filepath.Clean(path), data, os.ModePerm)
+}
+
+// The same as os.Mkdir, but the path is cleaned automatically.
+func MkDir(path string) error {
+	return os.Mkdir(filepath.Clean(path), os.ModePerm)
 }
 
 func ContainsEqualFold(arr []string, item string) bool {

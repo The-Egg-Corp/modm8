@@ -102,7 +102,6 @@ func main() {
 			modm8,
 			modm8.Settings,
 			modm8.Persistence,
-			modm8.Utils,
 			tsAPI,
 			tsTools,
 			nexusAPI,

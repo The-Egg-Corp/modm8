@@ -1,14 +1,24 @@
 package profile
 
-type IMod interface {
-	Identifier() string
+import "strings"
+
+type ProfileMod struct {
+	Author  string `json:"author"`
+	Name    string `json:"name"`
+	Version string `json:"version"`
 }
 
-type BaseMod struct {
-	identifier string `mapstructure:"identifier"`
-}
+func NewProfileMod(verFullName string) ProfileMod {
+	info := strings.Split(verFullName, "-")
 
-// Make BaseMod implement IMod interface
-func (m BaseMod) Identifier() string {
-	return m.identifier
+	ver := "latest"
+	if len(info) == 3 {
+		ver = info[2]
+	}
+
+	return ProfileMod{
+		Author:  info[0],
+		Name:    info[1],
+		Version: ver,
+	}
 }

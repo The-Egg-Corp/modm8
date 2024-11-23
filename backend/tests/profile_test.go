@@ -1,26 +1,47 @@
 package backend
 
 import (
+	"fmt"
 	"modm8/backend/common/profile"
 	"testing"
+
+	"github.com/the-egg-corp/thundergo/util"
 )
 
-func TestWriteProfile(t *testing.T) {
-	manifest := profile.ProfileManifest{
-		Mods: profile.ProfileMods{
-			Thunderstore: []string{"example-ts-mod-4.2.0"},
-			Nexus:        []string{"example-nexus-mod-6.9.0"},
-		},
+const testGameTitle = "Lethal Company"
+
+func TestGetProfileNames(t *testing.T) {
+	names, err := profile.GetProfileNames(testGameTitle)
+	if err != nil {
+		t.Fatal(err)
 	}
 
-	err := profile.SaveManifest("Lethal Company", "test", manifest)
+	fmt.Println(names)
+}
+
+func TestGetProfiles(t *testing.T) {
+	profs, err := profile.GetProfiles(testGameTitle)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	util.PrettyPrint(profs)
+}
+
+func TestSaveManifest(t *testing.T) {
+	manifest := profile.NewProfileManifest()
+
+	manifest.AddThunderstoreMod("Owen3H-IntroTweaks-1.5.0")
+	manifest.AddThunderstoreMod("Owen3H-CSync-3.0.0")
+
+	err := profile.SaveManifest(testGameTitle, "default", manifest)
 	if err != nil {
 		t.Fatal(err)
 	}
 }
 
-func TestReadProfile(t *testing.T) {
-	_, err := profile.GetManifest("Lethal Company", "test")
+func TestGetManifest(t *testing.T) {
+	_, err := profile.GetManifest(testGameTitle, "default")
 	if err != nil {
 		t.Fatal(err)
 	}

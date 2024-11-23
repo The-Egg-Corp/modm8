@@ -44,7 +44,7 @@ func (gm *GameManager) BepinexInstalled(absPath string) bool {
 }
 
 func (gm *GameManager) BepinexConfigFiles(dirs []string) ([]string, error) {
-	return backend.WalkDirExt(filepath.Join(dirs...), []string{"cfg"})
+	return backend.GetFilesWithExts(filepath.Join(dirs...), []string{"cfg"})
 }
 
 func (gm *GameManager) ParseBepinexConfig(path string) (*BepinexConfig, error) {

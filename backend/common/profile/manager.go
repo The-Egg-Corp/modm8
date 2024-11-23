@@ -2,37 +2,18 @@ package profile
 
 import (
 	"encoding/json"
+	"fmt"
 	"modm8/backend"
 	"os"
 	"path/filepath"
-	"strings"
 )
 
 // type ModStore map[string]IMod
-// type ProfileStore = map[string]Profile
 
 type ProfileManager struct{}
 
-func NewManager() *ProfileManager {
-	return &ProfileManager{}
-}
-
-type ProfileMods struct {
-	Thunderstore []string `json:"thunderstore"`
-	Nexus        []string `json:"nexus"`
-}
-
-type ProfileManifest struct {
-	Mods ProfileMods `json:"mods"`
-}
-
-func NewProfileManifest() ProfileManifest {
-	return ProfileManifest{
-		Mods: ProfileMods{
-			Thunderstore: []string{},
-			Nexus:        []string{},
-		},
-	}
+func NewManager() ProfileManager {
+	return ProfileManager{}
 }
 
 func (pm *ProfileManager) GetProfiles(gameTitle string) (map[string]ProfileManifest, error) {
@@ -52,68 +33,40 @@ func (pm *ProfileManager) SaveProfile(gameTitle, profileName string, prof Profil
 }
 
 func (pm *ProfileManager) DeleteProfile(gameTitle, profileName string) error {
-	return DeleteManifest(gameTitle, profileName)
+	return DeleteProfile(gameTitle, profileName)
 }
 
-func PathToProfilesDir(gameTitle string) string {
+func GameProfilesPath(gameTitle string) string {
 	cacheDir, _ := os.UserConfigDir()
 	path := filepath.Join(cacheDir, "modm8", "Games", gameTitle, "Profiles")
 
 	return path
 }
 
-func PathToProfile(gameTitle, profileName string) string {
-	return filepath.Join(PathToProfilesDir(gameTitle), profileName+".prof")
+func PathToManifest(gameTitle, profileName string) string {
+	return filepath.Join(GameProfilesPath(gameTitle), profileName, manifestName)
+}
+
+func ProfilePathInfo(gameTitle, profileName string) (string, string) {
+	return filepath.Split(PathToManifest(gameTitle, profileName))
 }
 
 func GetProfileNames(gameTitle string) ([]string, error) {
-	profDir := PathToProfilesDir(gameTitle)
+	profilesPath := GameProfilesPath(gameTitle)
 
-	// The user probably hasn't created a profiles yet.
-	exists, _ := backend.ExistsAtPath(profDir)
+	// The user probably hasn't created any profiles yet.
+	exists, _ := backend.ExistsAtPath(profilesPath)
 	if !exists {
 		return []string{}, nil
 	}
 
-	paths, err := backend.WalkDirExt(profDir, []string{"prof"})
+	// Find all profile dirs containing a manifest file.
+	paths, err := GetManifestDirs(profilesPath)
 	if err != nil {
 		return []string{}, err
 	}
 
-	var names []string
-	for _, path := range paths {
-		name := strings.Replace(filepath.Base(path), ".prof", "", -1)
-		names = append(names, name)
-	}
-
-	return names, nil
-}
-
-func SaveManifest(gameTitle, profileName string, prof ProfileManifest) error {
-	data, err := json.Marshal(prof)
-	if err != nil {
-		return err
-	}
-
-	return backend.SaveFile(PathToProfile(gameTitle, profileName), data)
-}
-
-func DeleteManifest(gameTitle, profileName string) error {
-	return os.Remove(PathToProfile(gameTitle, profileName))
-}
-
-func GetManifest(gameTitle, profileName string) (*ProfileManifest, error) {
-	contents, err := backend.ReadFile(PathToProfile(gameTitle, profileName))
-	if err != nil {
-		return nil, err
-	}
-
-	var manifest ProfileManifest
-	if err := json.Unmarshal(contents, &manifest); err != nil {
-		return nil, err
-	}
-
-	return &manifest, nil
+	return backend.GetBaseNames(paths), nil
 }
 
 func GetProfiles(gameTitle string) (map[string]ProfileManifest, error) {
@@ -131,4 +84,58 @@ func GetProfiles(gameTitle string) (map[string]ProfileManifest, error) {
 	}
 
 	return profiles, err
+}
+
+func SaveManifest(gameTitle, profileName string, prof ProfileManifest) error {
+	data, err := json.MarshalIndent(prof, "", "    ")
+	if err != nil {
+		return err
+	}
+
+	dir, file := ProfilePathInfo(gameTitle, profileName)
+
+	backend.MkDir(dir)
+	return backend.WriteFile(filepath.Join(dir, file), data)
+}
+
+func DeleteProfile(gameTitle, profileName string) error {
+	dir, _ := ProfilePathInfo(gameTitle, profileName)
+	return os.RemoveAll(dir)
+}
+
+func GetManifest(gameTitle, profileName string) (*ProfileManifest, error) {
+	contents, err := backend.ReadFile(PathToManifest(gameTitle, profileName))
+	if err != nil {
+		return nil, err
+	}
+
+	var manifest ProfileManifest
+	if err := json.Unmarshal(contents, &manifest); err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
+	return &manifest, nil
+}
+
+// Returns all of the directories at this path which contain a manifest.
+func GetManifestDirs(path string) ([]string, error) {
+	var dirs []string
+	var root = filepath.Base(path)
+
+	err := filepath.WalkDir(path, func(path string, entry os.DirEntry, err error) error {
+		// Skip self and any files, we only want dirs.
+		if !entry.IsDir() || entry.Name() == root {
+			return nil
+		}
+
+		filePath := filepath.Join(path, manifestName)
+		if _, err := os.Stat(filePath); err == nil {
+			dirs = append(dirs, path)
+		}
+
+		return nil
+	})
+
+	return dirs, err
 }

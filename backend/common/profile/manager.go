@@ -12,8 +12,8 @@ import (
 
 type ProfileManager struct{}
 
-func NewManager() ProfileManager {
-	return ProfileManager{}
+func NewManager() *ProfileManager {
+	return &ProfileManager{}
 }
 
 func (pm *ProfileManager) GetProfiles(gameTitle string) (map[string]ProfileManifest, error) {

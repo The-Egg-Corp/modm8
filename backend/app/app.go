@@ -23,37 +23,11 @@ var (
 )
 
 type Application struct {
-	Ctx context.Context
-	//Utils       *Utils       `json:"utils"`
+	Ctx         context.Context
+	Utils       *Utils       `json:"utils"`
 	Settings    *AppSettings `json:"settings"`
 	Persistence *Persistence `json:"persistence"`
 }
-
-// type Utils struct{}
-
-// func NewUtils() *Utils {
-// 	return &Utils{}
-// }
-
-// func (u *Utils) ExistsInDir(dir, item string) (bool, error) {
-// 	return backend.ExistsInDir(dir, item)
-// }
-
-// func (u Utils) ExistsAtPath(path string, clean bool) (bool, error) {
-// 	if clean {
-// 		path = filepath.Clean(path)
-// 	}
-
-// 	return backend.ExistsAtPath(path)
-// }
-
-// func (u *Utils) GetDirsAtPath(path string, exts []string) ([]string, error) {
-// 	return backend.GetDirsAtPath(path)
-// }
-
-// func (u *Utils) GetFilesWithExts(path string, exts []string) ([]string, error) {
-// 	return backend.GetFilesWithExts(path, exts)
-// }
 
 func (app *Application) GetSettings() *AppSettings {
 	return app.Settings
@@ -67,7 +41,7 @@ func NewApp() *Application {
 	return &Application{
 		Settings:    NewSettings(),
 		Persistence: NewPersistence(),
-		//Utils:       NewUtils(),
+		Utils:       NewUtils(),
 	}
 }
 

@@ -168,7 +168,7 @@ onMounted(async () => {
 
 <style scoped>
 .profile-manager {
-    margin: 30px 10px 20px 10px;
+    margin: 30px 0px 20px 0px;
     display: flex;
     flex-direction: column;
     flex: 1 0 auto;

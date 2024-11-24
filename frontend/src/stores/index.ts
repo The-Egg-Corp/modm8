@@ -7,12 +7,23 @@ import { computed, ref } from 'vue'
 //     sidebarWidth: string
 // }
 
+// TODO: Instead of hardcoding height/width refs, they should all be
+//       computed and point to their respective element in the DOM.
 export const useAppStore = defineStore('AppStore', () => {
     const maxThreads = ref(2)
 
+    const topbarHeight = ref(30)
     const sidebarExpanded = ref(false)
-    const sidebarWidth = computed(() => sidebarExpanded.value ? '180px' : '75px')
-  
+
+    const sidebarMargin = ref(20)
+    const sidebarMarginPx = computed(() => `${sidebarMargin.value}px`)
+
+    const sidebarWidth = computed(() => sidebarExpanded.value ? 180 : 75)
+    const sidebarWidthPx = computed(() => `${sidebarWidth.value}px`)
+
+    const sidebarOffset = computed(() => sidebarWidth.value + sidebarMargin.value)
+    const sidebarOffsetPx = computed(() => `${sidebarOffset.value}px`)
+
     function toggleSidebar() {
         sidebarExpanded.value = !sidebarExpanded.value
     }
@@ -27,8 +38,11 @@ export const useAppStore = defineStore('AppStore', () => {
 
     return { 
         maxThreads,
+        topbarHeight,
         sidebarExpanded,
-        sidebarWidth,
+        sidebarMargin, sidebarMarginPx,
+        sidebarWidth, sidebarWidthPx,
+        sidebarOffset, sidebarOffsetPx,
         toggleSidebar,
         setMaxThreads
     }

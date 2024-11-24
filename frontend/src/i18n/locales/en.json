@@ -26,7 +26,8 @@
       "edit-button": "Edit"
     },
     "empty-results": "No mods match the search query",
-    "loading-mod-list": "Loading mod list"
+    "loading-mod-list": "Loading mod list",
+    "no-mods-installed": "No mods installed."
   },
   "settings": {
     "select-language": "Select language",

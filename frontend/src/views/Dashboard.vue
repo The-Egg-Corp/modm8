@@ -135,7 +135,8 @@ async function getPackages() {
 }
 
 :deep(.p-tab) {
-    font-size: 24px;
+    font-size: 25px;
+    font-weight: 450;
 }
 </style>
 <!-- #endregion -->

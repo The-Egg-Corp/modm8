@@ -95,6 +95,7 @@
       "header": "Profilmanager",
       "search-placeholder": "Suchprofile",
       "new-profile": "Neues Profil"
-    }
+    },
+    "no-mods-installed": "Keine Mods installiert."
   }
 }

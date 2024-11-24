@@ -95,6 +95,7 @@
       "header": "Administrador de perfiles",
       "search-placeholder": "Buscar perfiles",
       "new-profile": "Nuevo perfil"
-    }
+    },
+    "no-mods-installed": "No hay modificaciones instaladas."
   }
 }

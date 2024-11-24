@@ -14,7 +14,7 @@ const appInfo = useDialog('app-info')
 const appStore = useAppStore()
 const { 
     sidebarExpanded, 
-    sidebarWidth 
+    sidebarWidthPx
 } = storeToRefs(appStore)
 
 const Dashboard = () => router.push('/')
@@ -145,7 +145,7 @@ const ModDevTools = () => router.push('/mod-dev-tools')
     align-items: center;
     position: fixed;
     z-index: 999;
-    width: v-bind(sidebarWidth);
+    width: v-bind(sidebarWidthPx);
 }
 
 .collapsed {

@@ -21,10 +21,20 @@ import {
 } from "@components"
 
 import type { Package, Nullable } from "@types"
-import { useProfileStore, useGameStore } from "@stores"
+import { 
+    useAppStore,
+    useProfileStore,
+    useGameStore 
+} from "@stores"
 
 import { debounce } from "../util"
 import { storeToRefs } from "pinia"
+
+const appStore = useAppStore()
+const { 
+    sidebarMarginPx,
+    sidebarOffsetPx
+} = storeToRefs(appStore)
 
 const profileStore = useProfileStore()
 const { selectedProfile } = storeToRefs(profileStore)
@@ -51,6 +61,16 @@ const currentPageMods = ref<Package[]>([])
 
 const installing = ref(false)
 const lastInstalledMod = ref<Nullable<v1.PackageVersion>>(null)
+
+const startModdedDisabled = () => {
+    const profileMods = selectedProfile.value?.mods
+    if (!profileMods) return true
+
+    const noTsMods = (profileMods?.thunderstore?.length || 0) < 1
+    const noNexusMods = (profileMods?.nexus?.length || 0) < 1
+
+    return noNexusMods && noTsMods
+}
 
 const activeTabIndex = ref(0)
 const tabs = ref([
@@ -217,179 +237,179 @@ const handleScroll = (e: WheelEvent) => {
 
 <template>
 <Viewport :class="['selected-game', { 'no-drag': configEditorDialog.visible || installingModDialog.visible }]">
-    <div class="flex row">
-        <div class="flex column">
-            <Card class="selected-game-card no-drag">
-                <template #title>
-                    <p class="selected-game-card-header mt-0 mb-2">
-                        {{ $t('selected-game.currently-selected') }}
-                    </p>
-                </template>
-        
-                <template #content>
-                    <div class="flex no-drag">
-                        <div class="game-thumbnail-container">
-                            <img class="selected-game-thumbnail-background" :src="gameThumbnail()"/>
-                            <img class="selected-game-thumbnail-foreground" :src="gameThumbnail()"/>
-                        </div>
+    <div class="flex column">
+        <Card class="selected-game-card no-drag">
+            <template #title>
+                <p class="selected-game-card-header mt-0 mb-2">
+                    {{ $t('selected-game.currently-selected') }}
+                </p>
+            </template>
     
-                        <div class="flex column ml-3 no-drag">
-                            <p class="selected-game-title mt-0 mb-0">{{ selectedGame.title }}</p>
-                            <div class="flex column gap-2 mt-3">
-                                <Button plain class="btn justify-left" 
-                                    icon="pi pi-caret-right"
-                                    :label="$t('selected-game.start-modded-button')"
-                                    @click="startModded"
-                                />
-        
-                                <Button plain class="btn justify-left" severity="secondary"
-                                    icon="pi pi-caret-right"
-                                    :label="$t('selected-game.start-vanilla-button')"
-                                    @click="startVanilla"
-                                />
-        
-                                <Button plain class="btn justify-left mt-4"
-                                    icon="pi pi-file-edit"
-                                    :label="$t('selected-game.config-button')"
-                                    @click="configEditorDialog.setVisible(true)"
-                                />
-                            </div>
+            <template #content>
+                <div class="flex no-drag">
+                    <div class="game-thumbnail-container">
+                        <img class="selected-game-thumbnail-background" :src="gameThumbnail()"/>
+                        <img class="selected-game-thumbnail-foreground" :src="gameThumbnail()"/>
+                    </div>
+
+                    <div class="flex column ml-3 flex-grow-1">
+                        <p class="selected-game-title mt-0 mb-0">{{ selectedGame.title }}</p>
+                        
+                        <div class="flex column gap-2 mt-3">
+                            <Button plain class="btn justify-left" 
+                                icon="pi pi-caret-right"
+                                :label="$t('selected-game.start-modded-button')"
+                                :disabled="startModdedDisabled"
+                                @click="startModded"
+                            />
+    
+                            <Button plain class="btn justify-left" severity="secondary"
+                                icon="pi pi-caret-right"
+                                :label="$t('selected-game.start-vanilla-button')"
+                                @click="startVanilla"
+                            />
+    
+                            <Button plain class="btn justify-left mt-4"
+                                icon="pi pi-file-edit"
+                                :label="$t('selected-game.config-button')"
+                                @click="configEditorDialog.setVisible(true)"
+                            />
                         </div>
                     </div>
-                </template>
-            </Card>
+                </div>
+            </template>
+        </Card>
 
-            <ProfileManager @profileSelected="updatePage(0, ROWS)"/>
-        </div>
-    
-        <div class="flex mod-list-container">
-            <!-- Show skeleton of mod list while loading -->
-            <DataView v-if="loading" data-key="mod-list-loading" layout="list">
-                <template #empty>
-                    <div class="list-nogutter pt-4">
-                        <div v-for="i in 6" :key="i" class="loading-list-item">
-                            <div style="width: 1280px;" class="flex flex-row ml-1 p-3 border-top-faint border-round">
-                                <Skeleton size="6.5rem"/> <!-- Thumbnail -->
-                                
-                                <div class="flex column gap-1 ml-2">
-                                    <Skeleton height="1.5rem" width="20rem"/> <!-- Title -->
-                                    <Skeleton width="65rem"/> <!-- Description -->
+        <ProfileManager @profileSelected="updatePage(0, ROWS)"/>
+    </div>
 
-                                    <div class="flex row gap-2">
-                                        <Skeleton class="mt-3" width="6.8rem" height="2.2rem"/> <!-- Install Button -->
-                                        
-                                        <div class="flex row gap-1 align-items-center">
-                                            <Skeleton class="mt-3" width="2.8rem" height="2.2rem"/> <!-- Like button -->
-                                            <Skeleton class="mt-3" width="1.8rem" height="1.6rem"/> <!-- Likes -->
-                                        </div>
+    <div class="flex mod-list-container">
+        <!-- Show skeleton of mod list while loading -->
+        <DataView v-if="loading" data-key="mod-list-loading" layout="list">
+            <template #empty>
+                <div class="list-nogutter pt-4">
+                    <div v-for="i in 6" :key="i" class="loading-list-item">
+                        <div style="width: 1280px;" class="flex flex-row ml-1 p-3 border-top-faint border-round">
+                            <Skeleton size="6.5rem"/> <!-- Thumbnail -->
+                            
+                            <div class="flex column gap-1 ml-2">
+                                <Skeleton height="1.5rem" width="20rem"/> <!-- Title -->
+                                <Skeleton width="65rem"/> <!-- Description -->
+
+                                <div class="flex row gap-2">
+                                    <Skeleton class="mt-3" width="6.8rem" height="2.2rem"/> <!-- Install Button -->
+                                    
+                                    <div class="flex row gap-1 align-items-center">
+                                        <Skeleton class="mt-3" width="2.8rem" height="2.2rem"/> <!-- Like button -->
+                                        <Skeleton class="mt-3" width="1.8rem" height="1.6rem"/> <!-- Likes -->
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </template>
-            </DataView>
+                </div>
+            </template>
+        </DataView>
 
-            <DataView
-                v-else lazy stripedRows
-                layout="list" data-key="mod-list"
-                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
-                :paginator="mods.length > ROWS" :rows="ROWS"
-                :value="mods" @page="onPageChange" :first="first"
-            >
-                <template #empty>
-                    <div v-if="hasSearchInput()" class="pl-2">
-                        <h2 class="m-0 mt-1">{{ $t('selected-game.empty-results') }}.</h2>
+        <DataView
+            v-else lazy stripedRows
+            layout="list" data-key="mod-list"
+            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
+            :paginator="mods.length > ROWS" :rows="ROWS"
+            :value="mods" @page="onPageChange" :first="first"
+        >
+            <template #empty>
+                <div v-if="hasSearchInput()" class="pl-2">
+                    <h2 class="m-0 mt-1">{{ $t('selected-game.empty-results') }}.</h2>
 
-                        <!-- Sadge -->
-                        <img class="mt-2" src="https://cdn.7tv.app/emote/603cac391cd55c0014d989be/3x.png">
-                    </div>
+                    <!-- Sadge -->
+                    <img class="mt-2" src="https://cdn.7tv.app/emote/603cac391cd55c0014d989be/3x.png">
+                </div>
 
-                    <!-- TODO: If failed, make this show regardless of search input. --> 
-                    <div v-else>
-                        <h2 v-if="activeTabIndex == 0" class="ml-1" style="color: orange; font-size: 24px; margin: 0;">
-                            No mods installed.
+                <!-- TODO: If failed, make this show regardless of search input. --> 
+                <div v-else>
+                    <h2 v-if="activeTabIndex == 0" class="empty-profile">
+                        {{ $t('selected-game.no-mods-installed') }}
+                    </h2>
+
+                    <div v-else class="ml-1">
+                        <h2 class="mb-2" style="color: red; font-size: 24px; margin: 0 auto;">
+                            No mods available! Something probably went wrong.
                         </h2>
 
-                        <div v-else class="ml-1">
-                            <h2 class="mb-2" style="color: red; font-size: 24px; margin: 0 auto;">
-                                No mods available! Something probably went wrong.
-                            </h2>
-
-                            <Button class="mt-1" :label="$t('keywords.refresh')" icon="pi pi-refresh" @click="refreshMods(true)"/>
-                        </div>
+                        <Button class="mt-1" :label="$t('keywords.refresh')" icon="pi pi-refresh" @click="refreshMods(true)"/>
                     </div>
-                </template>
-        
-                <template #header>
-                    <div class="flex row align-items-center gap-2">
-                        <div class="searchbar no-drag">
-                            <IconField iconPosition="left">
-                                <InputIcon class="pi pi-search"></InputIcon>
-                                <InputText type="text" :placeholder="$t('selected-game.search-mods')" 
-                                    v-model="searchInput" @input="onInputChange"
-                                />
-                            </IconField>
-                        </div>
-
-                        <TabMenu :model="tabs" @tab-change="onTabChange"/>
-                        <!-- <div class="flex row">
-                            <ModListDropdown>
-                                
-                            </ModListDropdown>
-                        </div> -->
+                </div>
+            </template>
+    
+            <template #header>
+                <div class="flex row align-items-center gap-2">
+                    <div class="searchbar no-drag">
+                        <IconField iconPosition="left">
+                            <InputIcon class="pi pi-search"></InputIcon>
+                            <InputText type="text" :placeholder="$t('selected-game.search-mods')" 
+                                v-model="searchInput" @input="onInputChange"
+                            />
+                        </IconField>
                     </div>
-                </template>
-        
-                <template #list>
-                    <div class="scrollable-list list-nogutter no-drag" @wheel.prevent="handleScroll">
-                        <div 
-                            v-for="(mod, index) in currentPageMods" class="list-item col-12"
-                            :key="index" :ref="el => modElements[index] = el"
-                        >
-                            <div class="flex-grow-1 flex column sm:flex-row align-items-center pt-2 gap-3" :class="{ 'border-top-faint': index != 0 }">
-                                <img class="mod-list-thumbnail block xl:block" :src="mod.latestVersion?.icon || ''"/>
-                                
-                                <div class="flex-grow-1 flex column md:flex-row md:align-items-center">
-                                    <div class="flex-grow-1 flex column justify-content-between">
-                                        <div class="flex row align-items-baseline">
-                                            <div class="mod-list-title">{{ mod.name }}</div>
-                                            <div class="mod-list-author">({{ mod.owner }})</div>
+
+                    <TabMenu :model="tabs" @tab-change="onTabChange"/>
+                    <!-- <div class="flex row">
+                        <ModListDropdown>
+                            
+                        </ModListDropdown>
+                    </div> -->
+                </div>
+            </template>
+    
+            <template #list>
+                <div class="scrollable-list list-nogutter no-drag" @wheel.prevent="handleScroll">
+                    <div 
+                        v-for="(mod, index) in currentPageMods" class="list-item col-12"
+                        :key="index" :ref="el => modElements[index] = el"
+                    >
+                        <div class="flex-grow-1 flex column sm:flex-row align-items-center pt-2 gap-3" :class="{ 'border-top-faint': index != 0 }">
+                            <img class="mod-list-thumbnail block xl:block" :src="mod.latestVersion?.icon || ''"/>
+                            
+                            <div class="flex-grow-1 flex column md:flex-row md:align-items-center">
+                                <div class="flex-grow-1 flex column justify-content-between">
+                                    <div class="flex row align-items-baseline">
+                                        <div class="mod-list-title">{{ mod.name }}</div>
+                                        <div class="mod-list-author">({{ mod.owner }})</div>
+                                    </div>
+
+                                    <div class="mod-list-description mb-1">{{ mod.latestVersion.description }}</div>
+
+                                    <!--
+                                        :icon="isFavouriteGame(game.identifier) ? 'pi pi-heart-fill' : 'pi pi-heart'"
+                                        :style="isFavouriteGame(game.identifier) ? { color: 'var(--primary-color)' } : {}"
+                                        @click="toggleFavouriteGame(game.identifier)"
+                                    /> -->
+
+                                    <div class="mod-list-bottom-row"> 
+                                        <div class="flex row gap-2">
+                                            <Button v-if="activeTabIndex == 0" class="btn w-full"
+                                                severity="danger" icon="pi pi-trash"
+                                                :label="$t('keywords.uninstall')"
+                                            />
+                                            <Button v-else class="btn w-full" icon="pi pi-download"
+                                                :label="$t('keywords.install')" @click="installMod(mod.full_name)"
+                                            />
+
+                                            <div class="flex row align-items-center">
+                                                <Button outlined plain 
+                                                    style="margin-right: 6.5px;"
+                                                    :icon="'pi pi-thumbs-up'"
+                                                />
+                                                
+                                                <div class="mod-list-rating">{{ mod.rating_score }}</div>
+                                            </div>
                                         </div>
 
-                                        <div class="mod-list-description mb-1">{{ mod.latestVersion.description }}</div>
-
-                                        <!--
-                                            :icon="isFavouriteGame(game.identifier) ? 'pi pi-heart-fill' : 'pi pi-heart'"
-                                            :style="isFavouriteGame(game.identifier) ? { color: 'var(--primary-color)' } : {}"
-                                            @click="toggleFavouriteGame(game.identifier)"
-                                        /> -->
-
-                                        <div class="mod-list-bottom-row"> 
-                                            <div class="flex row gap-2">
-                                                <Button v-if="activeTabIndex == 0" class="btn w-full"
-                                                    severity="danger" icon="pi pi-trash"
-                                                    :label="$t('keywords.uninstall')"
-                                                />
-                                                <Button v-else class="btn w-full" icon="pi pi-download"
-                                                    :label="$t('keywords.install')" @click="installMod(mod.full_name)"
-                                                />
-
-                                                <div class="flex row align-items-center">
-                                                    <Button outlined plain 
-                                                        style="margin-right: 6.5px;"
-                                                        :icon="'pi pi-thumbs-up'"
-                                                    />
-                                                    
-                                                    <div class="mod-list-rating">{{ mod.rating_score }}</div>
-                                                </div>
-                                            </div>
-
-                                            <!-- TODO: Ensure the tags flex to the end of the DataView and not the item content. -->
-                                            <div class="flex row flex-shrink-0 gap-1">
-                                                <div v-for="category in mod.categories.filter(c => c.toLowerCase() != 'mods')">
-                                                    <Tag :value="category"></Tag>
-                                                </div>
+                                        <!-- TODO: Ensure the tags flex to the end of the DataView and not the item content. -->
+                                        <div class="flex row flex-shrink-0 gap-1">
+                                            <div v-for="category in mod.categories.filter(c => c.toLowerCase() != 'mods')">
+                                                <Tag :value="category"></Tag>
                                             </div>
                                         </div>
                                     </div>
@@ -397,17 +417,16 @@ const handleScroll = (e: WheelEvent) => {
                             </div>
                         </div>
                     </div>
-                </template>
-            </DataView>
-
-        </div>
-
-        <ModInstallationOverlay :dialog="installingModDialog" 
-            :installing="installing" :lastInstalledMod="lastInstalledMod!"
-        />
-
-        <ConfigEditorOverlay :dialog="configEditorDialog" :selectedGame="selectedGame"/>
+                </div>
+            </template>
+        </DataView>
     </div>
+
+    <ModInstallationOverlay :dialog="installingModDialog" 
+        :installing="installing" :lastInstalledMod="lastInstalledMod!"
+    />
+
+    <ConfigEditorOverlay :dialog="configEditorDialog" :selectedGame="selectedGame"/>
 </Viewport>
 </template>
 
@@ -419,8 +438,10 @@ const handleScroll = (e: WheelEvent) => {
 
 .selected-game {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     margin-top: 30px;
+    /* Spacing between Card/ProfileManager and the DataView. */
+    gap: v-bind(sidebarMarginPx);
 }
 
 .selected-game > :first-child {
@@ -428,7 +449,7 @@ const handleScroll = (e: WheelEvent) => {
 }
 
 .selected-game-card {
-    margin: 0px 10px 0px 10px;
+    min-width: 380px;
     width: max-content;
     flex-shrink: 0;
     background: none;
@@ -453,18 +474,18 @@ const handleScroll = (e: WheelEvent) => {
 
 .selected-game-thumbnail-foreground {
     position: relative;
-    min-width: 160px;
+    min-width: 155px;
     max-width: 40%;
     max-height: 200px;
     border-radius: 3px;
     user-select: none;
-    border: 1px ridge rgba(255, 255, 255, 0.45);
+    border: 1px ridge rgba(255, 255, 255, 0.55);
 }
 
 .selected-game-thumbnail-background {
     position: absolute;
     z-index: -1;
-    filter: blur(6px);
+    filter: blur(4px);
     width: 100%;
     height: 100%;
 }
@@ -485,8 +506,7 @@ const handleScroll = (e: WheelEvent) => {
 }
 
 .mod-list-container {
-    max-width: 100vw;
-    width: 100vw;
+    max-width: 100%;
 }
 
 .mod-list-thumbnail {
@@ -532,22 +552,29 @@ const handleScroll = (e: WheelEvent) => {
     overflow-y: scroll;
     scrollbar-width: none;
     max-height: calc(100vh - 150px);
+    /* TODO: Replace magic number by getting it dynamically from selected game card width. */
+    max-width: calc(100vw - v-bind(sidebarOffsetPx) - 420px);
 }
 
-/*:deep(.p-dataview-layout-options .p-button) {
-    background: none !important;
-    border: none;
-}*/
+.empty-profile {
+    color: rgba(235, 235, 235, 0.95);
+    font-size: 25px;
+    margin: 0;
+}
 
 :deep(.p-tabmenu-tablist) {
     background: none !important;
 }
 
+:deep(.p-tabmenu-item-label) {
+    text-wrap: nowrap;
+}
+
 /* TODO: Investigate why this padding affects profile manager. */
 :deep(.p-dataview-header) {
     background: none !important;
-    padding: 10px 0px 10px 0px;
-    margin: 0px 5px 0px 5px;
+    padding: 0px 0px 10px 0px;
+    margin: 0;
     border: none;
 }
 
@@ -576,9 +603,8 @@ const handleScroll = (e: WheelEvent) => {
 
 .list-item {
     display: flex;
-    width: 1300px; /* TODO: Make this calc from right edge minus 30px. 100vw and 100% dont work? */
-    padding-bottom: 15px;
-    padding-top: 0px;
+    width: 100%;
+    padding: 0px 0px 10px 0px;
 }
 
 .loading-list-item {

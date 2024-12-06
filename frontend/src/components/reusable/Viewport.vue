@@ -5,7 +5,8 @@ import { useAppStore } from '@stores'
 const appStore = useAppStore()
 const { 
     sidebarOffsetPx,
-    topbarHeight
+    sidebarMarginPx,
+    topbarHeightPx
 } = storeToRefs(appStore)
 </script>
 
@@ -17,8 +18,8 @@ const {
 
 <style scoped>
 .viewport {
-    max-height: calc(100vh - v-bind(topbarHeight));
-    margin-left: calc(v-bind(sidebarOffsetPx));
-    /* margin-right: 30px; */
+    margin-top: v-bind(topbarHeightPx);
+    margin-left: v-bind(sidebarOffsetPx);
+    margin-right: v-bind(sidebarMarginPx);
 }
 </style>

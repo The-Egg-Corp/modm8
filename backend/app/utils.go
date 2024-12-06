@@ -2,6 +2,7 @@ package app
 
 import (
 	"modm8/backend"
+	"modm8/backend/common/fileutil"
 	"path/filepath"
 )
 
@@ -29,4 +30,8 @@ func (u *Utils) GetDirsAtPath(path string, exts []string) ([]string, error) {
 
 func (u *Utils) GetFilesWithExts(path string, exts []string) ([]string, error) {
 	return backend.GetFilesWithExts(path, exts)
+}
+
+func (u *Utils) GetFilesInZip(data []byte) (map[string][]byte, error) {
+	return fileutil.GetFilesInZip(data)
 }

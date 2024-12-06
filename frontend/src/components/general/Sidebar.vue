@@ -26,7 +26,7 @@ const ModDevTools = () => router.push('/mod-dev-tools')
 <div v-if="sidebarExpanded" class="sidebar expanded">
     <img class="icon no-select" src="../../assets/images/appicon.png">
 
-    <div class="btn-container">
+    <div class="btn-container gap-3">
         <div class="top flex column">
             <Button outlined
                 class="btn no-drag"
@@ -36,9 +36,7 @@ const ModDevTools = () => router.push('/mod-dev-tools')
             />
         </div>
 
-        <div class="spacer"/>
-
-        <div class="flex column gap-2">
+        <div class="flex column gap-1">
             <Button outlined 
                 class="btn no-drag" 
                 icon="pi pi-home"
@@ -84,16 +82,16 @@ const ModDevTools = () => router.push('/mod-dev-tools')
     <img class="icon no-select" src="../../assets/images/appicon.png">
 
     <div class="flex column h-full mb-4">
-        <div class="top flex column">
-            <Button 
-                plain severity="secondary"
+        <div class="top flex column mb-4">
+            <Button outlined raised
                 class="btn no-drag" icon="pi pi-home" 
                 v-tooltip="tooltipOpts(t('tooltips.sidebar.dashboard'))"
                 @click="Dashboard"
             />
+        </div>
 
-            <Button 
-                plain severity="secondary"
+        <div class="top flex column">
+            <Button outlined raised
                 class="btn no-drag" 
                 v-tooltip="tooltipOpts(t('tooltips.sidebar.game-selection'))"
                 @click="GameSelection"
@@ -102,13 +100,8 @@ const ModDevTools = () => router.push('/mod-dev-tools')
                     <span class="material-symbols-sharp">stadia_controller</span>
                 </template>
             </Button>
-        </div>
-    
-        <div class="spacer"></div>
 
-        <div class="top flex column">
-            <Button 
-                severity="secondary"
+            <Button outlined raised
                 class="btn no-drag" icon="pi pi-wrench"
                 v-tooltip="tooltipOpts(t('tooltips.sidebar.mod-dev-tools'))"
                 @click="ModDevTools"
@@ -120,16 +113,15 @@ const ModDevTools = () => router.push('/mod-dev-tools')
         <div class="spacer"></div>
  
         <div class="bottom flex column">
-            <Button outlined
+            <Button outlined raised
                 class="btn no-drag"
                 icon="pi pi-info-circle"
                 @click="appInfo.setVisible()"
             />
 
             <!-- <Button text class="btn no-drag" :icon="themeMode === 'dark' ? 'pi pi-sun' : 'pi pi-moon'" @click="ToggleThemeMode"/> -->
-            <Button
-                plain severity="secondary"
-                class="btn spin-hover no-drag" icon="pi pi-cog" 
+            <Button outlined raised
+                class="btn spin-btn-icon no-drag" icon="pi pi-cog" 
                 v-tooltip="tooltipOpts(t('keywords.settings'))"
                 @click="settings.setVisible()"
             />
@@ -151,22 +143,22 @@ const ModDevTools = () => router.push('/mod-dev-tools')
 .collapsed {
     height: 100vh;
     border-right: 1px solid var(--border-faint);
-    background-color: var(--p-surface-900); /* #2c2d32; */
+    background-color: var(--p-surface-800); /* #2c2d32; */
 }
 
 .expanded {
     height: 100vh;
     border-right: 1px solid var(--border-faint);
-    background-color: var(--p-surface-900); /* #2c2d32; */
 }
 
 .collapsed .icon {
-    width: 45px;
-    margin: 15px 0px 20px 0px;
+    width: 48px;
+    margin: 15px 0px 15px 0px;
 }
 
 .expanded .icon {
     width: 70px;
+    margin: 30px 0px 0px 0px;
 }
 
 .btn-container {
@@ -188,6 +180,10 @@ const ModDevTools = () => router.push('/mod-dev-tools')
     position: relative;
     border-radius: 3px;
     border: none !important;
+    color: var(--p-surface-50);
+    background-color: var(--p-surface-700);
+    height: 39px;
+    width: 43px;
 }
 
 .top .p-button {
@@ -214,7 +210,7 @@ const ModDevTools = () => router.push('/mod-dev-tools')
 }
 
 .material-symbols-sharp {
-    font-size: 25px !important;
+    font-size: 24px !important;
     font-variation-settings: 'FILL' 0, 'wght' 450, 'GRAD' 0, 'opsz' 48
 }
 </style>

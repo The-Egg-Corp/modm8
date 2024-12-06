@@ -24,7 +24,8 @@
       "option-3": "Apagado"
     },
     "animations-enabled": "Habilitar animaciones",
-    "nexus-personal-key": "Clave API personal de Nexus"
+    "nexus-personal-key": "Clave API personal de Nexus",
+    "steam-install-path": "Ruta de instalación de Steam"
   },
   "keywords": {
     "general": "General",

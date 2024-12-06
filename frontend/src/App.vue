@@ -21,7 +21,7 @@ const { setMaxThreads } = useAppStore()
 
 // Keydown event listener
 const onKeydown = (event: KeyboardEvent) => {
-    console.log('Keydown fired!\n', event.key)
+    //console.log('Keydown fired!\n', event.key)
 
     if (event.key == "Escape") {
         const openDialogs = getOpenDialogs()

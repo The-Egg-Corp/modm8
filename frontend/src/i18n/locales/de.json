@@ -24,7 +24,8 @@
       "option-3": "Aus"
     },
     "animations-enabled": "Animationen aktivieren",
-    "nexus-personal-key": "Persönlicher Nexus-API-Schlüssel"
+    "nexus-personal-key": "Persönlicher Nexus-API-Schlüssel",
+    "steam-install-path": "Steam-Installationspfad"
   },
   "keywords": {
     "settings": "Einstellungen",

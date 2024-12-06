@@ -91,3 +91,21 @@ a {
 .border-top-faint {
     border-top: 1px solid var(--border-faint);
 }
+
+.spin-btn-icon .p-button-icon {
+    transition: none; /* Disable animation by default */
+}
+  
+.spin-btn-icon:hover .p-button-icon {
+    animation: spin 2.5s linear infinite;
+}
+
+@-moz-keyframes spin {
+    to { -moz-transform: rotate(360deg); }
+}
+@-webkit-keyframes spin {
+    to { -webkit-transform: rotate(360deg); }
+}
+@keyframes spin {
+    to {transform:rotate(360deg);}
+}

@@ -40,7 +40,8 @@
       "option-3": "Off"
     },
     "animations-enabled": "Enable Animations",
-    "nexus-personal-key": "Nexus Personal API Key"
+    "nexus-personal-key": "Nexus Personal API Key",
+    "steam-install-path": "Steam Install Path"
   },
   "tooltips": {
     "sidebar": {

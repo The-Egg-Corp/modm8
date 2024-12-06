@@ -24,7 +24,8 @@
       "option-3": "Désactivé"
     },
     "animations-enabled": "Activer les animations",
-    "nexus-personal-key": "Clé API personnelle Nexus"
+    "nexus-personal-key": "Clé API personnelle Nexus",
+    "steam-install-path": "Chemin d'installation Steam"
   },
   "keywords": {
     "settings": "Paramètres",

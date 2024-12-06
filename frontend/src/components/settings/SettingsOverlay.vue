@@ -8,7 +8,7 @@ import { Load, SaveAndApply } from "@backend/app/AppSettings"
 
 import { 
     CardOverlay, 
-    LanguageDropdown, ThemeDropdown 
+    LanguageDropdown
 } from "@components"
 
 import { useDialog } from "@composables"
@@ -19,6 +19,7 @@ import { t } from "@i18n"
 import Divider from "primevue/divider"
 import SelectButton from "primevue/selectbutton"
 import Slider from "primevue/slider"
+import FileUpload from "primevue/fileupload"
 
 const { 
     setVisible,
@@ -26,6 +27,8 @@ const {
 } = useDialog('settings')
 
 const settingsStore = useSettingsStore()
+const { general } = storeToRefs(settingsStore)
+
 const {
     setThreads,
     setAcceleration,
@@ -49,9 +52,9 @@ const setAccel = (value: boolean) => {
 //#region Update Behaviour
 type Behaviour = ValueItemLabeled<app.UpdateBehaviour>
 
-const updateBehaviour = ref<Behaviour>({ 
-    label: t('settings.update-behaviour.option-1'),
-    value: app.UpdateBehaviour.AUTO
+const behaviour = computed(() => {
+    const found = behaviours.value.find(b => b.value == general.value.update_behaviour)
+    return found || behaviours.value[0]
 })
 
 const behaviours = computed<Behaviour[]>(() => [{
@@ -64,6 +67,7 @@ const behaviours = computed<Behaviour[]>(() => [{
     label: t('settings.update-behaviour.option-3'),
     value: app.UpdateBehaviour.OFF
 }])
+//#endregion
 
 // Every time the overlay is opened.
 watch(visible, async (newVal: boolean) => {
@@ -80,7 +84,6 @@ const updateValues = async () => {
     accelChecked.value = performance.gpu_acceleration
     threadCount.value = performance.thread_count
 }
-//#endregion
 
 const applySettings = async() => {
     const t0 = performance.now()
@@ -91,6 +94,11 @@ const applySettings = async() => {
 }
 
 const dividerAlignment: Alignment = "center"
+
+const steamExeSize = 10 * 1000 * 1000 // Actual size is 4KB, 10KB should be enough. 
+const verifySteamPath = () => {
+    
+}
 </script>
 
 <template>
@@ -132,6 +140,18 @@ const dividerAlignment: Alignment = "center"
                         <ThemeDropdown/>
                     </div>
                 </div> -->
+
+                <div class="setting">
+                    <div class="flex-item">
+                        <h3>{{ $t('settings.update-behaviour.label') }}</h3>
+                    </div>
+                    <div class="flex-item ml-3">
+                        <SelectButton style="border: 1px solid var(--p-select-border-color);"
+                            v-model="behaviour.label" :options="behaviours.map(b => b.label)"
+                            @change="setUpdateBehaviour(behaviour.value)"
+                        />
+                    </div>
+                </div>
 
                 <div class="setting">
                     <div class="flex-item">
@@ -194,13 +214,17 @@ const dividerAlignment: Alignment = "center"
             <div>
                 <div class="setting">
                     <div class="flex-item">
-                        <h3>{{ $t('settings.update-behaviour.label') }}</h3>
+                        <h3>{{ $t('settings.steam-install-path') }}</h3>
                     </div>
-                    <div class="flex-item ml-3">
-                        <SelectButton 
-                            aria-labelledby="basic" :options="behaviours.map(b => b.label)"
-                            v-model="updateBehaviour" @change="setUpdateBehaviour(updateBehaviour.value)"
-                        />
+                    <div class="flex row justify-content-end align-items-center">
+                        <InputGroup>
+                            <InputText style="width: 270px"/>
+                            <FileUpload style="border-radius: 0px 5px 5px 0px;" auto customUpload
+                                choose-icon="pi pi-folder" chooseLabel="Browse" 
+                                mode="basic" name="demo[]" accept=".exe, .app" 
+                                :maxFileSize="steamExeSize" @select="verifySteamPath"
+                            />
+                        </InputGroup>
                     </div>
                 </div>
 
@@ -208,8 +232,8 @@ const dividerAlignment: Alignment = "center"
                     <div class="flex-item">
                         <h3>{{ $t('settings.nexus-personal-key') }}</h3>
                     </div>
-                    <div class="flex flex-row justify-content-end align-items-center">
-                        <InputText type="password" style="width: 310px"/>
+                    <div class="flex row justify-content-end align-items-center">
+                        <InputText type="password" style="width: 300px"/>
                     </div>
                 </div>
             </div>

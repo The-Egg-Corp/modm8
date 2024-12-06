@@ -24,7 +24,8 @@
       "option-3": "Spento"
     },
     "animations-enabled": "Abilita animazioni",
-    "nexus-personal-key": "Chiave API personale Nexus"
+    "nexus-personal-key": "Chiave API personale Nexus",
+    "steam-install-path": "Percorso di installazione di Steam"
   },
   "keywords": {
     "general": "Generale",

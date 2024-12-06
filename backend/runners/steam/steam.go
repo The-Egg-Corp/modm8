@@ -62,8 +62,8 @@ func GetInstallDirectory() (*string, error) {
 		return nil, fmt.Errorf("failed to load settings: %v", err)
 	}
 
-	if settings.General.SteamInstallPath != nil {
-		return settings.General.SteamInstallPath, nil
+	if settings.Misc.SteamInstallPath != nil {
+		return settings.Misc.SteamInstallPath, nil
 	}
 
 	dir, err := TryFindSteam()

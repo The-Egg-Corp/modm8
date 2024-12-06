@@ -1,7 +1,5 @@
 <script lang="ts" setup>
 import Listbox, { ListboxChangeEvent } from 'primevue/listbox' 
-
-import InputGroup from 'primevue/inputgroup'
 import Popover from 'primevue/popover'
 
 import { NewProfile, DeleteProfile } from '@backend/profile/ProfileManager'

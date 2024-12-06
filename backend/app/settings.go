@@ -43,10 +43,10 @@ type AppSettings struct {
 }
 
 type GeneralOptions struct {
-	Locale            string  `json:"locale" mapstructure:"locale"`
-	Theme             string  `json:"theme" mapstructure:"theme"`
-	AnimationsEnabled bool    `json:"animations_enabled" mapstructure:"animations_enabled"`
-	SteamInstallPath  *string `json:"steam_install_path" mapstructure:"steam_install_path"`
+	Locale            string          `json:"locale" mapstructure:"locale"`
+	Theme             string          `json:"theme" mapstructure:"theme"`
+	AnimationsEnabled bool            `json:"animations_enabled" mapstructure:"animations_enabled"`
+	UpdateBehaviour   UpdateBehaviour `json:"update_behaviour" mapstructure:"update_behaviour"`
 }
 
 type PerformanceOptions struct {
@@ -55,8 +55,8 @@ type PerformanceOptions struct {
 }
 
 type MiscOptions struct {
+	SteamInstallPath    *string             `json:"steam_install_path" mapstructure:"steam_install_path"`
 	NexusPersonalKey    *string             `json:"nexus_personal_key" mapstructure:"nexus_personal_key"`
-	UpdateBehaviour     UpdateBehaviour     `json:"update_behaviour" mapstructure:"update_behaviour"`
 	GameSelectionLayout GameSelectionLayout `json:"game_selection_layout" mapstructure:"game_selection_layout"`
 }
 
@@ -68,15 +68,15 @@ func NewSettings() *AppSettings {
 			Locale:            "en",
 			Theme:             "aura-dark-purple",
 			AnimationsEnabled: true,
-			SteamInstallPath:  nil,
+			UpdateBehaviour:   UpdateBehaviourAuto,
 		},
 		Performance: PerformanceOptions{
 			ThreadCount:     NumCPU(),
 			GPUAcceleration: true,
 		},
 		Misc: MiscOptions{
+			SteamInstallPath:    nil,
 			NexusPersonalKey:    nil,
-			UpdateBehaviour:     UpdateBehaviourAuto,
 			GameSelectionLayout: "grid",
 		},
 	}
@@ -118,8 +118,8 @@ func (settings *AppSettings) SetAnimationsEnabled(val bool) {
 	settings.General.AnimationsEnabled = val
 }
 
-func (settings *AppSettings) SetSteamInstallPath(path string) {
-	settings.General.SteamInstallPath = &path
+func (settings *AppSettings) SetUpdateBehaviour(behaviour UpdateBehaviour) {
+	settings.General.UpdateBehaviour = behaviour
 }
 
 func (settings *AppSettings) SetThreads(count uint8) {
@@ -130,12 +130,12 @@ func (settings *AppSettings) SetGPUAccel(val bool) {
 	settings.Performance.GPUAcceleration = val
 }
 
-func (settings *AppSettings) SetNexusPersonalKey(key string) {
-	settings.Misc.NexusPersonalKey = &key
+func (settings *AppSettings) SetSteamInstallPath(path string) {
+	settings.Misc.SteamInstallPath = &path
 }
 
-func (settings *AppSettings) SetUpdateBehaviour(behaviour UpdateBehaviour) {
-	settings.Misc.UpdateBehaviour = behaviour
+func (settings *AppSettings) SetNexusPersonalKey(key string) {
+	settings.Misc.NexusPersonalKey = &key
 }
 
 func (settings *AppSettings) SetGameSelectionLayout(layout GameSelectionLayout) {

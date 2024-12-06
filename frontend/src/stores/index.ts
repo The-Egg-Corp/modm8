@@ -12,13 +12,15 @@ import { computed, ref } from 'vue'
 export const useAppStore = defineStore('AppStore', () => {
     const maxThreads = ref(2)
 
-    const topbarHeight = ref(30)
     const sidebarExpanded = ref(false)
+
+    const topbarHeight = ref(30)
+    const topbarHeightPx = computed(() => `${topbarHeight.value}px`)
 
     const sidebarMargin = ref(20)
     const sidebarMarginPx = computed(() => `${sidebarMargin.value}px`)
 
-    const sidebarWidth = computed(() => sidebarExpanded.value ? 180 : 75)
+    const sidebarWidth = computed(() => sidebarExpanded.value ? 170 : 75)
     const sidebarWidthPx = computed(() => `${sidebarWidth.value}px`)
 
     const sidebarOffset = computed(() => sidebarWidth.value + sidebarMargin.value)
@@ -38,8 +40,8 @@ export const useAppStore = defineStore('AppStore', () => {
 
     return { 
         maxThreads,
-        topbarHeight,
         sidebarExpanded,
+        topbarHeight, topbarHeightPx,
         sidebarMargin, sidebarMarginPx,
         sidebarWidth, sidebarWidthPx,
         sidebarOffset, sidebarOffsetPx,

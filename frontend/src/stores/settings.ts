@@ -5,6 +5,7 @@ import {
     SetAnimationsEnabled, 
     SetGPUAccel, 
     SetLocale,
+    SetSteamInstallPath,
     SetNexusPersonalKey,
     SetThreads,
     SetUpdateBehaviour,
@@ -17,7 +18,8 @@ export const useSettingsStore = defineStore("SettingsStore", () => {
     //#region State
     const general = ref({
         locale: 'en',
-        animations_enabled: true
+        animations_enabled: true,
+        update_behaviour: 2,
     })
     
     const performance = ref({
@@ -26,18 +28,19 @@ export const useSettingsStore = defineStore("SettingsStore", () => {
     })
     
     const misc = ref({
+        steam_install_path: '',
         nexus_personal_key: '',
-        update_behaviour: 2,
         game_selection_layout: 'grid'
     })
     //#endregion
 
     //#region Actions
     
-    // 'Save' here means updating the viper config in the backend. Refer to the 'settings.go' file.
-    function setLocale(code: string, save = true) {
+    // The 'update' parameter means updating the Viper config in the backend.
+    // Saving of the `settings.toml` file is done upon clicking the 'Apply' button.
+    function setLocale(code: string, update = true) {
         general.value.locale = code
-        if (save) SetLocale(code)
+        if (update) SetLocale(code)
     }
 
     // function setTheme(theme: Theme, save = true) {
@@ -45,34 +48,39 @@ export const useSettingsStore = defineStore("SettingsStore", () => {
     //     if (save) SetTheme(theme.value)
     // }
 
-    function setAnimationsEnabled(value: boolean, save = true) {
+    function setAnimationsEnabled(value: boolean, update = true) {
         general.value.animations_enabled = value
-        if (save) SetAnimationsEnabled(value)
+        if (update) SetAnimationsEnabled(value)
     }
 
-    function setThreads(count: number, save = true) {
+    function setUpdateBehaviour(behaviour: app.UpdateBehaviour, update = true) {
+        general.value.update_behaviour = behaviour
+        if (update) SetUpdateBehaviour(behaviour)
+    }
+
+    function setThreads(count: number, update = true) {
         performance.value.thread_count = count
-        if (save) SetThreads(count)
+        if (update) SetThreads(count)
     }
 
-    function setAcceleration(value: boolean, save = true) {
+    function setAcceleration(value: boolean, update = true) {
         performance.value.gpu_acceleration = value
-        if (save) SetGPUAccel(value)
+        if (update) SetGPUAccel(value)
     }
 
-    function setNexusPersonalKey(key: string, save = true) {
+    function setSteamInstallPath(path: string, update = true) {
+        misc.value.steam_install_path = path
+        if (update) SetSteamInstallPath(path)
+    }
+
+    function setNexusPersonalKey(key: string, update = true) {
         misc.value.nexus_personal_key = key
-        if (save) SetNexusPersonalKey(key)
+        if (update) SetNexusPersonalKey(key)
     }
 
-    function setUpdateBehaviour(behaviour: app.UpdateBehaviour, save = true) {
-        misc.value.update_behaviour = behaviour
-        if (save) SetUpdateBehaviour(behaviour)
-    }
-
-    function setGameSelectionLayout(layout: app.GameSelectionLayout, save = true) {
+    function setGameSelectionLayout(layout: app.GameSelectionLayout, update = true) {
         misc.value.game_selection_layout = layout
-        if (save) SetGameSelectionLayout(layout)
+        if (update) SetGameSelectionLayout(layout)
     }
     //#endregion
 
@@ -85,6 +93,7 @@ export const useSettingsStore = defineStore("SettingsStore", () => {
         setAnimationsEnabled,
         setThreads,
         setAcceleration,
+        setSteamInstallPath,
         setNexusPersonalKey,
         setUpdateBehaviour,
         setGameSelectionLayout

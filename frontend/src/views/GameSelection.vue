@@ -397,7 +397,7 @@ onMounted(async () => {
     text-align: left;
     font-size: 36px;
     font-weight: 450;
-    margin: 30px 0px 10px 0px;
+    margin: 0px 0px 10px 0px;
 }
 
 .game-card {

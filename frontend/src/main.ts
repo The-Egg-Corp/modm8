@@ -8,14 +8,14 @@ import router from "./router"
 //#region Import Framework & Components
 import PrimeVue from 'primevue/config'
 
-import Button from 'primevue/button'
-
 import Dialog from 'primevue/dialog'
 import Card from 'primevue/card'
 
+import Button from 'primevue/button'
 import Dropdown from 'primevue/select'
-
 import ToggleSwitch from 'primevue/toggleswitch'
+
+import InputGroup from "primevue/inputgroup"
 import InputText from 'primevue/inputtext'
 import InputIcon from 'primevue/inputicon'
 import IconField from 'primevue/iconfield'
@@ -41,6 +41,19 @@ const pinia = createPinia()
 const app = createApp(App)
 
 const DefaultPreset = defineAuraPreset({
+    primitive: {
+        zinc: {
+            50: "white",
+            100: "white",
+            200: "white",
+            300: "white",
+            400: "#84848a",
+            500: "#4e4e54",
+            800: "#25252a",
+            900: "#151518",
+            950: "#09090a"
+        },
+    },
     semantic: {
         primary: presetPalette('purple'),
         colorScheme: {
@@ -67,11 +80,12 @@ app.component('Button', Button)
 app.component('Dropdown', Dropdown)
 app.component('ToggleSwitch', ToggleSwitch)
 
+app.component('InputGroup', InputGroup)
 app.component('InputText', InputText)
 app.component('InputIcon', InputIcon)
 app.component('IconField', IconField)
 
 app.directive('Tooltip', Tooltip)
-app.directive('keyfilter', KeyFilter);
+app.directive('keyfilter', KeyFilter)
 
 app.mount('#app')

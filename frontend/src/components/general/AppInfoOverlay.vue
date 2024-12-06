@@ -39,19 +39,19 @@ const {
                     <div>
                         <h3 class="subheading">Links</h3>
                         <div class="flex row gap-1">
-                            <Button class="outlined-btn w-6" severity="help" 
-                                icon="pi pi-heart-fill" label="Donate"
-                                @click="openLink('https://github.com/sponsors/Owen3H')"
-                            />
-    
-                            <Button class="outlined-btn w-full" severity="primary"
+                            <Button class="w-full" severity="secondary" raised
                                 icon="pi pi-github" label="View source code"
                                 @click="openLink('https://github.com/The-Egg-Corp/modm8')"
                             />
 
-                            <Button class="outlined-btn w-full" style="background-color: #7289da;"
+                            <Button class="discord-btn w-full" severity="secondary" raised
                                 icon="pi pi-discord" label="Join the community"
                                 @click="openLink('https://discord.gg/64Vq7cpdGV')"
+                            />
+
+                            <Button class="donate-btn btn w-7" severity="secondary" raised
+                                icon="pi pi-heart-fill" label="Donate"
+                                @click="openLink('https://github.com/sponsors/Owen3H')"
                             />
                         </div>
                     </div>
@@ -80,7 +80,19 @@ const {
     display: flex;
 }
 
-.outlined-btn {
-    border: 1px solid rgba(255, 255, 255, 0.4);
+.donate-btn :deep(.p-button-icon) {
+    color: var(--p-red-400);
+}
+
+.donate-btn :deep(.p-button-label) {
+    color: var(--p-red-400);
+}
+
+.discord-btn :deep(.p-button-icon) {
+    color: var(--p-blue-400);
+}
+
+.discord-btn :deep(.p-button-label) {
+    color: var(--p-blue-400);
 }
 </style>

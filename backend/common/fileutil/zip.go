@@ -1,7 +1,11 @@
 package fileutil
 
 import (
+	"archive/zip"
+	"bytes"
 	"context"
+	"fmt"
+	"io"
 	"os"
 
 	"github.com/saracen/fastzip"
@@ -30,4 +34,33 @@ func Unzip(path, dest string, delete bool) error {
 	}
 
 	return err
+}
+
+func GetFilesInZip(data []byte) (map[string][]byte, error) {
+	// Create a zip reader
+	reader, err := zip.NewReader(bytes.NewReader(data), int64(len(data)))
+	if err != nil {
+		return nil, fmt.Errorf("failed to create zip reader: %w", err)
+	}
+
+	files := make(map[string][]byte)
+	for _, f := range reader.File {
+		rc, err := f.Open()
+		if err != nil {
+			return nil, fmt.Errorf("failed to open file in zip: %w", err)
+		}
+
+		defer rc.Close()
+
+		// Read the file contents
+		contents, err := io.ReadAll(rc)
+		if err != nil {
+			return nil, fmt.Errorf("failed to read file contents: %w", err)
+		}
+
+		// Store the file in the map
+		files[f.Name] = contents
+	}
+
+	return files, nil
 }

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref, watch } from "vue"
+import { computed, onBeforeMount, ref, watch } from "vue"
 import { storeToRefs } from "pinia"
 
 import { app } from "@backend/models"
@@ -20,6 +20,7 @@ import Divider from "primevue/divider"
 import SelectButton from "primevue/selectbutton"
 import Slider from "primevue/slider"
 import FileUpload from "primevue/fileupload"
+import { ToggleSwitchPassThroughOptionType } from "primevue/toggleswitch"
 
 const { 
     setVisible,
@@ -69,13 +70,21 @@ const behaviours = computed<Behaviour[]>(() => [{
 }])
 //#endregion
 
+/* Mounted while visible. Should only happen in dev? */
+onBeforeMount(async () => {
+    if (visible) await refresh()
+})
+
 // Every time the overlay is opened.
 watch(visible, async (newVal: boolean) => {
     if (!newVal) return
+    await refresh()
+})
 
+const refresh = async () => {
     await Load() // Load the `settings.toml` file.
     await updateValues() // Refresh the refs with their respective loaded value.
-})
+}
 
 const updateValues = async () => {
     const { general, performance } = await GetSettings()
@@ -99,6 +108,69 @@ const steamExeSize = 10 * 1000 * 1000 // Actual size is 4KB, 10KB should be enou
 const verifySteamPath = () => {
     
 }
+
+// https://primevue.org/toggleswitch/#theming.tokens
+const customSwitch = ref({
+    handle: {
+        borderRadius: '4px'
+    },
+    colorScheme: {
+        light: {
+            root: {
+                checkedBackground: '{purple.500}',
+                checkedHoverBackground: '{purple.600}',
+                borderRadius: '4px'
+            },
+            handle: {
+                checkedBackground: '{purple.50}',
+                checkedHoverBackground: '{purple.100}',
+                checked: ''
+            }
+        },
+        dark: {
+            root: {
+                checkedBackground: '{purple.400}',
+                checkedHoverBackground: '{purple.300}',
+                borderRadius: '4px'
+            },
+            handle: {
+                checkedBackground: '{purple.900}',
+                checkedHoverBackground: '{purple.800}'
+            }
+        }
+    }
+})
+
+// https://primevue.org/slider/#theming.tokens
+const customSlider = ref({
+    handle: {
+        width: '15px',
+        borderRadius: '4px',
+        contentBorderRadius: '3px'
+    },
+    colorScheme: {
+        // light: {
+        //     handle: {
+        //         background: 'transparent',
+        //         hoverBackground: 'transparent',
+        //         content: {
+        //             background: '{surface.800}',
+        //             hoverBackground: '{surface.700}'
+        //         }
+        //     }
+        // },
+        dark: {
+            handle: {
+                background: 'transparent',
+                hoverBackground: 'transparent',
+                content: {
+                    background: 'white',
+                    hoverBackground: 'white'
+                }
+            }
+        }
+    }
+})
 </script>
 
 <template>
@@ -161,6 +233,7 @@ const verifySteamPath = () => {
                         <ToggleSwitch 
                             v-model="animationsEnabled" 
                             @update:model-value="setAnimationsEnabled(animationsEnabled)"
+                            :dt="customSwitch"
                         />
                     </div>
                 </div>
@@ -181,6 +254,7 @@ const verifySteamPath = () => {
                         <ToggleSwitch 
                             v-model="accelChecked" 
                             @update:model-value="setAccel(accelChecked)"
+                            :dt="customSwitch"
                         />
                     </div>
                 </div>
@@ -194,6 +268,7 @@ const verifySteamPath = () => {
                         <Slider 
                             class="w-12rem" :min="2" :max="maxThreads"
                             v-model="threadCount" @change="setThreads(threadCount)"
+                            :dt="customSlider"
                         />
 
                         <!-- @vue-ignore -->

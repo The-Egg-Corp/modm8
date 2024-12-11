@@ -1,20 +1,18 @@
-import type { ThunderstoreGame } from '@types'
 import { defineStore } from 'pinia'
-
-import { Save, SetFavouriteGames } from '@backend/app/Persistence'
 import { ref, computed } from 'vue'
 
+import { Save, SetFavouriteGames } from '@backend/app/Persistence'
 import { GetPersistence } from '@backend/app/Application.js'
-import { BepinexInstalled } from '@backend/game/GameManager.js'
 import { ExistsAtPath } from '@backend/app/Utils.js'
-
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import { BepinexInstalled } from '@backend/game/GameManager.js'
 import { thunderstore } from '@backend/models.js'
 
-export interface GameState {
-    selectedGame: ThunderstoreGame,
-    games: Map<string, ThunderstoreGame>
-}
+import type { ThunderstoreGame } from '@types'
+
+// export interface GameState {
+//     selectedGame: ThunderstoreGame,
+//     games: Map<string, ThunderstoreGame>
+// }
 
 export const useGameStore = defineStore('GameStore', () => {
     //#region State

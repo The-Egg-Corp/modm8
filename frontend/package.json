@@ -15,15 +15,15 @@
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",
-    "@primevue/themes": "^4.1.1",
+    "@primevue/themes": "^4.2.5",
     "compare-versions": "^6.1.1",
-    "pinia": "^2.2.4",
+    "pinia": "^2.3.0",
     "primeflex": "^3.3.1",
     "primeicons": "^7.0.0",
-    "primevue": "^4.1",
-    "vue": "^3.5.12",
-    "vue-i18n": "10",
-    "vue-router": "4.4.5"
+    "primevue": "^4.2",
+    "vue": "^3.5.13",
+    "vue-i18n": "^10.0.5",
+    "vue-router": "4.5.0"
   },
   "devDependencies": {
     "@babel/types": "^7.18.10",
@@ -40,6 +40,6 @@
     "eslint-plugin-named-import-spacing": "^1.0.3"
   },
   "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "4.9.5"
+    "@rollup/rollup-linux-x64-gnu": "4.28.1"
   }
 }

@@ -12,6 +12,8 @@ require (
 	github.com/wailsapp/wails/v2 v2.9.2
 )
 
+require github.com/the-egg-corp/gonexus v0.0.0-20240808001923-e6ead5329028
+
 require (
 	github.com/klauspost/compress v1.17.11 // indirect
 	github.com/saracen/fastzip v0.1.11

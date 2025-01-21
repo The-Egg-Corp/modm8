@@ -13,7 +13,7 @@ const appInfo = useDialog('app-info')
 
 const appStore = useAppStore()
 const { 
-    sidebarExpanded, 
+    sidebarExpanded,
     sidebarWidthPx
 } = storeToRefs(appStore)
 
@@ -26,27 +26,27 @@ const ModDevTools = () => router.push('/mod-dev-tools')
 <div v-if="sidebarExpanded" class="sidebar expanded">
     <img class="icon no-select" src="../../assets/images/appicon.png">
 
-    <div class="btn-container gap-3">
+    <div class="btn-container gap-5">
         <div class="top flex column">
-            <Button outlined
+            <Button outlined size="large"
                 class="btn no-drag"
                 icon="pi pi-info-circle" iconPos="top"
-                label="About" 
+                :label="t('keywords.about')" 
                 @click="appInfo.setVisible()"
             />
         </div>
 
         <div class="flex column gap-1">
-            <Button outlined 
+            <Button outlined size="large"
                 class="btn no-drag" 
-                icon="pi pi-home"
+                icon="pi pi-th-large"
                 :label="t('tooltips.sidebar.dashboard')"
                 @click="Dashboard"
             />
 
-            <Button outlined
+            <Button outlined size="large"
                 class="btn no-drag"
-                label="Games"
+                :label="t('keywords.games')"
                 @click="GameSelection"
             >
                 <template #icon>
@@ -142,13 +142,14 @@ const ModDevTools = () => router.push('/mod-dev-tools')
 
 .collapsed {
     height: 100vh;
-    border-right: 1px solid var(--border-faint);
-    background-color: var(--p-surface-800); /* #2c2d32; */
+
+    background-color: var(--sidebar-bg-color);
 }
 
 .expanded {
     height: 100vh;
-    border-right: 1px solid var(--border-faint);
+
+    background-color: var(--sidebar-bg-color);
 }
 
 .collapsed .icon {
@@ -157,7 +158,7 @@ const ModDevTools = () => router.push('/mod-dev-tools')
 }
 
 .expanded .icon {
-    width: 70px;
+    width: 75px;
     margin: 30px 0px 0px 0px;
 }
 
@@ -181,7 +182,7 @@ const ModDevTools = () => router.push('/mod-dev-tools')
     border-radius: 3px;
     border: none !important;
     color: var(--p-surface-50);
-    background-color: var(--p-surface-700);
+    background-color: var(--sidebar-btn-color);
     height: 39px;
     width: 43px;
 }

@@ -109,7 +109,7 @@ const verifySteamPath = () => {
     
 }
 
-// https://primevue.org/toggleswitch/#theming.tokens
+// Reference: https://primevue.org/toggleswitch/#theming.tokens
 const customSwitch = ref({
     handle: {
         borderRadius: '4px'
@@ -124,7 +124,6 @@ const customSwitch = ref({
             handle: {
                 checkedBackground: '{purple.50}',
                 checkedHoverBackground: '{purple.100}',
-                checked: ''
             }
         },
         dark: {
@@ -141,7 +140,7 @@ const customSwitch = ref({
     }
 })
 
-// https://primevue.org/slider/#theming.tokens
+// Reference: https://primevue.org/slider/#theming.tokens
 const customSlider = ref({
     handle: {
         width: '15px',

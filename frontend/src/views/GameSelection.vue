@@ -8,7 +8,6 @@ import { Viewport } from '@components'
 
 import DataView from 'primevue/dataview'
 import SelectButton from 'primevue/selectbutton'
-import Skeleton from 'primevue/skeleton'
 
 // TODO: Replace with real external service.
 import { mockGameList } from '../mocks/GameService'
@@ -29,15 +28,13 @@ import { storeToRefs } from 'pinia'
 import router from '../router'
 
 const gameStore = useGameStore()
-const {
-    gamesAsArray,
-} = storeToRefs(gameStore)
+const { gamesAsArray } = storeToRefs(gameStore.thunderstore)
 
 const {
     toggleFavouriteGame,
     setSelectedGame,
     initGames
-} = gameStore
+} = gameStore.thunderstore
 
 const loading = ref(true)
 const searchInput = ref<Nullable<string>>(null)
@@ -200,11 +197,11 @@ onMounted(async () => {
                             <div class="flex flex-column align-items-center pb-2">
                                 <Skeleton width="8rem" height="2.3rem" />
                             </div>
-            
+                            
                             <div class="flex justify-content-center border-round">
                                 <Skeleton width="75%" height="16.5rem" />
                             </div>
-            
+
                             <div class="flex flex-column align-items-center pt-2">
                                 <div class="flex flex-column gap-2">
                                     <div class="flex flex-row gap-2 justify-content-center">
@@ -251,10 +248,19 @@ onMounted(async () => {
                 <div class="flex flex-row justify-content-between align-items-center">
                     <div class="flex row gap-2">
                         <div class="searchbar">
-                            <IconField iconPosition="left">
+                            <!-- <IconField iconPosition="left">
                                 <InputIcon class="pi pi-search"/>
-                                <InputText type="text" :placeholder="t('game-selection.search-placeholder')" v-model="searchInput"/>
-                            </IconField>
+                                <InputText :placeholder="t('game-selection.search-placeholder')" v-model="searchInput"/>
+                            </IconField> -->
+
+                            <FloatLabel variant="on">
+                                <IconField>
+                                    <InputIcon class="pi pi-search"/>
+                                    <InputText id="search_title" v-model="searchInput"/>
+                                </IconField>
+                    
+                                <label for="search_title">{{ t('game-selection.search-placeholder') }}</label>
+                            </FloatLabel>
                         </div>
 
                         <Dropdown checkmark
@@ -400,10 +406,6 @@ onMounted(async () => {
     margin: 0px 0px 10px 0px;
 }
 
-.game-card {
-    padding: 10px 25px 10px 25px;
-}
-
 .snap-top {
     height: 160px;
 }
@@ -411,32 +413,40 @@ onMounted(async () => {
 .scrollable-list {
     overflow-y: scroll; /* Enable vertical scrolling */
     scrollbar-width: none;
-    max-height: calc(160px * 5); /* Height of single item * amount of items */
+    height: calc(160px * 5); /* Height of single item * amount of items */
 }
 
 .scrollable-grid {
     overflow-y: scroll;
     scrollbar-width: none;
-    max-height: calc(100vh - 140px); /* TODO: Investigate why 100vh alone prevents scrolling to bottom. */
+    height: calc(100vh - 140px); /* TODO: Investigate why 100vh alone prevents scrolling to bottom. */
 }
 
+/* Container for the game-card */
 .grid-item {
+    display: flex;
     flex: 1 0 auto;
     min-width: fit-content;
     border-radius: 3px;
     margin: 5px;
 }
 
+.game-card {
+    padding: 10px 25px 10px 25px;
+    justify-content: center;
+    flex: 1 0 auto;
+}
+
 .game-grid-thumbnail {
     user-select: none;
-    width: 180px;
+    width: 193px;
     border-radius: 4px;
 }
 
 .game-list-thumbnail {
     user-select: none;
     max-width: 105px;
-    min-width: 35px;
+    min-width: 40px;
     opacity: 0;
     border-radius: 1px;
 }
@@ -453,15 +463,16 @@ onMounted(async () => {
     text-wrap: nowrap;
 }
 
+/* Should contain at least the select button */
 .grid-item-bottom-row {
     display: flex;
-    flex: 1 0 0;
 }
 
 .grid-select-game-btn {
     white-space: nowrap;
     font-size: 18px;
-    min-width: 100%;
+    width: 100%;
+    max-width: 500px;
 }
 
 .list-select-game-btn {
@@ -470,20 +481,20 @@ onMounted(async () => {
     font-size: 18px;
 }
 
-.searchbar {
-    margin-left: auto;
-    margin-right: auto;
-}
-
 .layout-btns {
     border: 1px solid var(--p-inputtext-border-color);
     border-radius: 6.5px;
 }
 
+.searchbar {
+    width: calc(22vw);
+    min-width: 335px;
+}
+
 :deep(.searchbar .p-inputtext) {
     margin-left: auto;
     margin-right: auto;
-    width: 350px;
+    width: 100%;
 }
 
 :deep(.p-dataview-header) {

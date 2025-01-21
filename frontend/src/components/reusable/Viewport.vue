@@ -4,22 +4,28 @@ import { useAppStore } from '@stores'
 
 const appStore = useAppStore()
 const { 
-    sidebarOffsetPx,
+    sidebarWidthPx,
     sidebarMarginPx,
-    topbarHeightPx
+    sidebarOffsetPx,
+    topbarHeightPx,
+    topbarMarginPx
 } = storeToRefs(appStore)
 </script>
 
 <template>
-    <div class="viewport">
+    <div class="viewport w-full">
         <slot></slot>
     </div>
 </template>
 
 <style scoped>
 .viewport {
-    margin-top: v-bind(topbarHeightPx);
-    margin-left: v-bind(sidebarOffsetPx);
-    margin-right: v-bind(sidebarMarginPx);
+    position: fixed;
+    top: v-bind(topbarHeightPx);
+    padding-top: v-bind(topbarMarginPx);
+    left: v-bind(sidebarWidthPx);
+    padding-left: v-bind(sidebarMarginPx);
+    padding-right: v-bind(sidebarOffsetPx);
+    border-radius: 15px;
 }
 </style>

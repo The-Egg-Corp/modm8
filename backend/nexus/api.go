@@ -12,7 +12,7 @@ import (
 type API struct {
 	Ctx    context.Context
 	Cache  map[string]any
-	Client v1.Client
+	Client v1.NexusClient
 }
 
 func NewCache() map[string]any {
@@ -20,7 +20,8 @@ func NewCache() map[string]any {
 }
 
 func NewAPI(ctx context.Context) (*API, error) {
-	// grab nexus key from `<configDir>/modm8/nex.key` file
+	// TODO: Is this really the best way of doing this?
+	// Grab nexus key from `<configDir>/modm8/nex.key` file
 	fmt.Print("Reading nex.key file..\n")
 
 	contents, err := os.ReadFile(app.KeyPath())

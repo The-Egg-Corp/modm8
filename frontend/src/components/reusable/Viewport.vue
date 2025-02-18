@@ -13,17 +13,19 @@ const {
 </script>
 
 <template>
-    <div class="viewport w-full">
+    <div class="viewport">
         <slot></slot>
     </div>
 </template>
 
 <style scoped>
 .viewport {
+    width: 100%;
+    height: calc(100vh - (v-bind(topbarHeightPx) * 2)); /* Stinky hack to keep equal spacing at the bottom as the top. Probably bc of padding fuckery */
     position: fixed;
     top: v-bind(topbarHeightPx);
-    padding-top: v-bind(topbarMarginPx);
     left: v-bind(sidebarWidthPx);
+    padding-top: v-bind(topbarMarginPx);
     padding-left: v-bind(sidebarMarginPx);
     padding-right: v-bind(sidebarOffsetPx);
     border-radius: 15px;

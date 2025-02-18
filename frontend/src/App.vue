@@ -107,7 +107,6 @@ onBeforeUnmount(() => {
     position: fixed;
     display: flex;
     justify-content: space-between;
-
     margin-left: v-bind(sidebarWidthPx);
     padding-right: v-bind(sidebarWidthPx);
     background-color: var(--topbar-bg-color);

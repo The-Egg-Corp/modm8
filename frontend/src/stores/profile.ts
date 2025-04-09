@@ -27,6 +27,7 @@ export const useProfileStore = defineStore("ProfileStore", () => {
             profiles.value = Object.entries(profs).map(([key, value]) => ({ ...value, name: key }))
         } catch (e: any) {
             console.error(e)
+            // TODO: Add some sort of toast or error msg in the app itself.
         }
     }
 

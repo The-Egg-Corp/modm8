@@ -7,7 +7,8 @@ import type {
     Theme, ThemeGroup
 } from '@types'
 
-import { usePreset } from '@primevue/themes'
+import { usePreset, useTheme } from '@primevue/themes'
+import { Preset } from '@primevue/themes/aura/'
 
 //const settingStore = useSettingsStore()
 //const { general } = settingStore
@@ -47,12 +48,14 @@ const groupedThemes = computed<ThemeGroup[]>(() => [{
 
 //const PrimeVue = usePrimeVue()
 
+
 const change = (e: ChangeEvent<Theme>) => {
     const newTheme = e.value
     
     // TODO: Use presets instead - https://primevue.org/theming/styled/#utils
     //PrimeVue.changeTheme(currentTheme().value, newTheme.value, 'theme-link')
-    usePreset(newTheme.value)
+    
+    useTheme(newTheme.value)
     
     //setTheme(newTheme)
 }

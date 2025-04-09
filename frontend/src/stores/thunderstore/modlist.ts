@@ -42,13 +42,13 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
     const first = ref(0) // Starting index of the current page
     const currentPageMods = ref<Package[]>([])
 
-    const allMods = ref<thunderstore.StrippedPackage[]>([])
+    const mods = ref<thunderstore.StrippedPackage[]>([])
     const lastInstalledMod = ref<Nullable<v1.PackageVersion>>(null)
     //#endregion
 
     //#region Getters
     const selectedGame = computed(() => gameStore.thunderstore.selectedGame) // TODO: Computed may not be needed?
-    const thunderstoreMods = computed(() => activeTab.value == ModListTabType.TS ? filterByProfile(allMods.value) : allMods.value)
+    //const thunderstoreMods = computed(() => activeTab.value == ModListTabType.TS ? filterByProfile(allMods.value) : allMods.value)
     //#endregion
 
     //#region Actions
@@ -96,7 +96,7 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
             }
         }
 
-        allMods.value = getMods()
+        mods.value = getMods()
         await refreshPage()
 
         // We are done regardless of outcome, stop loading.
@@ -140,7 +140,7 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
     const updatePage = async (newFirst: number, rows: number) => {
         first.value = newFirst
 
-        const filtered = thunderstoreMods.value.slice(newFirst, newFirst + rows) as Package[]
+        const filtered = mods.value.slice(newFirst, newFirst + rows) as Package[]
 
         // TODO: This could be potentially VERY slow. Consider replacing with Map/Set instead.
         const promises = filtered.map(async mod => {
@@ -160,11 +160,10 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
         modElements,
         scrollIndex,
         ROWS,
-        allMods,
+        mods,
         currentPageMods,
         lastInstalledMod,
         first,
-        thunderstoreMods,
         installMod,
         getMods,
         refreshMods,

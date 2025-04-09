@@ -23,7 +23,7 @@ export const useProfileStore = defineStore("ProfileStore", () => {
 
     async function initProfiles() {
         try {
-            let profs = await GetProfiles(gameStore.thunderstore.selectedGame.title)
+            const profs = await GetProfiles(gameStore.thunderstore.selectedGame.title)
             profiles.value = Object.entries(profs).map(([key, value]) => ({ ...value, name: key }))
         } catch (e: any) {
             console.error(e)

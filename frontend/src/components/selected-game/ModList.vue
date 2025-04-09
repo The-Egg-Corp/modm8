@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, nextTick } from 'vue'
+import { ref, nextTick, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 
 import { TabMenuChangeEvent } from 'primevue/tabmenu'
@@ -30,8 +30,23 @@ const {
     activeTab,
     searchInput,
     modElements, scrollIndex, first,
-    thunderstoreMods, currentPageMods, allMods,
+    mods, currentPageMods,
 } = storeToRefs(modListStore.thunderstore)
+
+// Choose which mods to show based on tab type.
+const dataViewMods = computed(() => {
+    if (activeTab.value == ModListTabType.NEXUS) {
+        // TODO: Implement state for nexus mods.
+        return []
+    }
+    
+    if (activeTab.value == ModListTabType.TS) {
+        return mods.value
+    }
+
+    // Not a store, must be profile tab.
+    return []
+})
 
 const tabs = ref([
     { type: ModListTabType.PROFILE, label: 'This Profile', icon: 'pi pi-box' },
@@ -40,7 +55,9 @@ const tabs = ref([
 ])
 
 const onTabChange = async (e: TabMenuChangeEvent) => {
-    activeTab.value = tabs.value[e.index].type
+    const newTab = tabs.value[e.index]
+    activeTab.value = newTab.type
+
     await refreshPage()
 }
 
@@ -51,7 +68,7 @@ const onSearchInputChange = async () => {
     // No input, no need to debounce.
     if (!searchInput.value?.trim()) {
         // Show all mods without filtering.
-        allMods.value = getMods(false)
+        mods.value = getMods(false)
         return await refreshPage()
     }
 
@@ -86,15 +103,17 @@ const handleScroll = (e: WheelEvent) => {
 
 const props = defineProps<{ installingModDialog: Dialog }>()
 
+// TODO: Implement Thunderstore login using GitHub/Discord for things like rating mods.
+// This may require an update to Wails V3 so we can make OAuth easier as it has plugins and multi-window support.
 const openLoginPage = () => {
-    const url = 'https://auth.thunderstore.io/auth/login/github'
-    const loginWindow = window.open(url)
+    // const url = 'https://auth.thunderstore.io/auth/login/github'
+    // const loginWindow = window.open(url)
 
-    if (!loginWindow) return
+    // if (!loginWindow) return
 
-    loginWindow.onload = () => {
+    // loginWindow.onload = () => {
         
-    }
+    // }
 }
 </script>
 
@@ -130,8 +149,8 @@ const openLoginPage = () => {
     v-else lazy stripedRows
     layout="list" data-key="mod-list"
     paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
-    :paginator="thunderstoreMods.length > ROWS" :rows="ROWS"
-    :value="thunderstoreMods" @page="onPageChange" :first="first"
+    :paginator="dataViewMods.length > ROWS" :rows="ROWS"
+    :value="dataViewMods" @page="onPageChange" :first="first"
 >
     <template #header>
         <div class="flex row align-items-center gap-2">
@@ -211,11 +230,16 @@ const openLoginPage = () => {
 
                             <div class="mod-list-bottom-row"> 
                                 <div class="flex row gap-2">
-                                    <Button v-if="activeTab == ModListTabType.PROFILE" 
+                                    <!-- <Button v-if="activeTab == ModListTabType.PROFILE" 
                                         class="btn w-full" severity="danger" icon="pi pi-trash"
                                         :label="$t('keywords.uninstall')"
                                     />
                                     <Button v-if="activeTab == ModListTabType.TS" 
+                                        class="btn w-full" icon="pi pi-download"
+                                        :label="$t('keywords.install')" @click="installMod(mod.full_name, gameStore.thunderstore.selectedGame, props.installingModDialog)"
+                                    /> -->
+
+                                    <Button
                                         class="btn w-full" icon="pi pi-download"
                                         :label="$t('keywords.install')" @click="installMod(mod.full_name, gameStore.thunderstore.selectedGame, props.installingModDialog)"
                                     />

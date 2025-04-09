@@ -62,7 +62,7 @@ func (app Application) Init() (errs []error) {
 	}
 
 	//#region Platform specific
-	initCommands()
+	initOpenCommand()
 
 	err = setPriority()
 	if err != nil {
@@ -96,6 +96,7 @@ func (a *Application) Shutdown(ctx context.Context) {
 	a.Persistence.Save()
 }
 
+// TODO: Implement this so app can be restarted (like me) by itself.
 func (a *Application) Restart() {
 
 }
@@ -107,14 +108,15 @@ func (app *Application) OpenExternal(path string) error {
 
 	// Run cmd with the specified path as last argument
 	cmd := gocmd.NewCmd(openCmd.name, append(*openCmd.args, path)...)
-
 	statusChan := cmd.Start()
+
+	// Any work needed while cmd is running should be done
+	// before this line and after calling .Start()
 	status := <-statusChan
 
 	// Clean that bitch up properly.
 	// See -> https://github.com/go-cmd/cmd?tab=readme-ov-file#proper-process-termination
 	err := cmd.Stop()
-
 	if status.Error != nil {
 		err = status.Error
 	}

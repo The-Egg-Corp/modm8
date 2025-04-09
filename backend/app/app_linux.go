@@ -6,6 +6,6 @@ func setPriority() error {
 	return nil
 }
 
-func initCommands() {
+func initOpenCommand() {
 	openCmd = &Command{name: "xdg-open"}
 }

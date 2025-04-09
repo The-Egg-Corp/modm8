@@ -9,8 +9,8 @@ func setPriority() error {
 	return windows.SetPriorityClass(handle, windows.ABOVE_NORMAL_PRIORITY_CLASS)
 }
 
-func initCommands() {
-	// Essentially replicates Electron's `shell.openExternal`
+// Essentially replicates Electron's `shell.openExternal`.
+func initOpenCommand() {
 	openArgs := []string{"url.dll,FileProtocolHandler"}
 	openCmd = &Command{
 		name: "rundll32",

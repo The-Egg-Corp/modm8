@@ -4,8 +4,23 @@
     font-variation-settings: normal;
     --font-family: "Inter var", sans-serif;
     --font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-    --border-faint: rgba(255, 255, 255, 0.2);
-    --border-faint-alt: rgba(255, 255, 255, 0.3);
+    --app-bg-color: var(--p-surface-950);
+    --topbar-bg-color: none;
+    --sidebar-bg-color: var(--p-surface-800);
+    --sidebar-btn-color: var(--p-surface-600);
+    --collapsible-content-color: var(--p-surface-900);
+    --border-faint: var(--p-surface-700);
+    --border-faint-alt: var(--p-surface-700);
+    --component-border: 1px solid var(--p-surface-500);
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--p-primary-color);
+    border-radius: 2px;
 }
 
 @font-face {
@@ -48,7 +63,7 @@ body::before {
     right: 0;
     bottom: 0;
     left: 0;
-    background-color: var(--p-surface-950);
+    background-color: var(--app-bg-color);
     z-index: -1;
 }
 

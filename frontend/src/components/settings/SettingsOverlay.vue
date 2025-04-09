@@ -28,7 +28,7 @@ const {
 } = useDialog('settings')
 
 const settingsStore = useSettingsStore()
-const { general } = storeToRefs(settingsStore)
+const { general, misc } = storeToRefs(settingsStore)
 
 const {
     setThreads,
@@ -109,7 +109,7 @@ const verifySteamPath = () => {
     
 }
 
-// https://primevue.org/toggleswitch/#theming.tokens
+// Reference: https://primevue.org/toggleswitch/#theming.tokens
 const customSwitch = ref({
     handle: {
         borderRadius: '4px'
@@ -124,7 +124,6 @@ const customSwitch = ref({
             handle: {
                 checkedBackground: '{purple.50}',
                 checkedHoverBackground: '{purple.100}',
-                checked: ''
             }
         },
         dark: {
@@ -141,7 +140,7 @@ const customSwitch = ref({
     }
 })
 
-// https://primevue.org/slider/#theming.tokens
+// Reference: https://primevue.org/slider/#theming.tokens
 const customSlider = ref({
     handle: {
         width: '15px',
@@ -293,10 +292,14 @@ const customSlider = ref({
                     </div>
                     <div class="flex row justify-content-end align-items-center">
                         <InputGroup>
-                            <InputText style="width: 270px"/>
-                            <FileUpload style="border-radius: 0px 5px 5px 0px;" auto customUpload
-                                choose-icon="pi pi-folder" chooseLabel="Browse" 
-                                mode="basic" name="demo[]" accept=".exe, .app" 
+                            <InputText style="width: 270px" 
+                                :disabled="true" :value="misc.steam_install_path"
+                            />
+
+                            <FileUpload auto customUpload style="border-radius: 0px 5px 5px 0px;" 
+                                name="steam-install-path"
+                                choose-icon="pi pi-folder" chooseLabel="Browse"
+                                mode="basic" accept=".exe, .app"
                                 :maxFileSize="steamExeSize" @select="verifySteamPath"
                             />
                         </InputGroup>

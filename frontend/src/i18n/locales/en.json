@@ -15,7 +15,11 @@
     "profile-manager": {
       "search-placeholder": "Search profiles",
       "new-profile": "New profile",
-      "header": "Profile Manager"
+      "header": "Profile Manager",
+      "profile-name": "Profile Name",
+      "profile-creator": {
+        "header": "Create a profile"
+      }
     },
     "start-modded-button": "Start Modded",
     "start-vanilla-button": "Start Vanilla",
@@ -84,7 +88,11 @@
     "cancel": "Cancel",
     "import": "Import",
     "export": "Export",
-    "uninstall": "Uninstall"
+    "uninstall": "Uninstall",
+    "merge": "Merge",
+    "about": "About",
+    "games": "Games",
+    "create": "Create"
   },
   "languages": {
     "en": "English",

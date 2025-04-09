@@ -69,7 +69,7 @@ export const mockGameList: ThunderstoreGame[] = [{
   identifier: 'tf6',
   steamID: 0
 }, {
-  title: 'Placeholder',
+  title: 'Placeholder that has a very long name',
   identifier: 'tf7',
   steamID: 0
 }]

@@ -2,6 +2,7 @@ package main
 
 import (
 	"embed"
+	"fmt"
 
 	"github.com/leaanthony/u"
 	"github.com/wailsapp/wails/v2"
@@ -69,7 +70,11 @@ func main() {
 
 	modm8.Settings.Apply()
 
-	nexusAPI := nexus.NewAPI(modm8.Ctx)
+	nexusAPI, keyErr := nexus.NewAPI(modm8.Ctx)
+	if keyErr != nil {
+		fmt.Printf("\nfailed to initialize nexus client:\n\n%v", keyErr)
+	}
+
 	tsAPI := thunderstore.NewAPI(modm8.Ctx)
 	tsTools := thunderstore.NewTools()
 
@@ -81,8 +86,8 @@ func main() {
 		Title:     "modm8",
 		Width:     int(modm8.Persistence.Window.Width),
 		Height:    int(modm8.Persistence.Window.Height),
-		MinWidth:  850,
-		MinHeight: 500,
+		MinWidth:  640, // God's resolution.
+		MinHeight: 480,
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
@@ -117,6 +122,6 @@ func main() {
 	})
 
 	if err != nil {
-		println("Error: ", err.Error())
+		println("Error launching app:", err)
 	}
 }

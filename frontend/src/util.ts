@@ -4,12 +4,16 @@ import type { PresetOptions } from "@types"
 import { type TooltipOptions } from "primevue/tooltip"
 
 import Aura from '@primevue/themes/aura'
+import Lara from '@primevue/themes/aura'
+
 import { definePreset } from "@primevue/themes"
 
 type AuraOptions = PresetOptions<Aura.PrimitiveDesignTokens, Aura.SemanticDesignTokens>
+type LaraOptions = PresetOptions<Lara.PrimitiveDesignTokens, Lara.SemanticDesignTokens>
 
 // PrimeVue v4 does not provide typings for actions currently.
 export const defineAuraPreset = (opts: AuraOptions) => definePreset(Aura, opts)
+export const defineLaraPreset = (opts: LaraOptions) => definePreset(Aura, opts)
 
 export const presetPalette = (name: string) => ({
     50: `{${name}.50}`,

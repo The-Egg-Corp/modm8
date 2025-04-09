@@ -25,13 +25,9 @@ const CustomMinimise = async () => {
 
 <style scoped>
 .control-buttons {
-    z-index: 9999;
-    top: 0;
-    right: 0;
     display: flex;
-    align-items: center;
-    margin-right: 5px;
-    margin-top: 5px;
+    z-index: 9999;
+    margin: 5px;
     /* border-left: rgba(211, 211, 211, 0.823) 1px solid; */
     /* border-bottom: rgba(211, 211, 211, 0.823) 1px solid; */
     /* border-bottom-left-radius: 5px; */
@@ -43,7 +39,6 @@ const CustomMinimise = async () => {
 }
 
 .control-buttons .p-button {
-    cursor: pointer;
     color: rgba(201, 201, 201, 0.8);
     width: 32px;
     padding: 0.25rem;

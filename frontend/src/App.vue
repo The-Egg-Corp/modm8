@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { changeLocale } from '@i18n'
 
 import { 
@@ -14,6 +14,13 @@ import {
 
 import { useAppStore } from '@stores'
 import { getOpenDialogs } from '@composables'
+import { storeToRefs } from 'pinia'
+
+const appStore = useAppStore()
+const { 
+    sidebarWidthPx, 
+    showBackButton
+} = storeToRefs(appStore)
 
 const { setMaxThreads } = useAppStore()
 
@@ -55,6 +62,11 @@ onBeforeUnmount(() => {
 
 <template>
 <div class="topbar drag">
+    <Button text icon="pi pi-arrow-left" 
+        class="back-btn"
+        :style="{ visibility: showBackButton ? 'visible' : 'hidden' }"
+    />
+
     <ControlButtons/>
 </div>
 
@@ -91,11 +103,19 @@ onBeforeUnmount(() => {
 
 .topbar {
     z-index: 9999;
+    width: 100%;
     position: fixed;
     display: flex;
-    justify-content: end;
-    width: 100%;
-    /* border-bottom: 1px solid var(--border-faint) */
+    justify-content: space-between;
+    margin-left: v-bind(sidebarWidthPx);
+    padding-right: v-bind(sidebarWidthPx);
+    background-color: var(--topbar-bg-color);
+}
+
+.back-btn {
+    color: rgba(201, 201, 201, 0.8) !important;
+    width: 32px !important;
+    margin-left: 20px;
 }
 
 .app-container {

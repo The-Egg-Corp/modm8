@@ -20,7 +20,6 @@ import Divider from "primevue/divider"
 import SelectButton from "primevue/selectbutton"
 import Slider from "primevue/slider"
 import FileUpload from "primevue/fileupload"
-import { ToggleSwitchPassThroughOptionType } from "primevue/toggleswitch"
 
 const { 
     setVisible,
@@ -104,10 +103,16 @@ const applySettings = async() => {
 
 const dividerAlignment: Alignment = "center"
 
-const steamExeSize = 10 * 1000 * 1000 // Actual size is 4KB, 10KB should be enough. 
-const verifySteamPath = () => {
-    
-}
+// TODO: Replace with backend OpenFileDialog to get the path.
+//       We can then send an event to frontend to refresh settings state.
+// const steamExeSize = 10 * 1000 * 1000 // Actual size is 4KB, 10KB should be enough. 
+// const verifySteamPath = (e: FileUploadSelectEvent) => {
+//     const file: File = e.files[0]
+//     const { name, type, size } = file
+
+//     // All verifications complete
+//     setSteamInstallPath(path)
+// }
 
 // Reference: https://primevue.org/toggleswitch/#theming.tokens
 const customSwitch = ref({
@@ -296,11 +301,11 @@ const customSlider = ref({
                                 :disabled="true" :value="misc.steam_install_path"
                             />
 
+                            <!-- :maxFileSize="steamExeSize" @select="verifySteamPath" -->
                             <FileUpload auto customUpload style="border-radius: 0px 5px 5px 0px;" 
                                 name="steam-install-path"
                                 choose-icon="pi pi-folder" chooseLabel="Browse"
                                 mode="basic" accept=".exe, .app"
-                                :maxFileSize="steamExeSize" @select="verifySteamPath"
                             />
                         </InputGroup>
                     </div>

@@ -13,7 +13,7 @@ import {
 
 import { useDialog } from "@composables"
 import { useAppStore, useSettingsStore } from "@stores"
-import { Alignment, ValueItemLabeled } from "@types"
+import { Alignment, Nullable, ValueItemLabeled } from "@types"
 import { t } from "@i18n"
 
 import Divider from "primevue/divider"
@@ -39,9 +39,15 @@ const {
 const appStore = useAppStore()
 const { maxThreads } = storeToRefs(appStore)
 
-const threadCount = ref(2)
+// General
 const animationsEnabled = ref(true)
-const accelChecked = ref(true)
+
+// Perf
+const threadCount = ref(2)
+const accelEnabled = ref(true)
+
+// Misc
+const steamExePath = ref<Nullable<string>>(null)
 
 const setAccel = (value: boolean) => {
     setAcceleration(value)
@@ -51,11 +57,6 @@ const setAccel = (value: boolean) => {
 
 //#region Update Behaviour
 type Behaviour = ValueItemLabeled<app.UpdateBehaviour>
-
-const behaviour = computed(() => {
-    const found = behaviours.value.find(b => b.value == general.value.update_behaviour)
-    return found || behaviours.value[0]
-})
 
 const behaviours = computed<Behaviour[]>(() => [{
     label: t('settings.update-behaviour.option-1'),
@@ -67,6 +68,11 @@ const behaviours = computed<Behaviour[]>(() => [{
     label: t('settings.update-behaviour.option-3'),
     value: app.UpdateBehaviour.OFF
 }])
+
+const behaviour = computed(() => {
+    const found = behaviours.value.find(b => b.value == general.value.update_behaviour)
+    return found || behaviours.value[0]
+})
 //#endregion
 
 /* Mounted while visible. Should only happen in dev? */
@@ -76,7 +82,7 @@ onBeforeMount(async () => {
 
 // Every time the overlay is opened.
 watch(visible, async (newVal: boolean) => {
-    if (!newVal) return
+    if (!newVal) return // Ref 'visible' is false.
     await refresh()
 })
 
@@ -86,11 +92,14 @@ const refresh = async () => {
 }
 
 const updateValues = async () => {
-    const { general, performance } = await GetSettings()
+    const { general, performance, misc } = await GetSettings()
 
     animationsEnabled.value = general.animations_enabled
-    accelChecked.value = performance.gpu_acceleration
+
+    accelEnabled.value = performance.gpu_acceleration
     threadCount.value = performance.thread_count
+
+    steamExePath.value = misc.steam_install_path
 }
 
 const applySettings = async() => {
@@ -256,8 +265,8 @@ const customSlider = ref({
                     </div>
                     <div class="flex-item">
                         <ToggleSwitch 
-                            v-model="accelChecked" 
-                            @update:model-value="setAccel(accelChecked)"
+                            v-model="accelEnabled" 
+                            @update:model-value="setAccel(accelEnabled)"
                             :dt="customSwitch"
                         />
                     </div>
@@ -306,6 +315,7 @@ const customSlider = ref({
                                 name="steam-install-path"
                                 choose-icon="pi pi-folder" chooseLabel="Browse"
                                 mode="basic" accept=".exe, .app"
+                                :value="steamExePath"
                             />
                         </InputGroup>
                     </div>

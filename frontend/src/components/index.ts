@@ -6,6 +6,7 @@ export { default as CardOverlay } from './reusable/CardOverlay.vue'
 export { default as PlatformSelectPanels } from './reusable/PlatformSelectPanels.vue'
 export { default as Viewport } from './reusable/Viewport.vue'
 
+export { default as ModList } from './selected-game/ModList.vue'
 export { default as ModListFilter } from './selected-game/ModListFilter.vue'
 export { default as ProfileManager } from './selected-game/ProfileManager.vue'
 export { default as ConfigEditLayout } from './selected-game/ConfigEditLayout.vue'

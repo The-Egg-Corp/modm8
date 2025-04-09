@@ -54,7 +54,11 @@
     "import": "Importare",
     "export": "Esportare",
     "refresh": "Aggiorna",
-    "uninstall": "Disinstallare"
+    "uninstall": "Disinstallare",
+    "merge": "Unisci",
+    "about": "Di",
+    "games": "Giochi",
+    "create": "Creare"
   },
   "languages": {
     "en": "Inglese",
@@ -95,7 +99,11 @@
     "profile-manager": {
       "header": "Gestore del profilo",
       "search-placeholder": "Cerca profili",
-      "new-profile": "Nuovo profilo"
+      "new-profile": "Nuovo profilo",
+      "profile-name": "Nome del profilo",
+      "profile-creator": {
+        "header": "Crea un profilo"
+      }
     },
     "no-mods-installed": "Nessuna mod installata."
   }

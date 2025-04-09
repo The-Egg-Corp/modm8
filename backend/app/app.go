@@ -145,6 +145,10 @@ func ConfigDir() string {
 	return filepath.Join(dir, "modm8")
 }
 
+func KeyPath() string {
+	return filepath.Join(ConfigDir(), "nex.key")
+}
+
 func SettingsPath() string {
 	return filepath.Join(ConfigDir(), "settings.toml")
 }

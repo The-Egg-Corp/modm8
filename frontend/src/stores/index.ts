@@ -7,25 +7,43 @@ import { computed, ref } from 'vue'
 //     sidebarWidth: string
 // }
 
-// TODO: Instead of hardcoding height/width refs, they should all be
-//       computed and point to their respective element in the DOM.
+// TODO: 
+// Instead of hardcoding height/width refs, they should all be
+// computed and point to their respective element in the DOM.
 export const useAppStore = defineStore('AppStore', () => {
+    //#region State
     const maxThreads = ref(2)
 
+    const topbarMargin = ref(0)
+
+    const sidebarMargin = ref(25)
     const sidebarExpanded = ref(false)
 
-    const topbarHeight = ref(30)
-    const topbarHeightPx = computed(() => `${topbarHeight.value}px`)
+    const showBackButton = ref(false)
+    //#endregion
 
-    const sidebarMargin = ref(20)
+    //#region Getters
+    const topbarHeightPx = computed(() => {
+        const el = document.getElementsByClassName("topbar")
+        return el.item(0)?.clientHeight + 'px';
+    })
+
+    const collapsibleContentPx = computed(() => {
+        const el = document.getElementsByClassName("collapsible-content")
+        return el.item(0)?.clientHeight + 'px';
+    })
+
+    const topbarMarginPx = computed(() => `${topbarMargin.value}px`)
     const sidebarMarginPx = computed(() => `${sidebarMargin.value}px`)
 
-    const sidebarWidth = computed(() => sidebarExpanded.value ? 170 : 75)
+    const sidebarWidth = computed(() => sidebarExpanded.value ? 180 : 80)
     const sidebarWidthPx = computed(() => `${sidebarWidth.value}px`)
 
     const sidebarOffset = computed(() => sidebarWidth.value + sidebarMargin.value)
     const sidebarOffsetPx = computed(() => `${sidebarOffset.value}px`)
+    //#endregion
 
+    //#region Actions
     function toggleSidebar() {
         sidebarExpanded.value = !sidebarExpanded.value
     }
@@ -37,14 +55,18 @@ export const useAppStore = defineStore('AppStore', () => {
     async function setMaxThreads(count: number) {
         maxThreads.value = count
     }
+    //#endregion
 
-    return { 
+    return {
         maxThreads,
         sidebarExpanded,
-        topbarHeight, topbarHeightPx,
+        showBackButton, 
+        topbarHeightPx, 
+        topbarMargin, topbarMarginPx,
         sidebarMargin, sidebarMarginPx,
         sidebarWidth, sidebarWidthPx,
         sidebarOffset, sidebarOffsetPx,
+        collapsibleContentPx,
         toggleSidebar,
         setMaxThreads
     }
@@ -52,5 +74,7 @@ export const useAppStore = defineStore('AppStore', () => {
 
 export * from './settings'
 export * from './version'
-export * from './game'
 export * from './profile'
+
+export * from './game'
+export * from './modlist'

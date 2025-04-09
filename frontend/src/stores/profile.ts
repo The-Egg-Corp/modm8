@@ -4,18 +4,11 @@ import { ref } from "vue"
 import { Nullable, Profile } from "@types"
 import { useGameStore } from "@stores"
 
-import { GetProfiles } from "@backend/profile/ProfileManager.js"
+import { GetProfiles } from "@backend/profile/ProfileManager"
 
 export interface ProfileState {
     profiles: Map<string, Profile>
 }
-
-// const mockProfiles = [
-//     { name: 'Default', mods: { thunderstore: ['Owen3H-CSync'] } },
-//     { name: 'testing', mods: {} },
-//     { name: 'MEGALOPHOBIA', mods: {} },
-//     { name: 'big futa cock mods', mods: {} }
-// ]
 
 export const useProfileStore = defineStore("ProfileStore", () => {
     const gameStore = useGameStore()
@@ -30,7 +23,7 @@ export const useProfileStore = defineStore("ProfileStore", () => {
 
     async function initProfiles() {
         try {
-            let profs = await GetProfiles(gameStore.selectedGame.title)
+            const profs = await GetProfiles(gameStore.thunderstore.selectedGame.title)
             profiles.value = Object.entries(profs).map(([key, value]) => ({ ...value, name: key }))
         } catch (e: any) {
             console.error(e)

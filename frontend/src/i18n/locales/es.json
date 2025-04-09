@@ -54,7 +54,11 @@
     "import": "Importar",
     "export": "Exportar",
     "refresh": "Refrescar",
-    "uninstall": "Desinstalar"
+    "uninstall": "Desinstalar",
+    "merge": "Unir",
+    "about": "Acerca de",
+    "games": "Juegos",
+    "create": "Crear"
   },
   "languages": {
     "en": "Inglés",
@@ -95,7 +99,11 @@
     "profile-manager": {
       "header": "Administrador de perfiles",
       "search-placeholder": "Buscar perfiles",
-      "new-profile": "Nuevo perfil"
+      "new-profile": "Nuevo perfil",
+      "profile-name": "Nombre del perfil",
+      "profile-creator": {
+        "header": "Crear un perfil"
+      }
     },
     "no-mods-installed": "No hay modificaciones instaladas."
   }

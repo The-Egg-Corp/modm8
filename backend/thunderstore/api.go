@@ -188,14 +188,15 @@ func (a *API) GetPackagesByUser(communities []string, owner string) string {
 		return strings.EqualFold(pkg.Owner, owner)
 	})
 
-	if pkgs.Size() == 1 {
+	pkgCount := pkgs.Size()
+	if pkgCount == 1 {
 		return pkgs[0].Name
 	}
 
 	var names []string
 	var i uint
 
-	for i = 0; i < pkgs.Size(); i++ {
+	for i = 0; i < pkgCount; i++ {
 		names = append(names, pkgs[i].Name)
 	}
 

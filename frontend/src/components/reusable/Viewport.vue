@@ -4,9 +4,11 @@ import { useAppStore } from '@stores'
 
 const appStore = useAppStore()
 const { 
-    sidebarOffsetPx,
+    sidebarWidthPx,
     sidebarMarginPx,
-    topbarHeightPx
+    sidebarOffsetPx,
+    topbarHeightPx,
+    topbarMarginPx
 } = storeToRefs(appStore)
 </script>
 
@@ -18,8 +20,14 @@ const {
 
 <style scoped>
 .viewport {
-    margin-top: v-bind(topbarHeightPx);
-    margin-left: v-bind(sidebarOffsetPx);
-    margin-right: v-bind(sidebarMarginPx);
+    width: 100%;
+    height: calc(100vh - (v-bind(topbarHeightPx) * 2)); /* Stinky hack to keep equal spacing at the bottom as the top. Probably bc of padding fuckery */
+    position: fixed;
+    top: v-bind(topbarHeightPx);
+    left: v-bind(sidebarWidthPx);
+    padding-top: v-bind(topbarMarginPx);
+    padding-left: v-bind(sidebarMarginPx);
+    padding-right: v-bind(sidebarOffsetPx);
+    border-radius: 15px;
 }
 </style>

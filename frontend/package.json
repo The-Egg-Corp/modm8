@@ -26,10 +26,9 @@
     "vue-router": "4.5.0"
   },
   "devDependencies": {
-    "@babel/types": "^7.18.10",
-    "@types/node": "^22.2.0",
+    "@types/node": "latest",
     "@vitejs/plugin-vue": "latest",
-    "copy-folder-util": "^1.1.4",
+    "copy-folder-util": "^1.1.5",
     "rimraf": "latest",
     "typescript": "latest",
     "vite": "latest",

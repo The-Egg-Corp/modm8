@@ -1,6 +1,7 @@
 package backend
 
 import (
+	"modm8/backend/common/downloader"
 	"modm8/backend/common/fileutil"
 	"modm8/backend/thunderstore"
 	"path/filepath"
@@ -49,7 +50,7 @@ func TestInstallWithDependencies(t *testing.T) {
 
 func TestUnzip(t *testing.T) {
 	path := filepath.Join(thunderstore.ModCacheDir("Lethal Company"), testPkg1)
-	zipPath := path + ".m8z"
+	zipPath := path + downloader.CUSTOM_ZIP_EXT
 
 	err := fileutil.Unzip(zipPath, path, true)
 	if err != nil {

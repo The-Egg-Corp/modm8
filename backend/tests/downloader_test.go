@@ -10,27 +10,27 @@ import (
 	"time"
 )
 
-var zip = ".zip"
-var rar = ".rar"
+const ZIP_EXT = ".zip"
+const RAR_EXT = ".rar"
 
 var TestDir = thunderstore.ModCacheDir("Lethal Company")
 
 var testPool = downloader.DownloadPool{
 	"https://thunderstore.io/package/download/Owen3H/CSync/3.0.1": fileutil.FileMetadata{
 		Name:      "CSync-v3.0.1",
-		Extension: &zip,
+		Extension: ZIP_EXT,
 	},
 	"https://thunderstore.io/package/download/Owen3H/IntroTweaks/1.5.0": fileutil.FileMetadata{
 		Name:      "Owen3H-IntroTweaks-1.5.0",
-		Extension: &rar,
+		Extension: RAR_EXT,
 	},
 	"https://thunderstore.io/package/download/Evaisa/LethalLib/0.16.1": fileutil.FileMetadata{
 		Name:      "LethalLib-0.16.1",
-		Extension: nil,
+		Extension: "",
 	},
 	"https://thunderstore.io/package/download/sfDesat/Orion/2.1.4": fileutil.FileMetadata{
 		Name:      "ORION",
-		Extension: &zip,
+		Extension: ZIP_EXT,
 	},
 }
 
@@ -50,16 +50,20 @@ func TestDownloadMultipleFiles(t *testing.T) {
 	}
 }
 
-func TestDownloadFile(t *testing.T) {
-	url := tsDownloadDomain + strings.ReplaceAll(testPkg1, "-", "/")
-	ext := "zip"
+// TODO: Implement in real backend when needed.
+func BuildPackageDownloadURL(pkgName string) string {
+	return tsDownloadDomain + strings.ReplaceAll(pkgName, "-", "/")
+}
 
+func TestDownloadFile(t *testing.T) {
+	// Build URL and ticker before starting timer so it's *slightly* more accurate.
+	url := BuildPackageDownloadURL(testPkg1)
 	ticker := time.NewTicker(1 * time.Millisecond)
 	defer ticker.Stop()
 
 	startTime := time.Now()
 
-	resp, err := downloader.DownloadFile(url, TestDir, fileutil.NewFileInfo(testPkg1, &ext, TestDir))
+	resp, err := downloader.DownloadFile(url, TestDir, fileutil.NewFileInfo(testPkg1, ZIP_EXT, TestDir))
 	if err != nil {
 		t.Skip("\n", err)
 	}
@@ -81,5 +85,6 @@ Loop:
 		t.Fatalf("Download failed: %v\n", err)
 	}
 
-	t.Logf("\nDownload completed!\n\nSaved to: %v \nTook: %v\n", resp.Filename, time.Since(startTime))
+	elapsed := time.Since(startTime)
+	t.Logf("\nDownload completed!\n\nSaved to: %v \nTook: %v\n", resp.Filename, elapsed)
 }

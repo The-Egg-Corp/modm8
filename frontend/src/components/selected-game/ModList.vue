@@ -11,7 +11,7 @@ import {
     useGameStore,
 } from '@stores'
 
-import { ModListTabType } from '@types'
+import { ModListTabs } from '@types'
 import { Dialog } from '@composables'
 
 import { debounce } from "../../util"
@@ -35,12 +35,12 @@ const {
 
 // Choose which mods to show based on tab type.
 const dataViewMods = computed(() => {
-    if (activeTab.value == ModListTabType.NEXUS) {
+    if (activeTab.value == ModListTabs.NEXUS) {
         // TODO: Implement state for nexus mods.
         return []
     }
     
-    if (activeTab.value == ModListTabType.TS) {
+    if (activeTab.value == ModListTabs.TS) {
         return mods.value
     }
 
@@ -49,9 +49,9 @@ const dataViewMods = computed(() => {
 })
 
 const tabs = ref([
-    { type: ModListTabType.PROFILE, label: 'This Profile', icon: 'pi pi-box' },
-    { type: ModListTabType.TS, label: 'Thunderstore', icon: 'pi pi-globe' },
-    { type: ModListTabType.NEXUS, label: 'Nexus', icon: 'pi pi-globe' } // Uncomment when Nexus is implemented.
+    { type: ModListTabs.PROFILE, label: 'This Profile', icon: 'pi pi-box' },
+    { type: ModListTabs.TS, label: 'Thunderstore', icon: 'pi pi-globe' },
+    { type: ModListTabs.NEXUS, label: 'Nexus', icon: 'pi pi-globe' } // Uncomment when Nexus is implemented.
 ])
 
 const switchTab = async (e: TabMenuChangeEvent) => {
@@ -184,11 +184,11 @@ const openLoginPage = () => {
 
         <!-- TODO: If failed, make this show regardless of search input. --> 
         <div v-else>
-            <h2 v-if="activeTab == ModListTabType.PROFILE" class="empty-profile">
+            <h2 v-if="activeTab == ModListTabs.PROFILE" class="empty-profile">
                 {{ $t('selected-game.no-mods-installed') }}
             </h2>
 
-            <div v-if="activeTab == ModListTabType.TS" class="ml-1">
+            <div v-if="activeTab == ModListTabs.TS" class="ml-1">
                 <h2 class="mb-2" style="color: red; font-size: 24px; margin: 0 auto;">
                     No mods available! Something probably went wrong.
                 </h2>
@@ -196,7 +196,7 @@ const openLoginPage = () => {
                 <Button class="mt-1" :label="$t('keywords.refresh')" icon="pi pi-refresh" @click="refreshMods(true)"/>
             </div>
 
-            <div v-if="activeTab == ModListTabType.NEXUS" class="ml-1">
+            <div v-if="activeTab == ModListTabs.NEXUS" class="ml-1">
                 <h2 class="mb-2" style="color: red; font-size: 24px; margin: 0 auto;">
                     Nexus Mods support is not implemented yet.
                 </h2>

@@ -25,12 +25,12 @@ export const useAppStore = defineStore('AppStore', () => {
     //#region Getters
     const topbarHeightPx = computed(() => {
         const el = document.getElementsByClassName("topbar")
-        return el.item(0)?.clientHeight + 'px';
+        return el.item(0)?.clientHeight + 'px'
     })
 
     const collapsibleContentPx = computed(() => {
         const el = document.getElementsByClassName("collapsible-content")
-        return el.item(0)?.clientHeight + 'px';
+        return el.item(0)?.clientHeight + 'px'
     })
 
     const topbarMarginPx = computed(() => `${topbarMargin.value}px`)

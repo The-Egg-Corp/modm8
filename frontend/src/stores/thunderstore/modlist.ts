@@ -2,14 +2,15 @@ import { defineStore, storeToRefs } from "pinia"
 import { ref, computed } from "vue"
 
 import { 
-    Nullable,
-    ModListTabType, 
-    ThunderstoreGame,
-    Package,
+    type Nullable, 
+    type ThunderstoreGame,
+    type Package,
+    type ModListTabType,
+    ModListTabs
 } from "@types"
 
 import { useGameStore, useProfileStore } from '@stores'
-import { Dialog } from "@composables"
+import type { Dialog } from "@composables"
 
 import { 
     GetStrippedPackages,
@@ -17,7 +18,7 @@ import {
     InstallByName
 } from "@backend/thunderstore/API"
 
-import { thunderstore, v1 } from "@backend/models"
+import type { thunderstore, v1 } from "@backend/models"
 
 export const useModListStoreTS = defineStore('ModListStoreTS', () => {
     //#region Stores
@@ -32,7 +33,7 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
     const loading = ref(false)
     const installing = ref(false)
 
-    const activeTab = ref<ModListTabType>(ModListTabType.PROFILE)
+    const activeTab = ref<ModListTabType>(ModListTabs.PROFILE)
     const searchInput = ref<Nullable<string>>(null)
 
     const modElements = ref<any[]>([])

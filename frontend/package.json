@@ -35,7 +35,7 @@
     "vue-tsc": "latest",
     "@typescript-eslint/eslint-plugin": "latest",
     "@typescript-eslint/parser": "latest",
-    "eslint": "latest",
+    "eslint": "^8",
     "eslint-plugin-named-import-spacing": "^1.0.3"
   },
   "optionalDependencies": {

@@ -13,12 +13,13 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+const CUSTOM_ZIP_EXT = ".m8z"
+
 // Alias for a map, where the key is the URL and value is the associated output info.
 type DownloadPool = map[string]fileutil.FileMetadata
 
 func DownloadZip(url, dirPath, fileName string) (*grab.Response, error) {
-	ext := ".m8z"
-	return DownloadFile(url, dirPath, fileutil.NewFileInfo(fileName, &ext, dirPath))
+	return DownloadFile(url, dirPath, fileutil.NewFileInfo(fileName, CUSTOM_ZIP_EXT, dirPath))
 }
 
 // Makes a GET request to a download URL and saves it to the specified directory (created if it doesn't exist).

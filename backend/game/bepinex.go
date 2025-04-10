@@ -153,6 +153,7 @@ const (
 	X86 PlatformArch = "x86"
 )
 
+// TODO: Finish implementing this and call it where needed.
 func InstallBepinexPack(dir string, gameArch PlatformArch) (*grab.Response, error) {
 	resp, err := downloader.DownloadZip("", dir, "BepInEx-Setup")
 	if err != nil {

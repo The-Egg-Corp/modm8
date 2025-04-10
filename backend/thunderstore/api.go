@@ -193,14 +193,99 @@ func (a *API) GetPackagesByUser(communities []string, owner string) string {
 		return pkgs[0].Name
 	}
 
-	var names []string
-	var i uint
-
-	for i = 0; i < pkgCount; i++ {
+	names := make([]string, pkgCount)
+	for i := range pkgCount {
 		names = append(names, pkgs[i].Name)
 	}
 
 	return strings.Join(names, ", ")
+}
+
+// Using the given list of packages (usually from a community), this function attempts to download the given
+// package aka 'pkg' and any packages it depends on which is gathered by its 'Dependencies' field - see [PackageVersion].
+//
+// This function is recursive and calls Install for each dependency, any errors are accumulated into a slice and
+// the install count is incremented if no error occurred - both of which are available once this function is complete.
+func InstallWithDependencies(pkg v1.PackageVersion, pkgs v1.PackageList, errs *[]error, installCount *int) {
+	_, err := Install(pkg, CurModCacheDir)
+	if err == nil {
+		*installCount += 1
+	}
+
+	for _, dependency := range pkg.Dependencies {
+		// Split the dependency string into 3 elements: Author, Package Name, Version
+		split := strings.Split(dependency, "-")
+		pkg := pkgs.Get(split[0], split[1])
+
+		if pkg == nil {
+			*errs = append(*errs, fmt.Errorf("dependency '%s' not found", dependency))
+			continue
+		}
+
+		InstallWithDependencies(*pkg.GetVersion(split[2]), pkgs, errs, installCount)
+	}
+}
+
+// Downloads the given package version as a zip and unpacks it to the specified directory (expected to be absolute).
+func Install(pkg v1.PackageVersion, dir string) (*grab.Response, error) {
+	if exists, _ := backend.ExistsInDir(dir, pkg.FullName); exists {
+		return nil, fmt.Errorf("%s is already installed", pkg.FullName)
+	}
+
+	resp, err := downloader.DownloadZip(pkg.DownloadURL, dir, pkg.FullName)
+	if err != nil {
+		return resp, err
+	}
+
+	// Finished, return if any error occurred.
+	if err = resp.Err(); err != nil {
+		return resp, err
+	}
+
+	path := filepath.Join(dir, pkg.FullName)
+	ext := downloader.CUSTOM_ZIP_EXT
+
+	// TODO: If the program closes for any reason, we need to be able to cancel (and possibly resume)
+	// 		 installing the current zip, then also ensure it is deleted. Maybe when user next opens app?
+
+	// Extract zip contents at path and delete the zip when done.
+	err = fileutil.Unzip(path+ext, path, true)
+	if err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+// Installs the latest version of a package by its full name (Owner-PkgName) and all of its dependencies.
+//
+// The game identifier (aka community) must be correctly specified for the package to be found.
+func (a *API) InstallByName(gameTitle, community, fullName string) (*v1.PackageVersion, error) {
+	// Get cached package list, if empty, try to fill it.
+	pkgs, _ := a.getCachedPackageList(community)
+	if pkgs == nil {
+		commPkgs, err := v1.PackagesFromCommunity(community)
+		if err != nil {
+			return nil, fmt.Errorf("error getting packages: %s", err)
+		}
+
+		a.Cache[community] = commPkgs
+	}
+
+	pkg := pkgs.GetExact(fullName)
+	if pkg == nil {
+		return nil, fmt.Errorf("could not find package in community")
+	}
+
+	var errs []error
+	var downloadCount int
+
+	CurModCacheDir = ModCacheDir(gameTitle)
+
+	latestVer := pkg.LatestVersion()
+	InstallWithDependencies(latestVer, a.Cache[community], &errs, &downloadCount)
+
+	return &latestVer, nil
 }
 
 // Downloads the specified package as a zip file and unpacks it under the specified directory (absolute path).
@@ -242,80 +327,3 @@ func (a *API) GetPackagesByUser(communities []string, owner string) string {
 
 // 	return resp, nil
 // }
-
-// Installs the latest version of a package by its full name (Owner-PkgName) and all of its dependencies.
-//
-// The game identifier (aka community) must be correctly specified for the package to be found.
-func (a *API) InstallByName(gameTitle, community, fullName string) (*v1.PackageVersion, error) {
-	// Get cached package list, if empty, try to fill it.
-	pkgs, _ := a.getCachedPackageList(community)
-	if pkgs == nil {
-		commPkgs, err := v1.PackagesFromCommunity(community)
-		if err != nil {
-			return nil, fmt.Errorf("error getting packages: %s", err)
-		}
-
-		a.Cache[community] = commPkgs
-	}
-
-	pkg := pkgs.GetExact(fullName)
-	if pkg == nil {
-		return nil, fmt.Errorf("could not find package in community")
-	}
-
-	var errs []error
-	var downloadCount int
-
-	CurModCacheDir = ModCacheDir(gameTitle)
-
-	latestVer := pkg.LatestVersion()
-	InstallWithDependencies(latestVer, a.Cache[community], &errs, &downloadCount)
-
-	return &latestVer, nil
-}
-
-func InstallWithDependencies(ver v1.PackageVersion, pkgs v1.PackageList, errs *[]error, downloadCount *int) {
-	_, err := Install(ver, CurModCacheDir)
-	if err == nil {
-		*downloadCount += 1
-	}
-
-	for _, dependency := range ver.Dependencies {
-		// Split the dependency string into 3 elements: Author, Package Name, Version
-		split := strings.Split(dependency, "-")
-		pkg := pkgs.Get(split[0], split[1])
-
-		if pkg == nil {
-			*errs = append(*errs, fmt.Errorf("dependency '%s' not found", dependency))
-			continue
-		}
-
-		InstallWithDependencies(*pkg.GetVersion(split[2]), pkgs, errs, downloadCount)
-	}
-}
-
-// Downloads the given package version as a zip and unpacks it to the specified directory (expected to be absolute).
-func Install(pkg v1.PackageVersion, dir string) (*grab.Response, error) {
-	if exists, _ := backend.ExistsInDir(dir, pkg.FullName); exists {
-		return nil, fmt.Errorf("%s is already installed", pkg.FullName)
-	}
-
-	resp, err := downloader.DownloadZip(pkg.DownloadURL, dir, pkg.FullName)
-	if err != nil {
-		return resp, err
-	}
-
-	// Finished, check for errors.
-	if err = resp.Err(); err != nil {
-		return resp, err
-	}
-
-	path := filepath.Join(dir, pkg.FullName)
-
-	err = fileutil.Unzip(path+".m8z", path, true)
-	if err != nil {
-		return resp, err
-	}
-
-	return resp, nil
-}

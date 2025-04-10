@@ -25,7 +25,7 @@ func NewManager() *GameManager {
 }
 
 func (gm *GameManager) GameInstalled(dirPath string, exeKeywords []string) bool {
-	var installed = false
+	installed := false
 
 	for _, keyword := range exeKeywords {
 		path := filepath.Join(dirPath, keyword)

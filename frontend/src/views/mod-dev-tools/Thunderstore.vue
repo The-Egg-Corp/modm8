@@ -2,7 +2,6 @@
 import { computed, ref } from 'vue'
 
 import FileUpload, { FileUploadUploaderEvent } from 'primevue/fileupload'
-import DataView from 'primevue/dataview'
 
 import { Viewport } from '@components'
 import { TSPackageManifest, TSPackageFile } from '@types'
@@ -19,13 +18,13 @@ import {
 import { GetFilesInZip } from '@backend/app/Utils'
 
 // Validates each required file for uploading a Thunderstore mod.
-function ValidateFiles(icon: experimental.IconValidatorParams, readme: TSPackageFile, manifest: TSPackageManifest) {
-    ValidateIcon(icon)
-    ValidateReadme(readme.data)
+// function ValidateFiles(icon: experimental.IconValidatorParams, readme: TSPackageFile, manifest: TSPackageManifest) {
+//     ValidateIcon(icon)
+//     ValidateReadme(readme.data)
 
-    if (!manifest.author) return
-    ValidateManifest(manifest.author, manifest.data)
-}
+//     if (!manifest.author) return
+//     ValidateManifest(manifest.author, manifest.data)
+// }
 
 const items = ref([{ 
     label: 'Your Packages', 

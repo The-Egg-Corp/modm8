@@ -2,31 +2,31 @@ export type Layout = 'grid' | 'list'
 
 export type Alignment = "center" | "left" | "right"
 
-export interface OptionItem<T> {
+export type OptionItem<T> = {
     index: number
     option: T
 }
 
-export interface ValueItem<V> {
+export type ValueItem<V> = {
     placeholder: string
     value: V
 }
 
-export interface ValueItemLabeled<V> {
-    label: string
+export type ValueItemLabeled<V, L = string> = {
+    label: L
     value: V
 }
 
-export interface ItemProps<V> {
+export type ItemProps<V> = {
     items: V[]
 }
 
-export interface ChangeEvent<V> {
+export type ChangeEvent<V> = {
     originalEvent: Event
     value: V
 }
 
-export interface BreadcrumbPage {
+export type BreadcrumbPage = {
     route: string
     home?: boolean
     label?: string
@@ -35,14 +35,14 @@ export interface BreadcrumbPage {
     style?: string
 }
 
-export interface SemanticColorScheme {
+export type SemanticColorScheme = {
     colorScheme?: {
         light?: any
         dark?: any
     }
 }
 
-export interface PresetOptions<PrimitiveTokens, SemanticTokens> {
+export type PresetOptions<PrimitiveTokens, SemanticTokens> = {
     primitive?: Partial<PrimitiveTokens>
     semantic?: Partial<SemanticTokens> & SemanticColorScheme
     [key: string]: any // For 'components' etc.

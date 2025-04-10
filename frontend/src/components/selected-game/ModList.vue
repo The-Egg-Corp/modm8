@@ -54,7 +54,7 @@ const tabs = ref([
     { type: ModListTabType.NEXUS, label: 'Nexus', icon: 'pi pi-globe' } // Uncomment when Nexus is implemented.
 ])
 
-const onTabChange = async (e: TabMenuChangeEvent) => {
+const switchTab = async (e: TabMenuChangeEvent) => {
     const newTab = tabs.value[e.index]
     activeTab.value = newTab.type
 
@@ -165,7 +165,7 @@ const openLoginPage = () => {
                 </FloatLabel>
             </div>
 
-            <TabMenu :model="tabs" @tab-change="onTabChange"/>
+            <TabMenu :model="tabs" @tab-change="switchTab"/>
             <!-- <div class="flex row">
                 <ModListDropdown>
                     

@@ -108,11 +108,7 @@ func (app *Application) OpenExternal(path string) error {
 
 	// Run cmd with the specified path as last argument
 	cmd := gocmd.NewCmd(openCmd.name, append(*openCmd.args, path)...)
-	statusChan := cmd.Start()
-
-	// Any work needed while cmd is running should be done
-	// before this line and after calling .Start()
-	status := <-statusChan
+	status := <-cmd.Start()
 
 	// Clean that bitch up properly.
 	// See -> https://github.com/go-cmd/cmd?tab=readme-ov-file#proper-process-termination

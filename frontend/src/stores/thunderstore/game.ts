@@ -5,7 +5,7 @@ import { Save, SetFavouriteGames } from '@backend/app/Persistence'
 import { GetPersistence } from '@backend/app/Application.js'
 import { ExistsAtPath } from '@backend/app/Utils.js'
 import { BepinexInstalled } from '@backend/game/GameManager.js'
-import { thunderstore } from '@backend/models.js'
+import type { thunderstore } from '@backend/models.js'
 
 import type { ThunderstoreGame } from '@types'
 

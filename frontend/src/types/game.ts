@@ -38,8 +38,9 @@ export interface NexusGame extends Game {
 export type AnyGame = ThunderstoreGame | NexusGame
 
 // NOTE: May want to move this in future.
-export enum ModListTabType {
-    PROFILE = 'PROFILE',
-    TS = 'THUNDERSTORE',
-    NEXUS = 'NEXUS_MODS'
-}
+export type ModListTabType = typeof ModListTabs[keyof typeof ModListTabs];
+export const ModListTabs = {
+    PROFILE: 'PROFILE',
+    TS: 'THUNDERSTORE',
+    NEXUS: 'NEXUS_MODS'
+} as const

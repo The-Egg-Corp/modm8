@@ -28,13 +28,9 @@ import { storeToRefs } from 'pinia'
 import router from '../router'
 
 const gameStore = useGameStore()
-const { gamesAsArray } = storeToRefs(gameStore.thunderstore)
 
-const {
-    toggleFavouriteGame,
-    setSelectedGame,
-    initGames
-} = gameStore.thunderstore
+const { thunderstore } = gameStore
+const { gamesAsArray } = storeToRefs(thunderstore)
 
 const loading = ref(true)
 const searchInput = ref<Nullable<string>>(null)
@@ -44,30 +40,37 @@ const options = ref(['list', 'grid'])
 
 const scrollableList = ref<HTMLElement | null>(null)
 
-const selectedFilter = ref<ValueItemLabeled<string>>({
-    label: "ALL",
+//#region Game Filter (Dropdown)
+type FilterValueItem = ValueItemLabeled<string, GameFilterType>
+type GameFilterType = keyof typeof GameFilter
+const GameFilter = {
+    ALL: "ALL",
+    FAVOURITES: "FAVOURITES",
+    INSTALLED: "INSTALLED"
+} as const
+
+const selectedFilter = ref<FilterValueItem>({
+    label: GameFilter.ALL,
     value: t('keywords.all')
 })
 
-const filters = computed<ValueItemLabeled<string>[]>(() => [{
-    label: "ALL",
+const filters = computed<FilterValueItem[]>(() => [{
+    label: GameFilter.ALL,
     value: t('keywords.all')
 }, {
-    label: "INSTALLED",
+    label: GameFilter.INSTALLED,
     value: t('keywords.installed')
 }, {
-    label: "FAVOURITES",
+    label: GameFilter.FAVOURITES,
     value: t('keywords.favourites')
 }])
+//#endregion
 
+//#region Search Filter (Search bar input box)
 const alphabetSort = (games: ThunderstoreGame[]) => {
-    if ((searchInput.value?.length ?? 0) < 1) return games
-    return games.sort((g1, g2) => g1 > g2 ? 1 : (g1 === g2 ? 0 : -1))
+    const searchInputLen = searchInput.value?.length ?? 0
+    return searchInputLen < 1 ? games : games.sort((g1, g2) => g1.title.localeCompare(g2.title))
 }
-
-const getThumbnail = (game: ThunderstoreGame) => game.image
-    ? `https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/${game.image}` 
-    : "https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/Titanfall2.jpg"
 
 const filterBySearch = (games: ThunderstoreGame[]) => {
     if (!searchInput.value) return games
@@ -90,19 +93,19 @@ const filterBySearch = (games: ThunderstoreGame[]) => {
         if (wordMatch) return true
 
         // Check if each character in the input appears in order in the title
-        let inputIndex = 0
+        let inputIdx = 0
         let matchFound = false
 
         const titleLen = lowerTitle.length
 
-        for (let titleIndex = 0; titleIndex < titleLen; titleIndex++) {
-            if (lowerTitle[titleIndex] !== input[inputIndex]) {
-                inputIndex = 0
+        for (let i = 0; i < titleLen; i++) {
+            if (lowerTitle[i] !== input[inputIdx]) {
+                inputIdx = 0
                 continue
             }
 
-            inputIndex++
-            if (inputIndex === input.length) {
+            inputIdx++
+            if (inputIdx === input.length) {
                 matchFound = true
                 break
             }
@@ -113,21 +116,21 @@ const filterBySearch = (games: ThunderstoreGame[]) => {
     })
 }
 
-const getGames = (sort = true, searchFilter = true) => {
-    let out = gamesAsArray.value
+const getThunderstoreGames = (sort = true, searchFilter = true) => {
+    let games = gamesAsArray.value
 
     const filter = selectedFilter.value.label
-    if (filter == "INSTALLED") out = out.filter(g => g.installed)
-    else if (filter == "FAVOURITES") out = out.filter(g => g.favourited)
+    if (filter == GameFilter.INSTALLED) games = games.filter(g => g.installed)
+    else if (filter == GameFilter.FAVOURITES) games = games.filter(g => g.favourited)
 
-    if (searchFilter) out = filterBySearch(out)
-    if (sort) out = alphabetSort(out)
+    if (searchFilter) games = filterBySearch(games)
+    if (sort) games = alphabetSort(games)
 
-    return out
+    return games
 }
 
-const selectGame = (game: ThunderstoreGame) => {
-    setSelectedGame(game)
+const selectThunderstoreGame = (game: ThunderstoreGame) => {
+    thunderstore.setSelectedGame(game)
     router.push('/selected-game')
 }
 
@@ -167,12 +170,17 @@ const handleScroll = (e: WheelEvent) => {
     nextTick(() => scrollToGame())
 }
 
+// TODO: Replace with better alternative. These could change at any time.
+const getThumbnail = (game: ThunderstoreGame) => game.image
+    ? `https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/${game.image}` 
+    : "https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/Titanfall2.jpg"
+
 onMounted(async () => {
     const t0 = performance.now()
 
     // NOTE: We currently need to initialize the game store cache every mount in-case properties (path, installed) change.
     //       This may be an issue in future, ignore it until we transition from a static mock list.
-    const size = await initGames(mockGameList)
+    const size = await thunderstore.initGames(mockGameList)
 
     console.info(`Populated GameStore cache with ${size} games. Took: ${performance.now() - t0}ms`)
     if (size != mockGameList.length) {
@@ -221,12 +229,12 @@ onMounted(async () => {
         </DataView>
 
         <!-- Finished loading, render the DataView with proper info -->
-        <DataView v-else lazy data-key="game-selection" :value="getGames()" :layout="layout">
+        <DataView v-else lazy data-key="game-selection" :value="getThunderstoreGames()" :layout="layout">
             <template #empty>
-                <div v-if="selectedFilter.label == 'FAVOURITES'" class="dataview-empty">
+                <div v-if="selectedFilter.label == GameFilter.FAVOURITES" class="dataview-empty">
                     <p>No games favourited!</p>
                 </div>
-                <div v-else-if="selectedFilter.label == 'INSTALLED'" class="dataview-empty">
+                <div v-else-if="selectedFilter.label == GameFilter.INSTALLED" class="dataview-empty">
                     <p>No games installed!</p>
                 </div>
                 <div v-else-if="searchInput && searchInput.length > 0" class="dataview-empty flex flex-column">
@@ -295,7 +303,10 @@ onMounted(async () => {
             <!-- Grid layout -->
             <template #grid>
                 <div class="scrollable-grid grid grid-nogutter">
-                    <div v-for="(game, index) in getGames()" :key="index" class="grid-item border-faint col-6 sm:col-6 md:col-4 lg:col-3 xl:col-2">
+                    <div 
+                        v-for="(game, index) in getThunderstoreGames()" :key="index" 
+                        class="grid-item border-faint col-6 sm:col-6 md:col-4 lg:col-3 xl:col-2"
+                    >
                         <div class="flex column game-card gap-2">
                             <div class="flex column align-items-center">
                                 <div class="game-grid-title">{{ game.title }}</div>
@@ -318,7 +329,7 @@ onMounted(async () => {
                                     v-tooltip.top="tooltipOpts(game.favourited ? t('keywords.unfavourite') : t('keywords.favourite'))"
                                     :icon="game.favourited ? 'pi pi-heart-fill' : 'pi pi-heart'"
                                     :style="game.favourited ? { color: 'var(--primary-color)' } : {}"
-                                    @click="toggleFavouriteGame(game.identifier)"
+                                    @click="thunderstore.toggleFavouriteGame(game.identifier)"
                                 />
 
                                 <Button outlined plain
@@ -332,7 +343,7 @@ onMounted(async () => {
                                 <Button severity="primary"
                                     class="grid-select-game-btn"
                                     :label="t('game-selection.select-button')" 
-                                    @click="selectGame(game)"
+                                    @click="selectThunderstoreGame(game)"
                                 />
                             </div>
                         </div>
@@ -344,7 +355,7 @@ onMounted(async () => {
             <template #list>
                 <div class="scrollable-list list-nogutter" ref="scrollableList" tabindex="0" @wheel.prevent="handleScroll">
                     <div 
-                        v-for="(game, index) in getGames()" class="snap-top col-12" 
+                        v-for="(game, index) in getThunderstoreGames()" class="snap-top col-12" 
                         :key="index" :ref="el => gameElements[index] = el"
                     >
                         <div class="flex flex-column sm:flex-row sm:align-items-center p-2 gap-4" :class="{ 'border-top-faint': index !== 0 }">
@@ -377,13 +388,13 @@ onMounted(async () => {
                                             outlined plain
                                             :icon="game.favourited ? 'pi pi-heart-fill' : 'pi pi-heart'"
                                             :style="game.favourited ? { color: 'var(--primary-color)' } : {}"
-                                            @click="toggleFavouriteGame(game.identifier)"
+                                            @click="thunderstore.toggleFavouriteGame(game.identifier)"
                                         />
 
                                         <Button
                                             :label="t('game-selection.select-button')"
                                             class="list-select-game-btn flex-auto md:flex-initial"
-                                            @click="selectGame(game)"
+                                            @click="selectThunderstoreGame(game)"
                                         />
                                     </div>
                                 </div>

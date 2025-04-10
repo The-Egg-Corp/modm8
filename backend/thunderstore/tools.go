@@ -12,14 +12,14 @@ func NewTools() *Tools {
 	return &Tools{}
 }
 
-func (tools *Tools) ValidateManifest(author string, data []byte) (bool, []string, error) {
+func (tools *Tools) ValidateManifest(author string, data []byte) (bool, []error, error) {
 	return exp.ValidateManifest(author, data)
 }
 
-func (tools *Tools) ValidateReadme(data []byte) (bool, error) {
+func (tools *Tools) ValidateReadme(data []byte) (bool, []error, error) {
 	return exp.ValidateReadme(data)
 }
 
-func (tools *Tools) ValidateIcon(params exp.IconValidatorParams) (bool, error) {
+func (tools *Tools) ValidateIcon(params []byte) (bool, error) {
 	return exp.ValidateIcon(params)
 }

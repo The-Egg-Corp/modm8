@@ -22,15 +22,13 @@ import type {
 import { t } from '@i18n'
 import { tooltipOpts, openLink } from "../../src/util"
 
-import { useGameStore } from '@stores'
+import { useGameStoreTS } from '@stores'
 import { storeToRefs } from 'pinia'
 
 import router from '../router'
 
-const gameStore = useGameStore()
-
-const { thunderstore } = gameStore
-const { gamesAsArray } = storeToRefs(thunderstore)
+const gameStoreTS = useGameStoreTS()
+const { gamesAsArray } = storeToRefs(gameStoreTS)
 
 const loading = ref(true)
 const searchInput = ref<Nullable<string>>(null)
@@ -130,7 +128,7 @@ const getThunderstoreGames = (sort = true, searchFilter = true) => {
 }
 
 const selectThunderstoreGame = (game: ThunderstoreGame) => {
-    thunderstore.setSelectedGame(game)
+    gameStoreTS.setSelectedGame(game)
     router.push('/selected-game')
 }
 
@@ -180,7 +178,7 @@ onMounted(async () => {
 
     // NOTE: We currently need to initialize the game store cache every mount in-case properties (path, installed) change.
     //       This may be an issue in future, ignore it until we transition from a static mock list.
-    const size = await thunderstore.initGames(mockGameList)
+    const size = await gameStoreTS.initGames(mockGameList)
 
     console.info(`Populated GameStore cache with ${size} games. Took: ${performance.now() - t0}ms`)
     if (size != mockGameList.length) {
@@ -329,7 +327,7 @@ onMounted(async () => {
                                     v-tooltip.top="tooltipOpts(game.favourited ? t('keywords.unfavourite') : t('keywords.favourite'))"
                                     :icon="game.favourited ? 'pi pi-heart-fill' : 'pi pi-heart'"
                                     :style="game.favourited ? { color: 'var(--primary-color)' } : {}"
-                                    @click="thunderstore.toggleFavouriteGame(game.identifier)"
+                                    @click="gameStoreTS.toggleFavouriteGame(game.identifier)"
                                 />
 
                                 <Button outlined plain
@@ -388,7 +386,7 @@ onMounted(async () => {
                                             outlined plain
                                             :icon="game.favourited ? 'pi pi-heart-fill' : 'pi pi-heart'"
                                             :style="game.favourited ? { color: 'var(--primary-color)' } : {}"
-                                            @click="thunderstore.toggleFavouriteGame(game.identifier)"
+                                            @click="gameStoreTS.toggleFavouriteGame(game.identifier)"
                                         />
 
                                         <Button

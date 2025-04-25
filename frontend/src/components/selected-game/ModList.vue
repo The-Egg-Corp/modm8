@@ -8,7 +8,8 @@ import Tag from 'primevue/tag'
 
 import {
     useModListStore,
-    useGameStore,
+    useModListStoreTS,
+    useGameStoreTS,
 } from '@stores'
 
 import { ModListTabs } from '@types'
@@ -16,22 +17,25 @@ import { Dialog } from '@composables'
 
 import { debounce } from "../../util"
 
-const gameStore = useGameStore()
+const gameStoreTS = useGameStoreTS()
 
+// Shared mod list state for all mod sites/platforms.
 const modListStore = useModListStore()
+const { activeTab, searchInput } = storeToRefs(modListStore)
+
+// Mod list store for Thunderstore only.
+const modListStoreTS = useModListStoreTS()
 const { 
     installMod, refreshMods,
     updatePage, refreshPage,
     getMods, ROWS
-} = modListStore.thunderstore
+} = modListStoreTS
 
 const {
     loading,
-    activeTab,
-    searchInput,
     modElements, scrollIndex, first,
     mods, currentPageMods,
-} = storeToRefs(modListStore.thunderstore)
+} = storeToRefs(modListStoreTS)
 
 // Choose which mods to show based on tab type.
 const dataViewMods = computed(() => {
@@ -236,12 +240,12 @@ const openLoginPage = () => {
                                     />
                                     <Button v-if="activeTab == ModListTabType.TS" 
                                         class="btn w-full" icon="pi pi-download"
-                                        :label="$t('keywords.install')" @click="installMod(mod.full_name, gameStore.thunderstore.selectedGame, props.installingModDialog)"
+                                        :label="$t('keywords.install')" @click="installMod(mod.full_name, gameStoreTS.selectedGame, props.installingModDialog)"
                                     /> -->
 
                                     <Button
                                         class="btn w-full" icon="pi pi-download"
-                                        :label="$t('keywords.install')" @click="installMod(mod.full_name, gameStore.thunderstore.selectedGame, props.installingModDialog)"
+                                        :label="$t('keywords.install')" @click="installMod(mod.full_name, gameStoreTS.selectedGame, props.installingModDialog)"
                                     />
 
                                     <div class="flex row align-items-center">

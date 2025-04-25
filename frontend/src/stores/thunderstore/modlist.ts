@@ -4,12 +4,15 @@ import { ref, computed } from "vue"
 import { 
     type Nullable, 
     type ThunderstoreGame,
-    type Package,
-    type ModListTabType,
-    ModListTabs
+    type Package
 } from "@types"
 
-import { useGameStore, useProfileStore } from '@stores'
+import { 
+    useGameStoreTS,
+    useProfileStore,
+    useModListStore
+} from '@stores'
+
 import type { Dialog } from "@composables"
 
 import { 
@@ -22,19 +25,22 @@ import type { thunderstore, v1 } from "@backend/models"
 
 export const useModListStoreTS = defineStore('ModListStoreTS', () => {
     //#region Stores
+    const modListStore = useModListStore()
+    const { searchInput } = storeToRefs(modListStore)
+
     const profileStore = useProfileStore()
     const { selectedProfile } = storeToRefs(profileStore)
 
-    const gameStore = useGameStore()
-    const { updateModCache } = gameStore.thunderstore
+    const gameStoreTS = useGameStoreTS()
+    const { updateModCache } = gameStoreTS
     //#endregion
 
     //#region State
     const loading = ref(false)
     const installing = ref(false)
 
-    const activeTab = ref<ModListTabType>(ModListTabs.PROFILE)
-    const searchInput = ref<Nullable<string>>(null)
+    // const activeTab = ref<ModListTabType>(ModListTabs.PROFILE)
+    // const searchInput = ref<Nullable<string>>(null)
 
     const modElements = ref<any[]>([])
     const scrollIndex = ref(0)
@@ -48,7 +54,7 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
     //#endregion
 
     //#region Getters
-    const selectedGame = computed(() => gameStore.thunderstore.selectedGame) // TODO: Computed may not be needed?
+    const selectedGame = computed(() => gameStoreTS.selectedGame) // TODO: Computed may not be needed?
     //const thunderstoreMods = computed(() => activeTab.value == ModListTabType.TS ? filterByProfile(allMods.value) : allMods.value)
     //#endregion
 
@@ -156,8 +162,6 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
     return {
         loading,
         installing,
-        activeTab,
-        searchInput,
         modElements,
         scrollIndex,
         ROWS,

@@ -15,8 +15,8 @@ import {
 import { 
     useAppStore,
     useProfileStore,
-    useGameStore,
-    useModListStore
+    useGameStoreTS,
+    useModListStoreTS
 } from "@stores"
 
 import { storeToRefs } from "pinia"
@@ -29,12 +29,12 @@ const {
 const profileStore = useProfileStore()
 const { selectedProfile } = storeToRefs(profileStore)
 
-const gameStore = useGameStore()
-const { selectedGame } = storeToRefs(gameStore.thunderstore)
+const gameStoreTS = useGameStoreTS()
+const { selectedGame } = storeToRefs(gameStoreTS)
 
-const modListStore = useModListStore()
-const { refreshMods, refreshPage } = modListStore.thunderstore
-const { installing, lastInstalledMod } = storeToRefs(modListStore.thunderstore)
+const modListStoreTS = useModListStoreTS()
+const { refreshMods, refreshPage } = modListStoreTS
+const { installing, lastInstalledMod } = storeToRefs(modListStoreTS)
 
 const configEditorDialog = useDialog('selected-game-config-editor')
 const installingModDialog = useDialog('selected-game-installing-mod')

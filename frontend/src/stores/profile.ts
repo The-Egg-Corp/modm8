@@ -2,7 +2,7 @@ import { defineStore } from "pinia"
 import { ref } from "vue"
 
 import type { Nullable, Profile } from "@types"
-import { useGameStore } from "@stores"
+import { useGameStoreTS } from "@stores"
 
 import { GetProfiles } from "@backend/profile/ProfileManager"
 
@@ -11,7 +11,7 @@ export interface ProfileState {
 }
 
 export const useProfileStore = defineStore("ProfileStore", () => {
-    const gameStore = useGameStore()
+    const gameStoreTS = useGameStoreTS()
 
     // Key is the identifier of the game the profiles exist on.
     const profiles = ref<Profile[]>([])
@@ -23,7 +23,7 @@ export const useProfileStore = defineStore("ProfileStore", () => {
 
     async function initProfiles() {
         try {
-            const profs = await GetProfiles(gameStore.thunderstore.selectedGame.title)
+            const profs = await GetProfiles(gameStoreTS.selectedGame.title)
             profiles.value = Object.entries(profs).map(([key, value]) => ({ ...value, name: key }))
         } catch (e: any) {
             console.error(e)

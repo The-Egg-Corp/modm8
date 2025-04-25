@@ -1,22 +1,19 @@
 <script lang="ts" setup>
 import Listbox, { ListboxChangeEvent } from 'primevue/listbox' 
 import Popover from 'primevue/popover'
-import Checkbox from 'primevue/checkbox'
 
 import { NewProfile, DeleteProfile } from '@backend/profile/ProfileManager'
 import { tooltipOpts } from '@frontend/src/util'
 
 import { t } from '@i18n'
 import { Nullable, Profile } from '@types'
-import { useGameStore, useProfileStore } from '@stores'
+import { useProfileStore, useGameStoreTS } from '@stores'
 
 import { storeToRefs } from 'pinia'
 import { onMounted, ref } from 'vue'
 
-const gameStore = useGameStore()
-const { selectedGame } = storeToRefs(gameStore.thunderstore)
-
 const profileStore = useProfileStore()
+const gameStoreTS = useGameStoreTS()
 
 const { setSelectedProfile, initProfiles } = profileStore
 const { profiles, selectedProfile } = storeToRefs(profileStore)
@@ -48,7 +45,7 @@ const onClickPlus = (e: MouseEvent) => {
 }
 
 const createNewProf = async (e: MouseEvent) => {
-    await NewProfile(selectedGame.value.title, newProfNameInput.value)
+    await NewProfile(gameStoreTS.selectedGame.title, newProfNameInput.value)
     await initProfiles()
 
     pp.value.hide(e)
@@ -63,7 +60,7 @@ const renameProf = (_: MouseEvent, name: string) => {
 const deleteProf = async (e: MouseEvent, name: string) => {
     e.stopPropagation()
 
-    await DeleteProfile(selectedGame.value.title, name)
+    await DeleteProfile(gameStoreTS.selectedGame.title, name)
     await initProfiles()
 }
 

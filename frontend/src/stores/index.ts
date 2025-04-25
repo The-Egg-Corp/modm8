@@ -76,5 +76,14 @@ export * from './settings'
 export * from './version'
 export * from './profile'
 
+// Global/Shared
 export * from './game'
 export * from './modlist'
+
+// Thunderstore
+export * from './thunderstore/game'
+export * from './thunderstore/modlist'
+
+// Nexus
+// export * from './nexus/game'
+// export * from './nexus/modlist'

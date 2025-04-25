@@ -1,7 +1,5 @@
-//import { ref } from "vue"
 import { defineStore } from "pinia"
 
-import { useGameStoreTS } from "./thunderstore/game"
 //import type { AnyGame } from "@types"
 
 export const useGameStore = defineStore('GameStore', () => {
@@ -11,9 +9,6 @@ export const useGameStore = defineStore('GameStore', () => {
     //     identifier: 'tf2',
     //     steamID: 0
     // })
-
-    const gameStoreTs = useGameStoreTS()
-    //const gameStoreNexus = useGameStoreNexus()
 
     // const thunderstore = ref({
     //     ROWS: 40,
@@ -42,7 +37,6 @@ export const useGameStore = defineStore('GameStore', () => {
     //#endregion
 
     return {
-        thunderstore: gameStoreTs
-        //nexus: gameStoreNexus
+
     }
 })

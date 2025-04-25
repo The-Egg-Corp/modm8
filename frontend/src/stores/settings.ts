@@ -19,7 +19,7 @@ export const useSettingsStore = defineStore("SettingsStore", () => {
     const general = ref({
         locale: 'en',
         animations_enabled: true,
-        update_behaviour: 2,
+        update_behaviour: 2
     })
     
     const performance = ref({

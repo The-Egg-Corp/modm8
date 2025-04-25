@@ -1,7 +1,7 @@
 import { defineStore } from "pinia"
 import { ref } from "vue"
 
-import { Nullable, Profile } from "@types"
+import type { Nullable, Profile } from "@types"
 import { useGameStore } from "@stores"
 
 import { GetProfiles } from "@backend/profile/ProfileManager"

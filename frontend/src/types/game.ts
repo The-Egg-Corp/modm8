@@ -35,12 +35,20 @@ export interface NexusGame extends Game {
     modCache?: any[] // TODO: Implement nexus package.
 }
 
-export type AnyGame = ThunderstoreGame | NexusGame
+export type ModPlatform = typeof ModPlatforms[keyof typeof ModPlatforms]
+export const ModPlatforms = {
+    TS: 'THUNDERSTORE',
+    NEXUS: 'NEXUS_MODS'
+} as const
+
+// TODO: Can we enforce `type` to be one of ModPlatform?
+export type GameContainer =
+    { type: 'THUNDERSTORE', value: ThunderstoreGame } | 
+    { type: 'NEXUS_MODS', value: NexusGame }
 
 // NOTE: May want to move this in future.
 export type ModListTabType = typeof ModListTabs[keyof typeof ModListTabs];
 export const ModListTabs = {
-    PROFILE: 'PROFILE',
-    TS: 'THUNDERSTORE',
-    NEXUS: 'NEXUS_MODS'
+    ...ModPlatforms,
+    PROFILE: 'PROFILE'
 } as const

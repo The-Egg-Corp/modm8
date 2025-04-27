@@ -23,12 +23,12 @@ const { sidebarWidth } = storeToRefs(appStore)
 </script>
 
 <template>
-    <div class="platform-selection">
-        <PlatformSelectPanels
-            @selectThunderstore="$router.push('/mod-dev-tools/thunderstore')" 
-            @selectNexus="$router.push('/mod-dev-tools/nexus')"
-        />
-    </div>
+<div class="platform-selection">
+    <PlatformSelectPanels
+        @selectThunderstore="$router.push('/mod-dev-tools/thunderstore')" 
+        @selectNexus="$router.push('/mod-dev-tools/nexus')"
+    />
+</div>
 </template>
 
 <style scoped>

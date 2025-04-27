@@ -58,6 +58,12 @@ const tabs = ref([
     { type: ModListTabs.NEXUS, label: 'Nexus', icon: 'pi pi-globe' } // Uncomment when Nexus is implemented.
 ])
 
+// TODO: Store index in `activeTab` itself?
+const activeTabIdx = computed(() => {
+    const index = tabs.value.findIndex(tab => tab.type == activeTab.value)
+    return index < 0 ? 0 : index
+})
+
 const switchTab = async (e: TabMenuChangeEvent) => {
     const newTab = tabs.value[e.index]
     activeTab.value = newTab.type
@@ -169,7 +175,7 @@ const openLoginPage = () => {
                 </FloatLabel>
             </div>
 
-            <TabMenu :model="tabs" @tab-change="switchTab"/>
+            <TabMenu :model="tabs" :activeIndex="activeTabIdx" @tab-change="switchTab"/>
             <!-- <div class="flex row">
                 <ModListDropdown>
                     

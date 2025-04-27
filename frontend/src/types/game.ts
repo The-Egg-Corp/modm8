@@ -11,7 +11,8 @@ export const GameRunner = {
 
 export type GameRunnerType = typeof GameRunner[keyof typeof GameRunner]
 
-export interface Game {
+export interface BaseGame {
+    platform: ModPlatform
     title: string // The game's full name. Nexus refers to this as `name`.
     description?: string
     image?: string
@@ -23,12 +24,12 @@ export interface Game {
     steamID?: number
 }
 
-export interface ThunderstoreGame extends Game {
+export interface ThunderstoreGame extends BaseGame {
     identifier: string // A unique short name for the game. Neither an ID or title.
     modCache?: thunderstore.StrippedPackage[]
 }
 
-export interface NexusGame extends Game {
+export interface NexusGame extends BaseGame {
     ID: number
     domainName: string, // Equivalent to `identifier` in ThunderstoreGame.
     modsCount: number,
@@ -42,12 +43,12 @@ export const ModPlatforms = {
 } as const
 
 // TODO: Can we enforce `type` to be one of ModPlatform?
-export type GameContainer =
-    { type: 'THUNDERSTORE', value: ThunderstoreGame } | 
-    { type: 'NEXUS_MODS', value: NexusGame }
+// export type GameContainer =
+//     { type: 'THUNDERSTORE', value: ThunderstoreGame } | 
+//     { type: 'NEXUS_MODS', value: NexusGame }
 
 // NOTE: May want to move this in future.
-export type ModListTabType = typeof ModListTabs[keyof typeof ModListTabs];
+export type ModListTab = typeof ModListTabs[keyof typeof ModListTabs];
 export const ModListTabs = {
     ...ModPlatforms,
     PROFILE: 'PROFILE'

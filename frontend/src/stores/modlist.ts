@@ -3,13 +3,13 @@ import { ref } from "vue"
 
 import { 
     type Nullable,
-    type ModListTabType,
+    type ModListTab,
     ModListTabs
 } from "../types/index.js"
 
 export const useModListStore = defineStore('ModListStore', () => {
     //#region State
-    const activeTab = ref<ModListTabType>(ModListTabs.PROFILE)
+    const activeTab = ref<ModListTab>(ModListTabs.PROFILE)
     const searchInput = ref<Nullable<string>>(null)
     //#endregion
 

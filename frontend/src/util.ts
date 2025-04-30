@@ -4,7 +4,7 @@ import type { PresetOptions } from "@types"
 import { type TooltipOptions } from "primevue/tooltip"
 
 import Aura from '@primevue/themes/aura'
-import Lara from '@primevue/themes/aura'
+import Lara from '@primevue/themes/lara'
 
 import { definePreset } from "@primevue/themes"
 

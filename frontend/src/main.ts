@@ -35,7 +35,7 @@ import './assets/styles/global.css'
 import "./assets/styles/flags.css"
 
 import { 
-    defineLaraPreset, 
+    defineAuraPreset, 
     presetPalette
 } from './util'
 import Skeleton from 'primevue/skeleton'
@@ -44,7 +44,7 @@ import Skeleton from 'primevue/skeleton'
 const pinia = createPinia()
 const app = createApp(App)
 
-const DefaultPreset = defineLaraPreset({
+const DefaultPreset = defineAuraPreset({
     primitive: {
         // zinc: {
         //     50: "white",

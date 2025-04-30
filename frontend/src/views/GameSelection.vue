@@ -67,7 +67,7 @@ const filters = computed<FilterValueItem[]>(() => [{
 //#region Search Filter (Search bar input box)
 const alphabetSort = (games: ThunderstoreGame[]) => {
     const searchInputLen = searchInput.value?.length ?? 0
-    return searchInputLen < 1 ? games : games.sort((g1, g2) => g1.title.localeCompare(g2.title))
+    return searchInputLen < 1 ? games : games.sort((g1, g2) => g1.title.localeCompare(g2.title)) // TODO: .toLowerCase() the titles?
 }
 
 const filterBySearch = (games: ThunderstoreGame[]) => {
@@ -90,7 +90,7 @@ const filterBySearch = (games: ThunderstoreGame[]) => {
         const wordMatch = inputWords.some(word => lowerTitle.includes(word))
         if (wordMatch) return true
 
-        // Check if each character in the input appears in order in the title
+        //#region Check if each character in the input appears in order in the title.
         let inputIdx = 0
         let matchFound = false
 
@@ -108,8 +108,9 @@ const filterBySearch = (games: ThunderstoreGame[]) => {
                 break
             }
         }
+        //#endregion
 
-        // If we've matched all characters in the input, it's a match
+        // Match found - title matches all characters in the input.
         return matchFound
     })
 }

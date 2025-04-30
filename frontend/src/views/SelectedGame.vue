@@ -46,9 +46,10 @@ const startModdedDisabled = () => {
     const noTsMods = (profileMods?.thunderstore?.length || 0) < 1
     const noNexusMods = (profileMods?.nexus?.length || 0) < 1
 
+    // Only start modded if we have at least one mod from either platform.
     return noNexusMods && noTsMods
 }
-    
+
 const gameThumbnail = () => selectedGame.value.image
     ? `https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/${selectedGame.value.image}` 
     : "https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/Titanfall2.jpg"
@@ -68,7 +69,6 @@ const launchSteamGame = async (modded: boolean, args?: string[]) => {
     }
 
     const doorstop = modded ? ["--doorstop-enable", "true"] : ["--doorstop-enable", "false"]
-
     const fullArgs = [...doorstop]
     if (args) fullArgs.push(...args)
     
@@ -93,7 +93,7 @@ onMounted(async () => {
                     {{ $t('selected-game.currently-selected') }}
                 </p>
             </template>
-    
+            
             <template #content>
                 <div class="flex column no-drag align-items-center">
                     <div class="game-thumbnail-container">
@@ -160,8 +160,7 @@ onMounted(async () => {
 .selected-game {
     display: flex;
     flex-direction: row;
-    /* Spacing between Card/ProfileManager and the DataView. */
-    gap: v-bind(sidebarMarginPx);
+    gap: v-bind(sidebarMarginPx); /* Spacing between Card/ProfileManager and the DataView. */
 }
 
 .collapsible-content {

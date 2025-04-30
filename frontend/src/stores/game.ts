@@ -1,19 +1,20 @@
 import { defineStore } from "pinia"
+import { ref } from "vue"
 
-// import type { GameContainer, ThunderstoreGame } from "@types"
+import type { GameContainer, ThunderstoreGame } from "@types"
 
-// const defaultGame: GameContainer = { 
-//     type: 'THUNDERSTORE',
-//     value: {
-//         title: 'Placeholder',
-//         identifier: 'tf2',
-//         steamID: 0
-//     } satisfies ThunderstoreGame
-// }
+const defaultGame: GameContainer = { 
+    type: 'THUNDERSTORE',
+    value: {
+        title: 'Placeholder',
+        identifier: 'tf2',
+        steamID: 0
+    } satisfies ThunderstoreGame
+}
 
 export const useGameStore = defineStore('GameStore', () => {
     //#region State
-    //const selectedGame = ref<GameContainer>(defaultGame)
+    const selectedGame = ref<GameContainer>(defaultGame)
 
     // const thunderstore = ref({
     //     ROWS: 40,
@@ -42,6 +43,6 @@ export const useGameStore = defineStore('GameStore', () => {
     //#endregion
 
     return {
-        
+        selectedGame
     }
 })

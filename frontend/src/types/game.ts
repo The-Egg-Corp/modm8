@@ -12,7 +12,6 @@ export const GameRunner = {
 } as const
 
 export interface BaseGame {
-    platform: ModPlatform
     title: string // The game's full name. Nexus refers to this as `name`.
     description?: string
     image?: string
@@ -43,9 +42,9 @@ export const ModPlatforms = {
 } as const
 
 // TODO: Can we enforce `type` to be one of ModPlatform?
-// export type GameContainer =
-//     { type: 'THUNDERSTORE', value: ThunderstoreGame } | 
-//     { type: 'NEXUS_MODS', value: NexusGame }
+export type GameContainer =
+    { type: typeof ModPlatforms.TS, value: ThunderstoreGame } | 
+    { type: typeof ModPlatforms.NEXUS, value: NexusGame }
 
 // NOTE: May want to move this in future.
 export type ModListTab = ObjValues<typeof ModListTabs>

@@ -13,7 +13,7 @@ type LaraOptions = PresetOptions<Lara.PrimitiveDesignTokens, Lara.SemanticDesign
 
 // PrimeVue v4 does not provide typings for actions currently.
 export const defineAuraPreset = (opts: AuraOptions) => definePreset(Aura, opts)
-export const defineLaraPreset = (opts: LaraOptions) => definePreset(Aura, opts)
+export const defineLaraPreset = (opts: LaraOptions) => definePreset(Lara, opts)
 
 export const presetPalette = (name: string) => ({
     50: `{${name}.50}`,

@@ -1,7 +1,7 @@
 import type { ThunderstoreGame } from "@types"
 
 export function makeThunderstoreGame(base: Omit<ThunderstoreGame, 'platform'>): ThunderstoreGame {
-  return { platform: 'THUNDERSTORE', ...base }
+  return base
 }
 
 export const mockGameList: ThunderstoreGame[] = [

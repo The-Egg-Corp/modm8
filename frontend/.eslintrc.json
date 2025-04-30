@@ -1,7 +1,7 @@
 {
     "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
     "plugins": ["@typescript-eslint", "named-import-spacing"],
-    "ignorePatterns": ["vite-env.d.ts"],
+    "ignorePatterns": ["vite-env.d.ts", "wailsjs", "node_modules", "dist"],
     "parser": "@typescript-eslint/parser",
     "root": true,
     "env": {

@@ -7,26 +7,24 @@ import { ExistsAtPath } from '@backend/app/Utils.js'
 import { BepinexInstalled } from '@backend/game/GameManager.js'
 import type { thunderstore } from '@backend/models.js'
 
-import type { ThunderstoreGame } from '@types'
-
-// export interface GameState {
-//     selectedGame: ThunderstoreGame,
-//     games: Map<string, ThunderstoreGame>
-// }
+//import { useGameStore } from '../game.js'
+import type { Nullable, ThunderstoreGame } from '@types'
 
 export const useGameStoreTS = defineStore('GameStoreTS', () => {
     //#region State
     const games = ref<Map<string, ThunderstoreGame>>(new Map())
     const selectedGame = ref<ThunderstoreGame>({
-        platform: 'THUNDERSTORE',
         title: 'Placeholder',
         identifier: 'tf2',
         steamID: 0
     })
+
+    // const gameStore = useGameStore()
+    // const { selectedGame } = storeToRefs(gameStore)
     //#endregion
 
     //#region Getters
-    const _gameByID = (id: string) => games.value.get(id)
+    const _gameByID = (id: string) => games.value.get(id) satisfies Nullable<ThunderstoreGame>
     const gameByID = computed(() => _gameByID)
 
     // TODO: Consider renaming this?

@@ -71,7 +71,7 @@ const DefaultPreset = defineLaraPreset({
             800: "#2b2b30",
             900: "#19191c",
             950: "#0a0a0b"
-        },
+        }
     },
     semantic: {
         primary: presetPalette('purple'),

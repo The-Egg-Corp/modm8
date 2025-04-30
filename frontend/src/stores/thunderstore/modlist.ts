@@ -1,5 +1,5 @@
 import { defineStore, storeToRefs } from "pinia"
-import { ref, computed } from "vue"
+import { ref } from "vue"
 
 import { 
     type Nullable, 
@@ -32,6 +32,7 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
     const { selectedProfile } = storeToRefs(profileStore)
 
     const gameStoreTS = useGameStoreTS()
+    const { selectedGame } = storeToRefs(gameStoreTS)
     const { updateModCache } = gameStoreTS
     //#endregion
 
@@ -54,7 +55,6 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
     //#endregion
 
     //#region Getters
-    const selectedGame = computed(() => gameStoreTS.selectedGame) // TODO: Computed may not be needed?
     //const thunderstoreMods = computed(() => activeTab.value == ModListTabType.TS ? filterByProfile(allMods.value) : allMods.value)
     //#endregion
 

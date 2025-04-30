@@ -1,6 +1,8 @@
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { thunderstore } from "@backend/models.js"
+import type { ObjValues } from "./index.js"
 
+export type GameRunnerType = ObjValues<typeof GameRunner>
 export const GameRunner = {
     STEAM:   "STEAM",
     EPIC:    "EPIC",
@@ -8,8 +10,6 @@ export const GameRunner = {
     DIRECT:  "DIRECT",
     OTHER:   "OTHER"
 } as const
-
-export type GameRunnerType = typeof GameRunner[keyof typeof GameRunner]
 
 export interface BaseGame {
     platform: ModPlatform
@@ -36,7 +36,7 @@ export interface NexusGame extends BaseGame {
     modCache?: any[] // TODO: Implement nexus package.
 }
 
-export type ModPlatform = typeof ModPlatforms[keyof typeof ModPlatforms]
+export type ModPlatform = ObjValues<typeof ModPlatforms>
 export const ModPlatforms = {
     TS: 'THUNDERSTORE',
     NEXUS: 'NEXUS_MODS'
@@ -48,7 +48,7 @@ export const ModPlatforms = {
 //     { type: 'NEXUS_MODS', value: NexusGame }
 
 // NOTE: May want to move this in future.
-export type ModListTab = typeof ModListTabs[keyof typeof ModListTabs];
+export type ModListTab = ObjValues<typeof ModListTabs>
 export const ModListTabs = {
     ...ModPlatforms,
     PROFILE: 'PROFILE'

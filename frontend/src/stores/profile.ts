@@ -6,19 +6,28 @@ import { useGameStoreTS } from "@stores"
 
 import { GetProfiles } from "@backend/profile/ProfileManager"
 
-export interface ProfileState {
-    profiles: Map<string, Profile>
-}
+// export interface ProfileState {
+//     // Key is the identifier of the game the profiles exist on.
+//     profiles: Map<string, Profile>
+// }
 
 export const useProfileStore = defineStore("ProfileStore", () => {
+    //#region Stores
     const gameStoreTS = useGameStoreTS()
+    //#endregion
 
-    // Key is the identifier of the game the profiles exist on.
+    //#region State
     const profiles = ref<Profile[]>([])
     const selectedProfile = ref<Nullable<Profile>>(null)
+    //#endregion
 
+    //#region Getters
+    const profileByName = (name: string) => profiles.value?.find(p => p.name == name) satisfies Nullable<Profile>
+    //#endregion
+
+    //#region Actions
     function setSelectedProfile(prof: Profile) {
-        selectedProfile.value = profiles.value?.find(p => p.name == prof.name) ?? prof
+        selectedProfile.value = profileByName(prof.name) ?? prof
     }
 
     async function initProfiles() {
@@ -30,6 +39,7 @@ export const useProfileStore = defineStore("ProfileStore", () => {
             // TODO: Add some sort of toast or error msg in the app itself.
         }
     }
+    //#endregion
 
     return {
         profiles,

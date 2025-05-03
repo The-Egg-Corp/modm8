@@ -78,9 +78,14 @@ func WriteFile(path string, data []byte) error {
 	return os.WriteFile(filepath.Clean(path), data, os.ModePerm)
 }
 
-// The same as os.Mkdir, but the path is cleaned automatically.
+// The same as os.Mkdir, but the path is cleaned automatically and perm is os.ModePerm.
 func MkDir(path string) error {
 	return os.Mkdir(filepath.Clean(path), os.ModePerm)
+}
+
+// The same as os.MkdirAll, but the path is cleaned automatically and perm is os.ModePerm.
+func MkDirAll(path string) error {
+	return os.MkdirAll(filepath.Clean(path), os.ModePerm)
 }
 
 func ContainsEqualFold(arr []string, item string) bool {

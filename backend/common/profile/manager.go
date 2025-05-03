@@ -43,10 +43,16 @@ func GameProfilesPath(gameTitle string) string {
 	return path
 }
 
+// Returns the full path to the manifest file for a given profile.
+//
+// For example, if gameTitle is "Skyrim" and profileName is "MyProfile", the output will be:
+//
+// <CONFIG_DIR>\modm8\Games\Skyrim\Profiles\MyProfile\profinfo.json
 func PathToManifest(gameTitle, profileName string) string {
 	return filepath.Join(GameProfilesPath(gameTitle), profileName, manifestName)
 }
 
+// Returns path info relating to the profile (directory and manifest name).
 func ProfilePathInfo(gameTitle, profileName string) (string, string) {
 	return filepath.Split(PathToManifest(gameTitle, profileName))
 }
@@ -92,9 +98,15 @@ func SaveManifest(gameTitle, profileName string, prof ProfileManifest) error {
 		return err
 	}
 
+	// Profiles dir, manifest name.
 	dir, file := ProfilePathInfo(gameTitle, profileName)
 
-	backend.MkDir(dir)
+	// Create the profiles dir (and its parents if missing) so we can save the manifest file inside it.
+	err = backend.MkDirAll(dir)
+	if err != nil {
+		return err
+	}
+
 	return backend.WriteFile(filepath.Join(dir, file), data)
 }
 

@@ -1,5 +1,5 @@
 export interface Profile {
-    name?: string
+    name: string
     mods: {
         thunderstore?: string[]
         nexus?: string[]

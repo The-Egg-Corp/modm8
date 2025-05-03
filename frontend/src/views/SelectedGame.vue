@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted } from "vue"
+import { onBeforeMount, onMounted } from "vue"
 
 import * as Steam from '@backend/steam/SteamRunner'
 
@@ -27,7 +27,7 @@ const {
 } = storeToRefs(appStore)
 
 const profileStore = useProfileStore()
-const { selectedProfile } = storeToRefs(profileStore)
+const { selectedProfile, profiles } = storeToRefs(profileStore)
 
 const gameStoreTS = useGameStoreTS()
 const { selectedGame } = storeToRefs(gameStoreTS)
@@ -74,6 +74,10 @@ const launchSteamGame = async (modded: boolean, args?: string[]) => {
     
     return await Steam.LaunchGame(id, fullArgs)
 }
+
+onBeforeMount(() => {
+    selectedProfile.value = profiles.value[0]
+})
 
 onMounted(async () => {
     // Ensure no overlays are still shown.

@@ -71,7 +71,14 @@ const switchTab = async (e: TabMenuChangeEvent) => {
     await refreshPage()
 }
 
-const onPageChange = (e: DataViewPageEvent) => updatePage(e.first, e.rows)
+const onPageChange = (e: DataViewPageEvent) => {
+    updatePage(e.first, e.rows)
+
+    // Make current scroll index 0 and scroll to it, effectively 
+    // scrolling to the first mod in the list automatically.
+    scrollIndex.value = 0
+    scrollToMod()
+}
 
 const hasSearchInput = () => searchInput.value ? searchInput.value.length > 0 : undefined
 const onSearchInputChange = async () => {
@@ -91,10 +98,10 @@ const scrollToMod = () => {
     const i = scrollIndex.value
     if (i < 0 || i >= modElements.value.length) return // Ensure no OOB
 
-    const game = modElements.value[i]
-    if (!game) return
+    const mod = modElements.value[i]
+    if (!mod) return
 
-    game.scrollIntoView({ block: 'start' })
+    mod.scrollIntoView({ block: 'start' })
 }
 
 const handleScroll = (e: WheelEvent) => {

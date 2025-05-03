@@ -24,11 +24,10 @@ export const useGameStoreTS = defineStore('GameStoreTS', () => {
     //#endregion
 
     //#region Getters
-    const _gameByID = (id: string) => games.value.get(id) satisfies Nullable<ThunderstoreGame>
-    const gameByID = computed(() => _gameByID)
+    const gameByID = (id: string) => games.value.get(id) satisfies Nullable<ThunderstoreGame>
 
     // TODO: Consider renaming this?
-    const gamesAsArray = computed(() => [...games.value.values()] as ThunderstoreGame[])
+    const gamesAsArray = computed(() => [...games.value.values()] satisfies ThunderstoreGame[])
 
     // TODO: Evaluate if these are even useful.
     // const isBepinexSetup = computed(() => (id: string) => _gameByID(id)?.bepinexSetup || false)
@@ -44,19 +43,19 @@ export const useGameStoreTS = defineStore('GameStoreTS', () => {
     //#region Actions
     // TODO: Possibly need to take in ID, then get from `games` instead ?
     function setSelectedGame(game: ThunderstoreGame) {
-        selectedGame.value = _gameByID(game.identifier) ?? game
+        selectedGame.value = gameByID(game.identifier) ?? game
     }
 
     /** Fills the `modCache` for the currently selected game with the specified mods. */
     function updateModCache(mods: thunderstore.StrippedPackage[]) {
-        const game = _gameByID(selectedGame.value.identifier)
+        const game = gameByID(selectedGame.value.identifier)
         if (!game) return // TODO: Implement proper error
 
         game.modCache = mods
     }
 
     async function toggleFavouriteGame(id: string) {
-        const game = _gameByID(id)
+        const game = gameByID(id)
         if (!game) return // TODO: Implement proper error
 
         game.favourited = !game.favourited
@@ -84,7 +83,7 @@ export const useGameStoreTS = defineStore('GameStoreTS', () => {
             }
 
             // Ensure modCache is kept between mounts.
-            const cachedGame = _gameByID(game.identifier)
+            const cachedGame = gameByID(game.identifier)
             if (cachedGame?.modCache) {
                 game.modCache = cachedGame.modCache
             }

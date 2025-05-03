@@ -18,12 +18,13 @@ const gameStoreTS = useGameStoreTS()
 const { setSelectedProfile, initProfiles } = profileStore
 const { profiles, selectedProfile } = storeToRefs(profileStore)
 
-const searchInput = ref<Nullable<string>>(null)
+const MAX_PROFILE_NAME_LEN = 32
 
-const pp = ref()
+// Popover for creating new profile.
+const pop = ref<InstanceType<typeof Popover> | null>(null)
 const newProfNameInput = ref<string>('')
 
-const MAX_PROFILE_NAME_LEN = 32
+const searchInput = ref<Nullable<string>>(null)
 
 const getModsAmount = (prof: Profile) => {
     const tsAmt = prof.mods.thunderstore?.length ?? 0
@@ -33,24 +34,47 @@ const getModsAmount = (prof: Profile) => {
 }
 
 const onChange = (e: ListboxChangeEvent) => {
-    setSelectedProfile(e.value)
+    if (!e.value) {
+        // No value probably means we are unselecting, but always want to keep one selected.
+        if (!selectedProfile.value) return
+        return setSelectedProfile(selectedProfile.value) // Set back to currently selected profile.
+    }
+
+    if (typeof e.value != 'object' || !e.value.name || typeof e.value.name != 'string') {
+        return console.error("Could not select profile. Event value does not resemble a profile.")
+    }
+
+    const selectedProf = e.value as Profile
+    if (selectedProf.name == "") {
+        return console.error("Could not select profile with empty name.")
+    }
+
+    setSelectedProfile(selectedProf)
     emit('profileSelected', e)
+
+    //console.log(`Changed selectedProfile to '${selectedProf.name}'`)
 }
 
 const onClickPlus = (e: MouseEvent) => {
-    if (pp.value) newProfNameInput.value = ''
+    if (pop.value) newProfNameInput.value = ''
 
     // Show the popover with creation options.
-    pp?.value.show(e)
+    pop?.value?.show(e)
 }
 
 const createNewProf = async (e: MouseEvent) => {
     await NewProfile(gameStoreTS.selectedGame.title, newProfNameInput.value)
     await initProfiles()
 
-    pp.value.hide(e)
+    pop?.value?.hide()
 
     emit('profileCreated', e)
+
+    // Trigger onChange event to select the new profile.
+    onChange({
+        originalEvent: e,
+        value: profiles.value.find(p => p.name == newProfNameInput.value) ?? null
+    })
 }
 
 const renameProf = (_: MouseEvent, name: string) => {
@@ -65,10 +89,20 @@ const deleteProf = async (e: MouseEvent, name: string) => {
 }
 
 const shouldDisableCreation = () => {
-    if (newProfNameInput.value.length < 1) return true // No input yet
-    if (newProfNameInput.value.length > MAX_PROFILE_NAME_LEN) return true // Too long
+    const profNameInput = newProfNameInput.value
 
-    // Profile already exists 
+    if (profNameInput == "") return true // No input yet
+    if (profNameInput.length > MAX_PROFILE_NAME_LEN) return true // Too long
+
+    //#region Ensure path will work
+    if (profNameInput.startsWith(" ")) return true
+    if (profNameInput.endsWith(" ")) return true
+
+    if (profNameInput.startsWith(".")) return true
+    if (profNameInput.endsWith(".")) return true
+    //#endregion
+
+    // Profile already exists
     return profiles.value.some(p => p.name == newProfNameInput.value)
 }
 
@@ -78,7 +112,9 @@ const onSearchInputChange = () => {
     }
 }
 
-const onNameInputChange = () => {
+const onNameInputChange = (newValue: string | undefined) => {
+    newProfNameInput.value = newValue?.trim() ?? ""
+
     // Display toast
 }
 
@@ -95,7 +131,8 @@ onMounted(async () => {
 
     <Listbox class="profile-list" 
         :options="profiles" optionLabel="name" 
-        :modelValue="selectedProfile" @change="onChange"
+        :modelValue="selectedProfile"
+        @change="onChange"
     >
         <template #header>
             <div class="profile-manager-toolbars">
@@ -107,7 +144,7 @@ onMounted(async () => {
                             @click="onClickPlus"
                         />
     
-                        <Popover ref="pp">
+                        <Popover ref="pop">
                             <div class="profile-creator">
                                 <h3 class="block mb-1 mt-0">{{ $t('selected-game.profile-manager.profile-creator.header') }}</h3>
     
@@ -118,9 +155,9 @@ onMounted(async () => {
                                         <IconField>
                                             <InputIcon class="pi pi-pencil"/>
                                             <InputText class="profile-creator-name-input"
-                                                v-model="newProfNameInput" v-keyfilter="/^[^<>*!\/]+$/"
-                                                :invalid="newProfNameInput.length > MAX_PROFILE_NAME_LEN" 
-                                                @input="onNameInputChange"
+                                                v-model="newProfNameInput" v-keyfilter='/^[^"<>*!\/|?:]+$/'
+                                                :invalid="shouldDisableCreation()" 
+                                                @update:modelValue="onNameInputChange"
                                             />
                                         </IconField>
     
@@ -135,7 +172,8 @@ onMounted(async () => {
     
                                 <Button class="mt-2"
                                     :label="$t('keywords.create')" icon="pi pi-check"
-                                    :disabled="shouldDisableCreation()" @click="createNewProf"
+                                    :disabled="shouldDisableCreation()"
+                                    @click="createNewProf"
                                 />
                             </div>
                         </Popover>
@@ -201,7 +239,7 @@ onMounted(async () => {
             </div>
         </template>
 
-        <template #option="{ option: profile }">
+        <template #option="{ option: profile }: { option: Profile }">
             <div class="flex row w-full justify-content-between align-items-center">
                 <div class="flex row gap-1">
                     <div>[{{getModsAmount(profile)}}]</div>

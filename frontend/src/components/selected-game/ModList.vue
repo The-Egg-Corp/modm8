@@ -37,7 +37,7 @@ const {
     mods, currentPageMods,
 } = storeToRefs(modListStoreTS)
 
-// Choose which mods to show based on tab type.
+/** Choose which mods to show based on tab type. */
 const dataViewMods = computed(() => {
     if (activeTab.value == ModListTabs.NEXUS) {
         // TODO: Implement state for nexus mods.
@@ -74,10 +74,8 @@ const switchTab = async (e: TabMenuChangeEvent) => {
 const onPageChange = (e: DataViewPageEvent) => {
     updatePage(e.first, e.rows)
 
-    // Make current scroll index 0 and scroll to it, effectively 
-    // scrolling to the first mod in the list automatically.
-    scrollIndex.value = 0
-    scrollToMod()
+    const scrolled = scrollToMod(0) // Attempt to scroll to first mod.
+    if (scrolled) scrollIndex.value = 0 // Update cur index if successful.
 }
 
 const hasSearchInput = () => searchInput.value ? searchInput.value.length > 0 : undefined
@@ -94,16 +92,35 @@ const onSearchInputChange = async () => {
 
 const debouncedSearch = debounce(() => refreshMods(false), 250)
 
-const scrollToMod = () => {
-    const i = scrollIndex.value
-    if (i < 0 || i >= modElements.value.length) return // Ensure no OOB
+/**
+ * Scrolls to a mod in the list using the specified index.\
+ * For the mod to successfully scroll into view, index must be valid and not OOB of `modElements`.
+ * 
+ * @returns Whether we successfully scrolled to the mod.
+ */
+const scrollToMod = (idx: number) => {
+    // Because ! check considers 0 falsy.
+    if (idx == null || idx == undefined) {
+        console.warn(`Failed to scroll to mod. Specified index is ${idx}`)
+        return false
+    }
+    
+    const mods = modElements.value
+    if (idx < 0 || idx >= mods.length) {
+        console.warn(`Prevented OOB access of 'modElements' with index: ${idx}`)
+        return false
+    }
 
-    const mod = modElements.value[i]
-    if (!mod) return
+    const mod: Element = mods[idx]
+    if (!mod) return false
 
-    mod.scrollIntoView({ block: 'start' })
+    // We found the mod element, scroll to it.
+    mod.scrollIntoView(true)
+    return true
 }
 
+// TODO: Should we be manipulating `scrollIndex` directly before attempting to scroll?
+//       If we can't scroll to it then it should remain its old value like how `onPageChange` does it.
 const handleScroll = (e: WheelEvent) => {
     if (e.deltaY > 0) {
         // Scrolling down
@@ -115,7 +132,7 @@ const handleScroll = (e: WheelEvent) => {
     }
 
     // Scroll to the corresponding section
-    nextTick(() => scrollToMod())
+    nextTick(() => scrollToMod(scrollIndex.value))
 }
 
 const props = defineProps<{ installingModDialog: Dialog }>()

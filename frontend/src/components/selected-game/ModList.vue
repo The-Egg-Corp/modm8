@@ -98,7 +98,7 @@ const debouncedSearch = debounce(() => refreshMods(false), 250)
  * 
  * @returns Whether we successfully scrolled to the mod.
  */
-const scrollToMod = (idx: number) => {
+function scrollToMod(idx: number) {
     // Because ! check considers 0 falsy.
     if (idx == null || idx == undefined) {
         console.warn(`Failed to scroll to mod. Specified index is ${idx}`)
@@ -107,7 +107,7 @@ const scrollToMod = (idx: number) => {
     
     const mods = modElements.value
     if (idx < 0 || idx >= mods.length) {
-        console.warn(`Prevented OOB access of 'modElements' with index: ${idx}`)
+        console.warn(`Prevented OOB access of 'modElements' [${mods.length}] with index: ${idx}`)
         return false
     }
 

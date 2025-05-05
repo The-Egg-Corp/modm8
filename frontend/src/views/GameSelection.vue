@@ -136,21 +136,31 @@ const selectThunderstoreGame = (game: ThunderstoreGame) => {
 const gameElements = ref<any[]>([])
 const scrollIndex = ref(0)
 
-// Scroll to the next item in game list, assuming the scroll index has already been set.
-const scrollToGame = () => {
-    const i = scrollIndex.value
-
-    // This should never happen. If it does, shame the guy who gave scrollIndex a bad value. (Probably me)
-    if (i < 0 || i >= gameElements.value.length) {
-        console.warn(`Prevented OOB access of 'gameElements'. Scroll index: ${i}`)
-        return
+/**
+ * Scrolls to a game in the list using the specified index.\
+ * For the game to successfully scroll into view, index must be valid and not OOB of `gameElements`.
+ * 
+ * @returns Whether we successfully scrolled to the game.
+ */
+function scrollToGame(idx: number) {
+    // Because ! check considers 0 falsy.
+    if (idx == null || idx == undefined) {
+        console.warn(`Failed to scroll to game. Specified index is ${idx}`)
+        return false
+    }
+    
+    const games = gameElements.value
+    if (idx < 0 || idx >= games.length) {
+        console.warn(`Prevented OOB access of 'gameElements' [${games.length}] with index: ${idx}`)
+        return false
     }
 
-    const game = gameElements.value[i]
-    if (!game) return
+    const game: Element = games[idx]
+    if (!game) return false
 
-    // We only need it as a base Element for the scroll methods.
-    (game as Element).scrollIntoView({ block: 'start' })
+    // We found the game element, scroll to it.
+    game.scrollIntoView(true)
+    return true
 }
 
 // NOTE: Might want to make this a ref in future so it can be user defined.
@@ -166,7 +176,7 @@ const handleScroll = (e: WheelEvent) => {
     }
 
     // On DOM update complete
-    nextTick(() => scrollToGame())
+    nextTick(() => scrollToGame(scrollIndex.value))
 }
 
 // TODO: Replace with better alternative. These could change at any time.

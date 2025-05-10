@@ -7,16 +7,17 @@ import { tooltipOpts } from '@frontend/src/util'
 
 import { t } from '@i18n'
 import { Nullable, Profile } from '@types'
-import { useProfileStore, useGameStoreTS } from '@stores'
+import { useProfileStore, useGameStore } from '@stores'
 
 import { storeToRefs } from 'pinia'
 import { onMounted, ref } from 'vue'
 
 const profileStore = useProfileStore()
-const gameStoreTS = useGameStoreTS()
-
-const { setSelectedProfile, initProfiles } = profileStore
+const { profileByName, setSelectedProfile, initProfiles } = profileStore
 const { profiles, selectedProfile } = storeToRefs(profileStore)
+
+const gameStore = useGameStore()
+const { selectedGame } = storeToRefs(gameStore)
 
 const MAX_PROFILE_NAME_LEN = 32
 
@@ -33,10 +34,10 @@ const getModsAmount = (prof: Profile) => {
     return tsAmt + nexusAmt
 }
 
-const onChange = (e: ListboxChangeEvent) => {
+function onChange(e: ListboxChangeEvent) {
+    // No value probably means we are unselecting, but always want to keep one selected.
     if (!e.value) {
-        // No value probably means we are unselecting, but always want to keep one selected.
-        if (!selectedProfile.value) return
+        if (!selectedProfile.value) return // Can't set back to current profile.
         return setSelectedProfile(selectedProfile.value) // Set back to currently selected profile.
     }
 
@@ -44,47 +45,49 @@ const onChange = (e: ListboxChangeEvent) => {
         return console.error("Could not select profile. Event value does not resemble a profile.")
     }
 
+    // The profile the user just selected now has a definitive type.
     const selectedProf = e.value as Profile
-    if (selectedProf.name == "") {
-        return console.error("Could not select profile with empty name.")
+    if (!selectedProf.name) {
+        return console.error("Could not select profile with invalid name.")
     }
 
     setSelectedProfile(selectedProf)
     emit('profileSelected', e)
 
-    //console.log(`Changed selectedProfile to '${selectedProf.name}'`)
+    console.log(`Changed selectedProfile to '${selectedProf.name}'`)
 }
 
-const onClickPlus = (e: MouseEvent) => {
+function onClickPlus(e: MouseEvent) {
     if (pop.value) newProfNameInput.value = ''
 
     // Show the popover with creation options.
     pop?.value?.show(e)
 }
 
-const createNewProf = async (e: MouseEvent) => {
-    await NewProfile(gameStoreTS.selectedGame.title, newProfNameInput.value)
+async function createNewProf(e: MouseEvent) {
+    await NewProfile(selectedGame.value.value.title, newProfNameInput.value)
     await initProfiles()
 
     pop?.value?.hide()
 
     emit('profileCreated', e)
 
-    // Trigger onChange event to select the new profile.
+    // Trigger the `onChange()` event which will select the new profile.
     onChange({
         originalEvent: e,
-        value: profiles.value.find(p => p.name == newProfNameInput.value) ?? null
+        value: profileByName(newProfNameInput.value) ?? null 
     })
 }
 
-const renameProf = (_: MouseEvent, name: string) => {
-    
+// TODO: Implement this
+async function renameProf(_: MouseEvent, name: string) {
+    return
 }
 
-const deleteProf = async (e: MouseEvent, name: string) => {
+async function deleteProf(e: MouseEvent, name: string) {
     e.stopPropagation()
 
-    await DeleteProfile(gameStoreTS.selectedGame.title, name)
+    await DeleteProfile(selectedGame.value.value.title, name)
     await initProfiles()
 }
 
@@ -106,11 +109,12 @@ const shouldDisableCreation = () => {
     return profiles.value.some(p => p.name == newProfNameInput.value)
 }
 
-const onSearchInputChange = () => {
-    if (newProfNameInput.value.length > 24) {
+// Idk wtf I was going to do here?
+// const onSearchInputChange = () => {
+//     if (newProfNameInput.value.length > 24) {
         
-    }
-}
+//     }
+// }
 
 const onNameInputChange = (newValue: string | undefined) => {
     newProfNameInput.value = newValue?.trim() ?? ""
@@ -131,7 +135,7 @@ onMounted(async () => {
 
     <Listbox class="profile-list" 
         :options="profiles" optionLabel="name" 
-        :modelValue="selectedProfile"
+        v-model="selectedProfile"
         @change="onChange"
     >
         <template #header>

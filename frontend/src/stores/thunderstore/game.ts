@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
 
 import { Save, SetFavouriteGames } from '@backend/app/Persistence'
@@ -9,15 +9,19 @@ import type { thunderstore } from '@backend/models.js'
 
 //import { useGameStore } from '../game.js'
 import type { Nullable, ThunderstoreGame } from '@types'
+import { useGameStore } from '@stores'
 
 export const useGameStoreTS = defineStore('GameStoreTS', () => {
     //#region State
     const games = ref<Map<string, ThunderstoreGame>>(new Map())
-    const selectedGame = ref<ThunderstoreGame>({
-        title: 'Placeholder',
-        identifier: 'tf2',
-        steamID: 0
-    })
+    // const selectedGame = ref<ThunderstoreGame>({
+    //     title: 'Placeholder',
+    //     identifier: 'tf2',
+    //     steamID: 0
+    // })
+
+    const gameStore = useGameStore()
+    const { selectedGame } = storeToRefs(gameStore)
 
     // const gameStore = useGameStore()
     // const { selectedGame } = storeToRefs(gameStore)
@@ -43,12 +47,16 @@ export const useGameStoreTS = defineStore('GameStoreTS', () => {
     //#region Actions
     // TODO: Possibly need to take in ID, then get from `games` instead ?
     function setSelectedGame(game: ThunderstoreGame) {
-        selectedGame.value = gameByID(game.identifier) ?? game
+        selectedGame.value.value = gameByID(game.identifier) ?? game
     }
 
     /** Fills the `modCache` for the currently selected game with the specified mods. */
     function updateModCache(mods: thunderstore.StrippedPackage[]) {
-        const game = gameByID(selectedGame.value.identifier)
+        if (selectedGame.value.type != 'THUNDERSTORE') {
+            throw new Error('Could not update mod cache. Selected game is not of type `THUNDERSTORE`.')
+        }
+
+        const game = gameByID(selectedGame.value.value.identifier)
         if (!game) return // TODO: Implement proper error
 
         game.modCache = mods
@@ -65,15 +73,11 @@ export const useGameStoreTS = defineStore('GameStoreTS', () => {
     }
 
     async function initGames(gameList: ThunderstoreGame[]) {
+        const persistence = await GetPersistence()
         games.value = new Map<string, ThunderstoreGame>()
 
-        const persistence = await GetPersistence()
-        const len = gameList.length
-        
         // Init game props.
-        for (let i = 0; i < len; i++) {
-            const game = gameList[i]
-            
+        for (const game of gameList) {
             // TODO: Check game executable exists. For now, assume installed if game path is specified and exists.
             game.installed = !game.path ? false : await ExistsAtPath(game.path, true)
             game.favourited = await persistence.favourite_games.includes(game.identifier)
@@ -96,7 +100,6 @@ export const useGameStoreTS = defineStore('GameStoreTS', () => {
     //#endregion
 
     return {
-        selectedGame,
         games,
         gamesAsArray,
         gameByID,

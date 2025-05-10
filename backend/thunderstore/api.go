@@ -42,6 +42,7 @@ func ModCacheDir(gameTitle string) string {
 	return filepath.Join(cacheDir, "modm8", "Games", gameTitle, "ModCache")
 }
 
+// Same as a thundergo `Package` but without the following fields: [Versions, DonationLink, Pinned].
 type StrippedPackage struct {
 	Name           string        `json:"name"`
 	FullName       string        `json:"full_name"`

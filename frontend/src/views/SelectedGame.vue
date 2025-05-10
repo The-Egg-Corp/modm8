@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onBeforeMount, onMounted } from "vue"
+import { onBeforeUnmount, onMounted } from "vue"
 
 import * as Steam from '@backend/steam/SteamRunner'
 
@@ -15,7 +15,7 @@ import {
 import { 
     useAppStore,
     useProfileStore,
-    useGameStoreTS,
+    useGameStore,
     useModListStoreTS
 } from "@stores"
 
@@ -27,10 +27,10 @@ const {
 } = storeToRefs(appStore)
 
 const profileStore = useProfileStore()
-const { selectedProfile, profiles } = storeToRefs(profileStore)
+const { selectedProfile } = storeToRefs(profileStore)
 
-const gameStoreTS = useGameStoreTS()
-const { selectedGame } = storeToRefs(gameStoreTS)
+const gameStore = useGameStore()
+const { selectedGame } = storeToRefs(gameStore)
 
 const modListStoreTS = useModListStoreTS()
 const { refreshMods, refreshPage } = modListStoreTS
@@ -50,15 +50,15 @@ const startModdedDisabled = () => {
     return noNexusMods && noTsMods
 }
 
-const gameThumbnail = () => selectedGame.value.image
-    ? `https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/${selectedGame.value.image}` 
+const gameThumbnail = () => selectedGame.value.value.image
+    ? `https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/${selectedGame.value.value.image}` 
     : "https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/Titanfall2.jpg"
 
 const launchSteamGame = async (modded: boolean, args?: string[]) => {
     // TODO: These returns should probably reject.
     if (!selectedGame.value) return console.error('Error launching Steam game! Invalid or no selected game.')
 
-    const id = selectedGame.value.steamID
+    const id = selectedGame.value.value.steamID
     if (!id || id < 10) {
         return console.error(`Error launching Steam game!\n\nCannot use invalid ID \`${id}\`.`)
     }
@@ -75,8 +75,8 @@ const launchSteamGame = async (modded: boolean, args?: string[]) => {
     return await Steam.LaunchGame(id, fullArgs)
 }
 
-onBeforeMount(() => {
-    selectedProfile.value = profiles.value[0]
+onBeforeUnmount(() => {
+    selectedProfile.value = null
 })
 
 onMounted(async () => {
@@ -85,6 +85,8 @@ onMounted(async () => {
     installingModDialog.setVisible(false)
 
     await refreshMods(true)
+
+    console.log(`[SelectedGame] Mounted game: ${selectedGame.value?.value.title}. Selected profile:\n${selectedProfile.value}`)
 })
 </script>
 
@@ -106,7 +108,7 @@ onMounted(async () => {
                     </div>
 
                     <div class="mt-3">
-                        <p class="selected-game-title mt-0 mb-0">{{ selectedGame.title }}</p> 
+                        <p class="selected-game-title mt-0 mb-0">{{ selectedGame.value.title }}</p> 
                         
                         <div class="flex column mt-2 flex-grow-1">
                             <div class="flex row gap-2">
@@ -147,11 +149,18 @@ onMounted(async () => {
         />
     </div>
 
-    <ModInstallationOverlay :dialog="installingModDialog" 
-        :installing="installing" :lastInstalledMod="lastInstalledMod!"
+    <!-- Opened when ModList (see above) calls to install a mod. -->
+    <ModInstallationOverlay 
+        :dialog="installingModDialog" 
+        :installing="installing"
+        :lastInstalledMod="lastInstalledMod!"
     />
 
-    <ConfigEditorOverlay :dialog="configEditorDialog" :selectedGame="selectedGame"/>
+    <!-- Opened when the "Edit Configs" button is pressed. -->
+    <ConfigEditorOverlay 
+        :dialog="configEditorDialog" 
+        :selectedGame="selectedGame"
+    />
 </Viewport>
 </template>
 

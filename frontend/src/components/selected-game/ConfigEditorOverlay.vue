@@ -9,7 +9,7 @@ import { CardOverlay, ConfigEditLayout } from '@components'
 
 import { t } from '@i18n'
 import { openLink } from "../../util"
-import type { ThunderstoreGame, Nullable } from '@types'
+import type { GameContainer, Nullable } from '@types'
 
 const selectedConfig = ref<Nullable<game.BepinexConfig>>(null)
 const selectedConfigName = ref<Nullable<string>>(null)
@@ -18,7 +18,7 @@ const configFiles = ref<string[]>([])
 
 const props = defineProps<{
     dialog: Dialog
-    selectedGame: ThunderstoreGame
+    selectedGame: GameContainer
 }>()
 
 watch(props.dialog.visible, async (newVal: boolean) => {
@@ -47,9 +47,9 @@ const editConfig = async (path: string) => {
 }
 
 const getConfigFiles = async () => {
-    const gamePath = props.selectedGame.path
+    const gamePath = props.selectedGame.value.path
 
-    if (!props.selectedGame.bepinexSetup || !gamePath) return []
+    if (!props.selectedGame.value.bepinexSetup || !gamePath) return []
     return await BepinexConfigFiles([gamePath, "BepInEx", "config"])
 }
 

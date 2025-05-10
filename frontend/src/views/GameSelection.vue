@@ -189,11 +189,12 @@ onMounted(async () => {
 
     // NOTE: We currently need to initialize the game store cache every mount in-case properties (path, installed) change.
     //       This may be an issue in future, ignore it until we transition from a static mock list.
-    const size = await gameStoreTS.initGames(mockGameList)
+    const tsGames = mockGameList.filter(g => g.type == 'THUNDERSTORE').map(g => g.value)
+    const size = await gameStoreTS.initGames(tsGames)
 
-    console.info(`Populated GameStore cache with ${size} games. Took: ${performance.now() - t0}ms`)
+    console.info(`Populated GameStoreTS cache with ${size} games. Took: ${performance.now() - t0}ms`)
     if (size != mockGameList.length) {
-        console.warn("Size of GameStore cache does not match original input.")
+        console.warn("Size of GameStoreTS cache does not match original input.")
     }
 
     loading.value = false

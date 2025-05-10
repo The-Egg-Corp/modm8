@@ -8,8 +8,8 @@ import {
 } from "@types"
 
 import { 
+    useGameStore,
     useGameStoreTS,
-    useProfileStore,
     useModListStore
 } from '@stores'
 
@@ -28,20 +28,19 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
     const modListStore = useModListStore()
     const { searchInput } = storeToRefs(modListStore)
 
-    const profileStore = useProfileStore()
-    const { selectedProfile } = storeToRefs(profileStore)
+    //const profileStore = useProfileStore()
+    //const { selectedProfile } = storeToRefs(profileStore)
+
+    const gameStore = useGameStore()
+    const { selectedGame } = storeToRefs(gameStore)
 
     const gameStoreTS = useGameStoreTS()
-    const { selectedGame } = storeToRefs(gameStoreTS)
     const { updateModCache } = gameStoreTS
     //#endregion
 
     //#region State
     const loading = ref(false)
     const installing = ref(false)
-
-    // const activeTab = ref<ModListTabType>(ModListTabs.PROFILE)
-    // const searchInput = ref<Nullable<string>>(null)
 
     const modElements = ref<any[]>([])
     const scrollIndex = ref(0)
@@ -87,19 +86,23 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
      * @param fetch Whether to fetch mods from the API and update the cache (if isnt populated already) before refreshing the page.
      */
     async function refreshMods(fetch: boolean) {
-        if (fetch && !selectedGame.value.modCache) {
+        if (selectedGame.value.type != 'THUNDERSTORE') {
+            throw new Error('[TS/modlist] Could not refresh mods. Selected game is not of type `THUNDERSTORE`.')
+        }
+
+        if (fetch && !selectedGame.value.value.modCache) {
             loading.value = true // Fetching might take a while, let the user know we are doing something.
 
             try {
                 const t0 = performance.now()
 
-                const pkgs = await GetStrippedPackages(selectedGame.value.identifier, false)
-                console.log(`[${selectedGame.value.identifier}] Putting mods into cache...`)
+                const pkgs = await GetStrippedPackages(selectedGame.value.value.identifier, false)
+                console.log(`[${selectedGame.value.value.identifier}] Putting mods into cache...`)
 
                 updateModCache(pkgs)
                 console.log(`Cached ${pkgs.length} mods. Took: ${performance.now() - t0}ms`)
             } catch(e: any) {
-                console.error(`[${selectedGame.value.identifier}] Failed to update mod cache!\n${e.message}`)
+                console.error(`[${selectedGame.value.value.identifier}] Failed to update mod cache!\n${e.message}`)
             }
         }
 
@@ -111,12 +114,16 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
     }
     
     async function latestModVersion(mod: thunderstore.StrippedPackage) {
-        return await GetLatestPackageVersion(selectedGame.value.identifier, mod.owner, mod.name)
+        if (selectedGame.value.type != 'THUNDERSTORE') {
+            throw new Error('Could not get latest mod version. Selected game is not of type `THUNDERSTORE`.')
+        }
+
+        return await GetLatestPackageVersion(selectedGame.value.value.identifier, mod.owner, mod.name)
     }
 
     function getMods(searchFilter = true, defaultSort = true) {
-        if (!selectedGame.value.modCache) return []
-        const filteredMods = searchFilter ? filterBySearch(selectedGame.value.modCache) : selectedGame.value.modCache
+        if (!selectedGame.value.value.modCache) return []
+        const filteredMods = searchFilter ? filterBySearch(selectedGame.value.value.modCache) : selectedGame.value.value.modCache
 
         return !defaultSort ? filteredMods : filteredMods.sort((m1, m2) => m2.rating_score - m1.rating_score)
     }
@@ -137,10 +144,6 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
     
             return lowerTitle.includes(input.toLowerCase())
         })
-    }
-
-    function filterByProfile(mods: thunderstore.StrippedPackage[]) {
-        return mods.filter(mod => selectedProfile.value?.mods.thunderstore?.includes(mod.full_name))
     }
 
     const refreshPage = () => updatePage(0, ROWS)
@@ -173,7 +176,6 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
         getMods,
         refreshMods,
         latestModVersion,
-        filterByProfile,
         filterBySearch,
         refreshPage,
         updatePage

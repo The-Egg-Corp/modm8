@@ -1,8 +1,8 @@
-import { defineStore } from "pinia"
+import { defineStore, storeToRefs } from "pinia"
 import { ref } from "vue"
 
 import type { Nullable, Profile } from "@types"
-import { useGameStoreTS } from "@stores"
+import { useGameStore } from "@stores"
 
 import { GetProfiles } from "@backend/profile/ProfileManager"
 
@@ -13,11 +13,12 @@ import { GetProfiles } from "@backend/profile/ProfileManager"
 
 export const useProfileStore = defineStore("ProfileStore", () => {
     //#region Stores
-    const gameStoreTS = useGameStoreTS()
+    const gameStore = useGameStore()
+    const { selectedGame } = storeToRefs(gameStore)
     //#endregion
 
     //#region State
-    const profiles = ref<Profile[]>([])
+    const profiles = ref<Profile[]>([]) // TODO: Maybe just use the exact same layout as Go (Map<string, Profile>) instead.
     const selectedProfile = ref<Nullable<Profile>>(null)
     //#endregion
 
@@ -32,8 +33,11 @@ export const useProfileStore = defineStore("ProfileStore", () => {
 
     async function initProfiles() {
         try {
-            const profs = await GetProfiles(gameStoreTS.selectedGame.title)
-            profiles.value = Object.entries(profs).map(([key, value]) => ({ ...value, name: key }))
+            // Convert go map to array of profiles.
+            const profs = await GetProfiles(selectedGame.value.value.title)
+            profiles.value = Object.entries(profs).map(([name, manifest]) => ({ name, ...manifest }))
+
+            //console.log(`Profiles for ${gameStoreTS.selectedGame.title}:`, Object.keys(profs))
         } catch (e: any) {
             console.error(e)
             // TODO: Add some sort of toast or error msg in the app itself.
@@ -44,6 +48,7 @@ export const useProfileStore = defineStore("ProfileStore", () => {
     return {
         profiles,
         selectedProfile,
+        profileByName,
         setSelectedProfile,
         initProfiles
     }

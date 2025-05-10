@@ -1,5 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import { thunderstore } from "@backend/models.js"
+import type { thunderstore } from "@backend/models.js"
 import type { ObjValues } from "./index.js"
 
 export type GameRunnerType = ObjValues<typeof GameRunner>
@@ -30,8 +29,9 @@ export interface ThunderstoreGame extends BaseGame {
 
 export interface NexusGame extends BaseGame {
     ID: number
-    domainName: string, // Equivalent to `identifier` in ThunderstoreGame.
-    modsCount: number,
+    /** Equivalent to `identifier` in ThunderstoreGame. */
+    domainName: string, 
+    //modsCount: number,
     modCache?: any[] // TODO: Implement nexus package.
 }
 

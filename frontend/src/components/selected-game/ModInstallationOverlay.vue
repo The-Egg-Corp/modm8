@@ -23,7 +23,7 @@ const installStatus = () => props.installing ? "Installing..." : "Installed"
     <template #cardContent>
         <div class="flex column justify-content-center align-items-baseline">
             <h1 class="mb-0 mt-2">{{ installStatus() }} </h1>
-            <p v-if="lastInstalledMod" class="mt-1 mb-1" style="font-size: 18px">{{ lastInstalledMod.name }}</p>
+            <p v-if="lastInstalledMod" class="mt-1 mb-1" style="font-size: 18px">{{ lastInstalledMod.full_name }}</p>
         </div>
     </template>
 

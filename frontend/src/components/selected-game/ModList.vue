@@ -7,17 +7,22 @@ import DataView, { DataViewPageEvent } from 'primevue/dataview'
 import Tag from 'primevue/tag'
 
 import {
+    useGameStore,
+    useProfileStore,
     useModListStore,
     useModListStoreTS,
-    useGameStoreTS,
 } from '@stores'
 
-import { ModListTabs } from '@types'
+import { ModListTabs, Package } from '@types'
 import { Dialog } from '@composables'
 
 import { debounce } from "../../util"
 
-const gameStoreTS = useGameStoreTS()
+const profileStore = useProfileStore()
+const { selectedProfile } = storeToRefs(profileStore)
+
+const gameStore = useGameStore()
+const { selectedGame } = storeToRefs(gameStore)
 
 // Shared mod list state for all mod sites/platforms.
 const modListStore = useModListStore()
@@ -26,7 +31,7 @@ const { activeTab, searchInput } = storeToRefs(modListStore)
 // Mod list store for Thunderstore only.
 const modListStoreTS = useModListStoreTS()
 const { 
-    installMod, refreshMods,
+    refreshMods,
     updatePage, refreshPage,
     getMods, ROWS
 } = modListStoreTS
@@ -48,7 +53,8 @@ const dataViewMods = computed(() => {
         return mods.value
     }
 
-    // Not a store, must be profile tab.
+    // Not a store, must be profile tab - return all installed mods that are in this profile.
+    // TODO: Add nexus support here, otherwise they won't show up.
     return []
 })
 
@@ -135,20 +141,27 @@ const handleScroll = (e: WheelEvent) => {
     nextTick(() => scrollToMod(scrollIndex.value))
 }
 
+async function installTsMod(mod: Package) {
+    if (selectedGame.value.type != 'THUNDERSTORE') {
+        throw new Error('Could not install Thunderstore mod. Selected game is not of type `THUNDERSTORE`.')
+    }
+
+    return modListStoreTS.installMod(mod.full_name, selectedGame.value.value, props.installingModDialog)
+}
+
 const props = defineProps<{ installingModDialog: Dialog }>()
 
 // TODO: Implement Thunderstore login using GitHub/Discord for things like rating mods.
 // This may require an update to Wails V3 so we can make OAuth easier as it has plugins and multi-window support.
-const openLoginPage = () => {
-    // const url = 'https://auth.thunderstore.io/auth/login/github'
-    // const loginWindow = window.open(url)
+// const TS_GITHUB_LOGIN = 'https://auth.thunderstore.io/auth/login/github'
+// const openLoginPage = () => {
+//     const loginWindow = window.open(TS_GITHUB_LOGIN)
+//     if (!loginWindow) return
 
-    // if (!loginWindow) return
-
-    // loginWindow.onload = () => {
+//     loginWindow.onload = () => {
         
-    // }
-}
+//     }
+// }
 </script>
 
 <template>
@@ -209,37 +222,48 @@ const openLoginPage = () => {
     </template>
 
     <template #empty>
-        <div v-if="hasSearchInput()" class="pl-2">
-            <h2 class="m-0 mt-1">{{ $t('selected-game.empty-results') }}.</h2>
-
-            <!-- Sadge -->
-            <img class="mt-2" src="https://cdn.7tv.app/emote/603cac391cd55c0014d989be/3x.png">
-        </div>
-
-        <!-- TODO: If failed, make this show regardless of search input. --> 
-        <div v-else>
+        <div v-if="selectedProfile == null">
             <h2 v-if="activeTab == ModListTabs.PROFILE" class="empty-profile">
-                {{ $t('selected-game.no-mods-installed') }}
+                No profile selected.
             </h2>
-
-            <div v-if="activeTab == ModListTabs.TS" class="ml-1">
-                <h2 class="mb-2" style="color: red; font-size: 24px; margin: 0 auto;">
-                    No mods available! Something probably went wrong.
+        </div>
+        <div v-else>
+            <!-- TODO: If failed, make this show regardless of search input. --> 
+            <div v-if="!hasSearchInput() /*|| failed*/">
+                <h2 v-if="activeTab == ModListTabs.PROFILE" class="empty-profile">
+                    {{ $t('selected-game.no-mods-installed') }}
                 </h2>
 
-                <Button class="mt-1" :label="$t('keywords.refresh')" icon="pi pi-refresh" @click="refreshMods(true)"/>
+                <div v-if="activeTab == ModListTabs.TS" class="ml-1">
+                    <h2 class="mb-2" style="color: red; font-size: 24px; margin: 0 auto;">
+                        No mods available! Something probably went wrong.
+                    </h2>
+
+                    <Button class="mt-1" :label="$t('keywords.refresh')" icon="pi pi-refresh" @click="refreshMods(true)"/>
+                </div>
+
+                <div v-if="activeTab == ModListTabs.NEXUS" class="ml-1">
+                    <h2 class="mb-2" style="color: red; font-size: 24px; margin: 0 auto;">
+                        Nexus Mods support is not implemented yet.
+                    </h2>
+                </div>
             </div>
+            <div v-else class="pl-2">
+                <h2 class="m-0 mt-1">{{ $t('selected-game.empty-results') }}.</h2>
 
-            <div v-if="activeTab == ModListTabs.NEXUS" class="ml-1">
-                <h2 class="mb-2" style="color: red; font-size: 24px; margin: 0 auto;">
-                    Nexus Mods support is not implemented yet.
-                </h2>
+                <!-- Sadge -->
+                <img class="mt-2" src="https://cdn.7tv.app/emote/603cac391cd55c0014d989be/3x.png">
             </div>
         </div>
     </template>
 
     <template #list>
-        <div class="scrollable-list list-nogutter no-drag" @wheel.prevent="handleScroll">
+        <div v-if="activeTab == ModListTabs.NEXUS" class="ml-1">
+            <h2 class="mb-2" style="color: red; font-size: 24px; margin: 0 auto;">
+                Nexus Mods support is not implemented yet.
+            </h2>
+        </div>
+        <div v-else class="scrollable-list list-nogutter no-drag" @wheel.prevent="handleScroll">
             <div 
                 v-for="(mod, index) in currentPageMods" class="list-item col-12"
                 :key="index" :ref="el => modElements[index] = el"
@@ -275,14 +299,17 @@ const openLoginPage = () => {
 
                                     <Button
                                         class="btn w-full" icon="pi pi-download"
-                                        :label="$t('keywords.install')" @click="installMod(mod.full_name, gameStoreTS.selectedGame, props.installingModDialog)"
+                                        :label="$t('keywords.install')"
+                                        :disabled="selectedProfile == null"
+                                        @click="installTsMod(mod)"
                                     />
 
                                     <div class="flex row align-items-center">
-                                        <Button outlined plain 
+                                        <!-- TODO: On click, call openLoginPage when implemented. -->
+                                        <Button outlined plain
                                             style="margin-right: 6.5px;"
                                             :icon="'pi pi-thumbs-up'"
-                                            @click="openLoginPage"
+                                            @click=""
                                         />
                                         
                                         <div class="mod-list-rating">{{ mod.rating_score }}</div>

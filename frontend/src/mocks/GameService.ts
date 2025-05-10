@@ -1,10 +1,19 @@
-import type { ThunderstoreGame } from "@types"
+import type { GameContainer, ThunderstoreGame, NexusGame } from "@types"
 
-export function makeThunderstoreGame(base: Omit<ThunderstoreGame, 'platform'>): ThunderstoreGame {
-  return base
+export function makeThunderstoreGame(game: ThunderstoreGame): GameContainer {
+  return { type: 'THUNDERSTORE', value: game }
 }
 
-export const mockGameList: ThunderstoreGame[] = [
+export function makeNexusGame(game: NexusGame): GameContainer {
+  return { type: 'NEXUS_MODS', value: game }
+}
+
+export const mockGameList: GameContainer[] = [
+  // makeNexusGame({
+  //   ID: 1093894374,
+  //   title: 'Lethal Company',
+  //   domainName: 'lethal-company'
+  // }),
   makeThunderstoreGame({
     title: "Lethal Company",
     identifier: 'lethal-company',

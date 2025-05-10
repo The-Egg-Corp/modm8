@@ -18,7 +18,7 @@ const filters = computed<ValueItemLabeled<string>[]>(() => [{
 </script>
 
 <template>
-    <Dropdown  class="no-drag" :options="filters" @change="">
+    <Dropdown class="no-drag" :options="filters" @change="">
         <template #option>
             
         </template>

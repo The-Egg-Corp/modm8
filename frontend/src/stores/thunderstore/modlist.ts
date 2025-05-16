@@ -116,14 +116,6 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
         // We are done regardless of outcome, stop loading.
         loading.value = false
     }
-    
-    // async function latestModVersion(mod: thunderstore.StrippedPackage) {
-    //     if (selectedGame.value.type != 'THUNDERSTORE') {
-    //         throw new Error('Could not get latest mod version. Selected game is not of type `THUNDERSTORE`.')
-    //     }
-
-    //     return await GetLatestPackageVersion(selectedGame.value.value.identifier, mod.owner, mod.name)
-    // }
 
     function getMods(searchFilter = true, defaultSort = true) {
         if (!selectedGame.value.value.modCache) return []

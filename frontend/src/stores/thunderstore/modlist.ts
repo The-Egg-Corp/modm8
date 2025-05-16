@@ -45,8 +45,8 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
     const modElements = ref<any[]>([])
     const scrollIndex = ref(0)
     
-    const ROWS = 40
-    const first = ref(0) // Starting index of the current page
+    const PAGE_ROWS = 40
+    const pageFirstRecordIdx = ref(0) // Index of the first record on the current page.
     const currentPageMods = ref<Package[]>([])
 
     const mods = ref<thunderstore.StrippedPackage[]>([])
@@ -152,9 +152,9 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
         })
     }
 
-    const refreshPage = () => updatePage(0, ROWS)
+    const refreshPage = () => updatePage(0, PAGE_ROWS)
     const updatePage = async (newFirst: number, rows: number) => {
-        first.value = newFirst
+        pageFirstRecordIdx.value = newFirst
 
         const filtered = mods.value.slice(newFirst, newFirst + rows) as Package[]
 
@@ -173,11 +173,11 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
         installing,
         modElements,
         scrollIndex,
-        ROWS,
+        PAGE_ROWS,
         mods,
         currentPageMods,
         lastInstalledMod,
-        first,
+        pageFirstRecordIdx,
         installMod,
         getMods,
         refreshMods,

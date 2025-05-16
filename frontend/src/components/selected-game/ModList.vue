@@ -37,12 +37,12 @@ const modListStoreTS = useModListStoreTS()
 const { 
     refreshMods,
     updatePage, refreshPage,
-    getMods, ROWS
+    getMods, PAGE_ROWS
 } = modListStoreTS
 
 const {
     loading,
-    modElements, scrollIndex, first,
+    modElements, scrollIndex, pageFirstRecordIdx,
     mods, currentPageMods,
 } = storeToRefs(modListStoreTS)
 
@@ -191,7 +191,10 @@ const props = defineProps<{
     </div>
     <div v-else>
         <!-- #region PROFILE TAB -->
-        <DataView v-if="activeTab == ModListTabs.PROFILE" layout="list" data-key="mod-list-profile">
+        <DataView v-if="activeTab == ModListTabs.PROFILE" 
+            layout="list" data-key="mod-list-profile"
+            :value="[]"
+        >
             <template #empty>
                 <h2 v-if="selectedProfile == null" class="empty-profile">No profile selected.</h2>
                 <div v-else>
@@ -206,30 +209,19 @@ const props = defineProps<{
                     </div>
                 </div>
             </template>
-        </DataView>
-        <!-- #endregion -->
 
-        <!-- #region NEXUS TAB -->
-        <DataView
-            v-if="activeTab == ModListTabs.NEXUS" lazy stripedRows
-            layout="list" data-key="mod-list-nexus"
-            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
-        >
-            <template #empty>
-                <div class="ml-1">
-                    <h2 class="error-text">Nexus Mods support is not implemented yet.</h2>
-                </div>
+            <template #list>
+
             </template>
         </DataView>
         <!-- #endregion -->
 
         <!-- #region THUNDERSTORE TAB -->
-        <DataView
-            v-if="activeTab == ModListTabs.TS" lazy stripedRows
-            layout="list" data-key="mod-list-ts"
+        <DataView v-if="activeTab == ModListTabs.TS" 
+            lazy layout="list" data-key="mod-list-ts"
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
-            :paginator="mods.length > ROWS" :rows="ROWS"
-            :value="mods" @page="onPageChange" :first="first"
+            :paginator="mods.length > PAGE_ROWS" :rows="PAGE_ROWS"
+            :value="mods" @page="onPageChange" :first="pageFirstRecordIdx"
         >
             <template v-if="selectedProfile == null" #empty>
                 
@@ -315,6 +307,19 @@ const props = defineProps<{
                             </div>
                         </div>
                     </div>
+                </div>
+            </template>
+        </DataView>
+        <!-- #endregion -->
+
+        <!-- #region NEXUS TAB -->
+        <DataView v-if="activeTab == ModListTabs.NEXUS" 
+            lazy layout="list" data-key="mod-list-nexus"
+            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
+        >
+            <template #empty>
+                <div class="ml-1">
+                    <h2 class="error-text">Nexus Mods support is not implemented yet.</h2>
                 </div>
             </template>
         </DataView>

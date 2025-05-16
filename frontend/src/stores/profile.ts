@@ -6,11 +6,6 @@ import { useGameStore } from "@stores"
 
 import { GetProfiles } from "@backend/profile/ProfileManager"
 
-// export interface ProfileState {
-//     // Key is the identifier of the game the profiles exist on.
-//     profiles: Map<string, Profile>
-// }
-
 export const useProfileStore = defineStore("ProfileStore", () => {
     //#region Stores
     const gameStore = useGameStore()

@@ -3,8 +3,7 @@ import { ref } from "vue"
 
 import { 
     type Nullable, 
-    type ThunderstoreGame,
-    type Package
+    type ThunderstoreGame
 } from "@types"
 
 import { 
@@ -17,7 +16,6 @@ import type { Dialog } from "@composables"
 
 import { 
     GetStrippedPackages,
-    GetLatestPackageVersion, 
     InstallByName
 } from "@backend/thunderstore/API"
 
@@ -47,7 +45,7 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
     
     const PAGE_ROWS = 40
     const pageFirstRecordIdx = ref(0) // Index of the first record on the current page.
-    const currentPageMods = ref<Package[]>([])
+    const currentPageMods = ref<thunderstore.StrippedPackage[]>([])
 
     const mods = ref<thunderstore.StrippedPackage[]>([])
     const lastInstalledMod = ref<Nullable<v1.PackageVersion>>(null)
@@ -119,13 +117,13 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
         loading.value = false
     }
     
-    async function latestModVersion(mod: thunderstore.StrippedPackage) {
-        if (selectedGame.value.type != 'THUNDERSTORE') {
-            throw new Error('Could not get latest mod version. Selected game is not of type `THUNDERSTORE`.')
-        }
+    // async function latestModVersion(mod: thunderstore.StrippedPackage) {
+    //     if (selectedGame.value.type != 'THUNDERSTORE') {
+    //         throw new Error('Could not get latest mod version. Selected game is not of type `THUNDERSTORE`.')
+    //     }
 
-        return await GetLatestPackageVersion(selectedGame.value.value.identifier, mod.owner, mod.name)
-    }
+    //     return await GetLatestPackageVersion(selectedGame.value.value.identifier, mod.owner, mod.name)
+    // }
 
     function getMods(searchFilter = true, defaultSort = true) {
         if (!selectedGame.value.value.modCache) return []
@@ -155,16 +153,7 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
     const refreshPage = () => updatePage(0, PAGE_ROWS)
     const updatePage = async (newFirst: number, rows: number) => {
         pageFirstRecordIdx.value = newFirst
-
-        const filtered = mods.value.slice(newFirst, newFirst + rows) as Package[]
-
-        // TODO: This could be potentially VERY slow. Consider replacing with Map/Set instead.
-        const promises = filtered.map(async mod => {
-            mod.latestVersion = await latestModVersion(mod)
-            return mod
-        })
-
-        currentPageMods.value = await Promise.all(promises)
+        currentPageMods.value = mods.value.slice(newFirst, newFirst + rows)
     }
     //#endregion
 
@@ -181,7 +170,6 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
         installMod,
         getMods,
         refreshMods,
-        latestModVersion,
         filterBySearch,
         refreshPage,
         updatePage

@@ -13,7 +13,7 @@ import {
     useModListStoreTS,
 } from '@stores'
 
-import { ModListTabs, Package } from '@types'
+import { ModListTabs } from '@types'
 import { Dialog } from '@composables'
 
 import {
@@ -21,6 +21,7 @@ import {
 } from '@frontend/wailsjs/go/profile/ProfileManager'
 
 import { debounce } from "../../util"
+import { thunderstore } from '@frontend/wailsjs/go/models'
 
 const profileStore = useProfileStore()
 const { selectedProfile } = storeToRefs(profileStore)
@@ -129,7 +130,7 @@ const handleScroll = (e: WheelEvent) => {
     nextTick(() => scrollToMod(scrollIndex.value))
 }
 
-async function installTsMod(mod: Package) {
+async function installTsMod(mod: thunderstore.StrippedPackage) {
     if (selectedGame.value.type != 'THUNDERSTORE') {
         throw new Error('Cannot install Thunderstore mod. Selected game is not of type `THUNDERSTORE`.')
     }
@@ -143,7 +144,7 @@ async function installTsMod(mod: Package) {
 
     // The user wants this mod. Update manifest regardless of whether mod will successfully install.
     // We can notify them in the profile tab if something is wrong and provide the option to start without it.
-    await AddThunderstoreModToProfile(selectedGameTitle, selectedProfName, mod.latestVersion.full_name)
+    await AddThunderstoreModToProfile(selectedGameTitle, selectedProfName, mod.latest_version.full_name)
     await modListStoreTS.installMod(mod.full_name, selectedGame.value.value, props.installingModDialog)
 
     // Keep profiles refreshed and in line with manifest.
@@ -249,7 +250,7 @@ const props = defineProps<{
                         :key="index" :ref="el => modElements[index] = el"
                     >
                         <div class="flex-grow-1 flex column sm:flex-row align-items-center pt-2 gap-3" :class="{ 'border-top-faint': index != 0 }">
-                            <img class="mod-list-thumbnail block xl:block" :src="mod.latestVersion?.icon || ''"/>
+                            <img class="mod-list-thumbnail block xl:block" :src="mod.latest_version?.icon || ''"/>
                             
                             <div class="flex-grow-1 flex column md:flex-row md:align-items-center">
                                 <div class="flex-grow-1 flex column justify-content-between">
@@ -258,7 +259,7 @@ const props = defineProps<{
                                         <div class="mod-list-author">({{ mod.owner }})</div>
                                     </div>
 
-                                    <div class="mod-list-description mb-1">{{ mod.latestVersion.description }}</div>
+                                    <div class="mod-list-description mb-1">{{ mod.latest_version.description }}</div>
 
                                     <!--
                                         :icon="isFavouriteGame(game.identifier) ? 'pi pi-heart-fill' : 'pi pi-heart'"

@@ -43,20 +43,21 @@ func ModCacheDir(gameTitle string) string {
 	return filepath.Join(cacheDir, "modm8", "Games", gameTitle, "ModCache")
 }
 
-// Same as a thundergo `Package` but without the following fields: [Versions, DonationLink, Pinned].
-// TODO: Instead of removing ALL versions, just remove every verison but latest.
+// Same as a thundergo `Package` but the 'Versions' field is replaced with only a single 'LatestVersion' field
+// and the following fields are completely removed: [DonationLink, Pinned].
 type StrippedPackage struct {
-	Name           string        `json:"name"`
-	FullName       string        `json:"full_name"`
-	Owner          string        `json:"owner"`
-	UUID           string        `json:"uuid4"`
-	PackageURL     string        `json:"package_url"`
-	DateCreated    util.DateTime `json:"date_created"`
-	DateUpdated    util.DateTime `json:"date_updated"`
-	Rating         uint16        `json:"rating_score"`
-	Deprecated     bool          `json:"is_deprecated"`
-	HasNsfwContent bool          `json:"has_nsfw_content"`
-	Categories     []string      `json:"categories"`
+	Name           string            `json:"name"`
+	FullName       string            `json:"full_name"`
+	Owner          string            `json:"owner"`
+	UUID           string            `json:"uuid4"`
+	PackageURL     string            `json:"package_url"`
+	DateCreated    util.DateTime     `json:"date_created"`
+	DateUpdated    util.DateTime     `json:"date_updated"`
+	Rating         uint16            `json:"rating_score"`
+	Deprecated     bool              `json:"is_deprecated"`
+	HasNsfwContent bool              `json:"has_nsfw_content"`
+	Categories     []string          `json:"categories"`
+	LatestVersion  v1.PackageVersion `json:"latest_version"`
 }
 
 type API struct {
@@ -164,8 +165,8 @@ func (a *API) GetStrippedPackages(community string, skipCache bool) ([]StrippedP
 		}
 
 		strippedPkgs = append(strippedPkgs, StrippedPackage{
-			Name:           pkg.Name,
-			FullName:       pkg.FullName,
+			Name:           pkg.Name,     // Ex: "CSync"
+			FullName:       pkg.FullName, // Ex: "Owen3H-CSync"
 			Owner:          pkg.Owner,
 			UUID:           pkg.UUID,
 			PackageURL:     pkg.PackageURL,
@@ -175,6 +176,7 @@ func (a *API) GetStrippedPackages(community string, skipCache bool) ([]StrippedP
 			Deprecated:     pkg.Deprecated,
 			HasNsfwContent: pkg.HasNsfwContent,
 			Categories:     pkg.Categories,
+			LatestVersion:  pkg.LatestVersion(),
 		})
 	}
 

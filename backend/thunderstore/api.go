@@ -35,6 +35,7 @@ var modExceptions = []string{
 	"Higgs1-Lighthouse",
 }
 
+// The dir where the mod cache is located for the current game.
 var CurModCacheDir string
 
 func ModCacheDir(gameTitle string) string {
@@ -43,6 +44,7 @@ func ModCacheDir(gameTitle string) string {
 }
 
 // Same as a thundergo `Package` but without the following fields: [Versions, DonationLink, Pinned].
+// TODO: Instead of removing ALL versions, just remove every verison but latest.
 type StrippedPackage struct {
 	Name           string        `json:"name"`
 	FullName       string        `json:"full_name"`
@@ -281,6 +283,8 @@ func (a *API) InstallByName(gameTitle, community, fullName string) (*v1.PackageV
 	var errs []error
 	var downloadCount int
 
+	// Used in subsequent call to InstallWithDependencies().
+	// TODO: Maybe this should just be a param instead then?
 	CurModCacheDir = ModCacheDir(gameTitle)
 
 	latestVer := pkg.LatestVersion()

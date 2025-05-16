@@ -10,6 +10,10 @@ import (
 
 // type ModStore map[string]IMod
 
+// This struct is responsible for the management of profiles such as retreiving, creating, deleting and saving manifests.
+//
+// NOTE: All methods call regular functions so we can test said regular functions easily (since they aren't bound to the struct),
+// and know that the methods will work exactly the same. As profiles are a core feature, we should take extra caution and ensure tests pass.
 type ProfileManager struct{}
 
 func NewManager() *ProfileManager {
@@ -34,6 +38,38 @@ func (pm *ProfileManager) SaveProfile(gameTitle, profileName string, prof Profil
 
 func (pm *ProfileManager) DeleteProfile(gameTitle, profileName string) error {
 	return DeleteProfile(gameTitle, profileName)
+}
+
+func (pm *ProfileManager) AddThunderstoreModToProfile(gameTitle string, profileName string, verFullName string) error {
+	return AddThunderstoreModToProfile(gameTitle, profileName, verFullName)
+}
+
+func (pm *ProfileManager) AddNexusModToProfile(gameTitle string, profileName string, verFullName string) error {
+	return AddNexusModToProfile(gameTitle, profileName, verFullName)
+}
+
+func AddThunderstoreModToProfile(gameTitle string, profileName string, verFullName string) error {
+	prof, err := GetManifest(gameTitle, profileName)
+	if err != nil {
+		return err
+	}
+
+	prof.AddThunderstoreMod(verFullName)
+	SaveManifest(gameTitle, profileName, *prof)
+
+	return nil
+}
+
+func AddNexusModToProfile(gameTitle string, profileName string, verFullName string) error {
+	prof, err := GetManifest(gameTitle, profileName)
+	if err != nil {
+		return err
+	}
+
+	prof.AddNexusMod(verFullName)
+	SaveManifest(gameTitle, profileName, *prof)
+
+	return nil
 }
 
 func GameProfilesPath(gameTitle string) string {

@@ -66,9 +66,13 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
             installingDialog.setVisible(true)
         }
     
+        let success = false
         try {
             const start = performance.now()
+
             lastInstalledMod.value = await InstallByName(selectedGame.title, selectedGame.identifier, fullName)
+            success = !!lastInstalledMod.value
+
             console.info(`Installed mod: ${fullName}. Took ${((performance.now() - start) / 1000).toFixed(2)}s`)
         } catch(e: any) {
             console.error(`[${selectedGame.identifier}] Failed to install mod.\n${e.message}`)
@@ -79,6 +83,8 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
         if (installingDialog) {
             installingDialog.setClosable(true)
         }
+
+        return success
     }
 
     /** 

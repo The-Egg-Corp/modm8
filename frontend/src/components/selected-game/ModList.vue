@@ -16,6 +16,10 @@ import {
 import { ModListTabs, Package } from '@types'
 import { Dialog } from '@composables'
 
+import {
+    AddThunderstoreModToProfile 
+} from '@frontend/wailsjs/go/profile/ProfileManager'
+
 import { debounce } from "../../util"
 
 const profileStore = useProfileStore()
@@ -127,13 +131,28 @@ const handleScroll = (e: WheelEvent) => {
 
 async function installTsMod(mod: Package) {
     if (selectedGame.value.type != 'THUNDERSTORE') {
-        throw new Error('Could not install Thunderstore mod. Selected game is not of type `THUNDERSTORE`.')
+        throw new Error('Cannot install Thunderstore mod. Selected game is not of type `THUNDERSTORE`.')
     }
 
-    return modListStoreTS.installMod(mod.full_name, selectedGame.value.value, props.installingModDialog)
+    if (!selectedProfile.value?.name) {
+        throw new Error('Cannot install Thunderstore mod. Selected profile is not valid.')
+    }
+
+    const selectedGameTitle = selectedGame.value.value.title
+    const selectedProfName = selectedProfile.value.name
+
+    // The user wants this mod. Update manifest regardless of whether mod will successfully install.
+    // We can notify them in the profile tab if something is wrong and provide the option to start without it.
+    await AddThunderstoreModToProfile(selectedGameTitle, selectedProfName, mod.latestVersion.full_name)
+    await modListStoreTS.installMod(mod.full_name, selectedGame.value.value, props.installingModDialog)
+
+    // Keep profiles refreshed and in line with manifest.
+    await profileStore.initProfiles()
 }
 
-const props = defineProps<{ installingModDialog: Dialog }>()
+const props = defineProps<{
+    installingModDialog: Dialog
+}>()
 
 // TODO: Implement Thunderstore login using GitHub/Discord for things like rating mods.
 // This may require an update to Wails V3 so we can make OAuth easier as it has plugins and multi-window support.

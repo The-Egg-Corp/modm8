@@ -13,7 +13,7 @@ import {
     useModListStoreTS,
 } from '@stores'
 
-import { ModListTabs } from '@types'
+import { ModListTabs, Nullable, Profile } from '@types'
 import { Dialog } from '@composables'
 
 import {
@@ -165,11 +165,11 @@ async function installTsMod(mod: thunderstore.StrippedPackage) {
 
 async function uninstallTsMod(mod: thunderstore.StrippedPackage) {
     if (selectedGame.value.type != 'THUNDERSTORE') {
-        throw new Error('Cannot install Thunderstore mod. Selected game is not of type `THUNDERSTORE`.')
+        throw new Error('Cannot uninstall Thunderstore mod. Selected game is not of type `THUNDERSTORE`.')
     }
 
     if (!selectedProfile.value?.name) {
-        throw new Error('Cannot install Thunderstore mod. Selected profile is not valid.')
+        throw new Error('Cannot uninstall Thunderstore mod. Selected profile is not valid.')
     }
 
     const selectedGameTitle = selectedGame.value.value.title
@@ -178,8 +178,8 @@ async function uninstallTsMod(mod: thunderstore.StrippedPackage) {
     await RemoveThunderstoreModFromProfile(selectedGameTitle, selectedProfName, mod.latest_version.full_name)
 
     // Keep profiles refreshed and in line with manifest.
-    await profileStore.initProfiles()
     await initTsProfileMods()
+    await profileStore.initProfiles()
 }
 
 watch(selectedProfile, async (newVal, oldVal) => {
@@ -204,6 +204,10 @@ const props = defineProps<{
         
 //     }
 // }
+
+const profileHasMod = (prof: Nullable<Profile>, modVerFullName: string) => {
+    return prof?.mods.thunderstore?.some(m => m.toLowerCase() == modVerFullName.toLowerCase())
+}
 </script>
 
 <template>
@@ -366,16 +370,13 @@ const props = defineProps<{
 
                                 <div class="mod-list-bottom-row"> 
                                     <div class="flex row gap-2">
-                                        <!-- <Button v-if="activeTab == ModListTabType.PROFILE" 
-                                            class="btn w-full" severity="danger" icon="pi pi-trash"
+                                        <Button v-if="profileHasMod(selectedProfile, mod.latest_version.full_name)"
+                                            class="btn w-full" icon="pi pi-trash" severity="danger"
                                             :label="$t('keywords.uninstall')"
+                                            :disabled="selectedProfile == null"
+                                            @click="uninstallTsMod(mod)"
                                         />
-                                        <Button v-if="activeTab == ModListTabType.TS" 
-                                            class="btn w-full" icon="pi pi-download"
-                                            :label="$t('keywords.install')" @click="installMod(mod.full_name, gameStoreTS.selectedGame, props.installingModDialog)"
-                                        /> -->
-
-                                        <Button
+                                        <Button v-else
                                             class="btn w-full" icon="pi pi-download"
                                             :label="$t('keywords.install')"
                                             :disabled="selectedProfile == null"

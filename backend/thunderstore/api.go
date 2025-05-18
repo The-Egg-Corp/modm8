@@ -217,11 +217,12 @@ func InstallWithDependencies(pkg v1.PackageVersion, pkgs v1.PackageList, errs *[
 		*installCount += 1
 	}
 
+	// Install dependencies of dependencies and so forth, until no more left.
 	for _, dependency := range pkg.Dependencies {
 		// Split the dependency string into 3 elements: Author, Package Name, Version
 		split := strings.Split(dependency, "-")
-		pkg := pkgs.Get(split[0], split[1])
 
+		pkg := pkgs.Get(split[0], split[1])
 		if pkg == nil {
 			*errs = append(*errs, fmt.Errorf("dependency '%s' not found", dependency))
 			continue

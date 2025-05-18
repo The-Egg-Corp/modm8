@@ -40,9 +40,6 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
     //#region State
     const loading = ref(false)
     const installing = ref(false)
-
-    const modElements = ref<any[]>([])
-    const scrollIndex = ref(0)
     
     const PAGE_ROWS = 40
     const pageFirstRecordIdx = ref(0) // Index of the first record on the current page.
@@ -57,6 +54,13 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
     //#endregion
 
     //#region Actions
+    /**
+     * For the given selected game, this function will attempt to install the mod specified by {@link fullName},
+     * with all of its dependencies, if they do not already exist.
+     * @param fullName The name of the mod in the format: "Author-ModName". Version must be excluded.
+     * @param selectedGame The instance of the currently selected Thunderstore game.
+     * @param installingDialog The dialog UI to show during mod installation.
+     */
     async function installMod(fullName: string, selectedGame: ThunderstoreGame, installingDialog?: Dialog) {
         installing.value = true
     
@@ -165,8 +169,6 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
     return {
         loading,
         installing,
-        modElements,
-        scrollIndex,
         PAGE_ROWS,
         mods,
         currentPageMods,

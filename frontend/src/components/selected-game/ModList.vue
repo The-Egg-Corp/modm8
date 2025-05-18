@@ -32,7 +32,10 @@ const { selectedGame } = storeToRefs(gameStore)
 
 // Shared mod list state for all mod sites/platforms.
 const modListStore = useModListStore()
-const { activeTab, searchInput } = storeToRefs(modListStore)
+const { 
+    activeTab, searchInput, 
+    modElements, scrollIndex
+} = storeToRefs(modListStore)
 
 // Mod list store for Thunderstore only.
 const modListStoreTS = useModListStoreTS()
@@ -44,7 +47,7 @@ const {
 
 const {
     loading,
-    modElements, scrollIndex, pageFirstRecordIdx,
+    pageFirstRecordIdx,
     mods, currentPageMods,
 } = storeToRefs(modListStoreTS)
 
@@ -133,6 +136,11 @@ const handleScroll = (e: WheelEvent) => {
     nextTick(() => scrollToMod(scrollIndex.value))
 }
 
+async function initTsProfileMods() {
+    const cache = selectedGame.value.value.modCache ?? []
+    tsProfileMods.value = cache.length > 0 ? await filterByProfile(cache) : []
+}
+
 async function installTsMod(mod: thunderstore.StrippedPackage) {
     if (selectedGame.value.type != 'THUNDERSTORE') {
         throw new Error('Cannot install Thunderstore mod. Selected game is not of type `THUNDERSTORE`.')
@@ -168,7 +176,6 @@ async function uninstallTsMod(mod: thunderstore.StrippedPackage) {
     const selectedProfName = selectedProfile.value.name
 
     await RemoveThunderstoreModFromProfile(selectedGameTitle, selectedProfName, mod.latest_version.full_name)
-    //await modListStoreTS.installMod(mod.full_name, selectedGame.value.value, props.installingModDialog)
 
     // Keep profiles refreshed and in line with manifest.
     await profileStore.initProfiles()
@@ -181,11 +188,6 @@ watch(selectedProfile, async (newVal, oldVal) => {
 
     await initTsProfileMods()
 })
-
-async function initTsProfileMods() {
-    const cache = selectedGame.value.value.modCache ?? []
-    tsProfileMods.value = cache.length > 0 ? await filterByProfile(cache) : []
-}
 
 const props = defineProps<{
     installingModDialog: Dialog
@@ -270,7 +272,7 @@ const props = defineProps<{
                                 <div class="mod-list-bottom-row"> 
                                     <div class="flex row gap-2">
                                         <Button
-                                            class="btn w-full" icon="pi pi-download" severity="danger"
+                                            class="btn w-full" icon="pi pi-trash" severity="danger"
                                             :label="$t('keywords.uninstall')"
                                             :disabled="selectedProfile == null"
                                             @click="uninstallTsMod(mod)"

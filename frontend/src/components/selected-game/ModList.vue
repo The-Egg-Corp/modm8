@@ -159,8 +159,8 @@ async function installTsMod(mod: thunderstore.StrippedPackage) {
     await modListStoreTS.installMod(mod.full_name, selectedGame.value.value, props.installingModDialog)
 
     // Keep profiles refreshed and in line with manifest.
-    await profileStore.initProfiles()
     await initTsProfileMods()
+    await profileStore.initProfiles()
 }
 
 async function uninstallTsMod(mod: thunderstore.StrippedPackage) {

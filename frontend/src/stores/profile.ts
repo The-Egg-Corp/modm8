@@ -32,6 +32,10 @@ export const useProfileStore = defineStore("ProfileStore", () => {
             const profs = await GetProfiles(selectedGame.value.value.title)
             profiles.value = Object.entries(profs).map(([name, manifest]) => ({ name, ...manifest }))
 
+            if (selectedProfile.value?.name) {
+                setSelectedProfile(selectedProfile.value)
+            }
+
             //console.log(`Profiles for ${gameStoreTS.selectedGame.title}:`, Object.keys(profs))
         } catch (e: any) {
             console.error(e)

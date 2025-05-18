@@ -136,6 +136,10 @@ const handleScroll = (e: WheelEvent) => {
     nextTick(() => scrollToMod(scrollIndex.value))
 }
 
+const profileHasMod = (prof: Nullable<Profile>, modVerFullName: string) => {
+    return prof?.mods.thunderstore?.some(m => m.toLowerCase() == modVerFullName.toLowerCase())
+}
+
 async function initTsProfileMods() {
     const cache = selectedGame.value.value.modCache ?? []
     tsProfileMods.value = cache.length > 0 ? await filterByProfile(cache) : []
@@ -204,10 +208,6 @@ const props = defineProps<{
         
 //     }
 // }
-
-const profileHasMod = (prof: Nullable<Profile>, modVerFullName: string) => {
-    return prof?.mods.thunderstore?.some(m => m.toLowerCase() == modVerFullName.toLowerCase())
-}
 </script>
 
 <template>

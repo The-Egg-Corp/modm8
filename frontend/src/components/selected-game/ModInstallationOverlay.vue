@@ -1,8 +1,16 @@
 <script lang="ts" setup>
+import { storeToRefs } from "pinia"
+
 import { v1 } from "@backend/models"
 import { CardOverlay } from "@components"
 import { Dialog } from "@composables"
+
 import type { Nullable } from "@types"
+
+import { useModListStoreTS } from '@stores'
+
+const modListStoreTS = useModListStoreTS()
+const { lastInstalledMod } = storeToRefs(modListStoreTS)
 
 const props = defineProps<{
     dialog: Dialog
@@ -11,6 +19,11 @@ const props = defineProps<{
 }>()
 
 const installStatus = () => props.installing ? "Installing..." : "Installed"
+
+function onClose(e: Event) {
+    lastInstalledMod.value = null
+    props.dialog.setVisible(false)
+}
 </script>
 
 <template>
@@ -23,7 +36,10 @@ const installStatus = () => props.installing ? "Installing..." : "Installed"
     <template #cardContent>
         <div class="flex column justify-content-center align-items-baseline">
             <h1 class="mb-0 mt-2">{{ installStatus() }} </h1>
-            <p v-if="lastInstalledMod" class="mt-1 mb-1" style="font-size: 18px">{{ lastInstalledMod.full_name }}</p>
+            
+            <p v-if="lastInstalledMod" class="mt-1 mb-1" style="font-size: 18px">
+               {{ lastInstalledMod.full_name }}
+            </p>
         </div>
     </template>
 
@@ -32,13 +48,14 @@ const installStatus = () => props.installing ? "Installing..." : "Installed"
             <div class="flex row gap-1 flex-grow-1">
                 <Button class="w-full"
                     type="button" severity="secondary"
-                    :label="$t('keywords.close')" @click="dialog.setVisible(false)"
+                    :label="$t('keywords.close')" 
                     :disabled="installing"
+                    @click="onClose"
                 />
-                <Button class="w-6"
+                <!-- <Button class="w-6"
                     type="button" severity="danger" icon="pi pi-trash"
                     label="Uninstall" :disabled="installing"
-                />
+                /> -->
             </div>
             <!-- <Button v-else class="flex flex-grow-1" 
                 type="button" severity="danger" icon="pi pi-ban"

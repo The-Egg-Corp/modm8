@@ -11,6 +11,8 @@ import (
 	"github.com/saracen/fastzip"
 )
 
+// Opens a zip file, extracts its contents via a background operation,
+// then subsequently deletes the no longer useful zip.
 func Unzip(path, dest string, delete bool) error {
 	// Initialize an extractor
 	e, err := fastzip.NewExtractor(path, dest)
@@ -36,6 +38,11 @@ func Unzip(path, dest string, delete bool) error {
 	return err
 }
 
+// Given a byte slice, which assumed to be data representing a zip file, this function will attempt to
+// read said zip, scanning every file and collecting its contents into a map where the key represents
+// the file name and the value represents the file contents as a byte slice.
+//
+// Note that a byte slice (file) in the map may be nil if an error occurred or the file is empty.
 func GetFilesInZip(data []byte) (map[string][]byte, error) {
 	// Create a zip reader
 	reader, err := zip.NewReader(bytes.NewReader(data), int64(len(data)))
@@ -50,10 +57,10 @@ func GetFilesInZip(data []byte) (map[string][]byte, error) {
 			return nil, fmt.Errorf("failed to open file in zip: %w", err)
 		}
 
-		defer rc.Close()
-
 		// Read the file contents
 		contents, err := io.ReadAll(rc)
+		rc.Close()
+
 		if err != nil {
 			return nil, fmt.Errorf("failed to read file contents: %w", err)
 		}

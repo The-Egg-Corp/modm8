@@ -8,6 +8,13 @@ import (
 	"path/filepath"
 )
 
+type ManifestOperation int
+
+const (
+	MANIFEST_OP_MOD_ADD ManifestOperation = iota
+	MANIFEST_OP_MOD_REMOVE
+)
+
 // type ModStore map[string]IMod
 
 // This struct is responsible for the management of profiles such as retreiving, creating, deleting and saving manifests.
@@ -41,34 +48,54 @@ func (pm *ProfileManager) DeleteProfile(gameTitle, profileName string) error {
 }
 
 func (pm *ProfileManager) AddThunderstoreModToProfile(gameTitle string, profileName string, verFullName string) error {
-	return AddThunderstoreModToProfile(gameTitle, profileName, verFullName)
+	return UpdateThunderstoreProfileMods(MANIFEST_OP_MOD_ADD, gameTitle, profileName, verFullName)
 }
 
 func (pm *ProfileManager) AddNexusModToProfile(gameTitle string, profileName string, verFullName string) error {
-	return AddNexusModToProfile(gameTitle, profileName, verFullName)
+	return UpdateNexusProfileMods(MANIFEST_OP_MOD_ADD, gameTitle, profileName, verFullName)
 }
 
-func AddThunderstoreModToProfile(gameTitle string, profileName string, verFullName string) error {
+func (pm *ProfileManager) RemoveThunderstoreModFromProfile(gameTitle string, profileName string, verFullName string) error {
+	return UpdateThunderstoreProfileMods(MANIFEST_OP_MOD_REMOVE, gameTitle, profileName, verFullName)
+}
+
+func (pm *ProfileManager) RemoveNexusModFromProfile(gameTitle string, profileName string, verFullName string) error {
+	return UpdateNexusProfileMods(MANIFEST_OP_MOD_REMOVE, gameTitle, profileName, verFullName)
+}
+
+func UpdateThunderstoreProfileMods(op ManifestOperation, gameTitle string, profileName string, verFullName string) error {
 	prof, err := GetManifest(gameTitle, profileName)
 	if err != nil {
 		return err
 	}
 
-	prof.AddThunderstoreMod(verFullName)
-	SaveManifest(gameTitle, profileName, *prof)
+	if op == MANIFEST_OP_MOD_ADD {
+		prof.AddThunderstoreMod(verFullName)
+	}
 
+	if op == MANIFEST_OP_MOD_REMOVE {
+		prof.RemoveThunderstoreMod(verFullName)
+	}
+
+	SaveManifest(gameTitle, profileName, *prof)
 	return nil
 }
 
-func AddNexusModToProfile(gameTitle string, profileName string, verFullName string) error {
+func UpdateNexusProfileMods(op ManifestOperation, gameTitle string, profileName string, verFullName string) error {
 	prof, err := GetManifest(gameTitle, profileName)
 	if err != nil {
 		return err
 	}
 
-	prof.AddNexusMod(verFullName)
-	SaveManifest(gameTitle, profileName, *prof)
+	if op == MANIFEST_OP_MOD_ADD {
+		prof.AddNexusMod(verFullName)
+	}
 
+	if op == MANIFEST_OP_MOD_REMOVE {
+		prof.RemoveNexusMod(verFullName)
+	}
+
+	SaveManifest(gameTitle, profileName, *prof)
 	return nil
 }
 

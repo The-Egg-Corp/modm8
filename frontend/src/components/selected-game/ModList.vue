@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, nextTick, computed } from 'vue'
+import { ref, nextTick, computed, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 
 import { TabMenuChangeEvent } from 'primevue/tabmenu'
@@ -17,7 +17,8 @@ import { ModListTabs } from '@types'
 import { Dialog } from '@composables'
 
 import {
-    AddThunderstoreModToProfile 
+    AddThunderstoreModToProfile,
+    RemoveThunderstoreModFromProfile
 } from '@frontend/wailsjs/go/profile/ProfileManager'
 
 import { debounce } from "../../util"
@@ -36,7 +37,7 @@ const { activeTab, searchInput } = storeToRefs(modListStore)
 // Mod list store for Thunderstore only.
 const modListStoreTS = useModListStoreTS()
 const { 
-    refreshMods,
+    refreshMods, filterByProfile,
     updatePage, refreshPage,
     getMods, PAGE_ROWS
 } = modListStoreTS
@@ -46,6 +47,8 @@ const {
     modElements, scrollIndex, pageFirstRecordIdx,
     mods, currentPageMods,
 } = storeToRefs(modListStoreTS)
+
+const tsProfileMods = ref<thunderstore.StrippedPackage[]>([])
 
 const tabs = ref([
     { type: ModListTabs.PROFILE, label: 'This Profile', icon: 'pi pi-box' },
@@ -149,6 +152,39 @@ async function installTsMod(mod: thunderstore.StrippedPackage) {
 
     // Keep profiles refreshed and in line with manifest.
     await profileStore.initProfiles()
+    await initTsProfileMods()
+}
+
+async function uninstallTsMod(mod: thunderstore.StrippedPackage) {
+    if (selectedGame.value.type != 'THUNDERSTORE') {
+        throw new Error('Cannot install Thunderstore mod. Selected game is not of type `THUNDERSTORE`.')
+    }
+
+    if (!selectedProfile.value?.name) {
+        throw new Error('Cannot install Thunderstore mod. Selected profile is not valid.')
+    }
+
+    const selectedGameTitle = selectedGame.value.value.title
+    const selectedProfName = selectedProfile.value.name
+
+    await RemoveThunderstoreModFromProfile(selectedGameTitle, selectedProfName, mod.latest_version.full_name)
+    //await modListStoreTS.installMod(mod.full_name, selectedGame.value.value, props.installingModDialog)
+
+    // Keep profiles refreshed and in line with manifest.
+    await profileStore.initProfiles()
+    await initTsProfileMods()
+}
+
+watch(selectedProfile, async (newVal, oldVal) => {
+    if (newVal == null) return
+    if (newVal == oldVal) return
+
+    await initTsProfileMods()
+})
+
+async function initTsProfileMods() {
+    const cache = selectedGame.value.value.modCache ?? []
+    tsProfileMods.value = cache.length > 0 ? await filterByProfile(cache) : []
 }
 
 const props = defineProps<{
@@ -187,52 +223,110 @@ const props = defineProps<{
     </div>
     <!-- #endregion -->
 
-    <div v-if="loading" layout="list">
-        <h2 style="font-size: 40px; margin: 10px auto;">Loading mods...</h2>
-    </div>
-    <div v-else>
-        <!-- #region PROFILE TAB -->
-        <DataView v-if="activeTab == ModListTabs.PROFILE" 
-            layout="list" data-key="mod-list-profile"
-            :value="[]"
-        >
-            <template #empty>
-                <h2 v-if="selectedProfile == null" class="empty-profile">No profile selected.</h2>
-                <div v-else>
-                    <div v-if="!hasSearchInput() /*|| failed*/">
-                        <h2 class="empty-profile">{{ $t('selected-game.no-mods-installed') }}</h2>
-                    </div>
-                    <div v-else class="pl-2">
-                        <h2 class="m-0 mt-1">{{ $t('selected-game.empty-results') }}.</h2>
+    <!-- #region PROFILE TAB -->
+    <DataView v-if="activeTab == ModListTabs.PROFILE" 
+        layout="list" data-key="mod-list-profile"
+        :value="tsProfileMods"
+    >
+        <template #empty>
+            <h2 v-if="selectedProfile == null" class="empty-profile">No profile selected.</h2>
+            <div v-else>
+                <div v-if="!hasSearchInput() /*|| failed*/">
+                    <h2 class="empty-profile">{{ $t('selected-game.no-mods-installed') }}</h2>
+                </div>
+                <div v-else class="pl-2">
+                    <h2 class="m-0 mt-1">{{ $t('selected-game.empty-results') }}.</h2>
 
-                        <!-- Sadge -->
-                        <img class="mt-2" src="https://cdn.7tv.app/emote/603cac391cd55c0014d989be/3x.png">
+                    <!-- Sadge -->
+                    <img class="mt-2" src="https://cdn.7tv.app/emote/603cac391cd55c0014d989be/3x.png">
+                </div>
+            </div>
+        </template>
+
+        <template #list>
+            <div class="scrollable-list list-nogutter no-drag" @wheel.prevent="handleScroll">
+                <div 
+                    v-for="(mod, index) in tsProfileMods" class="list-item col-12"
+                    :key="index" :ref="el => modElements[index] = el"
+                >
+                    <div class="flex-grow-1 flex column sm:flex-row align-items-center pt-2 gap-3" :class="{ 'border-top-faint': index != 0 }">
+                        <img class="mod-list-thumbnail block xl:block" :src="mod.latest_version?.icon || ''"/>
+                        
+                        <div class="flex-grow-1 flex column md:flex-row md:align-items-center">
+                            <div class="flex-grow-1 flex column justify-content-between">
+                                <div class="flex row align-items-baseline">
+                                    <div class="mod-list-title">{{ mod.name }}</div>
+                                    <div class="mod-list-author">({{ mod.owner }})</div>
+                                </div>
+
+                                <div class="mod-list-description mb-1">{{ mod.latest_version.description }}</div>
+
+                                <!--
+                                    :icon="isFavouriteGame(game.identifier) ? 'pi pi-heart-fill' : 'pi pi-heart'"
+                                    :style="isFavouriteGame(game.identifier) ? { color: 'var(--primary-color)' } : {}"
+                                    @click="toggleFavouriteGame(game.identifier)"
+                                /> -->
+
+                                <div class="mod-list-bottom-row"> 
+                                    <div class="flex row gap-2">
+                                        <Button
+                                            class="btn w-full" icon="pi pi-download" severity="danger"
+                                            :label="$t('keywords.uninstall')"
+                                            :disabled="selectedProfile == null"
+                                            @click="uninstallTsMod(mod)"
+                                        />
+
+                                        <div class="flex row align-items-center">
+                                            <!-- TODO: On click, call openLoginPage when implemented. -->
+                                            <Button outlined plain
+                                                style="margin-right: 6.5px;"
+                                                :icon="'pi pi-thumbs-up'"
+                                                @click=""
+                                            />
+                                            
+                                            <div class="mod-list-rating">{{ mod.rating_score }}</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- TODO: Ensure the tags flex to the end of the DataView and not the item content. -->
+                                    <div class="flex row flex-shrink-0 gap-1">
+                                        <div v-for="category in mod.categories.filter(c => c.toLowerCase() != 'mods')">
+                                            <Tag :value="category"></Tag>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </template>
+            </div>
+        </template>
+    </DataView>
+    <!-- #endregion -->
 
-            <template #list>
-
-            </template>
-        </DataView>
-        <!-- #endregion -->
-
-        <!-- #region THUNDERSTORE TAB -->
-        <DataView v-if="activeTab == ModListTabs.TS" 
-            lazy layout="list" data-key="mod-list-ts"
-            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
-            :paginator="mods.length > PAGE_ROWS" :rows="PAGE_ROWS"
-            :value="mods" @page="onPageChange" :first="pageFirstRecordIdx"
-        >
-            <template v-if="selectedProfile == null" #empty>
-                
-            </template>
-            <template #empty>
+    <!-- #region THUNDERSTORE TAB -->
+    <DataView v-if="activeTab == ModListTabs.TS" 
+        lazy layout="list" data-key="mod-list-ts"
+        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
+        :paginator="mods.length > PAGE_ROWS" :rows="PAGE_ROWS"
+        :value="mods" @page="onPageChange" :first="pageFirstRecordIdx"
+    >
+        <template #empty>
+            <div v-if="loading" layout="list">
+                <h2 style="font-size: 40px; margin: 10px auto;">Loading mods...</h2>
+            </div>
+            <div v-else>
                 <!-- TODO: If failed, make this show regardless of search input. --> 
                 <div v-if="!hasSearchInput() /*|| failed*/">
                     <div class="ml-1">
-                        <h2 class="error-text">No mods available! Something probably went wrong.</h2>
-                        <Button class="mt-1" :label="$t('keywords.refresh')" icon="pi pi-refresh" @click="refreshMods(true)"/>
+                        <h1 class="error-text">No mods available!</h1>
+                        <h2 style="margin: 5px 0px;">Either Thunderstore is down or something went terribly wrong :(</h2>
+
+                        <Button class="mt-2" icon="pi pi-refresh" 
+                            :label="$t('keywords.refresh')" 
+                            @click="refreshMods(true)"
+                            size="large"
+                        />
                     </div>
                 </div>
                 <div v-else class="pl-2">
@@ -241,67 +335,67 @@ const props = defineProps<{
                     <!-- Sadge -->
                     <img class="mt-2" src="https://cdn.7tv.app/emote/603cac391cd55c0014d989be/3x.png">
                 </div>
-            </template>
+            </div>
+        </template>
 
-            <template #list>
-                <div class="scrollable-list list-nogutter no-drag" @wheel.prevent="handleScroll">
-                    <div 
-                        v-for="(mod, index) in currentPageMods" class="list-item col-12"
-                        :key="index" :ref="el => modElements[index] = el"
-                    >
-                        <div class="flex-grow-1 flex column sm:flex-row align-items-center pt-2 gap-3" :class="{ 'border-top-faint': index != 0 }">
-                            <img class="mod-list-thumbnail block xl:block" :src="mod.latest_version?.icon || ''"/>
-                            
-                            <div class="flex-grow-1 flex column md:flex-row md:align-items-center">
-                                <div class="flex-grow-1 flex column justify-content-between">
-                                    <div class="flex row align-items-baseline">
-                                        <div class="mod-list-title">{{ mod.name }}</div>
-                                        <div class="mod-list-author">({{ mod.owner }})</div>
+        <template #list>
+            <div class="scrollable-list list-nogutter no-drag" @wheel.prevent="handleScroll">
+                <div 
+                    v-for="(mod, index) in currentPageMods" class="list-item col-12"
+                    :key="index" :ref="el => modElements[index] = el"
+                >
+                    <div class="flex-grow-1 flex column sm:flex-row align-items-center pt-2 gap-3" :class="{ 'border-top-faint': index != 0 }">
+                        <img class="mod-list-thumbnail block xl:block" :src="mod.latest_version?.icon || ''"/>
+                        
+                        <div class="flex-grow-1 flex column md:flex-row md:align-items-center">
+                            <div class="flex-grow-1 flex column justify-content-between">
+                                <div class="flex row align-items-baseline">
+                                    <div class="mod-list-title">{{ mod.name }}</div>
+                                    <div class="mod-list-author">({{ mod.owner }})</div>
+                                </div>
+
+                                <div class="mod-list-description mb-1">{{ mod.latest_version.description }}</div>
+
+                                <!--
+                                    :icon="isFavouriteGame(game.identifier) ? 'pi pi-heart-fill' : 'pi pi-heart'"
+                                    :style="isFavouriteGame(game.identifier) ? { color: 'var(--primary-color)' } : {}"
+                                    @click="toggleFavouriteGame(game.identifier)"
+                                /> -->
+
+                                <div class="mod-list-bottom-row"> 
+                                    <div class="flex row gap-2">
+                                        <!-- <Button v-if="activeTab == ModListTabType.PROFILE" 
+                                            class="btn w-full" severity="danger" icon="pi pi-trash"
+                                            :label="$t('keywords.uninstall')"
+                                        />
+                                        <Button v-if="activeTab == ModListTabType.TS" 
+                                            class="btn w-full" icon="pi pi-download"
+                                            :label="$t('keywords.install')" @click="installMod(mod.full_name, gameStoreTS.selectedGame, props.installingModDialog)"
+                                        /> -->
+
+                                        <Button
+                                            class="btn w-full" icon="pi pi-download"
+                                            :label="$t('keywords.install')"
+                                            :disabled="selectedProfile == null"
+                                            @click="installTsMod(mod)"
+                                        />
+
+                                        <div class="flex row align-items-center">
+                                            <!-- TODO: On click, call openLoginPage when implemented. -->
+                                            <Button outlined plain
+                                                style="margin-right: 6.5px;"
+                                                :icon="'pi pi-thumbs-up'"
+                                                @click=""
+                                            />
+                                            
+                                            <div class="mod-list-rating">{{ mod.rating_score }}</div>
+                                        </div>
                                     </div>
 
-                                    <div class="mod-list-description mb-1">{{ mod.latest_version.description }}</div>
-
-                                    <!--
-                                        :icon="isFavouriteGame(game.identifier) ? 'pi pi-heart-fill' : 'pi pi-heart'"
-                                        :style="isFavouriteGame(game.identifier) ? { color: 'var(--primary-color)' } : {}"
-                                        @click="toggleFavouriteGame(game.identifier)"
-                                    /> -->
-
-                                    <div class="mod-list-bottom-row"> 
-                                        <div class="flex row gap-2">
-                                            <!-- <Button v-if="activeTab == ModListTabType.PROFILE" 
-                                                class="btn w-full" severity="danger" icon="pi pi-trash"
-                                                :label="$t('keywords.uninstall')"
-                                            />
-                                            <Button v-if="activeTab == ModListTabType.TS" 
-                                                class="btn w-full" icon="pi pi-download"
-                                                :label="$t('keywords.install')" @click="installMod(mod.full_name, gameStoreTS.selectedGame, props.installingModDialog)"
-                                            /> -->
-
-                                            <Button
-                                                class="btn w-full" icon="pi pi-download"
-                                                :label="$t('keywords.install')"
-                                                :disabled="selectedProfile == null"
-                                                @click="installTsMod(mod)"
-                                            />
-
-                                            <div class="flex row align-items-center">
-                                                <!-- TODO: On click, call openLoginPage when implemented. -->
-                                                <Button outlined plain
-                                                    style="margin-right: 6.5px;"
-                                                    :icon="'pi pi-thumbs-up'"
-                                                    @click=""
-                                                />
-                                                
-                                                <div class="mod-list-rating">{{ mod.rating_score }}</div>
-                                            </div>
-                                        </div>
-
-                                        <!-- TODO: Ensure the tags flex to the end of the DataView and not the item content. -->
-                                        <div class="flex row flex-shrink-0 gap-1">
-                                            <div v-for="category in mod.categories.filter(c => c.toLowerCase() != 'mods')">
-                                                <Tag :value="category"></Tag>
-                                            </div>
+                                    <!-- TODO: Ensure the tags flex to the end of the DataView and not the item content. -->
+                                    <div class="flex row flex-shrink-0 gap-1">
+                                        <div v-for="category in mod.categories.filter(c => c.toLowerCase() != 'mods')">
+                                            <Tag :value="category"></Tag>
                                         </div>
                                     </div>
                                 </div>
@@ -309,23 +403,23 @@ const props = defineProps<{
                         </div>
                     </div>
                 </div>
-            </template>
-        </DataView>
-        <!-- #endregion -->
+            </div>
+        </template>
+    </DataView>
+    <!-- #endregion -->
 
-        <!-- #region NEXUS TAB -->
-        <DataView v-if="activeTab == ModListTabs.NEXUS" 
-            lazy layout="list" data-key="mod-list-nexus"
-            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
-        >
-            <template #empty>
-                <div class="ml-1">
-                    <h2 class="error-text">Nexus Mods support is not implemented yet.</h2>
-                </div>
-            </template>
-        </DataView>
-        <!-- #endregion -->
-    </div>
+    <!-- #region NEXUS TAB -->
+    <DataView v-if="activeTab == ModListTabs.NEXUS" 
+        lazy layout="list" data-key="mod-list-nexus"
+        paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink"
+    >
+        <template #empty>
+            <div class="ml-1">
+                <h2 class="error-text">Nexus Mods support is not implemented yet.</h2>
+            </div>
+        </template>
+    </DataView>
+    <!-- #endregion -->
 </div>
 </template>
 
@@ -385,7 +479,7 @@ const props = defineProps<{
 
 .error-text {
     color: red;
-    font-size: 25px;
+    font-size: 28px;
     margin: 0 auto;
 }
 

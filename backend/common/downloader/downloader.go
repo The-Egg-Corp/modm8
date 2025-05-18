@@ -15,7 +15,7 @@ import (
 
 const CUSTOM_ZIP_EXT = ".m8z"
 
-// Alias for a map, where the key is the URL and value is the associated output info.
+// Alias for a map, where the key is the download URL and value is the associated output file info.
 type DownloadPool = map[string]fileutil.FileMetadata
 
 func DownloadZip(url, dirPath, fileName string) (*grab.Response, error) {

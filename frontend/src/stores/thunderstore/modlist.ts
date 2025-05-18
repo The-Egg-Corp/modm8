@@ -9,7 +9,8 @@ import {
 import { 
     useGameStore,
     useGameStoreTS,
-    useModListStore
+    useModListStore,
+    useProfileStore
 } from '@stores'
 
 import type { Dialog } from "@composables"
@@ -26,8 +27,8 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
     const modListStore = useModListStore()
     const { searchInput } = storeToRefs(modListStore)
 
-    //const profileStore = useProfileStore()
-    //const { selectedProfile } = storeToRefs(profileStore)
+    const profileStore = useProfileStore()
+    const { selectedProfile } = storeToRefs(profileStore)
 
     const gameStore = useGameStore()
     const { selectedGame } = storeToRefs(gameStore)
@@ -142,6 +143,18 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
         })
     }
 
+    async function filterByProfile(mods: thunderstore.StrippedPackage[]) {
+        if (!selectedProfile.value?.name) return mods // Invalid or no selected profile.
+
+        const tsProfMods = selectedProfile.value.mods.thunderstore
+        const filtered = await mods.filter(mod => {
+            const latestVerName = mod.latest_version.full_name.toLowerCase()
+            return tsProfMods?.some(name => name.toLowerCase() == latestVerName)
+        })
+
+        return filtered
+    }
+
     const refreshPage = () => updatePage(0, PAGE_ROWS)
     const updatePage = async (newFirst: number, rows: number) => {
         pageFirstRecordIdx.value = newFirst
@@ -163,6 +176,7 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
         getMods,
         refreshMods,
         filterBySearch,
+        filterByProfile,
         refreshPage,
         updatePage
     }

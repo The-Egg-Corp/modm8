@@ -3,6 +3,7 @@ package main
 import (
 	"embed"
 	"fmt"
+	"os"
 
 	"github.com/leaanthony/u"
 	"github.com/wailsapp/wails/v2"
@@ -70,17 +71,34 @@ func main() {
 
 	modm8.Settings.Apply()
 
-	nexusAPI, keyErr := nexus.NewAPI(modm8.Ctx)
-	if keyErr != nil {
-		fmt.Printf("\nfailed to initialize nexus client:\n\n%v", keyErr)
-	}
-
 	tsAPI := thunderstore.NewAPI(modm8.Ctx)
 	tsTools := thunderstore.NewTools()
 
 	profileManager := profile.NewManager()
 	gameManager := game.NewManager()
 	steamRunner := steam.NewRunner()
+
+	bindings := IList{
+		modm8,
+		modm8.Settings,
+		modm8.Persistence,
+		modm8.Utils,
+		tsAPI,
+		tsTools,
+		profileManager,
+		gameManager,
+		steamRunner,
+	}
+
+	// For now, avoid binding Nexus stuff in GH Actions since key file wont exist.
+	if os.Getenv("GITHUB_ACTIONS") == "false" {
+		nexusAPI, keyErr := nexus.NewAPI(modm8.Ctx)
+		if keyErr != nil {
+			fmt.Printf("\nfailed to initialize nexus client:\n\n%v", keyErr)
+		}
+
+		bindings = append(bindings, nexusAPI)
+	}
 
 	err := wails.Run(&options.App{
 		Title:     "modm8",
@@ -103,18 +121,7 @@ func main() {
 		Linux:    NewLinuxOptions(),
 		Windows:  NewWindowsOptions(modm8.Settings.Performance.GPUAcceleration),
 		LogLevel: logger.INFO,
-		Bind: IList{
-			modm8,
-			modm8.Settings,
-			modm8.Persistence,
-			modm8.Utils,
-			tsAPI,
-			tsTools,
-			nexusAPI,
-			gameManager,
-			profileManager,
-			steamRunner,
-		},
+		Bind:     bindings,
 		EnumBind: IList{
 			app.UpdateBehaviours,
 			app.GameSelectionLayouts,

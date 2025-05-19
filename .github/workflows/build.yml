@@ -46,7 +46,7 @@ jobs:
         id: build
         with:
           #name: "modm8"
-          go-version: '1.22.1'
+          go-version: '1.23'
           node-version: 20
           setup-bun: true
           build-name: ${{ matrix.build.name }}

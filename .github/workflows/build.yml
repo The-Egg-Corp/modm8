@@ -42,14 +42,14 @@ jobs:
           submodules: recursive
 
       - name: Wails Build
-        uses: The-Egg-Corp/wails-build-action@v1.4
+        uses: The-Egg-Corp/wails-build-action@main
         id: build
         with:
-          #name: "modm8"
-          go-version: '1.23'
-          node-version: 20
-          setup-bun: true
+          name: "modm8"
           build-name: ${{ matrix.build.name }}
           build-platform: ${{ matrix.build.platform }}
           nsis: ${{ inputs.nsis }}
           package: ${{ inputs.package }}
+          go-version: '1.23'
+          node-version: 20
+          setup-bun: true

@@ -11,9 +11,8 @@ import (
 	"github.com/saracen/fastzip"
 )
 
-// Opens a zip file, extracts its contents via a background operation,
-// then subsequently deletes the no longer useful zip.
-func Unzip(path, dest string, delete bool) error {
+// Opens a zip file and extracts its contents via a background operation.
+func Unzip(path, dest string) error {
 	// Initialize an extractor
 	e, err := fastzip.NewExtractor(path, dest)
 	if err != nil {
@@ -26,13 +25,20 @@ func Unzip(path, dest string, delete bool) error {
 		return err
 	}
 
-	// Close before deleting to avoid contention.
-	err = e.Close()
-	if err == nil && delete {
-		// We no longer need the original zip.
-		if err = os.Remove(path); err != nil {
-			return err
+	return e.Close()
+}
+
+// Does the same as Unzip (opens a zip file and extracts its contents via a background operation).
+// However, this function subsequently deletes the zip after extraction finishes, regardless of whether it succeeded.
+func UnzipAndDelete(path, dest string) error {
+	err := Unzip(path, dest)
+
+	if delErr := os.Remove(path); delErr != nil {
+		if err != nil {
+			return fmt.Errorf("unzip error: %v; also failed to delete zip: %v", err, delErr)
 		}
+
+		return fmt.Errorf("failed to delete zip: %v", delErr)
 	}
 
 	return err

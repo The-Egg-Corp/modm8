@@ -11,6 +11,13 @@ import (
 	"github.com/cavaliergopher/grab/v3"
 )
 
+type PlatformArch string
+
+const (
+	X64 PlatformArch = "x64"
+	X86 PlatformArch = "x86"
+)
+
 type BepinexConfig struct {
 	RootComments []string                      `json:"root_comments" mapstructure:"root_comments"`
 	Entries      map[string]BepinexConfigEntry `json:"entries" mapstructure:"entries"`
@@ -131,7 +138,6 @@ func BepinexInstalled(absPath string) (bool, []string) {
 	}
 
 	missing := []string{}
-
 	for _, fileName := range required {
 		// Use abs path to get path to current required file.
 		path := filepath.Join(absPath, fileName)
@@ -146,27 +152,23 @@ func BepinexInstalled(absPath string) (bool, []string) {
 	return len(missing) == 0, missing
 }
 
-type PlatformArch string
-
-const (
-	X64 PlatformArch = "x64"
-	X86 PlatformArch = "x86"
-)
-
 // TODO: Finish implementing this and call it where needed.
 func InstallBepinexPack(dir string, gameArch PlatformArch) (*grab.Response, error) {
-	resp, err := downloader.DownloadZip("", dir, "BepInEx-Setup")
+	downloadURL := ""
+	outputFileName := "BepInEx-Setup"
+
+	// Send download request to `downloadURL` and save the zip as `outputFileName` in `dir`.
+	resp, err := downloader.DownloadZip(downloadURL, dir, outputFileName)
 	if err != nil {
 		return resp, err
 	}
-
 	if err = resp.Err(); err != nil {
 		return resp, err
 	}
 
-	path := filepath.Join(dir, "BepInEx-Setup")
-
-	err = fileutil.Unzip(path+".zip", path, true)
+	// Unzip the downloaded file into the same directory.
+	path := filepath.Join(dir, outputFileName)
+	err = fileutil.UnzipAndDelete(path+".zip", path)
 	if err != nil {
 		return resp, err
 	}

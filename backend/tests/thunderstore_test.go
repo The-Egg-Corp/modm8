@@ -48,11 +48,11 @@ func TestInstallWithDependencies(t *testing.T) {
 	t.Logf("\nDownloaded %v packages in %v\n", downloadCount, time.Since(startTime))
 }
 
-func TestUnzip(t *testing.T) {
+func TestUnzipAndDelete(t *testing.T) {
 	path := filepath.Join(thunderstore.ModCacheDir("Lethal Company"), testPkg1)
 	zipPath := path + downloader.CUSTOM_ZIP_EXT
 
-	err := fileutil.Unzip(zipPath, path, true)
+	err := fileutil.UnzipAndDelete(zipPath, path)
 	if err != nil {
 		t.Fatalf("\nerror unpacking zip:\n\n%v", err)
 	}

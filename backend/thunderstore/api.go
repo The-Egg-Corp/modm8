@@ -254,8 +254,7 @@ func Install(pkg v1.PackageVersion, dir string) (*grab.Response, error) {
 	// TODO: If the program closes for any reason, we need to be able to cancel (and possibly resume)
 	// 		 installing the current zip, then also ensure it is deleted. Maybe when user next opens app?
 
-	// Extract zip contents at path and delete the zip when done.
-	err = fileutil.Unzip(path+ext, path, true)
+	err = fileutil.UnzipAndDelete(path+ext, path)
 	if err != nil {
 		return resp, err
 	}

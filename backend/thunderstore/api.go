@@ -19,20 +19,33 @@ import (
 	v1 "github.com/the-egg-corp/thundergo/v1"
 )
 
-var modExceptions = []string{
-	"Foldex-r2mod_cli",
+var modExclusions = []string{
 	"ebkr-r2modman",
 	"ebkr-r2modman_dsp",
 	"ebkr-BT2TS",
+	"Harb-AttributeFinder",
 	"ethanbrews-RiskOfRainModManager",
-	"ethanbrews-Forecast_Mod_Manager",
 	"scottbot95-RoR2ModManager",
 	"HoodedDeath-RiskOfDeathModManager",
-	"MythicManiac-MythicModManager",
-	"Kesomannen-GaleModManager",
 	"Elaviers-GCManager",
-	"MADH95Mods-JSONRenameUtility",
+	"MythicManiac-MythicModManager",
 	"Higgs1-Lighthouse",
+	"ethanbrews-Forecast_Mod_Manager",
+	"3c079bcb4f34402f-BepInExPack",
+	"Dasvcx-Enforcer",
+	"SgtPopNFresh-BepInExPack",
+	"TheLamiaLover-MobileTurretFungus",
+	"Squidy-RogueWisp",
+	"TheLamiaLover-ItemStatsMod",
+	"Foldex-r2mod_cli",
+	"gnonme-CustomItemsSDK",
+	"gnonme-ModThatIsNotMod_Unity_Tools",
+	"L4rs-QuickFSR",
+	"MPModTeam-Boneworks_MP",
+	"MADH95Mods-JSONRenameUtility",
+	"GamefaceGamers-Mod_Sync",
+	"Pyoid-Hook_Line_and_Sinker",
+	"GardenGals-Hatchery",
 }
 
 // The dir where the mod cache is located for the current game.
@@ -144,6 +157,10 @@ func (a *API) GetPackagesInCommunity(community string, skipCache bool) ([]v1.Pac
 	return pkgs, nil
 }
 
+func (a *API) GetPackagesByUser(communities []string, owner string) string {
+	return GetPackagesByUser(communities, owner)
+}
+
 // Similar to GetPackagesInCommunity, but every package is stripped of some info,
 // massively decreasing the time spent sending data to the frontend to preventing it from blocking.
 // The following keys are stripped (though retained in the cache):
@@ -160,7 +177,7 @@ func (a *API) GetStrippedPackages(community string, skipCache bool) ([]StrippedP
 	// Loops over all pkgs, stripping some unnecessary fields to avoid blocking frontend.
 	for _, pkg := range pkgs {
 		// Strip any apps/utils that aren't strictly mods.
-		if backend.ContainsEqualFold(modExceptions, pkg.FullName) {
+		if backend.ContainsEqualFold(modExclusions, pkg.FullName) {
 			continue
 		}
 
@@ -183,7 +200,7 @@ func (a *API) GetStrippedPackages(community string, skipCache bool) ([]StrippedP
 	return strippedPkgs, nil
 }
 
-func (a *API) GetPackagesByUser(communities []string, owner string) string {
+func GetPackagesByUser(communities []string, owner string) string {
 	pkgs, err := v1.PackagesFromCommunities(v1.NewCommunityList(communities...))
 	if err != nil {
 		return "An error occurred getting packages!"
@@ -204,62 +221,6 @@ func (a *API) GetPackagesByUser(communities []string, owner string) string {
 	}
 
 	return strings.Join(names, ", ")
-}
-
-// Using the given list of packages (usually from a community), this function attempts to download the given
-// package aka 'pkg' and any packages it depends on which is gathered by its 'Dependencies' field - see [PackageVersion].
-//
-// This function is recursive and calls Install for each dependency, any errors are accumulated into a slice and
-// the install count is incremented if no error occurred - both of which are available once this function is complete.
-func InstallWithDependencies(pkg v1.PackageVersion, pkgs v1.PackageList, errs *[]error, installCount *int) {
-	_, err := Install(pkg, CurModCacheDir)
-	if err == nil {
-		*installCount += 1
-	}
-
-	// Install dependencies of dependencies and so forth, until no more left.
-	for _, dependency := range pkg.Dependencies {
-		// Split the dependency string into 3 elements: Author, Package Name, Version
-		split := strings.Split(dependency, "-")
-
-		pkg := pkgs.Get(split[0], split[1])
-		if pkg == nil {
-			*errs = append(*errs, fmt.Errorf("dependency '%s' not found", dependency))
-			continue
-		}
-
-		InstallWithDependencies(*pkg.GetVersion(split[2]), pkgs, errs, installCount)
-	}
-}
-
-// Downloads the given package version as a zip and unpacks it to the specified directory (expected to be absolute).
-func Install(pkg v1.PackageVersion, dir string) (*grab.Response, error) {
-	if exists, _ := backend.ExistsInDir(dir, pkg.FullName); exists {
-		return nil, fmt.Errorf("%s is already installed", pkg.FullName)
-	}
-
-	resp, err := downloader.DownloadZip(pkg.DownloadURL, dir, pkg.FullName)
-	if err != nil {
-		return resp, err
-	}
-
-	// Finished, return if any error occurred.
-	if err = resp.Err(); err != nil {
-		return resp, err
-	}
-
-	path := filepath.Join(dir, pkg.FullName)
-	ext := downloader.CUSTOM_ZIP_EXT
-
-	// TODO: If the program closes for any reason, we need to be able to cancel (and possibly resume)
-	// 		 installing the current zip, then also ensure it is deleted. Maybe when user next opens app?
-
-	err = fileutil.UnzipAndDelete(path+ext, path)
-	if err != nil {
-		return resp, err
-	}
-
-	return resp, nil
 }
 
 // Installs the latest version of a package by its full name (Owner-PkgName) and all of its dependencies.
@@ -293,6 +254,62 @@ func (a *API) InstallByName(gameTitle, community, fullName string) (*v1.PackageV
 	InstallWithDependencies(latestVer, a.Cache[community], &errs, &downloadCount)
 
 	return &latestVer, nil
+}
+
+// Downloads the given package version as a zip and unpacks it to the specified directory (expected to be absolute).
+func Install(pkg v1.PackageVersion, dir string) (*grab.Response, error) {
+	if exists, _ := backend.ExistsInDir(dir, pkg.FullName); exists {
+		return nil, fmt.Errorf("%s is already installed", pkg.FullName)
+	}
+
+	resp, err := downloader.DownloadZip(pkg.DownloadURL, dir, pkg.FullName)
+	if err != nil {
+		return resp, err
+	}
+
+	// Finished, return if any error occurred.
+	if err = resp.Err(); err != nil {
+		return resp, err
+	}
+
+	path := filepath.Join(dir, pkg.FullName)
+	ext := downloader.CUSTOM_ZIP_EXT
+
+	// TODO: If the program closes for any reason, we need to be able to cancel (and possibly resume)
+	// 		 installing the current zip, then also ensure it is deleted. Maybe when user next opens app?
+
+	err = fileutil.UnzipAndDelete(path+ext, path)
+	if err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
+// Using the given list of packages (usually from a community), this function attempts to download the given
+// package aka 'pkg' and any packages it depends on which is gathered by its 'Dependencies' field - see [PackageVersion].
+//
+// This function is recursive and calls Install for each dependency, any errors are accumulated into a slice and
+// the install count is incremented if no error occurred - both of which are available once this function is complete.
+func InstallWithDependencies(pkg v1.PackageVersion, pkgs v1.PackageList, errs *[]error, installCount *int) {
+	_, err := Install(pkg, CurModCacheDir)
+	if err == nil {
+		*installCount += 1
+	}
+
+	// Install dependencies of dependencies and so forth, until no more left.
+	for _, dependency := range pkg.Dependencies {
+		// Split the dependency string into 3 elements: Author, Package Name, Version
+		split := strings.Split(dependency, "-")
+
+		pkg := pkgs.Get(split[0], split[1])
+		if pkg == nil {
+			*errs = append(*errs, fmt.Errorf("dependency '%s' not found", dependency))
+			continue
+		}
+
+		InstallWithDependencies(*pkg.GetVersion(split[2]), pkgs, errs, installCount)
+	}
 }
 
 // Downloads the specified package as a zip file and unpacks it under the specified directory (absolute path).

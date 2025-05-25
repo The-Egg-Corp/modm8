@@ -7,28 +7,19 @@ import { ExistsAtPath } from '@backend/app/Utils.js'
 import { BepinexInstalled } from '@backend/game/GameManager.js'
 import type { thunderstore } from '@backend/models.js'
 
-//import { useGameStore } from '../game.js'
 import type { Nullable, ThunderstoreGame } from '@types'
 import { useGameStore } from '@stores'
 
 export const useGameStoreTS = defineStore('GameStoreTS', () => {
     //#region State
     const games = ref<Map<string, ThunderstoreGame>>(new Map())
-    // const selectedGame = ref<ThunderstoreGame>({
-    //     title: 'Placeholder',
-    //     identifier: 'tf2',
-    //     steamID: 0
-    // })
 
     const gameStore = useGameStore()
     const { selectedGame } = storeToRefs(gameStore)
-
-    // const gameStore = useGameStore()
-    // const { selectedGame } = storeToRefs(gameStore)
     //#endregion
 
     //#region Getters
-    const gameByID = (id: string) => games.value.get(id) satisfies Nullable<ThunderstoreGame>
+    const gameByID = (id: string): Nullable<ThunderstoreGame> => games.value.get(id)
 
     // TODO: Consider renaming this?
     const gamesAsArray = computed(() => [...games.value.values()] satisfies ThunderstoreGame[])
@@ -57,7 +48,9 @@ export const useGameStoreTS = defineStore('GameStoreTS', () => {
         }
 
         const game = gameByID(selectedGame.value.value.identifier)
-        if (!game) return // TODO: Implement proper error
+        if (!game) {
+            throw new Error('Could not update mod cache. Selected game was not found in games.')
+        }
 
         game.modCache = mods
     }

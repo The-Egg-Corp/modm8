@@ -69,7 +69,7 @@ const switchTab = async (e: TabMenuChangeEvent) => {
     const newTab = tabs.value[e.index]
     activeTab.value = newTab.type
 
-    await refreshModsIfSearchInput()
+    await refreshPageWithMods()
 }
 
 const onPageChange = (e: DataViewPageEvent) => {
@@ -82,8 +82,12 @@ const onPageChange = (e: DataViewPageEvent) => {
 const debouncedSearch = debounce(() => refreshMods(false), 250)
 const hasSearchInput = () => searchInput.value ? searchInput.value.length > 0 : undefined
 
+async function onSearchInputChange() {
+    await refreshPageWithMods()
+}
+
 // TODO: This won't work in the profile tab since we use `tsProfileMods` there.
-async function refreshModsIfSearchInput() {
+async function refreshPageWithMods() {
     // No input, no need to debounce.
     if (!searchInput.value?.trim()) {
         // Show all mods without filtering.
@@ -219,7 +223,7 @@ const props = defineProps<{
             <FloatLabel variant="on">
                 <IconField>
                     <InputIcon class="pi pi-search" />
-                    <InputText id="search_mods" v-model="searchInput" @input="refreshModsIfSearchInput"/>
+                    <InputText id="search_mods" v-model="searchInput" @input="onSearchInputChange"/>
                 </IconField>
 
                 <label for="search_mods">{{ $t('selected-game.search-mods') }}</label>

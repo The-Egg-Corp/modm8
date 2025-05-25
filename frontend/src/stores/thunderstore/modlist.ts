@@ -41,7 +41,7 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
     const loading = ref(false)
     const installing = ref(false)
     
-    const PAGE_ROWS = 40
+    const PAGE_ROWS = 50
     const pageFirstRecordIdx = ref(0) // Index of the first record on the current page.
     const currentPageMods = ref<thunderstore.StrippedPackage[]>([])
 
@@ -99,19 +99,22 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
             throw new Error('[TS/modlist] Could not refresh mods. Selected game is not of type `THUNDERSTORE`.')
         }
 
-        if (fetch && !selectedGame.value.value.modCache) {
+        // The actual instance from the game container.
+        const selectedGameVal: ThunderstoreGame = selectedGame.value.value
+
+        if (fetch && !selectedGameVal.modCache) {
             loading.value = true // Fetching might take a while, let the user know we are doing something.
 
             try {
                 const t0 = performance.now()
 
-                const pkgs = await GetStrippedPackages(selectedGame.value.value.identifier, false)
-                console.log(`[${selectedGame.value.value.identifier}] Putting mods into cache...`)
+                const pkgs = await GetStrippedPackages(selectedGameVal.identifier, false)
+                console.log(`[${selectedGameVal.identifier}] Putting mods into cache...`)
 
                 updateModCache(pkgs)
                 console.log(`Cached ${pkgs.length} mods. Took: ${performance.now() - t0}ms`)
             } catch(e: any) {
-                console.error(`[${selectedGame.value.value.identifier}] Failed to update mod cache!\n${e.message}`)
+                console.error(`[${selectedGameVal.identifier}] Failed to update mod cache!\n${e.message}`)
             }
         }
 
@@ -148,11 +151,11 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
         })
     }
 
-    async function filterByProfile(mods: thunderstore.StrippedPackage[]) {
+    function filterByProfile(mods: thunderstore.StrippedPackage[]) {
         if (!selectedProfile.value?.name) return mods // Invalid or no selected profile.
 
         const tsProfMods = selectedProfile.value.mods.thunderstore
-        const filtered = await mods.filter(mod => {
+        const filtered = mods.filter(mod => {
             const latestVerName = mod.latest_version.full_name.toLowerCase()
             return tsProfMods?.some(name => name.toLowerCase() == latestVerName)
         })
@@ -161,19 +164,23 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
     }
 
     /**
-     * Updates the current page of mods to display.
+     * Updates the current page to show mods between `firstIdx` and `firstIdx` + `rows`.
      * @param firstIdx Index of the first record on the page.
-     * @param rows The number of rows to display on the page.
+     * @param rows The number of rows/mods to display on the page.
      */
     const updatePage = async (firstIdx: number, rows: number) => {
-        pageFirstRecordIdx.value = firstIdx
+        if (firstIdx < 0) {
+            console.warn(`[ModListStoreTS] Cannot update page. Param 'firstIdx' is: ${firstIdx}. Must be >= 0.`)
+            return
+        }
 
-        // For example, if firstIdx is 0 and rows is 40 - mods[0] to mods[39] will be shown.
-        currentPageMods.value = mods.value.slice(firstIdx, firstIdx + rows)
+        pageFirstRecordIdx.value = firstIdx
+        currentPageMods.value = mods.value.slice(firstIdx, firstIdx + rows) // If firstIdx=0 & rows=40, mods[0] - mods[39] will be shown.
     }
 
     /**
-     * Refreshes the current page. Shorthand for calling {@link updatePage}(0, PAGE_ROWS). 
+     * Updates the current page of mods to display using default parameters.\
+     * Shorthand for calling {@link updatePage}(0, PAGE_ROWS). 
      */
     const refreshPage = () => updatePage(0, PAGE_ROWS)
     //#endregion

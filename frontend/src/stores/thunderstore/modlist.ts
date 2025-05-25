@@ -159,11 +159,22 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
         return filtered
     }
 
-    const refreshPage = () => updatePage(0, PAGE_ROWS)
-    const updatePage = async (newFirst: number, rows: number) => {
-        pageFirstRecordIdx.value = newFirst
-        currentPageMods.value = mods.value.slice(newFirst, newFirst + rows)
+    /**
+     * Updates the current page of mods to display.
+     * @param firstIdx Index of the first record on the page.
+     * @param rows The number of rows to display on the page.
+     */
+    const updatePage = async (firstIdx: number, rows: number) => {
+        pageFirstRecordIdx.value = firstIdx
+
+        // For example, if firstIdx is 0 and rows is 40 - mods[0] to mods[39] will be shown.
+        currentPageMods.value = mods.value.slice(firstIdx, firstIdx + rows)
     }
+
+    /**
+     * Refreshes the current page. Shorthand for calling {@link updatePage}(0, PAGE_ROWS). 
+     */
+    const refreshPage = () => updatePage(0, PAGE_ROWS)
     //#endregion
 
     return {

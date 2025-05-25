@@ -22,9 +22,7 @@ import {
 import { storeToRefs } from "pinia"
 
 const appStore = useAppStore()
-const { 
-    sidebarMarginPx,
-} = storeToRefs(appStore)
+const { sidebarMarginPx } = storeToRefs(appStore)
 
 const profileStore = useProfileStore()
 const { selectedProfile } = storeToRefs(profileStore)
@@ -142,11 +140,7 @@ onMounted(async () => {
     </div>
 
     <div class="flex mod-list-container">
-        <ModList
-            @tabChange="refreshPage()" 
-            @searchInputChange="refreshPage()"
-            :installingModDialog="installingModDialog" 
-        />
+        <ModList :installingModDialog="installingModDialog"/>
     </div>
 
     <!-- Opened when ModList (see above) calls to install a mod. -->

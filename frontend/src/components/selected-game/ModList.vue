@@ -75,7 +75,7 @@ const switchTab = async (e: TabMenuChangeEvent) => {
 const onPageChange = (e: DataViewPageEvent) => {
     updatePage(e.first, e.rows)
 
-    const scrolled = scrollToMod(0) // Attempt to scroll to first mod.
+    const scrolled = scrollToModElement(0) // Attempt to scroll to first mod.
     if (scrolled) scrollIndex.value = 0 // Update cur index if successful.
 }
 
@@ -99,7 +99,7 @@ const debouncedSearch = debounce(() => refreshMods(false), 250)
  * 
  * @returns Whether we successfully scrolled to the mod.
  */
-function scrollToMod(idx: number) {
+function scrollToModElement(idx: number) {
     // Because ! check considers 0 falsy.
     if (idx == null || idx == undefined) {
         console.warn(`Failed to scroll to mod. Specified index is ${idx}`)
@@ -133,7 +133,7 @@ const handleScroll = (e: WheelEvent) => {
     }
 
     // Scroll to the corresponding section
-    nextTick(() => scrollToMod(scrollIndex.value))
+    nextTick(() => scrollToModElement(scrollIndex.value))
 }
 
 const profileHasMod = (prof: Nullable<Profile>, modVerFullName: string) => {
@@ -218,7 +218,7 @@ const props = defineProps<{
             <FloatLabel variant="on">
                 <IconField>
                     <InputIcon class="pi pi-search" />
-                    <InputText id="search_mods" v-model="searchInput"/>
+                    <InputText id="search_mods" v-model="searchInput" @input="refreshModsIfSearchInput"/>
                 </IconField>
 
                 <label for="search_mods">{{ $t('selected-game.search-mods') }}</label>

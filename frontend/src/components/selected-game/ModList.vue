@@ -79,7 +79,10 @@ const onPageChange = (e: DataViewPageEvent) => {
     if (scrolled) scrollIndex.value = 0 // Update cur index if successful.
 }
 
+const debouncedSearch = debounce(() => refreshMods(false), 250)
 const hasSearchInput = () => searchInput.value ? searchInput.value.length > 0 : undefined
+
+// TODO: This won't work in the profile tab since we use `tsProfileMods` there.
 async function refreshModsIfSearchInput() {
     // No input, no need to debounce.
     if (!searchInput.value?.trim()) {
@@ -89,51 +92,6 @@ async function refreshModsIfSearchInput() {
     }
 
     debouncedSearch()
-}
-
-const debouncedSearch = debounce(() => refreshMods(false), 250)
-
-/**
- * Scrolls to a mod in the list using the specified index.\
- * For the mod to successfully scroll into view, index must be valid and not OOB of `modElements`.
- * 
- * @returns Whether we successfully scrolled to the mod.
- */
-function scrollToModElement(idx: number) {
-    // Because ! check considers 0 falsy.
-    if (idx == null || idx == undefined) {
-        console.warn(`Failed to scroll to mod. Specified index is ${idx}`)
-        return false
-    }
-    
-    const mods = modElements.value
-    if (idx < 0 || idx >= mods.length) {
-        console.warn(`Prevented OOB access of 'modElements' [${mods.length}] with index: ${idx}`)
-        return false
-    }
-
-    const mod: Element = mods[idx]
-    if (!mod) return false
-
-    // We found the mod element, scroll to it.
-    mod.scrollIntoView(true)
-    return true
-}
-
-// TODO: Should we be manipulating `scrollIndex` directly before attempting to scroll?
-//       If we can't scroll to it then it should remain its old value like how `onPageChange` does it.
-const handleScroll = (e: WheelEvent) => {
-    if (e.deltaY > 0) {
-        // Scrolling down
-        if (scrollIndex.value < modElements.value.length - 1) {
-            scrollIndex.value++
-        }
-    } else if (scrollIndex.value > 0) {
-        scrollIndex.value--
-    }
-
-    // Scroll to the corresponding section
-    nextTick(() => scrollToModElement(scrollIndex.value))
 }
 
 const profileHasMod = (prof: Nullable<Profile>, modVerFullName: string) => {
@@ -192,6 +150,49 @@ watch(selectedProfile, async (newVal, oldVal) => {
 
     await initTsProfileMods()
 })
+
+/**
+ * Scrolls to a mod in the list using the specified index.\
+ * For the mod to successfully scroll into view, index must be valid and not OOB of `modElements`.
+ * 
+ * @returns Whether we successfully scrolled to the mod.
+ */
+function scrollToModElement(idx: number) {
+    // Because ! check considers 0 falsy.
+    if (idx == null || idx == undefined) {
+        console.warn(`Failed to scroll to mod. Specified index is ${idx}`)
+        return false
+    }
+    
+    const mods = modElements.value
+    if (idx < 0 || idx >= mods.length) {
+        console.warn(`Prevented OOB access of 'modElements' [${mods.length}] with index: ${idx}`)
+        return false
+    }
+
+    const mod: Element = mods[idx]
+    if (!mod) return false
+
+    // We found the mod element, scroll to it.
+    mod.scrollIntoView(true)
+    return true
+}
+
+// TODO: Should we be manipulating `scrollIndex` directly before attempting to scroll?
+//       If we can't scroll to it then it should remain its old value like how `onPageChange` does it.
+const handleScroll = (e: WheelEvent) => {
+    if (e.deltaY > 0) {
+        // Scrolling down
+        if (scrollIndex.value < modElements.value.length - 1) {
+            scrollIndex.value++
+        }
+    } else if (scrollIndex.value > 0) {
+        scrollIndex.value--
+    }
+
+    // Scroll to the corresponding section
+    nextTick(() => scrollToModElement(scrollIndex.value))
+}
 
 const props = defineProps<{
     installingModDialog: Dialog

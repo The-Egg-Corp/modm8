@@ -123,9 +123,10 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
     }
 
     function getMods(searchFilter = true, defaultSort = true) {
-        if (!selectedGame.value.value.modCache) return []
-        const filteredMods = searchFilter ? filterBySearch(selectedGame.value.value.modCache) : selectedGame.value.value.modCache
+        const cache = selectedGame.value.value.modCache
+        if (!cache) return []
 
+        const filteredMods = searchFilter ? filterBySearch(cache) : cache
         return !defaultSort ? filteredMods : filteredMods.sort((m1, m2) => m2.rating_score - m1.rating_score)
     }
 

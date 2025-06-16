@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { 
     ref, computed, 
-    nextTick, onMounted
+    nextTick, onMounted,
+    onBeforeMount
 } from 'vue'
 
 import { Viewport } from '@components'
@@ -22,11 +23,12 @@ import type {
 import { t } from '@i18n'
 import { tooltipOpts, openLink } from "../../src/util"
 
-import { useGameStoreTS } from '@stores'
+import { useGameStore, useGameStoreTS } from '@stores'
 import { storeToRefs } from 'pinia'
 
 import router from '../router'
 
+const gameStore = useGameStore()
 const gameStoreTS = useGameStoreTS()
 const { gamesAsArray } = storeToRefs(gameStoreTS)
 
@@ -129,7 +131,13 @@ const getThunderstoreGames = (sort = true, searchFilter = true) => {
 }
 
 const selectThunderstoreGame = (game: ThunderstoreGame) => {
-    gameStoreTS.setSelectedGame(game)
+    const tsGame = gameStoreTS.gameByID(game.identifier)
+    if (!tsGame) {
+        console.warn(`Failed to select Thunderstore game. ${game.title} not found within GameStoreTS game cache.`)
+        return
+    }
+
+    gameStore.setSelectedGame('THUNDERSTORE', tsGame)
     router.push('/selected-game')
 }
 
@@ -184,20 +192,20 @@ const getThumbnail = (game: ThunderstoreGame) => game.image
     ? `https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/${game.image}` 
     : "https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/Titanfall2.jpg"
 
-onMounted(async () => {
+onBeforeMount(async () => {
     const t0 = performance.now()
 
     // NOTE: We currently need to initialize the game store cache every mount in-case properties (path, installed) change.
-    //       This may be an issue in future, ignore it until we transition from a static mock list.
-    const tsGames = mockGameList.filter(g => g.type == 'THUNDERSTORE').map(g => g.value)
+    //       This may be an issue in future, ignore it until we transition from our static mock list.
+    const tsGames = mockGameList.filter(g => g.platform == 'THUNDERSTORE').map(g => g.value)
     const size = await gameStoreTS.initGames(tsGames)
+
+    loading.value = false
 
     console.info(`Populated GameStoreTS cache with ${size} games. Took: ${performance.now() - t0}ms`)
     if (size != mockGameList.length) {
         console.warn("Size of GameStoreTS cache does not match original input.")
     }
-
-    loading.value = false
 })
 </script>
 
@@ -207,7 +215,7 @@ onMounted(async () => {
 
     <div class="card no-drag">
         <!-- While loading, show a skeleton of a grid. -->
-        <DataView v-if="loading" data-key="game-selection-loading" layout="grid">
+        <!-- <DataView v-if="loading" data-key="game-selection-loading" layout="grid">
             <template #empty>
                 <div class="grid grid-nogutter pt-1">
                     <div v-for="i in 15" :key="i" class="grid-item col-2 sm:col-6 md:col-5 lg:col-2 xl:col-2">
@@ -236,10 +244,10 @@ onMounted(async () => {
                     </div>
                 </div>
             </template>
-        </DataView>
+        </DataView> -->
 
         <!-- Finished loading, render the DataView with proper info -->
-        <DataView v-else lazy data-key="game-selection" :value="getThunderstoreGames()" :layout="layout">
+        <DataView lazy data-key="game-selection" :value="getThunderstoreGames()" :layout="layout">
             <template #empty>
                 <div v-if="selectedFilter.label == GameFilter.FAVOURITES" class="dataview-empty">
                     <p>No games favourited!</p>

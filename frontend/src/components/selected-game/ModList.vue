@@ -108,8 +108,8 @@ async function initTsProfileMods() {
 }
 
 async function installTsMod(mod: thunderstore.StrippedPackage) {
-    if (selectedGame.value.type != 'THUNDERSTORE') {
-        throw new Error('Cannot install Thunderstore mod. Selected game is not of type `THUNDERSTORE`.')
+    if (selectedGame.value.platform != 'THUNDERSTORE') {
+        throw new Error('Cannot install Thunderstore mod. Selected game platform is not `THUNDERSTORE`.')
     }
 
     if (!selectedProfile.value?.name) {
@@ -130,8 +130,8 @@ async function installTsMod(mod: thunderstore.StrippedPackage) {
 }
 
 async function uninstallTsMod(mod: thunderstore.StrippedPackage) {
-    if (selectedGame.value.type != 'THUNDERSTORE') {
-        throw new Error('Cannot uninstall Thunderstore mod. Selected game is not of type `THUNDERSTORE`.')
+    if (selectedGame.value.platform != 'THUNDERSTORE') {
+        throw new Error('Cannot uninstall Thunderstore mod. Selected game platform is not `THUNDERSTORE`.')
     }
 
     if (!selectedProfile.value?.name) {
@@ -473,8 +473,9 @@ const props = defineProps<{
 }
 
 .scrollable-list {
+    /*scrollbar-width: none;*/
+    overflow-x: hidden;
     overflow-y: scroll;
-    scrollbar-width: none;
     height: calc(100vh - 160px); /* This seems arbitrary and won't work on different resolutions? */
     /* width: calc(100vw - v-bind(sidebarOffsetPx) - 420px); TODO: Replace 420px. Get it dynamically from selected game card width. */
 }

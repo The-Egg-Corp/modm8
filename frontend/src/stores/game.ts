@@ -4,7 +4,7 @@ import { ref } from "vue"
 import type { GameContainer, ThunderstoreGame } from "@types"
 
 const defaultGame: GameContainer = { 
-    type: 'THUNDERSTORE',
+    platform: 'THUNDERSTORE',
     value: {
         title: 'Placeholder',
         identifier: 'tf2',
@@ -12,23 +12,11 @@ const defaultGame: GameContainer = {
     } satisfies ThunderstoreGame
 }
 
+type GameType<T> = Extract<GameContainer, { platform: T }>['value']
+
 export const useGameStore = defineStore('GameStore', () => {
     //#region State
     const selectedGame = ref<GameContainer>(defaultGame)
-
-    // const thunderstore = ref({
-    //     ROWS: 40,
-    //     allMods: null,
-    //     currentPageMods: null,
-    //     lastInstalledMod: null,
-    // })
-
-    // const nexus = ref({
-    //     ROWS: 40,
-    //     allMods: null,
-    //     currentPageMods: null,
-    //     lastInstalledMod: null,
-    // })
     //#endregion
 
     //#region Getters
@@ -36,13 +24,19 @@ export const useGameStore = defineStore('GameStore', () => {
     //#endregion
 
     //#region Actions
-    // TODO: Possibly need to take in ID, then get from `games` instead ?
-    // function setSelectedGame(game: AnyGame) {
-    //     selectedGame.value = _gameByID(game.identifier) ?? game
-    // }
+    /** 
+     * Sets the currently selected game. Usually called before navigating to the Selected Game page.\
+     * If the function complains, ensure the specified `game` type is allowed by the specified `platform`.
+     * @see {@link GameContainer} for platform <-> game type definitions.
+     */
+    function setSelectedGame<T extends GameContainer['platform']>(platform: T, game: GameType<T>) {
+        // We could just allow GameContainer, but the error msg and param typing is more useful this way.
+        selectedGame.value = { platform, value: game } as GameContainer
+    }
     //#endregion
 
     return {
-        selectedGame
+        selectedGame,
+        setSelectedGame
     }
 })

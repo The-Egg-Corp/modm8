@@ -1,5 +1,5 @@
 import type { thunderstore } from "@backend/models.js"
-import type { ObjValues, Prettify } from "./index.js"
+import type { ObjValues } from "./index.js"
 
 export type GameRunnerType = ObjValues<typeof GameRunner>
 export const GameRunner = {
@@ -23,18 +23,18 @@ export type BaseGame = {
     steamID?: number
 }
 
-export type ThunderstoreGame = Prettify<BaseGame & {
+export type ThunderstoreGame = BaseGame & {
     /** A unique short name for the game. Neither an ID or title. */
     identifier: string
     modCache?: thunderstore.StrippedPackage[]
-}>
+}
 
-export type NexusGame = Prettify<BaseGame & {
+export type NexusGame = BaseGame & {
     ID: number
     /** Equivalent to `identifier` in ThunderstoreGame. */
     domainName: string, 
     modCache?: any[] // TODO: Implement nexus package.
-}>
+}
 
 export type ModPlatform = ObjValues<typeof ModPlatforms>
 export const ModPlatforms = {
@@ -42,10 +42,9 @@ export const ModPlatforms = {
     NEXUS: 'NEXUS_MODS'
 } as const
 
-// TODO: Can we enforce `type` to be one of ModPlatform?
 export type GameContainer =
-    { type: typeof ModPlatforms.TS, value: ThunderstoreGame } | 
-    { type: typeof ModPlatforms.NEXUS, value: NexusGame }
+    { platform: typeof ModPlatforms.TS, value: ThunderstoreGame } | 
+    { platform: typeof ModPlatforms.NEXUS, value: NexusGame }
 
 // NOTE: May want to move this in future.
 export type ModListTab = ObjValues<typeof ModListTabs>

@@ -37,14 +37,14 @@ export const useGameStoreTS = defineStore('GameStoreTS', () => {
 
     //#region Actions
     // TODO: Possibly need to take in ID, then get from `games` instead ?
-    function setSelectedGame(game: ThunderstoreGame) {
-        selectedGame.value.value = gameByID(game.identifier) ?? game
-    }
+    // function setSelectedGame(game: ThunderstoreGame) {
+    //     selectedGame.value.value = gameByID(game.identifier) ?? game
+    // }
 
     /** Fills the `modCache` for the currently selected game with the specified mods. */
     function updateModCache(mods: thunderstore.StrippedPackage[]) {
-        if (selectedGame.value.type != 'THUNDERSTORE') {
-            throw new Error('Could not update mod cache. Selected game is not of type `THUNDERSTORE`.')
+        if (selectedGame.value.platform != 'THUNDERSTORE') {
+            throw new Error('Could not update mod cache. Selected game platform is not `THUNDERSTORE`.')
         }
 
         const game = gameByID(selectedGame.value.value.identifier)
@@ -70,7 +70,10 @@ export const useGameStoreTS = defineStore('GameStoreTS', () => {
         games.value = new Map<string, ThunderstoreGame>()
 
         // Init game props.
-        gameList.forEach(async game => {
+        const len = gameList.length
+        for (let i = 0; i < len; i++) {
+            const game = gameList[i]
+            
             // TODO: Check game executable exists. For now, assume installed if game path is specified and exists.
             game.installed = !game.path ? false : await ExistsAtPath(game.path, true)
             game.favourited = persistence.favourite_games.includes(game.identifier)
@@ -86,7 +89,7 @@ export const useGameStoreTS = defineStore('GameStoreTS', () => {
             }
 
             games.value.set(game.identifier, game)
-        })
+        }
 
         return games.value.size
     }
@@ -100,7 +103,6 @@ export const useGameStoreTS = defineStore('GameStoreTS', () => {
         // isGameInstalled,
         // isFavouriteGame,
         favouriteGameIds,
-        setSelectedGame,
         toggleFavouriteGame,
         updateModCache,
         initGames

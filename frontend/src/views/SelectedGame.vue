@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onBeforeUnmount, onMounted } from "vue"
+import { onBeforeMount, onBeforeUnmount, onMounted } from "vue"
 
 import * as Steam from '@backend/steam/SteamRunner'
 
@@ -77,14 +77,21 @@ onBeforeUnmount(() => {
     selectedProfile.value = null
 })
 
-onMounted(async () => {
+onBeforeMount(async () => {
+    // The API fetch here will only happen on first mount when mod cache is empty.
+    // Any subsequent mounts will use the populated mod cache.
+    await refreshMods(true)
+
+    const selectedGameTitle = selectedGame.value?.value.title || "No game selected"
+    const tsModsAmt = selectedProfile.value?.mods.thunderstore?.length || 0
+    const nexusModsAmt = selectedProfile.value?.mods.nexus?.length || 0
+
+    const profStr = `${selectedProfile.value?.name} [${tsModsAmt + nexusModsAmt} mods]`
+    console.log(`[SelectedGame]\nMounted game: ${selectedGameTitle}\nSelected profile: ${profStr}`)
+
     // Ensure no overlays are still shown.
     configEditorDialog.setVisible(false)
     installingModDialog.setVisible(false)
-
-    await refreshMods(true)
-
-    console.log(`[SelectedGame] Mounted game: ${selectedGame.value?.value.title}. Selected profile:\n${selectedProfile.value}`)
 })
 </script>
 

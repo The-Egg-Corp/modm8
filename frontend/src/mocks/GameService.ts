@@ -1,11 +1,11 @@
 import type { GameContainer, ThunderstoreGame, NexusGame } from "@types"
 
 export function makeThunderstoreGame(game: ThunderstoreGame): GameContainer {
-  return { type: 'THUNDERSTORE', value: game }
+  return { platform: 'THUNDERSTORE', value: game }
 }
 
 export function makeNexusGame(game: NexusGame): GameContainer {
-  return { type: 'NEXUS_MODS', value: game }
+  return { platform: 'NEXUS_MODS', value: game }
 }
 
 export const mockGameList: GameContainer[] = [

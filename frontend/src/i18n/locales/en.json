@@ -92,7 +92,8 @@
     "merge": "Merge",
     "about": "About",
     "games": "Games",
-    "create": "Create"
+    "create": "Create",
+    "loading": "Loading"
   },
   "languages": {
     "en": "English",

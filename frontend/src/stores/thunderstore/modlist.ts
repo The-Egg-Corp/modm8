@@ -94,15 +94,14 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
      * Refreshes the page with the currently cached mods.
      * @param fetch Whether to fetch mods from the API and update the cache (if isnt populated already) before refreshing the page.
      */
-    async function refreshMods(fetch: boolean) {
-        if (selectedGame.value.type != 'THUNDERSTORE') {
+    async function refreshMods(fetchIfEmpty: boolean) {
+        if (selectedGame.value.platform != 'THUNDERSTORE') {
             throw new Error('[TS/modlist] Could not refresh mods. Selected game is not of type `THUNDERSTORE`.')
         }
 
         // The actual instance from the game container.
         const selectedGameVal: ThunderstoreGame = selectedGame.value.value
-
-        if (fetch && !selectedGameVal.modCache) {
+        if (!selectedGameVal.modCache && fetchIfEmpty) {
             loading.value = true // Fetching might take a while, let the user know we are doing something.
 
             try {

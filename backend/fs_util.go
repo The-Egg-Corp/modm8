@@ -2,8 +2,11 @@ package backend
 
 import (
 	"os"
+	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
+	"syscall"
 )
 
 // Takes a list of paths and returns their base file/folder names. Example:
@@ -88,14 +91,16 @@ func MkDirAll(path string) error {
 	return os.MkdirAll(filepath.Clean(path), os.ModePerm)
 }
 
-func ContainsEqualFold(arr []string, item string) bool {
-	lowerItem := strings.ToLower(item)
+// Links directory `target` to directory `source` using a symlink (junction on Windows), essentially making `target` mirror its contents.
+//
+// NOTE: While we can use [os.Symlink] on Windows, we don't currently as it would require admin privileges which becomes a massive pain in the ass.
+func LinkDir(target, source string) error {
+	if runtime.GOOS == "windows" {
+		cmd := exec.Command("cmd", "/C", "mklink", "/J", target, source)
+		cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 
-	for _, str := range arr {
-		if strings.ToLower(str) == lowerItem {
-			return true
-		}
+		return cmd.Run()
 	}
 
-	return false
+	return os.Symlink(source, target)
 }

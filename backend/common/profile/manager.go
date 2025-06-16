@@ -5,10 +5,7 @@ import (
 	"fmt"
 	"modm8/backend"
 	"os"
-	"os/exec"
 	"path/filepath"
-	"runtime"
-	"syscall"
 )
 
 type ManifestOperation int
@@ -64,6 +61,17 @@ func (pm *ProfileManager) RemoveThunderstoreModFromProfile(gameTitle string, pro
 
 func (pm *ProfileManager) RemoveNexusModFromProfile(gameTitle string, profileName string, verFullName string) error {
 	return UpdateNexusProfileMods(MANIFEST_OP_MOD_REMOVE, gameTitle, profileName, verFullName)
+}
+
+// Creates a Symlink (Unix) or Junction (Windows) at the target mod dir (profile) to the source mod dir (cache).
+//
+// This means that mods *technically* don't exist outside of the main mod cache of the game, mods in a profile are merely mirrors. This allows us to not only customise
+// where the mod cache should be stored, but also have a single source of truth for mods, eliminating dupes and saving disk space.
+//
+// For example, we can mirror target "../modm8/Games/GameTitle/Profiles/Owen3H-IntroTweaks-1.5.0" to the
+// source "../modm8/Games/GameTitle/ModCache/Owen3H-IntroTweaks-1.5.0" which would give us the desired behaviour.
+func (pm *ProfileManager) LinkModToProfile(target, source string) error {
+	return backend.LinkDir(target, source)
 }
 
 func UpdateThunderstoreProfileMods(op ManifestOperation, gameTitle string, profileName string, verFullName string) error {
@@ -216,21 +224,4 @@ func GetManifestDirs(path string) ([]string, error) {
 	})
 
 	return dirs, err
-}
-
-// Links a mod from the source dir to the target dir using a Junction (Windows) or Symlink (Linux).
-//
-// This essentially means that mods don't exist outside of the main game mod cache, they merely mirror them.
-// For example, we can mirror target "../modm8/Games/GameTitle" to the source "../modm8/Games/GameTitle/ModCache" which would give us the desired behaviour.
-//
-// NOTE: While we can use [os.Symlink] on Windows, we don't currently as it would require admin privileges which becomes a massive pain in the ass.
-func LinkModToProfile(source, target string) error {
-	if runtime.GOOS == "windows" {
-		cmd := exec.Command("cmd", "/C", "mklink", "/J", target, source)
-		cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
-
-		return cmd.Run()
-	}
-
-	return os.Symlink(source, target)
 }

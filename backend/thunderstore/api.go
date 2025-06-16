@@ -15,7 +15,7 @@ import (
 	"github.com/samber/lo"
 
 	exp "github.com/the-egg-corp/thundergo/experimental"
-	"github.com/the-egg-corp/thundergo/util"
+	tsgoUtil "github.com/the-egg-corp/thundergo/util"
 	v1 "github.com/the-egg-corp/thundergo/v1"
 )
 
@@ -64,8 +64,8 @@ type StrippedPackage struct {
 	Owner          string            `json:"owner"`
 	UUID           string            `json:"uuid4"`
 	PackageURL     string            `json:"package_url"`
-	DateCreated    util.DateTime     `json:"date_created"`
-	DateUpdated    util.DateTime     `json:"date_updated"`
+	DateCreated    tsgoUtil.DateTime `json:"date_created"`
+	DateUpdated    tsgoUtil.DateTime `json:"date_updated"`
 	Rating         uint16            `json:"rating_score"`
 	Deprecated     bool              `json:"is_deprecated"`
 	HasNsfwContent bool              `json:"has_nsfw_content"`

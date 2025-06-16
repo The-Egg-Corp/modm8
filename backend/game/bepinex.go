@@ -43,7 +43,7 @@ func ParseBepinexConfig(path string) (*BepinexConfig, error) {
 	currentSection := "__root"
 	currentDefaultValue := ""
 
-	var rootComments = make([]string, 0)
+	var rootComments []string
 	var comments []string
 	var acceptableValues []string
 

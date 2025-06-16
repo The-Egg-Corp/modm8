@@ -1,9 +1,13 @@
 package backend
 
 import (
+	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
+	"syscall"
 )
 
 // Takes a list of paths and returns their base file/folder names. Example:
@@ -88,14 +92,23 @@ func MkDirAll(path string) error {
 	return os.MkdirAll(filepath.Clean(path), os.ModePerm)
 }
 
-func ContainsEqualFold(arr []string, item string) bool {
-	lowerItem := strings.ToLower(item)
+// Links a mod from the source dir to the target dir using a Junction (Windows) or Symlink (Linux).
+//
+// This essentially means that mods don't exist outside of the main game mod cache, they merely mirror them.
+// For example, we can mirror target "../modm8/Games/GameTitle" to the source "../modm8/Games/GameTitle/ModCache" which would give us the desired behaviour.
+//
+// NOTE: While we can use [os.Symlink] on Windows, we don't currently as it would require admin privileges which becomes a massive pain in the ass.
+func LinkDir(source, target string) error {
+	if runtime.GOOS == "windows" {
+		cmd := exec.Command("cmd", "/C", "mklink", "/J", target, source)
+		cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 
-	for _, str := range arr {
-		if strings.ToLower(str) == lowerItem {
-			return true
+		out, err := cmd.CombinedOutput()
+		if err != nil {
+			return fmt.Errorf("mklink failed: %v output: %s", err, string(out))
 		}
+		return nil
 	}
 
-	return false
+	return os.Symlink(source, target)
 }

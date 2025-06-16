@@ -75,7 +75,7 @@ type StrippedPackage struct {
 
 type API struct {
 	Ctx   context.Context
-	Cache map[string]v1.PackageList
+	Cache map[string]v1.PackageList // Cached packages for every community. Not related in any way to the ModCache dir.
 }
 
 func NewAPI(ctx context.Context) *API {

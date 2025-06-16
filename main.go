@@ -26,7 +26,7 @@ import (
 //go:embed all:frontend/dist
 var assets embed.FS
 
-type IList []interface{}
+type IList []any
 
 func NewWindowsOptions(gpuAccel bool) *windows.Options {
 	return &windows.Options{
@@ -58,6 +58,47 @@ func NewMacOptions() *mac.Options {
 		},
 	}
 }
+
+// TESTING WITH ADMIN PRIVILEGES
+// var showCmd int32 = 1 // SW_NORMAL
+
+// // (Windows) Requests admin rights by prompting the user with a UAC dialog.
+// // This function will relaunch the application with elevated privileges if the user accepts.
+// func requestElevation(exe string) error {
+// 	cwd, _ := os.Getwd()
+// 	args := strings.Join(os.Args[1:], " ")
+
+// 	verbPtr, _ := syscall.UTF16PtrFromString("runas")
+// 	exePtr, _ := syscall.UTF16PtrFromString(exe)
+// 	cwdPtr, _ := syscall.UTF16PtrFromString(cwd)
+// 	argPtr, _ := syscall.UTF16PtrFromString(args)
+
+// 	err := win.ShellExecute(0, verbPtr, exePtr, argPtr, cwdPtr, showCmd)
+// 	if err != nil {
+// 		fmt.Printf("failed to elevate privileges.\n%v\n", err)
+// 	}
+
+// 	return err
+// }
+
+// func main() {
+// 	// Check and prompt user for admin rights on Windows.
+// 	// This is required for symlink creation which we use when dealing with mod profiles.
+// 	if runtime.GOOS == "windows" {
+// 		// Lil hack so we don't get a UAC prompt on processes other than the final app.
+// 		// At the very least, this fixes a wails-binding prompt in `wails dev`.
+// 		exe, _ := os.Executable()
+// 		correctProc := filepath.Base(exe) == "modm8.exe"
+
+// 		if correctProc && !win.GetCurrentProcessToken().IsElevated() {
+// 			requestElevation(exe)
+// 			os.Exit(0)
+// 		}
+// 	}
+
+// 	// Linux allows symlinks without admin. (based)
+// 	launch()
+// }
 
 func main() {
 	modm8 := app.NewApp()

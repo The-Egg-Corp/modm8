@@ -10,6 +10,7 @@ import (
 	gocmd "github.com/go-cmd/cmd"
 	"github.com/samber/lo"
 	wRuntime "github.com/wailsapp/wails/v2/pkg/runtime"
+	"golang.org/x/sys/windows"
 )
 
 type Command struct {
@@ -23,7 +24,8 @@ var (
 )
 
 type Application struct {
-	Ctx         context.Context
+	Ctx context.Context
+
 	Utils       *Utils       `json:"utils"`
 	Settings    *AppSettings `json:"settings"`
 	Persistence *Persistence `json:"persistence"`
@@ -35,6 +37,10 @@ func (app *Application) GetSettings() *AppSettings {
 
 func (app *Application) GetPersistence() *Persistence {
 	return app.Persistence
+}
+
+func (app *Application) IsWindowsAdmin() bool {
+	return windows.GetCurrentProcessToken().IsElevated()
 }
 
 func NewApp() *Application {

@@ -5,7 +5,10 @@ import (
 	"fmt"
 	"modm8/backend"
 	"os"
+	"os/exec"
 	"path/filepath"
+	"runtime"
+	"syscall"
 )
 
 type ManifestOperation int
@@ -213,4 +216,21 @@ func GetManifestDirs(path string) ([]string, error) {
 	})
 
 	return dirs, err
+}
+
+// Links a mod from the source dir to the target dir using a Junction (Windows) or Symlink (Linux).
+//
+// This essentially means that mods don't exist outside of the main game mod cache, they merely mirror them.
+// For example, we can mirror target "../modm8/Games/GameTitle" to the source "../modm8/Games/GameTitle/ModCache" which would give us the desired behaviour.
+//
+// NOTE: While we can use [os.Symlink] on Windows, we don't currently as it would require admin privileges which becomes a massive pain in the ass.
+func LinkModToProfile(source, target string) error {
+	if runtime.GOOS == "windows" {
+		cmd := exec.Command("cmd", "/C", "mklink", "/J", target, source)
+		cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+
+		return cmd.Run()
+	}
+
+	return os.Symlink(source, target)
 }

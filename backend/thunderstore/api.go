@@ -7,7 +7,7 @@ import (
 	"modm8/backend"
 	"modm8/backend/common/downloader"
 	"modm8/backend/common/fileutil"
-	"os"
+	"modm8/backend/game"
 	"path/filepath"
 	"strings"
 
@@ -50,11 +50,6 @@ var modExclusions = []string{
 
 // The dir where the mod cache is located for the current game.
 var CurModCacheDir string
-
-func ModCacheDir(gameTitle string) string {
-	cacheDir, _ := os.UserConfigDir()
-	return filepath.Join(cacheDir, "modm8", "Games", gameTitle, "ModCache")
-}
 
 // Same as a thundergo `Package` but the 'Versions' field is replaced with only a single 'LatestVersion' field
 // and the following fields are completely removed: [DonationLink, Pinned].
@@ -248,7 +243,7 @@ func (a *API) InstallByName(gameTitle, community, fullName string) (*v1.PackageV
 
 	// Used in subsequent call to InstallWithDependencies().
 	// TODO: Maybe this should just be a param instead then?
-	CurModCacheDir = ModCacheDir(gameTitle)
+	CurModCacheDir = game.ModCacheDir(gameTitle)
 
 	latestVer := pkg.LatestVersion()
 	InstallWithDependencies(latestVer, a.Cache[community], &errs, &downloadCount)

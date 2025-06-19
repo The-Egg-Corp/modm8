@@ -3,6 +3,7 @@ package backend
 import (
 	"modm8/backend/common/downloader"
 	"modm8/backend/common/fileutil"
+	"modm8/backend/game"
 	"modm8/backend/thunderstore"
 	"path/filepath"
 	"testing"
@@ -42,14 +43,14 @@ func TestInstallWithDependencies(t *testing.T) {
 
 	startTime := time.Now()
 
-	thunderstore.CurModCacheDir = thunderstore.ModCacheDir("Lethal Company")
+	thunderstore.CurModCacheDir = game.ModCacheDir("Lethal Company")
 	thunderstore.InstallWithDependencies(pkg.LatestVersion(), pkgs, &errs, &downloadCount)
 
 	t.Logf("\nDownloaded %v packages in %v\n", downloadCount, time.Since(startTime))
 }
 
 func TestUnzipAndDelete(t *testing.T) {
-	path := filepath.Join(thunderstore.ModCacheDir("Lethal Company"), testPkg1)
+	path := filepath.Join(game.ModCacheDir("Lethal Company"), testPkg1)
 	zipPath := path + downloader.CUSTOM_ZIP_EXT
 
 	err := fileutil.UnzipAndDelete(zipPath, path)

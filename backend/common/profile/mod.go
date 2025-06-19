@@ -1,6 +1,8 @@
 package profile
 
-import "strings"
+import (
+	"strings"
+)
 
 type ProfileMod struct {
 	Author  string `json:"author"`

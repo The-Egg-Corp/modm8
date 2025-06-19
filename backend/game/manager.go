@@ -1,6 +1,7 @@
 package game
 
 import (
+	"os"
 	"path/filepath"
 
 	backend "modm8/backend"
@@ -49,4 +50,9 @@ func (gm *GameManager) BepinexConfigFiles(dirs []string) ([]string, error) {
 
 func (gm *GameManager) ParseBepinexConfig(path string) (*BepinexConfig, error) {
 	return ParseBepinexConfig(path)
+}
+
+func ModCacheDir(gameTitle string) string {
+	cacheDir, _ := os.UserConfigDir()
+	return filepath.Join(cacheDir, "modm8", "Games", gameTitle, "ModCache")
 }

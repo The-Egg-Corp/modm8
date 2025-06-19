@@ -18,7 +18,7 @@ func TestGetDirsAtPath(t *testing.T) {
 	fmt.Println(dirs)
 }
 
-func TestLinkDir(t *testing.T) {
+func TestLinkDirSucceeds(t *testing.T) {
 	TEMP := os.TempDir()
 	source := filepath.Join(TEMP, "linkmod_source")
 	target := filepath.Join(TEMP, "linkmod_target")
@@ -26,38 +26,53 @@ func TestLinkDir(t *testing.T) {
 	os.RemoveAll(source)
 	os.RemoveAll(target)
 
-	if err := os.Mkdir(source, 0755); err != nil {
-		t.Fatalf("Failed to create source dir: %v", err)
-	}
-
-	if _, err := os.Stat(target); err == nil {
-		os.RemoveAll(target)
+	//#region Pre-checks
+	if err := os.Mkdir(source, os.ModePerm); err != nil {
+		t.Fatalf("failed to create source dir:\n%v", err)
 	}
 
 	testFile := filepath.Join(source, "test.txt")
-	if err := os.WriteFile(testFile, []byte("hello"), 0644); err != nil {
-		t.Fatalf("Failed to create test file in source: %v", err)
+	if err := os.WriteFile(testFile, []byte("hello"), os.ModePerm); err != nil {
+		t.Fatalf("failed to create test file in source:\n%v", err)
 	}
+	//#endregion
 
+	// Actual test
 	err := backend.LinkDir(target, source)
 	if err != nil {
-		t.Fatalf("LinkDir failed: %v", err)
+		t.Fatalf("failed to link dir:\n%v", err)
 	}
 
+	//#region Post-checks
 	info, err := os.Stat(target)
 	if err != nil {
-		t.Fatalf("Target does not exist after linking: %v", err)
+		t.Fatalf("target does not exist after linking:\n%v", err)
 	}
 	if !info.IsDir() {
-		t.Fatalf("Target exists but is not a directory")
+		t.Fatalf("target exists but is not a directory")
 	}
 
-	// Verify link works by checking contents exist.
 	linkedFile := filepath.Join(target, "test.txt")
 	if _, err := os.Stat(linkedFile); err != nil {
-		t.Fatalf("test.txt does not exist in target link: %v", err)
+		t.Fatalf("test.txt does not exist in target link:\n%v", err)
 	}
+	//#endregion
 
 	os.RemoveAll(source)
 	os.RemoveAll(target)
+}
+
+func TestLinkDirFails(t *testing.T) {
+	TEMP := os.TempDir()
+	source := filepath.Join(TEMP, "linkmod_source")
+	target := filepath.Join(TEMP, "linkmod_target")
+
+	os.RemoveAll(source)
+	os.RemoveAll(target)
+
+	// Should fail with source directory error.
+	err := backend.LinkDir(target, source)
+	if err != nil {
+		t.Fatalf("failed to link dir:\n%v", err)
+	}
 }

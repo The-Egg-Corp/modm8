@@ -37,17 +37,18 @@ const { installing, lastInstalledMod } = storeToRefs(modListStoreTS)
 const configEditorDialog = useDialog('selected-game-config-editor')
 const installingModDialog = useDialog('selected-game-installing-mod')
 
-const startModdedDisabled = () => {
+const canStartModded = () => {
     const profileMods = selectedProfile.value?.mods
-    if (!profileMods) return true
+    if (!profileMods) return false
 
-    const noTsMods = (profileMods?.thunderstore?.length || 0) < 1
-    const noNexusMods = (profileMods?.nexus?.length || 0) < 1
+    const tsMods = (profileMods?.thunderstore?.length || 0) > 0
+    const nexusMods = (profileMods?.nexus?.length || 0) > 0
 
     // Only start modded if we have at least one mod from either platform.
-    return noNexusMods && noTsMods
+    return tsMods || nexusMods
 }
 
+// TODO: This just isn't reliable.
 const gameThumbnail = () => selectedGame.value.value.image
     ? `https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/${selectedGame.value.value.image}` 
     : "https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/Titanfall2.jpg"
@@ -120,7 +121,7 @@ onBeforeMount(async () => {
                                 <Button plain class="btn flex-1" 
                                     icon="pi pi-caret-right"
                                     :label="$t('selected-game.start-modded-button')"
-                                    :disabled="startModdedDisabled"
+                                    :disabled="!canStartModded()"
                                     @click="launchSteamGame(true)"
                                 />
         

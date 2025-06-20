@@ -29,10 +29,10 @@ func (runner SteamRunner) LaunchGame(id uint32, args []string) error {
 		return err
 	}
 
-	_, err = LaunchGame(installDir, platformExtension, id, args)
+	_, err = LaunchGame(installDir, platformExecName, id, args)
 	if err != nil {
 		// Try again and look for "Steam" rather than "steam".
-		ext := cases.Title(language.English, cases.NoLower).String(platformExtension)
+		ext := cases.Title(language.English, cases.NoLower).String(platformExecName)
 		_, err = LaunchGame(installDir, ext, id, args)
 	}
 
@@ -47,7 +47,7 @@ func LaunchGame(installDir *string, ext string, id uint32, args []string) (*gocm
 		return nil, errors.New("cannot launch game. steam path must be non-empty")
 	}
 
-	exePath := filepath.Join(*installDir, platformExtension)
+	exePath := filepath.Join(*installDir, platformExecName)
 
 	// Platform independent cmd that requests Steam to launch a game by its ID with all given arguments.
 	// When constructed, it will look something like: "C:/path/to/steam -applaunch 69 --example_arg true"
@@ -79,8 +79,9 @@ func GetInstallDirectory() (*string, error) {
 		return nil, fmt.Errorf("failed to load settings: %v", err)
 	}
 
-	if settings.Misc.SteamInstallPath != nil {
-		return settings.Misc.SteamInstallPath, nil
+	settingsSteamPath := settings.Misc.SteamInstallPath
+	if settingsSteamPath != nil && strings.TrimSpace(*settingsSteamPath) != "" {
+		return settingsSteamPath, nil
 	}
 
 	dir, err := TryFindSteam()

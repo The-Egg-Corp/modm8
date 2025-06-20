@@ -9,7 +9,6 @@ import (
 
 func TestSteamDir(t *testing.T) {
 	path, err := steam.GetInstallDirectory()
-
 	if err != nil {
 		t.Fatalf("error getting steam directory: %v", err)
 	}

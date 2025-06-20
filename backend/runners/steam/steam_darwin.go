@@ -2,7 +2,7 @@
 
 package steam
 
-const platformExtension = ""
+const platformExecName = ""
 
 // TODO: Implement this. (Gonna be a pain in the ass)
 func TryFindSteam() (*string, error) {

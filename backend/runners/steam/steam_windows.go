@@ -4,7 +4,7 @@ package steam
 
 import "golang.org/x/sys/windows/registry"
 
-const platformExtension = "Steam.exe"
+const platformExecName = "Steam.exe"
 
 func TryFindSteam() (*string, error) {
 	// Check Windows Registry for Steam installation path in both 32 and 64 bit paths.

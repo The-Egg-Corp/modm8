@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 )
 
-const platformExtension = "steam.sh"
+const platformExecName = "steam.sh"
 
 var homeDir string
 var homeDirErr error
@@ -35,7 +35,7 @@ func TryFindSteam() (*string, error) {
 
 	// Check all known steam paths for a shell file.
 	for _, path := range paths {
-		_, err := os.Stat(filepath.Join(path, platformExtension))
+		_, err := os.Stat(filepath.Join(path, platformExecName))
 
 		if os.IsExist(err) {
 			return &path, nil

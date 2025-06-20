@@ -16,12 +16,11 @@ func TryFindSteam() (*string, error) {
 	for _, regPath := range paths {
 		k, err := registry.OpenKey(registry.LOCAL_MACHINE, regPath, registry.QUERY_VALUE)
 		if err != nil {
-			k.Close()
 			continue
 		}
 
-		defer k.Close()
 		installPath, _, err := k.GetStringValue("InstallPath")
+		k.Close()
 
 		if err == nil {
 			return &installPath, nil

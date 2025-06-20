@@ -35,7 +35,7 @@ func TryFindSteam() (*string, error) {
 
 	// Check all known steam paths for a shell file.
 	for _, path := range paths {
-		_, err := os.Stat(filepath.Join(path, "steam.sh"))
+		_, err := os.Stat(filepath.Join(path, platformExtension))
 
 		if os.IsExist(err) {
 			return &path, nil

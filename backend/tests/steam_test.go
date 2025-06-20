@@ -21,8 +21,13 @@ func TestSteamDir(t *testing.T) {
 	}
 }
 
-func TestLaunchSteamGame(t *testing.T) {
-	cmd, err := steam.LaunchGame(1966720, []string{"--doorstop-enable", "false"})
+func TestLaunchSteamGameWindows(t *testing.T) {
+	steamPath, err := steam.GetInstallDirectory()
+	if err != nil {
+		t.Fatalf("error launching game. failed to find path to Steam: %v", err)
+	}
+
+	cmd, err := steam.LaunchGame(steamPath, "steam.exe", 1966720, []string{"--doorstop-enable", "false"})
 	if err != nil {
 		t.Fatalf("error launching game: %v", err)
 		return

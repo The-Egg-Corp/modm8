@@ -28,7 +28,7 @@ export const mockGameList: GameContainer[] = [
     image: "RiskOfRain2.jpg",
     path: "H:\\Program Files (x86)\\Steam\\steamapps\\common\\Risk of Rain 2",
     aliases: ["ror2"],
-    steamID: 248820
+    steamID: 632360
   }),
   makeThunderstoreGame({
     title: "Content Warning",

@@ -7,6 +7,9 @@ import (
 	"testing"
 )
 
+// Risk of Rain 2
+const testGame = 632360
+
 func TestSteamDir(t *testing.T) {
 	path, err := steam.GetInstallDirectory()
 	if err != nil {
@@ -26,7 +29,7 @@ func TestLaunchSteamGameWindows(t *testing.T) {
 		t.Fatalf("error launching game. failed to find path to Steam: %v", err)
 	}
 
-	cmd, err := steam.LaunchGame(steamPath, "steam.exe", 1966720, []string{"--doorstop-enable", "false"})
+	cmd, err := steam.LaunchGame(steamPath, "steam.exe", testGame, []string{"--doorstop-enable", "false"})
 	if err != nil {
 		t.Fatalf("error launching game: %v", err)
 		return

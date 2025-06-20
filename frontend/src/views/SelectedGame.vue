@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onBeforeMount, onBeforeUnmount, onMounted } from "vue"
+import { onBeforeMount, onBeforeUnmount } from "vue"
 
 import * as Steam from '@backend/steam/SteamRunner'
 
@@ -31,7 +31,6 @@ const gameStore = useGameStore()
 const { selectedGame } = storeToRefs(gameStore)
 
 const modListStoreTS = useModListStoreTS()
-const { refreshMods, refreshPage } = modListStoreTS
 const { installing, lastInstalledMod } = storeToRefs(modListStoreTS)
 
 const configEditorDialog = useDialog('selected-game-config-editor')
@@ -48,7 +47,7 @@ const canStartModded = () => {
     return tsMods || nexusMods
 }
 
-// TODO: This just isn't reliable.
+// TODO: This is temporary and not reliable :)
 const gameThumbnail = () => selectedGame.value.value.image
     ? `https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/${selectedGame.value.value.image}` 
     : "https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/Titanfall2.jpg"
@@ -81,7 +80,7 @@ onBeforeUnmount(() => {
 onBeforeMount(async () => {
     // The API fetch here will only happen on first mount when mod cache is empty.
     // Any subsequent mounts will use the populated mod cache.
-    await refreshMods(true)
+    await modListStoreTS.refreshMods(true)
 
     const selectedGameTitle = selectedGame.value?.value.title || "No game selected"
     const tsModsAmt = selectedProfile.value?.mods.thunderstore?.length || 0
@@ -144,7 +143,7 @@ onBeforeMount(async () => {
             </template>
         </Card>
 
-        <ProfileManager @profileSelected="refreshPage()"/>
+        <ProfileManager @profileSelected="modListStoreTS.refreshPage()"/>
     </div>
 
     <div class="flex mod-list-container">

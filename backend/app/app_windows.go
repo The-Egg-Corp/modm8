@@ -4,11 +4,6 @@ package app
 
 import "golang.org/x/sys/windows"
 
-func setPriority() error {
-	handle := windows.CurrentProcess()
-	return windows.SetPriorityClass(handle, windows.ABOVE_NORMAL_PRIORITY_CLASS)
-}
-
 // Essentially replicates Electron's `shell.openExternal`.
 func initOpenCommand() {
 	openArgs := []string{"url.dll,FileProtocolHandler"}
@@ -16,6 +11,11 @@ func initOpenCommand() {
 		name: "rundll32",
 		args: &openArgs,
 	}
+}
+
+func setPriority() error {
+	handle := windows.CurrentProcess()
+	return windows.SetPriorityClass(handle, windows.ABOVE_NORMAL_PRIORITY_CLASS)
 }
 
 func IsWindowsAdmin() bool {

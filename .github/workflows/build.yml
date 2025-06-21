@@ -30,8 +30,7 @@ jobs:
       matrix:
         build: [
           { name: "modm8.exe", platform: "windows/amd64", os: "windows-latest" },
-          { name: "modm8", platform: "linux/amd64", os: "ubuntu-latest" },
-          { name: "modm8", platform: "linux/arm64", os: "ubuntu-latest" },
+          { name: "modm8", platform: "linux/amd64", os: "ubuntu-latest" }
           # { name: "modm8", platform: "darwin/universal", os: "macos-latest" }
         ]
 

@@ -10,7 +10,6 @@ import (
 	gocmd "github.com/go-cmd/cmd"
 	"github.com/samber/lo"
 	wRuntime "github.com/wailsapp/wails/v2/pkg/runtime"
-	"golang.org/x/sys/windows"
 )
 
 type Command struct {
@@ -40,7 +39,7 @@ func (app *Application) GetPersistence() *Persistence {
 }
 
 func (app *Application) IsWindowsAdmin() bool {
-	return windows.GetCurrentProcessToken().IsElevated()
+	return IsWindowsAdmin()
 }
 
 func NewApp() *Application {
@@ -55,9 +54,7 @@ func NewApp() *Application {
 //
 // Any initial app setup logic should be done here.
 func (app Application) Init() (errs []error) {
-	var err error
-
-	err = app.Settings.Load()
+	err := app.Settings.Load()
 	if err != nil {
 		errs = append(errs, err)
 	}

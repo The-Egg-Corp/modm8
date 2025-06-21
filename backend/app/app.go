@@ -9,7 +9,7 @@ import (
 
 	gocmd "github.com/go-cmd/cmd"
 	"github.com/samber/lo"
-	wRuntime "github.com/wailsapp/wails/v2/pkg/runtime"
+	wuntime "github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 type Command struct {
@@ -81,11 +81,11 @@ func (app *Application) Startup(ctx context.Context) {
 	app.Ctx = ctx
 
 	if app.Persistence.Window.Maximized {
-		wRuntime.WindowMaximise(ctx)
+		wuntime.WindowMaximise(ctx)
 		return
 	}
 
-	//wRuntime.WindowSetPosition(ctx, a.Persistence.Window.X, a.Persistence.Window.Y)
+	//wuntime.WindowSetPosition(ctx, a.Persistence.Window.X, a.Persistence.Window.Y)
 }
 
 // Called when the application is about to quit, either by clicking the window close button or calling runtime.Quit.

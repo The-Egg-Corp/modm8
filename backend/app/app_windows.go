@@ -17,3 +17,7 @@ func initOpenCommand() {
 		args: &openArgs,
 	}
 }
+
+func IsWindowsAdmin() bool {
+	return windows.GetCurrentProcessToken().IsElevated()
+}

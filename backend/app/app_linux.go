@@ -9,3 +9,7 @@ func setPriority() error {
 func initOpenCommand() {
 	openCmd = &Command{name: "xdg-open"}
 }
+
+func IsWindowsAdmin() bool {
+	return false
+}

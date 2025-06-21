@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/spf13/viper"
-	wRuntime "github.com/wailsapp/wails/v2/pkg/runtime"
+	wuntime "github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 type Persistence struct {
@@ -50,15 +50,15 @@ func (persistence *Persistence) Save() error {
 
 // The frontend must still be loaded to call these runtime methods.
 func (persistence *Persistence) ApplyCurrentWindowState(ctx context.Context) {
-	x, y := wRuntime.WindowGetPosition(ctx)
+	x, y := wuntime.WindowGetPosition(ctx)
 	persistence.SetWindowX(x)
 	persistence.SetWindowY(y)
 
-	maximized := wRuntime.WindowIsMaximised(ctx)
+	maximized := wuntime.WindowIsMaximised(ctx)
 	persistence.SetMaximized(maximized)
 
 	if !maximized {
-		w, h := wRuntime.WindowGetSize(ctx)
+		w, h := wuntime.WindowGetSize(ctx)
 		persistence.SetWindowWidth(uint16(w))
 		persistence.SetWindowHeight(uint16(h))
 	}

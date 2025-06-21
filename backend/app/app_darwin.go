@@ -2,12 +2,12 @@
 
 package app
 
-func setPriority() error {
-	return nil
-}
-
 func initOpenCommand() {
 	openCmd = &Command{name: "open"}
+}
+
+func setPriority() error {
+	return nil
 }
 
 func IsWindowsAdmin() bool {

@@ -30,7 +30,6 @@ func TestGetProfiles(t *testing.T) {
 
 func TestSaveManifest(t *testing.T) {
 	manifest := profile.NewProfileManifest()
-
 	manifest.AddThunderstoreMod("Owen3H-IntroTweaks-1.5.0")
 	manifest.AddThunderstoreMod("Owen3H-CSync-3.0.0")
 

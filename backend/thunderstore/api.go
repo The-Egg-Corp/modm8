@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"modm8/backend"
 	"modm8/backend/common/downloader"
 	"modm8/backend/common/fileutil"
 	"modm8/backend/game"
+	"modm8/backend/utils"
 	"path/filepath"
 	"strings"
 
@@ -172,7 +172,7 @@ func (a *API) GetStrippedPackages(community string, skipCache bool) ([]StrippedP
 	// Loops over all pkgs, stripping some unnecessary fields to avoid blocking frontend.
 	for _, pkg := range pkgs {
 		// Strip any apps/utils that aren't strictly mods.
-		if backend.ContainsEqualFold(modExclusions, pkg.FullName) {
+		if utils.ContainsEqualFold(modExclusions, pkg.FullName) {
 			continue
 		}
 
@@ -253,7 +253,7 @@ func (a *API) InstallByName(gameTitle, community, fullName string) (*v1.PackageV
 
 // Downloads the given package version as a zip and unpacks it to the specified directory (expected to be absolute).
 func Install(pkg v1.PackageVersion, dir string) (*grab.Response, error) {
-	if exists, _ := backend.ExistsInDir(dir, pkg.FullName); exists {
+	if exists, _ := fileutil.ExistsInDir(dir, pkg.FullName); exists {
 		return nil, fmt.Errorf("%s is already installed", pkg.FullName)
 	}
 

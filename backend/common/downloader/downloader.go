@@ -3,7 +3,6 @@ package downloader
 import (
 	"errors"
 	"fmt"
-	"modm8/backend"
 	"modm8/backend/common/fileutil"
 	"os"
 	"path/filepath"
@@ -27,7 +26,7 @@ func DownloadZip(url, dirPath, fileName string) (*grab.Response, error) {
 // The directory path is normalized and cleaned to be platform-independent.
 func DownloadFile(url, dirPath string, fi fileutil.FileMetadata) (*grab.Response, error) {
 	outputPath := filepath.Join(filepath.Clean(dirPath), fi.GetCombined())
-	if exists, _ := backend.ExistsAtPath(outputPath); exists {
+	if exists, _ := fileutil.ExistsAtPath(outputPath); exists {
 		return nil, fmt.Errorf("file/dir already exists: %s", outputPath)
 	}
 

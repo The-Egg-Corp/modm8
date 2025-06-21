@@ -1,10 +1,9 @@
 package game
 
 import (
+	"modm8/backend/common/fileutil"
 	"os"
 	"path/filepath"
-
-	backend "modm8/backend"
 )
 
 // type StorePlatform string
@@ -30,7 +29,7 @@ func (gm *GameManager) GameInstalled(dirPath string, exeKeywords []string) bool 
 
 	for _, keyword := range exeKeywords {
 		path := filepath.Join(dirPath, keyword)
-		if exists, _ := backend.ExistsAtPath(path); exists {
+		if exists, _ := fileutil.ExistsAtPath(path); exists {
 			installed = true
 			break
 		}
@@ -45,7 +44,7 @@ func (gm *GameManager) BepinexInstalled(absPath string) bool {
 }
 
 func (gm *GameManager) BepinexConfigFiles(dirs []string) ([]string, error) {
-	return backend.GetFilesWithExts(filepath.Join(dirs...), []string{"cfg"})
+	return fileutil.GetFilesWithExts(filepath.Join(dirs...), []string{"cfg"})
 }
 
 func (gm *GameManager) ParseBepinexConfig(path string) (*BepinexConfig, error) {

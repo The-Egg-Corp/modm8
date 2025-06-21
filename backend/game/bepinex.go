@@ -2,7 +2,6 @@ package game
 
 import (
 	"fmt"
-	backend "modm8/backend"
 	"modm8/backend/common/downloader"
 	"modm8/backend/common/fileutil"
 	"path/filepath"
@@ -32,7 +31,7 @@ type BepinexConfigEntry struct {
 }
 
 func ParseBepinexConfig(path string) (*BepinexConfig, error) {
-	contents, err := backend.ReadFile(path)
+	contents, err := fileutil.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
@@ -143,7 +142,7 @@ func BepinexInstalled(absPath string) (bool, []string) {
 		path := filepath.Join(absPath, fileName)
 
 		// Check if file exists, add to missing slice if not.
-		if exists, _ := backend.ExistsAtPath(path); !exists {
+		if exists, _ := fileutil.ExistsAtPath(path); !exists {
 			missing = append(missing, fileName)
 		}
 	}

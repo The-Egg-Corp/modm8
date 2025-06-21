@@ -1,11 +1,12 @@
 package app
 
 import (
-	"modm8/backend"
 	"modm8/backend/common/fileutil"
 	"path/filepath"
 )
 
+// This struct is bound to Wails and is responsible for providing utility functions relating to
+// the file system, un/zipping, Unity Doorstop and other general purpose functions.
 type Utils struct{}
 
 func NewUtils() *Utils {
@@ -13,7 +14,7 @@ func NewUtils() *Utils {
 }
 
 func (u *Utils) ExistsInDir(dir, item string) (bool, error) {
-	return backend.ExistsInDir(dir, item)
+	return fileutil.ExistsInDir(dir, item)
 }
 
 func (u Utils) ExistsAtPath(path string, clean bool) (bool, error) {
@@ -21,15 +22,15 @@ func (u Utils) ExistsAtPath(path string, clean bool) (bool, error) {
 		path = filepath.Clean(path)
 	}
 
-	return backend.ExistsAtPath(path)
+	return fileutil.ExistsAtPath(path)
 }
 
 func (u *Utils) GetDirsAtPath(path string, exts []string) ([]string, error) {
-	return backend.GetDirsAtPath(path)
+	return fileutil.GetDirsAtPath(path)
 }
 
 func (u *Utils) GetFilesWithExts(path string, exts []string) ([]string, error) {
-	return backend.GetFilesWithExts(path, exts)
+	return fileutil.GetFilesWithExts(path, exts)
 }
 
 func (u *Utils) GetFilesInZip(data []byte) (map[string][]byte, error) {

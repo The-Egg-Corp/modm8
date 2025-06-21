@@ -66,14 +66,17 @@ const launchSteamGame = async (modded: boolean, args?: string[]) => {
         return console.error(`Error launching Steam game!\n\nCannot use depot ID \`${id}\` as an app ID. Must be a multiple of 10.`)
     }
 
+    // Prepend doorstop argument according to vanilla/modded.
     const doorstop = modded ? ["--doorstop-enable", "true"] : ["--doorstop-enable", "false"]
     const fullArgs = [...doorstop]
     if (args) fullArgs.push(...args)
-    
+
+    console.log(`Attempting to launch game '${selectedGame.value.value.title}'. Steam ID: ${id}`)
     return await Steam.LaunchGame(id, fullArgs)
 }
 
 onBeforeUnmount(() => {
+    // This is needed currently, otherwise a profile from one game could stay selected on another game.
     selectedProfile.value = null
 })
 
@@ -138,7 +141,6 @@ onBeforeMount(async () => {
                             />
                         </div>
                     </div>
-
                 </div>
             </template>
         </Card>

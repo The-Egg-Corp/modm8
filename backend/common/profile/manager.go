@@ -3,7 +3,7 @@ package profile
 import (
 	"encoding/json"
 	"fmt"
-	"modm8/backend"
+	"modm8/backend/common/fileutil"
 	"modm8/backend/game"
 	"os"
 	"path/filepath"
@@ -26,6 +26,14 @@ type ProfileManager struct{}
 
 func NewManager() *ProfileManager {
 	return &ProfileManager{}
+}
+
+func (pm *ProfileManager) GetPathToProfileManifest(gameTitle, profileName string) string {
+	return PathToManifest(gameTitle, profileName)
+}
+
+func (pm *ProfileManager) GetPathToProfiles(gameTitle string) string {
+	return GameProfilesPath(gameTitle)
 }
 
 func (pm *ProfileManager) GetProfiles(gameTitle string) (map[string]ProfileManifest, error) {
@@ -74,7 +82,7 @@ func (pm *ProfileManager) RemoveNexusModFromProfile(gameTitle string, profileNam
 // source "../modm8/Games/GameTitle/ModCache/Owen3H-IntroTweaks-1.5.0" which would give us the desired behaviour.
 func (pm *ProfileManager) LinkModToProfile(gameTitle string, target string) error {
 	source := game.ModCacheDir(gameTitle)
-	return backend.LinkDir(target, source)
+	return fileutil.LinkDir(target, source)
 }
 
 func UpdateThunderstoreProfileMods(op ManifestOperation, gameTitle string, profileName string, verFullName string) error {
@@ -120,6 +128,10 @@ func GameProfilesPath(gameTitle string) string {
 	return path
 }
 
+func PathToProfile(gameTitle, profileName string) string {
+	return filepath.Join(GameProfilesPath(gameTitle), profileName)
+}
+
 // Returns the full path to the manifest file for a given profile.
 //
 // For example, if gameTitle is "Skyrim" and profileName is "MyProfile", the output will be:
@@ -134,11 +146,25 @@ func ProfilePathInfo(gameTitle, profileName string) (string, string) {
 	return filepath.Split(PathToManifest(gameTitle, profileName))
 }
 
+// Builds a path to a file inside the profiles dir for the given game.
+//
+// For example, when gameTitle is "Subnautica", profileName is "Default" and paths is ["BepInEx", "plugins"],
+// this function will join the profile path and name, then attempt to join the extra path arguments in order.
+// The output should look something like so:
+//
+// "../../modm8/Games/Subnautica/Profiles/Default/BepInEx/plugins"
+func JoinToGameProfilesPath(gameTitle, profileName string, paths ...string) string {
+	dir, name := ProfilePathInfo(gameTitle, profileName)
+	path := filepath.Join(dir, name)
+
+	return filepath.Join(append([]string{path}, paths...)...)
+}
+
 func GetProfileNames(gameTitle string) ([]string, error) {
 	profilesPath := GameProfilesPath(gameTitle)
 
 	// The user probably hasn't created any profiles yet.
-	exists, _ := backend.ExistsAtPath(profilesPath)
+	exists, _ := fileutil.ExistsAtPath(profilesPath)
 	if !exists {
 		return []string{}, nil
 	}
@@ -149,7 +175,7 @@ func GetProfileNames(gameTitle string) ([]string, error) {
 		return []string{}, err
 	}
 
-	return backend.GetBaseNames(paths), nil
+	return fileutil.GetBaseNames(paths), nil
 }
 
 func GetProfiles(gameTitle string) (map[string]ProfileManifest, error) {
@@ -179,12 +205,12 @@ func SaveManifest(gameTitle, profileName string, prof ProfileManifest) error {
 	dir, file := ProfilePathInfo(gameTitle, profileName)
 
 	// Create the profiles dir (and its parents if missing) so we can save the manifest file inside it.
-	err = backend.MkDirAll(dir)
+	err = fileutil.MkDirAll(dir)
 	if err != nil {
 		return err
 	}
 
-	return backend.WriteFile(filepath.Join(dir, file), data)
+	return fileutil.WriteFile(filepath.Join(dir, file), data)
 }
 
 func DeleteProfile(gameTitle, profileName string) error {
@@ -193,7 +219,7 @@ func DeleteProfile(gameTitle, profileName string) error {
 }
 
 func GetManifest(gameTitle, profileName string) (*ProfileManifest, error) {
-	contents, err := backend.ReadFile(PathToManifest(gameTitle, profileName))
+	contents, err := fileutil.ReadFile(PathToManifest(gameTitle, profileName))
 	if err != nil {
 		return nil, err
 	}

@@ -2,7 +2,7 @@ package backend
 
 import (
 	"fmt"
-	"modm8/backend"
+	"modm8/backend/common/fileutil"
 	"modm8/backend/common/profile"
 	"os"
 	"path/filepath"
@@ -10,7 +10,7 @@ import (
 )
 
 func TestGetDirsAtPath(t *testing.T) {
-	dirs, err := backend.GetDirsAtPath(profile.GameProfilesPath("Lethal Company"))
+	dirs, err := fileutil.GetDirsAtPath(profile.GameProfilesPath("Lethal Company"))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -38,7 +38,7 @@ func TestLinkDirSucceeds(t *testing.T) {
 	//#endregion
 
 	// Actual test
-	err := backend.LinkDir(target, source)
+	err := fileutil.LinkDir(target, source)
 	if err != nil {
 		t.Fatalf("failed to link dir:\n%v", err)
 	}
@@ -71,7 +71,7 @@ func TestLinkDirFails(t *testing.T) {
 	os.RemoveAll(target)
 
 	// Should fail with source directory error.
-	err := backend.LinkDir(target, source)
+	err := fileutil.LinkDir(target, source)
 	if err != nil {
 		t.Fatalf("failed to link dir:\n%v", err)
 	}

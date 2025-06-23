@@ -98,6 +98,10 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
         fetchIfEmpty: boolean, 
         options: { searchFilter: boolean, defaultSort?: boolean } = { searchFilter: true, defaultSort: true }
     ) {
+        if (loading.value) {
+            return // Already loading, no need to do it again.
+        }
+
         if (selectedGame.value.platform != 'THUNDERSTORE') {
             throw new Error('[TS/modlist] Could not refresh mods. Selected game is not of type `THUNDERSTORE`.')
         }
@@ -121,10 +125,9 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
         }
 
         mods.value = getMods(options)
-        await refreshPage()
+        loading.value = false // Page hasn't visually updated yet, but technically we are done loading.
 
-        // We are done regardless of outcome, stop loading.
-        loading.value = false
+        await refreshPage()
     }
 
     function getMods(options: { searchFilter: boolean, defaultSort?: boolean }) {

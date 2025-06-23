@@ -148,8 +148,13 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
             if (input.length == 1 && !lowerTitle.startsWith(input.toLowerCase())) {
                 return false
             }
-    
-            return lowerTitle.includes(input.toLowerCase())
+            
+            const lowerAuthor = mod.owner?.toLowerCase() ?? "" 
+
+            const titleMatch = lowerTitle.includes(input.toLowerCase())
+            const authorMatch = lowerAuthor.includes(input.toLowerCase())
+
+            return titleMatch || authorMatch
         })
     }
 

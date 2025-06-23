@@ -41,8 +41,7 @@ const {
 const modListStoreTS = useModListStoreTS()
 const { 
     refreshMods, filterByProfile,
-    updatePage, refreshPage,
-    getMods, PAGE_ROWS
+    updatePage, PAGE_ROWS
 } = modListStoreTS
 
 const {
@@ -79,7 +78,7 @@ const onPageChange = (e: DataViewPageEvent) => {
     if (scrolled) scrollIndex.value = 0 // Update cur index if successful.
 }
 
-const debouncedSearch = debounce(() => refreshMods(false), 250)
+const debouncedSearch = debounce(() => refreshMods(false, { searchFilter: true }), 250)
 const hasSearchInput = () => searchInput.value ? searchInput.value.length > 0 : undefined
 
 async function onSearchInputChange() {
@@ -90,9 +89,8 @@ async function onSearchInputChange() {
 async function refreshPageWithMods() {
     // No input, no need to debounce.
     if (!searchInput.value?.trim()) {
-        // Show all mods without filtering.
-        mods.value = getMods(false)
-        return await refreshPage()
+        // Don't filter by search, show all mods.
+        return await refreshMods(true, { searchFilter: false })
     }
 
     debouncedSearch()

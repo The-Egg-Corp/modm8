@@ -91,10 +91,13 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
     }
 
     /** 
-     * Refreshes the page with the currently cached mods.
+     * Refreshes `mods` and the current page with the modCache of the currently selected game.
      * @param fetch Whether to fetch mods from the API and update the cache (if isnt populated already) before refreshing the page.
      */
-    async function refreshMods(fetchIfEmpty: boolean) {
+    async function refreshMods(
+        fetchIfEmpty: boolean, 
+        options: { searchFilter: boolean, defaultSort?: boolean } = { searchFilter: true, defaultSort: true }
+    ) {
         if (selectedGame.value.platform != 'THUNDERSTORE') {
             throw new Error('[TS/modlist] Could not refresh mods. Selected game is not of type `THUNDERSTORE`.')
         }
@@ -117,19 +120,19 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
             }
         }
 
-        mods.value = getMods()
+        mods.value = getMods(options)
         await refreshPage()
 
         // We are done regardless of outcome, stop loading.
         loading.value = false
     }
 
-    function getMods(searchFilter = true, defaultSort = true) {
+    function getMods(options: { searchFilter: boolean, defaultSort?: boolean }) {
         const cache = selectedGame.value.value.modCache
         if (!cache) return []
 
-        const filteredMods = searchFilter ? filterBySearch(cache) : cache
-        return !defaultSort ? filteredMods : filteredMods.sort((m1, m2) => m2.rating_score - m1.rating_score)
+        const filteredMods = options?.searchFilter ? filterBySearch(cache) : cache
+        return !options?.defaultSort ? filteredMods : filteredMods.sort((m1, m2) => m2.rating_score - m1.rating_score)
     }
 
     function filterBySearch(mods: thunderstore.StrippedPackage[]) {

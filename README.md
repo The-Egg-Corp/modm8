@@ -27,11 +27,13 @@ Built with [Wails](https://wails.io) for an Electron-like experience but without
   <summary>Selected Game Screen</summary>
 
   <img src="./screenshots/selected-game.png"/>
+  <img src="./screenshots/this-profile.png"/>
 </details>
 
 <details>
   <summary>Config Editor</summary>
 
+  <img src="./screenshots/config-editor-selection.png"/>
   <img src="./screenshots/config-editor.png"/>
 </details>
 

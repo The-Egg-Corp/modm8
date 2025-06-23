@@ -1,12 +1,25 @@
-package game
+package loaders
 
 import "github.com/Masterminds/semver/v3"
 
 // I'll probably be dead by the time there are >255 loaders.
 type ModLoader uint8
 
-func (ml ModLoader) Int() int {
+func (ml ModLoader) Index() int {
 	return int(ml)
+}
+
+func (ml ModLoader) Name() string {
+	switch ml {
+	case BEPINEX:
+		return "BEPINEX"
+	case MELON:
+		return "MELON"
+	case LOVELY:
+		return "LOVELY"
+	default:
+		return "UNKNOWN"
+	}
 }
 
 const (
@@ -14,7 +27,7 @@ const (
 	BEPINEX
 	GODOT_ML
 	LOVELY
-	MELON_LOADER
+	MELON
 	NORTHSTAR
 	RETURN_OF_MODDING
 	SHIMLOADER

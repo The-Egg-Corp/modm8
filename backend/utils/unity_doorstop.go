@@ -9,7 +9,7 @@ import (
 
 const DOORSTOP_VER_FILE_NAME = ".doorstop_version"
 
-// Reads the ".doorstop_version" file in dirPath.
+// Reads the ".doorstop_version" file in dirPath (usually the game or profile directory).
 //
 // This file only exists on v4 and above.
 // If we dont find it or the version is somehow <= 3, just default to 3.

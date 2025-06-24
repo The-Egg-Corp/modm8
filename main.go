@@ -111,6 +111,7 @@ func main() {
 	modm8.Settings.Apply()
 
 	tsAPI := thunderstore.NewAPI(modm8.Ctx)
+	tsSchema := thunderstore.NewThunderstoreSchema()
 	tsTools := thunderstore.NewTools()
 
 	profileManager := profile.NewManager()
@@ -123,11 +124,12 @@ func main() {
 		modm8.Settings,
 		modm8.Persistence,
 		modm8.Utils,
-		tsAPI,
-		tsTools,
 		profileManager,
 		gameManager,
 		steamRunner,
+		tsAPI,
+		tsSchema,
+		tsTools,
 	}
 
 	// ENUM BINDINGS

@@ -26,8 +26,6 @@ import (
 //go:embed all:frontend/dist
 var assets embed.FS
 
-type IList []any
-
 func NewWindowsOptions(gpuAccel bool) *windows.Options {
 	return &windows.Options{
 		WindowIsTranslucent:  true,
@@ -119,7 +117,8 @@ func main() {
 	gameManager := game.NewManager()
 	steamRunner := steam.NewRunner()
 
-	bindings := IList{
+	// STRUCT BINDINGS
+	bindings := []any{
 		modm8,
 		modm8.Settings,
 		modm8.Persistence,
@@ -129,6 +128,12 @@ func main() {
 		profileManager,
 		gameManager,
 		steamRunner,
+	}
+
+	// ENUM BINDINGS
+	enumBindings := []any{
+		app.UpdateBehaviours,
+		app.GameSelectionLayouts,
 	}
 
 	// For now, avoid binding Nexus stuff in GH Actions since key file wont exist.
@@ -163,10 +168,7 @@ func main() {
 		Windows:  NewWindowsOptions(modm8.Settings.Performance.GPUAcceleration),
 		LogLevel: logger.INFO,
 		Bind:     bindings,
-		EnumBind: IList{
-			app.UpdateBehaviours,
-			app.GameSelectionLayouts,
-		},
+		EnumBind: enumBindings,
 	})
 
 	if err != nil {

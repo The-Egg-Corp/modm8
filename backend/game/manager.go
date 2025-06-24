@@ -2,6 +2,7 @@ package game
 
 import (
 	"modm8/backend/common/fileutil"
+	"modm8/backend/loaders"
 	"os"
 	"path/filepath"
 )
@@ -22,6 +23,10 @@ type GameManager struct{}
 
 func NewManager() *GameManager {
 	return &GameManager{}
+}
+
+func (gm *GameManager) GetLoaderInstructions(loader loaders.ModLoader, profileDir string) (*loaders.LoaderInstructions, error) {
+	return loaders.GetLoaderInstructions(loader, profileDir)
 }
 
 func (gm *GameManager) GameInstalled(dirPath string, exeKeywords []string) bool {

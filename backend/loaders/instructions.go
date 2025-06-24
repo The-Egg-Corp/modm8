@@ -17,7 +17,7 @@ var LOADER_INSTRUCTIONS = map[ModLoader]ILoaderInstructions{
 	LOVELY:  &LovelyLoaderInstructions{},
 }
 
-func GetGameInstructions(loader ModLoader, profileDir string) (*LoaderInstructions, error) {
+func GetLoaderInstructions(loader ModLoader, profileDir string) (*LoaderInstructions, error) {
 	l, ok := LOADER_INSTRUCTIONS[loader]
 	if !ok {
 		return nil, fmt.Errorf("failed to get instructions. invalid loader with index %d", loader.Index())

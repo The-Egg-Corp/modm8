@@ -24,7 +24,7 @@ const (
 // and know that the methods will work exactly the same. As profiles are a core feature, we should take extra caution and ensure tests pass.
 type ProfileManager struct{}
 
-func NewManager() *ProfileManager {
+func NewProfileManager() *ProfileManager {
 	return &ProfileManager{}
 }
 

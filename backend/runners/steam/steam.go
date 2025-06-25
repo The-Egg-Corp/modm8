@@ -18,7 +18,7 @@ type SteamRunner struct {
 	// InstallPathErr error
 }
 
-func NewRunner() *SteamRunner {
+func NewSteamRunner() *SteamRunner {
 	return &SteamRunner{}
 }
 

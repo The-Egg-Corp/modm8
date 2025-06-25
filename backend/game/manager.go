@@ -21,7 +21,7 @@ import (
 
 type GameManager struct{}
 
-func NewManager() *GameManager {
+func NewGameManager() *GameManager {
 	return &GameManager{}
 }
 

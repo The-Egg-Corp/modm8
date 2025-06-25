@@ -68,13 +68,13 @@ type StrippedPackage struct {
 	LatestVersion  v1.PackageVersion `json:"latest_version"`
 }
 
-type API struct {
+type ThunderstoreAPI struct {
 	Ctx   context.Context
 	Cache map[string]v1.PackageList // Cached packages for every community. Not related in any way to the ModCache dir.
 }
 
-func NewAPI(ctx context.Context) *API {
-	return &API{
+func NewThunderstoreAPI(ctx context.Context) *ThunderstoreAPI {
+	return &ThunderstoreAPI{
 		Ctx:   ctx,
 		Cache: NewCache(),
 	}
@@ -84,17 +84,17 @@ func NewCache() map[string]v1.PackageList {
 	return make(map[string]v1.PackageList, 0)
 }
 
-func (a *API) ClearCache() {
-	a.Cache = NewCache()
+func (api *ThunderstoreAPI) ClearCache() {
+	api.Cache = NewCache()
 }
 
 // Removes all packages associated with the specified community.
-func (a *API) RemoveFromCache(community string) {
-	delete(a.Cache, community)
+func (api *ThunderstoreAPI) RemoveFromCache(community string) {
+	delete(api.Cache, community)
 }
 
-func (a *API) getCachedPackageList(community string) (v1.PackageList, error) {
-	pkgs, exists := a.Cache[community]
+func (api *ThunderstoreAPI) getCachedPackageList(community string) (v1.PackageList, error) {
+	pkgs, exists := api.Cache[community]
 	if !exists {
 		return nil, errors.New("specified community has not been cached")
 	}
@@ -102,16 +102,16 @@ func (a *API) getCachedPackageList(community string) (v1.PackageList, error) {
 	return pkgs, nil
 }
 
-func (a *API) GetCachedPackages(community string) ([]v1.Package, error) {
-	return a.getCachedPackageList(community)
+func (api *ThunderstoreAPI) GetCachedPackages(community string) ([]v1.Package, error) {
+	return api.getCachedPackageList(community)
 }
 
-func (a *API) GetCommunities() (exp.CommunityList, error) {
+func (api *ThunderstoreAPI) GetCommunities() (exp.CommunityList, error) {
 	return exp.GetCommunities()
 }
 
-func (a *API) GetLatestPackageVersion(community string, owner string, name string) (*v1.PackageVersion, error) {
-	versions, err := a.GetPackageVersions(community, owner, name)
+func (api *ThunderstoreAPI) GetLatestPackageVersion(community string, owner string, name string) (*v1.PackageVersion, error) {
+	versions, err := api.GetPackageVersions(community, owner, name)
 	if err != nil {
 		return nil, err
 	}
@@ -119,8 +119,8 @@ func (a *API) GetLatestPackageVersion(community string, owner string, name strin
 	return &versions[0], nil
 }
 
-func (a *API) GetPackageVersions(community, owner, name string) ([]v1.PackageVersion, error) {
-	pkgs, exists := a.Cache[community]
+func (api *ThunderstoreAPI) GetPackageVersions(community, owner, name string) ([]v1.PackageVersion, error) {
+	pkgs, exists := api.Cache[community]
 	if !exists {
 		return nil, errors.New("specified community has not been cached")
 	}
@@ -135,9 +135,9 @@ func (a *API) GetPackageVersions(community, owner, name string) ([]v1.PackageVer
 
 // Get packages for a specific community given its identifier.
 // If the cache is not hit, it will be populated automatically.
-func (a *API) GetPackagesInCommunity(community string, skipCache bool) ([]v1.Package, error) {
+func (api *ThunderstoreAPI) GetPackagesInCommunity(community string, skipCache bool) ([]v1.Package, error) {
 	if !skipCache {
-		pkgs, exists := a.Cache[community]
+		pkgs, exists := api.Cache[community]
 		if exists {
 			return pkgs, nil
 		}
@@ -148,11 +148,11 @@ func (a *API) GetPackagesInCommunity(community string, skipCache bool) ([]v1.Pac
 		return nil, err
 	}
 
-	a.Cache[community] = pkgs
+	api.Cache[community] = pkgs
 	return pkgs, nil
 }
 
-func (a *API) GetPackagesByUser(communities []string, owner string) string {
+func (api *ThunderstoreAPI) GetPackagesByUser(communities []string, owner string) string {
 	return GetPackagesByUser(communities, owner)
 }
 
@@ -161,8 +161,8 @@ func (a *API) GetPackagesByUser(communities []string, owner string) string {
 // The following keys are stripped (though retained in the cache):
 //
 // # Versions, DonationLink, Pinned
-func (a *API) GetStrippedPackages(community string, skipCache bool) ([]StrippedPackage, error) {
-	pkgs, err := a.GetPackagesInCommunity(community, skipCache)
+func (api *ThunderstoreAPI) GetStrippedPackages(community string, skipCache bool) ([]StrippedPackage, error) {
+	pkgs, err := api.GetPackagesInCommunity(community, skipCache)
 	if err != nil {
 		return nil, err
 	}
@@ -221,16 +221,16 @@ func GetPackagesByUser(communities []string, owner string) string {
 // Installs the latest version of a package by its full name (Owner-PkgName) and all of its dependencies.
 //
 // The game identifier (aka community) must be correctly specified for the package to be found.
-func (a *API) InstallByName(gameTitle, community, fullName string) (*v1.PackageVersion, error) {
+func (api *ThunderstoreAPI) InstallByName(gameTitle, community, fullName string) (*v1.PackageVersion, error) {
 	// Get cached package list, if empty, try to fill it.
-	pkgs, _ := a.getCachedPackageList(community)
+	pkgs, _ := api.getCachedPackageList(community)
 	if pkgs == nil {
 		commPkgs, err := v1.PackagesFromCommunity(community)
 		if err != nil {
 			return nil, fmt.Errorf("error getting packages: %s", err)
 		}
 
-		a.Cache[community] = commPkgs
+		api.Cache[community] = commPkgs
 	}
 
 	pkg := pkgs.GetExact(fullName)
@@ -246,7 +246,7 @@ func (a *API) InstallByName(gameTitle, community, fullName string) (*v1.PackageV
 	CurModCacheDir = game.ModCacheDir(gameTitle)
 
 	latestVer := pkg.LatestVersion()
-	InstallWithDependencies(latestVer, a.Cache[community], &errs, &downloadCount)
+	InstallWithDependencies(latestVer, api.Cache[community], &errs, &downloadCount)
 
 	return &latestVer, nil
 }

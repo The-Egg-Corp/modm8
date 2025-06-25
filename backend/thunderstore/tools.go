@@ -5,21 +5,21 @@ import (
 )
 
 // Collection of util methods relating to Thunderstore mod development.
-type Tools struct {
+type ThunderstoreTools struct {
 }
 
-func NewTools() *Tools {
-	return &Tools{}
+func NewThunderstoreTools() *ThunderstoreTools {
+	return &ThunderstoreTools{}
 }
 
-func (tools *Tools) ValidateManifest(author string, data []byte) (bool, []error, error) {
+func (tools *ThunderstoreTools) ValidateManifest(author string, data []byte) (bool, []error, error) {
 	return exp.ValidateManifest(author, data)
 }
 
-func (tools *Tools) ValidateReadme(data []byte) (bool, []error, error) {
+func (tools *ThunderstoreTools) ValidateReadme(data []byte) (bool, []error, error) {
 	return exp.ValidateReadme(data)
 }
 
-func (tools *Tools) ValidateIcon(params []byte) (bool, error) {
+func (tools *ThunderstoreTools) ValidateIcon(params []byte) (bool, error) {
 	return exp.ValidateIcon(params)
 }

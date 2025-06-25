@@ -110,13 +110,13 @@ func main() {
 
 	modm8.Settings.Apply()
 
-	tsAPI := thunderstore.NewAPI(modm8.Ctx)
+	tsAPI := thunderstore.NewThunderstoreAPI(modm8.Ctx)
 	tsSchema := thunderstore.NewThunderstoreSchema()
-	tsTools := thunderstore.NewTools()
+	tsTools := thunderstore.NewThunderstoreTools()
 
-	profileManager := profile.NewManager()
-	gameManager := game.NewManager()
-	steamRunner := steam.NewRunner()
+	profileManager := profile.NewProfileManager()
+	gameManager := game.NewGameManager()
+	steamRunner := steam.NewSteamRunner()
 
 	// STRUCT BINDINGS
 	bindings := []any{

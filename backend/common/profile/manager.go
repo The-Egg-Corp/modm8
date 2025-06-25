@@ -141,11 +141,6 @@ func PathToManifest(gameTitle, profileName string) string {
 	return filepath.Join(GameProfilesPath(gameTitle), profileName, manifestName)
 }
 
-// Returns path info relating to the profile (directory and manifest name).
-func ProfilePathInfo(gameTitle, profileName string) (string, string) {
-	return filepath.Split(PathToManifest(gameTitle, profileName))
-}
-
 // Builds a path to a file inside the profiles dir for the given game.
 //
 // For example, when gameTitle is "Subnautica", profileName is "Default" and paths is ["BepInEx", "plugins"],
@@ -154,9 +149,7 @@ func ProfilePathInfo(gameTitle, profileName string) (string, string) {
 //
 // "../../modm8/Games/Subnautica/Profiles/Default/BepInEx/plugins"
 func JoinToGameProfilesPath(gameTitle, profileName string, paths ...string) string {
-	dir, name := ProfilePathInfo(gameTitle, profileName)
-	path := filepath.Join(dir, name)
-
+	path := PathToProfile(gameTitle, profileName)
 	return filepath.Join(append([]string{path}, paths...)...)
 }
 
@@ -202,20 +195,20 @@ func SaveManifest(gameTitle, profileName string, prof ProfileManifest) error {
 	}
 
 	// Profiles dir, manifest name.
-	dir, file := ProfilePathInfo(gameTitle, profileName)
+	manifestPath := PathToManifest(gameTitle, profileName)
+	manifestDir := filepath.Dir(manifestPath)
 
 	// Create the profiles dir (and its parents if missing) so we can save the manifest file inside it.
-	err = fileutil.MkDirAll(dir)
+	err = fileutil.MkDirAll(manifestDir)
 	if err != nil {
 		return err
 	}
 
-	return fileutil.WriteFile(filepath.Join(dir, file), data)
+	return fileutil.WriteFile(manifestPath, data)
 }
 
 func DeleteProfile(gameTitle, profileName string) error {
-	dir, _ := ProfilePathInfo(gameTitle, profileName)
-	return os.RemoveAll(dir)
+	return os.RemoveAll(PathToProfile(gameTitle, profileName))
 }
 
 func GetManifest(gameTitle, profileName string) (*ProfileManifest, error) {

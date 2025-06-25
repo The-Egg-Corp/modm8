@@ -92,7 +92,7 @@ func GetFallbackEcosystemPath() (*string, error) {
 		return nil, fmt.Errorf("failed to get path to fallback ecosystem.json file:\n%v", err)
 	}
 
-	path := filepath.Join(cfgDir, "modm8", "thunderstore", "ecosystem.json")
+	path := filepath.Join(cfgDir, "modm8", "Thunderstore", "ecosystem.json")
 	return &path, nil
 }
 

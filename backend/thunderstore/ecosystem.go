@@ -15,19 +15,57 @@ const (
 	ECOSYSTEM_SCHEMA_URL = "https://raw.githubusercontent.com/ebkr/r2modmanPlus/refs/heads/develop/src/assets/data/ecosystemJsonSchema.json"
 )
 
-type R2ModmanEntry struct {
-	Name string `json:"name"`
-}
-
-type ThunderstoreEcosystem struct {
-	Games map[string]struct {
-		R2Modman []*R2ModmanEntry `json:"r2modman"`
-	} `json:"games"`
-}
-
 type ThunderstoreSchema struct {
 	validated bool
 	ecosystem *ThunderstoreEcosystem
+}
+
+type ThunderstoreEcosystem struct {
+	SchemaVersion string                               `json:"schemaVersion"`
+	Games         map[string]ThunderstoreEcosystemGame `json:"games"`
+}
+
+type ThunderstoreEcosystemGame struct {
+	UUID          string             `json:"uuid"`
+	Label         string             `json:"label"`
+	Meta          GameMeta           `json:"meta"`
+	Distributions []GameDistribution `json:"distributions"`
+	R2Modman      []R2MMConfig       `json:"r2modman"`
+}
+
+type GameMeta struct {
+	DisplayName string `json:"displayName"`
+	IconURL     string `json:"iconUrl"`
+}
+
+type GameDistribution struct {
+	Platform   string `json:"platform"`
+	Identifier string `json:"identifier"`
+}
+
+type R2MMConfig struct {
+	Meta                     GameMeta           `json:"meta"`
+	InternalFolderName       string             `json:"internalFolderName"`
+	DataFolderName           string             `json:"dataFolderName"`
+	Distributions            []GameDistribution `json:"distributions"`
+	SettingsIdentifier       string             `json:"settingsIdentifier"`
+	PackageIndex             string             `json:"packageIndex"`
+	SteamFolderName          string             `json:"steamFolderName"`
+	ExeNames                 []string           `json:"exeNames"`
+	GameInstanceType         string             `json:"gameInstanceType"`
+	GameSelectionDisplayMode string             `json:"gameSelectionDisplayMode"`
+	AdditionalSearchStrings  []string           `json:"additionalSearchStrings"`
+	PackageLoader            string             `json:"packageLoader"`
+	InstallRules             []InstallRule      `json:"installRules"`
+	RelativeFileExclusions   any                `json:"relativeFileExclusions"` // TODO: Figure out proper type.
+}
+
+type InstallRule struct {
+	Route                 string   `json:"route"`
+	DefaultFileExtensions []string `json:"defaultFileExtensions"`
+	TrackingMethod        string   `json:"trackingMethod"`
+	SubRoutes             []any    `json:"subRoutes"` // TODO: Figure out proper type.
+	IsDefaultLocation     bool     `json:"isDefaultLocation"`
 }
 
 func NewThunderstoreSchema() *ThunderstoreSchema {

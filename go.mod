@@ -16,7 +16,7 @@ require (
 )
 
 require (
-	github.com/go-viper/mapstructure/v2 v2.2.1 // indirect
+	github.com/go-viper/mapstructure/v2 v2.3.0 // indirect
 	github.com/klauspost/compress v1.18.0 // indirect
 	github.com/saracen/fastzip v0.1.11
 	github.com/saracen/zipextra v0.0.0-20250129175152-f1aa42d25216 // indirect

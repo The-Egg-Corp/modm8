@@ -8,7 +8,7 @@ type LoaderInstructions struct {
 }
 
 type ILoaderInstructions interface {
-	Generate(profileDir string) LoaderInstructions
+	Generate(profileDir string) (*LoaderInstructions, error)
 }
 
 var LOADER_INSTRUCTIONS = map[ModLoader]ILoaderInstructions{
@@ -23,20 +23,10 @@ func GetLoaderInstructions(loader ModLoader, profileDir string) (*LoaderInstruct
 		return nil, fmt.Errorf("failed to get instructions. invalid loader with index %d", loader.Index())
 	}
 
-	instructions := l.Generate(profileDir)
-	return &instructions, nil
-}
-
-func GenDoorstopV3() LoaderInstructions {
-	return LoaderInstructions{
-		ModdedParams:  "--doorstop-enable true --doorstop-target BepInEx\\core\\BepInEx.Preloader.dll",
-		VanillaParams: "--doorstop-enable false",
+	instructions, err := l.Generate(profileDir)
+	if err != nil {
+		return nil, err
 	}
-}
 
-func GenDoorstopV4() LoaderInstructions {
-	return LoaderInstructions{
-		ModdedParams:  "--doorstop-enabled true --doorstop-target-assembly BepInEx\\core\\BepInEx.Preloader.dll",
-		VanillaParams: "--doorstop-enabled false",
-	}
+	return instructions, nil
 }

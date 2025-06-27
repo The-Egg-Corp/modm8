@@ -9,27 +9,6 @@ import (
 	"strings"
 )
 
-const DOORSTOP_VER_FILE_NAME = ".doorstop_version"
-
-// Reads the ".doorstop_version" file in dirPath (usually the game or profile directory) and returns the major version specified within it.
-// This file only exists from Unity Doorstop v4 onwards, and should contain a single line representing a semantic version such as "v4.0.0".
-//
-// Even if the file content is malformed with spaces or other characters before or after, this func will try to find the first line with a valid semantic version.
-// If we dont find it or the version is somehow <= 3, defaults and returns 3.
-func GetUnityDoorstopVersion(dirPath string) (int, error) {
-	semverLine, err := FindFirstSemverLine(dirPath)
-	if err != nil {
-		return 3, err
-	}
-
-	majorVer, err := strconv.Atoi(*semverLine)
-	if err != nil || majorVer <= 3 {
-		return 3, err
-	}
-
-	return majorVer, nil
-}
-
 func FindFirstSemverLine(path string) (*string, error) {
 	file, err := os.Open(path)
 	if err != nil {

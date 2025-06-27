@@ -49,14 +49,14 @@ func (ml ModLoader) Name() string {
 }
 
 const (
-	ANCIENT_DUNGEON_VR ModLoader = iota
-	BEPINEX
-	GODOT_ML
-	LOVELY
+	BEPINEX ModLoader = iota
 	MELON
+	LOVELY
 	NORTHSTAR
-	RETURN_OF_MODDING
 	SHIMLOADER
+	GODOT_ML
+	RETURN_OF_MODDING
+	ANCIENT_DUNGEON_VR
 )
 
 // The actual package/mod for the loader. (BepInExPack etc.)

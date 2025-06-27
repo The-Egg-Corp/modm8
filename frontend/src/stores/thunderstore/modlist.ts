@@ -18,7 +18,7 @@ import type { Dialog } from "@composables"
 import { 
     GetStrippedPackages,
     InstallByName
-} from "@backend/thunderstore/API"
+} from "@backend/thunderstore/ThunderstoreAPI"
 
 import type { thunderstore, v1 } from "@backend/models"
 
@@ -62,8 +62,8 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
      * @param installingDialog The dialog UI to show during mod installation.
      */
     async function installMod(fullName: string, selectedGame: ThunderstoreGame, installingDialog?: Dialog) {
+        // Begin installing and show dialog until complete.
         installing.value = true
-    
         if (installingDialog) {
             installingDialog.setClosable(false)
             installingDialog.setVisible(true)
@@ -81,8 +81,8 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
             console.error(`[${selectedGame.identifier}] Failed to install mod.\n${e.message}`)
         }
     
+        // Done installing, allow dialog to be closed but don't auto close it.
         installing.value = false
-        
         if (installingDialog) {
             installingDialog.setClosable(true)
         }

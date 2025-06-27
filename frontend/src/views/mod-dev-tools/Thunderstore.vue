@@ -13,7 +13,7 @@ import {
     ValidateIcon, 
     ValidateManifest, 
     ValidateReadme,
-} from '@backend/thunderstore/Tools'
+} from '@backend/thunderstore/ThunderstoreTools'
 
 import { GetFilesInZip } from '@backend/app/Utils'
 

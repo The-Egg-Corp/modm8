@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { GetPackagesByUser } from '@backend/thunderstore/API'
+import { GetPackagesByUser } from '@backend/thunderstore/ThunderstoreAPI'
 
 import { Viewport } from '@components'
 

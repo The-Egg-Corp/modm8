@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"modm8/backend/common/downloader"
 	"modm8/backend/common/fileutil"
+	"os"
 	"path/filepath"
 	"strings"
 
@@ -52,7 +53,6 @@ func ParseBepinexConfig(path string) (*BepinexConfig, error) {
 	}
 
 	lines := strings.Split(string(contents), "\n")
-
 	for _, line := range lines {
 		line = strings.TrimSpace(line)
 
@@ -92,7 +92,7 @@ func ParseBepinexConfig(path string) (*BepinexConfig, error) {
 				reset()
 			}
 
-			// Grab everything in between the brackets
+			// Grab everything in between the brackets.
 			currentSection = line[1 : len(line)-1]
 			continue
 		}
@@ -100,7 +100,7 @@ func ParseBepinexConfig(path string) (*BepinexConfig, error) {
 
 		//#region Parse option (key/value pair)
 		if strings.Index(line, "=") < 1 {
-			continue // Ignore malformed line
+			continue // Ignore malformed line.
 		}
 
 		if key, value, found := strings.Cut(line, "="); found {
@@ -151,13 +151,11 @@ func BepinexInstalled(absPath string) (bool, []string) {
 	return len(missing) == 0, missing
 }
 
-// TODO: Finish implementing this and call it where needed.
-func InstallBepinexPack(dir string, gameArch PlatformArch) (*grab.Response, error) {
-	downloadURL := ""
-	outputFileName := "BepInEx-Setup"
+const BEPINEX_PACK_OUTPUT_NAME = "BepInEx-Setup"
 
+func InstallBepinexPack(downloadURL, dir string) (*grab.Response, error) {
 	// Send download request to `downloadURL` and save the zip as `outputFileName` in `dir`.
-	resp, err := downloader.DownloadZip(downloadURL, dir, outputFileName)
+	resp, err := downloader.DownloadZip(downloadURL, dir, BEPINEX_PACK_OUTPUT_NAME)
 	if err != nil {
 		return resp, err
 	}
@@ -166,11 +164,39 @@ func InstallBepinexPack(dir string, gameArch PlatformArch) (*grab.Response, erro
 	}
 
 	// Unzip the downloaded file into the same directory.
-	path := filepath.Join(dir, outputFileName)
-	err = fileutil.UnzipAndDelete(path+".zip", path)
+	outputPath := filepath.Join(dir, BEPINEX_PACK_OUTPUT_NAME)
+	err = fileutil.UnzipAndDelete(outputPath+downloader.CUSTOM_ZIP_EXT, outputPath)
 	if err != nil {
 		return resp, err
 	}
 
-	return nil, err
+	// Path to the BepInExPack folder inside the extracted dir.
+	bepinexPackDir := filepath.Join(outputPath, "BepInExPack")
+
+	// We now have a dir with BepInExPack inside of it.
+	// The contents of that dir need to go up 2 into the base profile dir.
+	entries, err := os.ReadDir(bepinexPackDir)
+	if err != nil {
+		return resp, err
+	}
+
+	for _, entry := range entries {
+		srcPath := filepath.Join(bepinexPackDir, entry.Name())
+		dstPath := filepath.Join(dir, entry.Name())
+
+		err = os.Rename(srcPath, dstPath)
+		if err != nil {
+			return resp, err
+		}
+	}
+
+	// Then the leftover original dir can be deleted.
+	err = os.RemoveAll(outputPath)
+	if err != nil {
+		return resp, err
+	}
+
+	// TODO: Maybe create the /plugins folder if it doesn't exist in the pack?
+
+	return resp, err
 }

@@ -35,3 +35,14 @@ func TestParseBepinexConfig(t *testing.T) {
 
 	util.PrettyPrint(parsed)
 }
+
+const testBepinexPackURL = "https://thunderstore.io/package/download/BepInEx/BepInExPack/5.4.2100/"
+
+func TestInstallBepinexPack(t *testing.T) {
+	profDir := profile.PathToProfile("Lethal Company", "test")
+
+	_, err := game.InstallBepinexPack(testBepinexPackURL, profDir)
+	if err != nil {
+		t.Fatalf("failed to install BepInEx-Pack:\n%s", err)
+	}
+}

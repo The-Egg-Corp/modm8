@@ -2,13 +2,16 @@ package backend
 
 import (
 	"fmt"
+	"modm8/backend/common/profile"
+	"modm8/backend/loaders"
 	steam "modm8/backend/runners/steam"
 	"strings"
 	"testing"
 )
 
-// Risk of Rain 2
-const testGame = 632360
+// Risk of Rain 2: 632360
+// Lethal Company: 1966720
+const testGame = 1966720
 
 func TestSteamDir(t *testing.T) {
 	path, err := steam.GetInstallDirectory()
@@ -29,9 +32,15 @@ func TestLaunchSteamGameWindows(t *testing.T) {
 		t.Fatalf("error launching game. failed to find path to Steam: %v", err)
 	}
 
-	cmd, err := steam.LaunchGame(steamPath, "steam.exe", testGame, []string{"--doorstop-enable", "false"})
+	instructions, err := loaders.GetLoaderInstructions(loaders.BEPINEX, profile.PathToProfile("Lethal Company", "test"))
 	if err != nil {
-		t.Fatalf("error launching game: %v", err)
+		t.Fatalf("error launching game:\n%v", err)
+		return
+	}
+
+	cmd, err := steam.LaunchGame(steamPath, "steam.exe", testGame, instructions.ModdedParams)
+	if err != nil {
+		t.Fatalf("error launching game:\n%v", err)
 		return
 	}
 

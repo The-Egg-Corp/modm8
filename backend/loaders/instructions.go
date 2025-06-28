@@ -3,8 +3,8 @@ package loaders
 import "fmt"
 
 type LoaderInstructions struct {
-	ModdedParams  string
-	VanillaParams string
+	ModdedParams  []string
+	VanillaParams []string
 }
 
 type ILoaderInstructions interface {

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 )
 
 // Looks silly with no values, but allows constant lookup and avoids nested loop.
@@ -61,25 +60,25 @@ func GetBepinexPreloaderPath(profileDir string) (string, error) {
 }
 
 func GenDoorstopV3(preloaderPath string) LoaderInstructions {
-	moddedArgs := []string{
-		"--doorstop-enable", "true",
-		"--doorstop-target", preloaderPath,
-	}
-
 	return LoaderInstructions{
-		ModdedParams:  strings.Join(moddedArgs, " "),
-		VanillaParams: "--doorstop-enable false",
+		ModdedParams: []string{
+			"--doorstop-enable", "true",
+			"--doorstop-target", preloaderPath,
+		},
+		VanillaParams: []string{
+			"--doorstop-enable", "false",
+		},
 	}
 }
 
 func GenDoorstopV4(preloaderPath string) LoaderInstructions {
-	moddedArgs := []string{
-		"--doorstop-enabled", "true",
-		"--doorstop-target-assembly", preloaderPath,
-	}
-
 	return LoaderInstructions{
-		ModdedParams:  strings.Join(moddedArgs, " "),
-		VanillaParams: "--doorstop-enabled false",
+		ModdedParams: []string{
+			"--doorstop-enabled", "true",
+			"--doorstop-target-assembly", preloaderPath,
+		},
+		VanillaParams: []string{
+			"--doorstop-enabled", "false",
+		},
 	}
 }

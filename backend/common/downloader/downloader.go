@@ -63,9 +63,7 @@ func DownloadMultipleFiles(destPath string, pool DownloadPool) (map[string]error
 
 	for url, outputFile := range pool {
 		// Capture the vars instead of wrapping in a func
-		url := url
-		outputFile := outputFile
-
+		url, outputFile := url, outputFile
 		g.Go(func() error {
 			// Call the DownloadFile function for each URL
 			_, err := DownloadFile(url, destPath, outputFile)

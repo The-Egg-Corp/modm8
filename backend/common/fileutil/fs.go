@@ -55,8 +55,8 @@ func GetFilesWithExts(path string, exts []string) ([]string, error) {
 }
 
 // Platform-independent way of checking a file/dir exists in a directory.
-func ExistsInDir(dir string, item string) (bool, error) {
-	path := filepath.Join(filepath.Clean(dir), item)
+func ExistsInDir(targetDir string, item string) (bool, error) {
+	path := filepath.Join(filepath.Clean(targetDir), item)
 	return ExistsAtPath(path)
 }
 

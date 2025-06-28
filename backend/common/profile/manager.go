@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"modm8/backend/common/fileutil"
-	"modm8/backend/game"
 	"os"
 	"path/filepath"
 )
@@ -74,19 +73,6 @@ func (pm *ProfileManager) RemoveThunderstoreModFromProfile(gameTitle string, pro
 
 func (pm *ProfileManager) RemoveNexusModFromProfile(gameTitle string, profileName string, verFullName string) error {
 	return UpdateNexusProfileMods(MANIFEST_OP_MOD_REMOVE, gameTitle, profileName, verFullName)
-}
-
-// Creates a Symlink (uses Junction on Windows) at the target and links it to a mod which must exist in the cache.
-// The target should be the path of the mod in the profile directory.
-//
-// This means that mods *technically* don't exist outside of the main mod cache of the game, mods in a profile are merely mirrors. This allows us to not only customise
-// where the mod cache should be stored, but also have a single source of truth for mods, eliminating dupes and saving disk space.
-//
-// For example, we can mirror target "../modm8/Games/GameTitle/Profiles/Owen3H-IntroTweaks-1.5.0" to the
-// source "../modm8/Games/GameTitle/ModCache/Owen3H-IntroTweaks-1.5.0" which would give us the desired behaviour.
-func (pm *ProfileManager) LinkModToProfile(gameTitle string, target string) error {
-	source := game.ModCacheDir(gameTitle)
-	return fileutil.LinkDir(target, source)
 }
 
 func UpdateThunderstoreProfileMods(op ManifestOperation, gameTitle string, profileName string, verFullName string) error {

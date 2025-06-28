@@ -9,6 +9,7 @@ type LoaderInstructions struct {
 
 type ILoaderInstructions interface {
 	Generate(profileDir string) (*LoaderInstructions, error)
+	GetModLinkPath(profileDir string) string
 }
 
 var LOADER_INSTRUCTIONS = map[ModLoader]ILoaderInstructions{

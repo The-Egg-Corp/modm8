@@ -29,6 +29,18 @@ func (gm *GameManager) GetLoaderInstructions(loader loaders.ModLoader, profileDi
 	return loaders.GetLoaderInstructions(loader, profileDir)
 }
 
+// Creates a Symlink (uses Junction on Windows) at the target and links it to a mod which must exist in the cache.
+// The target should be the path of the mod in the profile directory.
+//
+// This means that mods *technically* don't exist outside of the main mod cache of the game, mods in a profile are merely mirrors. This allows us to not only customise
+// where the mod cache should be stored, but also have a single source of truth for mods, eliminating dupes and saving disk space.
+//
+// For example, we can mirror target "../modm8/Games/GameTitle/Profiles/test/BepInEx/plugins/Owen3H-IntroTweaks-1.5.0" to the
+// source "../modm8/Games/GameTitle/ModCache/Owen3H-IntroTweaks-1.5.0" which would give us the desired behaviour.
+func (gm *GameManager) LinkModToProfile(gameTitle string, target string) error {
+	return fileutil.LinkDir(target, ModCacheDir(gameTitle))
+}
+
 func (gm *GameManager) GameInstalled(dirPath string, exeKeywords []string) bool {
 	installed := false
 

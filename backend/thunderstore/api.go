@@ -252,39 +252,11 @@ func (api *ThunderstoreAPI) InstallByName(gameTitle, community, fullName string)
 	return &latestVer, nil
 }
 
-// Downloads the given package version as a zip and unpacks it to the specified directory (expected to be absolute).
-func Install(pkg v1.PackageVersion, dir string) (*grab.Response, error) {
-	if exists, _ := fileutil.ExistsInDir(dir, pkg.FullName); exists {
-		return nil, fmt.Errorf("%s is already installed", pkg.FullName)
-	}
-
-	resp, err := downloader.DownloadZip(pkg.DownloadURL, dir, pkg.FullName)
-	if err != nil {
-		return resp, err
-	}
-
-	// Finished, return if any error occurred.
-	if err = resp.Err(); err != nil {
-		return resp, err
-	}
-
-	// TODO: If the program closes for any reason, we need to be able to cancel (and possibly resume)
-	// 		 installing the current zip, then also ensure it is deleted. Maybe when user next opens app?
-
-	path := filepath.Join(dir, pkg.FullName)
-	err = fileutil.UnzipAndDelete(path+downloader.CUSTOM_ZIP_EXT, path)
-	if err != nil {
-		return resp, err
-	}
-
-	return resp, nil
-}
-
 // Using the given list of packages (usually from a community), this function attempts to download the given
-// package aka 'pkg' and any packages it depends on which is gathered by its 'Dependencies' field - see [PackageVersion].
+// package aka 'pkg' and any packages it depends on which is gathered by its 'Dependencies' field - see [v1.PackageVersion].
 //
-// This function is recursive and calls Install for each dependency, any errors are accumulated into a slice and
-// the install count is incremented if no error occurred - both of which are available once this function is complete.
+// This function is recursive and calls [Install] for each dependency, any errors are accumulated into a slice and
+// the install count is incremented if no error occurred - both of which are available once this func has fully finished.
 func InstallWithDependencies(pkg v1.PackageVersion, pkgs v1.PackageList, errs *[]error, installCount *int) {
 	_, err := Install(pkg, CurModCacheDir)
 	if err == nil {
@@ -306,7 +278,35 @@ func InstallWithDependencies(pkg v1.PackageVersion, pkgs v1.PackageList, errs *[
 	}
 }
 
+// Downloads the given package version as a zip and unpacks it to the specified directory (expected to be absolute).
+func Install(pkg v1.PackageVersion, dir string) (*grab.Response, error) {
+	if exists, _ := fileutil.ExistsInDir(dir, pkg.FullName); exists {
+		return nil, fmt.Errorf("%s is already installed", pkg.FullName)
+	}
+
+	resp, err := downloader.DownloadZip(pkg.DownloadURL, dir, pkg.FullName)
+	if err != nil {
+		return resp, err
+	}
+	if err = resp.Err(); err != nil {
+		return resp, err
+	}
+
+	// TODO: If the program closes for any reason, we need to be able to cancel (and possibly resume)
+	// 		 installing the current zip, then also ensure it is deleted. Maybe when user next opens app?
+
+	// Unzip the package to the path (usually the current mod cache dir).
+	path := filepath.Join(dir, pkg.FullName)
+	err = fileutil.UnzipAndDelete(path+downloader.CUSTOM_ZIP_EXT, path)
+	if err != nil {
+		return resp, err
+	}
+
+	return resp, nil
+}
+
 // Downloads the specified package as a zip file and unpacks it under the specified directory (absolute path).
+// Uses a ticker to emit an event indicating the download progress every X milliseconds.
 //
 // The `fullName` parameter expects a string in the format: "Author-Package-Major.Minor.Patch"
 // func (a *API) InstallPackage(fullName, dir string) (*grab.Response, error) {

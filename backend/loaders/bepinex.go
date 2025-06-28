@@ -19,6 +19,14 @@ var PRELOADER_NAMES = map[string]struct{}{
 type BepinexLoaderInstructions struct {
 }
 
+func (instr BepinexLoaderInstructions) GetModLinkPath(profileDir string) string {
+	return GetBepinexPluginsPath(profileDir)
+}
+
+func GetBepinexPluginsPath(profileDir string) string {
+	return filepath.Join(profileDir, "BepInEx", "plugins")
+}
+
 func (instr BepinexLoaderInstructions) Generate(profileDir string) (*LoaderInstructions, error) {
 	preloaderPath, err := GetBepinexPreloaderPath(profileDir)
 	if err != nil {

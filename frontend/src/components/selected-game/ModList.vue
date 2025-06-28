@@ -19,10 +19,15 @@ import { Dialog } from '@composables'
 import {
     AddThunderstoreModToProfile,
     RemoveThunderstoreModFromProfile
-} from '@frontend/wailsjs/go/profile/ProfileManager'
+} from '@backend/profile/ProfileManager'
 
+import {
+    LinkModToProfile,
+    UnlinkModFromProfile
+} from '@backend/game/GameManager'
+
+import { loaders, thunderstore } from '@backend/models'
 import { debounce } from "../../util"
-import { thunderstore } from '@frontend/wailsjs/go/models'
 
 const profileStore = useProfileStore()
 const { selectedProfile } = storeToRefs(profileStore)
@@ -120,7 +125,19 @@ async function installTsMod(mod: thunderstore.StrippedPackage) {
     // The user wants this mod. Update manifest regardless of whether mod will successfully install.
     // We can notify them in the profile tab if something is wrong and provide the option to start without it.
     await AddThunderstoreModToProfile(selectedGameTitle, selectedProfName, mod.latest_version.full_name)
-    await modListStoreTS.installMod(mod.full_name, selectedGame.value.value, props.installingModDialog)
+    
+    // We installed the mod to ../GameName/ModCache. 
+    const success = await modListStoreTS.installMod(mod.full_name, selectedGame.value.value, props.installingModDialog)
+    if (success) {
+        // Create a symlink/junction for the mod and every one of its dependencies in the loader's mod path.
+        // Ex: ../GameName/Profiles/SelectedProfile/BepInEx/plugins
+        
+        // TODO: Replace ModLoader.BEPINEX with one the game actually uses.
+        await LinkModToProfile(loaders.ModLoader.BEPINEX, selectedGameTitle, selectedProfName, mod.latest_version.full_name)
+        for (const dep of mod.latest_version.dependencies) {
+            await LinkModToProfile(loaders.ModLoader.BEPINEX, selectedGameTitle, selectedProfName, dep)
+        }
+    }
 
     // Keep profiles refreshed and in line with manifest.
     await initTsProfileMods()
@@ -140,6 +157,14 @@ async function uninstallTsMod(mod: thunderstore.StrippedPackage) {
     const selectedProfName = selectedProfile.value.name
 
     await RemoveThunderstoreModFromProfile(selectedGameTitle, selectedProfName, mod.latest_version.full_name)
+    // TODO: Delete from ModCache if no profile uses it?
+    
+    // Drop every symlink/junction for the mod and its dependencies.
+    // TODO: Replace ModLoader.BEPINEX with one the game actually uses.
+    await UnlinkModFromProfile(loaders.ModLoader.BEPINEX, selectedGameTitle, selectedProfName, mod.latest_version.full_name)
+    for (const dep in mod.latest_version.dependencies) {
+        await UnlinkModFromProfile(loaders.ModLoader.BEPINEX, selectedGameTitle, selectedProfName, dep)
+    }
 
     // Keep profiles refreshed and in line with manifest.
     await initTsProfileMods()

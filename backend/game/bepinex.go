@@ -173,6 +173,9 @@ func InstallBepinexPack(downloadURL, dir string) (*grab.Response, error) {
 	// Path to the BepInExPack folder inside the extracted dir.
 	bepinexPackDir := filepath.Join(outputPath, "BepInExPack")
 
+	// Create the plugins folder if it didn't exist in the pack.
+	fileutil.MkDir(filepath.Join(bepinexPackDir, "plugins"))
+
 	// We now have a dir with BepInExPack inside of it.
 	// The contents of that dir need to go up 2 into the base profile dir.
 	entries, err := os.ReadDir(bepinexPackDir)
@@ -190,13 +193,11 @@ func InstallBepinexPack(downloadURL, dir string) (*grab.Response, error) {
 		}
 	}
 
-	// Then the leftover original dir can be deleted.
+	// Then the leftover original bepinex pack dir can now be deleted.
 	err = os.RemoveAll(outputPath)
 	if err != nil {
 		return resp, err
 	}
-
-	// TODO: Maybe create the /plugins folder if it doesn't exist in the pack?
 
 	return resp, err
 }

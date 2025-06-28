@@ -24,6 +24,7 @@ var modExclusions = []string{
 	"ebkr-r2modman_dsp",
 	"ebkr-BT2TS",
 	"Harb-AttributeFinder",
+	"Kesomannen-GaleModManager",
 	"ethanbrews-RiskOfRainModManager",
 	"scottbot95-RoR2ModManager",
 	"HoodedDeath-RiskOfDeathModManager",
@@ -156,6 +157,29 @@ func (api *ThunderstoreAPI) GetPackagesByUser(communities []string, owner string
 	return GetPackagesByUser(communities, owner)
 }
 
+func GetPackagesByUser(communities []string, owner string) string {
+	pkgs, err := v1.PackagesFromCommunities(v1.NewCommunityList(communities...))
+	if err != nil {
+		return "An error occurred getting packages!"
+	}
+
+	pkgs = lo.Filter(pkgs, func(pkg v1.Package, index int) bool {
+		return strings.EqualFold(pkg.Owner, owner)
+	})
+
+	pkgCount := pkgs.Size()
+	if pkgCount == 1 {
+		return pkgs[0].Name
+	}
+
+	names := make([]string, pkgCount)
+	for i := range pkgCount {
+		names = append(names, pkgs[i].Name)
+	}
+
+	return strings.Join(names, ", ")
+}
+
 // Similar to GetPackagesInCommunity, but every package is stripped of some info,
 // massively decreasing the time spent sending data to the frontend to preventing it from blocking.
 // The following keys are stripped (though retained in the cache):
@@ -193,29 +217,6 @@ func (api *ThunderstoreAPI) GetStrippedPackages(community string, skipCache bool
 	}
 
 	return strippedPkgs, nil
-}
-
-func GetPackagesByUser(communities []string, owner string) string {
-	pkgs, err := v1.PackagesFromCommunities(v1.NewCommunityList(communities...))
-	if err != nil {
-		return "An error occurred getting packages!"
-	}
-
-	pkgs = lo.Filter(pkgs, func(pkg v1.Package, index int) bool {
-		return strings.EqualFold(pkg.Owner, owner)
-	})
-
-	pkgCount := pkgs.Size()
-	if pkgCount == 1 {
-		return pkgs[0].Name
-	}
-
-	names := make([]string, pkgCount)
-	for i := range pkgCount {
-		names = append(names, pkgs[i].Name)
-	}
-
-	return strings.Join(names, ", ")
 }
 
 // Installs the latest version of a package by its full name (Owner-PkgName) and all of its dependencies.
@@ -267,13 +268,11 @@ func Install(pkg v1.PackageVersion, dir string) (*grab.Response, error) {
 		return resp, err
 	}
 
-	path := filepath.Join(dir, pkg.FullName)
-	ext := downloader.CUSTOM_ZIP_EXT
-
 	// TODO: If the program closes for any reason, we need to be able to cancel (and possibly resume)
 	// 		 installing the current zip, then also ensure it is deleted. Maybe when user next opens app?
 
-	err = fileutil.UnzipAndDelete(path+ext, path)
+	path := filepath.Join(dir, pkg.FullName)
+	err = fileutil.UnzipAndDelete(path+downloader.CUSTOM_ZIP_EXT, path)
 	if err != nil {
 		return resp, err
 	}

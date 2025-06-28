@@ -18,7 +18,7 @@ export const mockGameList: GameContainer[] = [
     title: "Lethal Company",
     identifier: 'lethal-company',
     image: "LethalCompany.png",
-    path: "E:/SteamLibrary/steamapps/common/Lethal Company",
+    path: "F:/SteamLibrary/steamapps/common/Lethal Company",
     aliases: ["LC", "LethalCompany"],
     steamID: 1966720
   }),

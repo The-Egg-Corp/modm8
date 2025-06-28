@@ -17,6 +17,7 @@ import (
 	"modm8/backend/app"
 	"modm8/backend/common/profile"
 	"modm8/backend/game"
+	"modm8/backend/loaders"
 	"modm8/backend/nexus"
 	"modm8/backend/thunderstore"
 
@@ -136,6 +137,7 @@ func main() {
 	enumBindings := []any{
 		app.UpdateBehaviours,
 		app.GameSelectionLayouts,
+		loaders.ModLoaders,
 	}
 
 	// For now, avoid binding Nexus stuff in GH Actions since key file wont exist.

@@ -2,6 +2,9 @@
 import { onBeforeMount, onBeforeUnmount } from "vue"
 
 import * as Steam from '@backend/steam/SteamRunner'
+import * as GameManager from "@backend/game/GameManager"
+import { GetPathToProfile } from "@backend/profile/ProfileManager"
+import { loaders } from "@frontend/wailsjs/go/models"
 
 import { useDialog } from '@composables'
 import {
@@ -66,13 +69,15 @@ const launchSteamGame = async (modded: boolean, args?: string[]) => {
         return console.error(`Error launching Steam game!\n\nCannot use depot ID \`${id}\` as an app ID. Must be a multiple of 10.`)
     }
 
-    // Prepend doorstop argument according to vanilla/modded.
-    const doorstop = modded ? ["--doorstop-enable", "true"] : ["--doorstop-enable", "false"]
-    const fullArgs = [...doorstop]
-    if (args) fullArgs.push(...args)
+    if (!selectedProfile.value) {
+        return console.error(`Error launching Steam game!\n\nProfile is null. Make sure it still exists and is selected.`)
+    }
+
+    const profPath = await GetPathToProfile(selectedGame.value.value.title, selectedProfile.value?.name)
+    const instructions = await GameManager.GetLoaderInstructions(loaders.ModLoader.BEPINEX, profPath)
 
     console.log(`Attempting to launch game '${selectedGame.value.value.title}'. Steam ID: ${id}`)
-    return await Steam.LaunchGame(id, fullArgs)
+    return await Steam.LaunchGame(id, modded ? instructions.ModdedParams : instructions.VanillaParams)
 }
 
 onBeforeUnmount(() => {

@@ -10,7 +10,7 @@ import { Viewport } from '@components'
 import DataView from 'primevue/dataview'
 import SelectButton from 'primevue/selectbutton'
 
-// TODO: Replace with real external service.
+// TODO: Replace with real external service. Use ecosystem logic we implemented in the backend.
 import { mockGameList } from '../mocks/GameService'
 
 import type { 

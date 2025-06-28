@@ -28,12 +28,16 @@ func NewProfileManager() *ProfileManager {
 	return &ProfileManager{}
 }
 
-func (pm *ProfileManager) GetPathToProfileManifest(gameTitle, profileName string) string {
-	return PathToManifest(gameTitle, profileName)
-}
-
 func (pm *ProfileManager) GetPathToProfiles(gameTitle string) string {
 	return GameProfilesPath(gameTitle)
+}
+
+func (pm *ProfileManager) GetPathToProfile(gameTitle string, profileName string) string {
+	return PathToProfile(gameTitle, profileName)
+}
+
+func (pm *ProfileManager) GetPathToProfileManifest(gameTitle, profileName string) string {
+	return PathToManifest(gameTitle, profileName)
 }
 
 func (pm *ProfileManager) GetProfiles(gameTitle string) (map[string]ProfileManifest, error) {
@@ -138,7 +142,7 @@ func PathToProfile(gameTitle, profileName string) string {
 //
 // <CONFIG_DIR>\modm8\Games\Skyrim\Profiles\MyProfile\profinfo.json
 func PathToManifest(gameTitle, profileName string) string {
-	return filepath.Join(GameProfilesPath(gameTitle), profileName, manifestName)
+	return filepath.Join(PathToProfile(gameTitle, profileName), manifestName)
 }
 
 // Builds a path to a file inside the profiles dir for the given game.

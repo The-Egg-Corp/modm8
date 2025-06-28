@@ -59,6 +59,15 @@ const (
 	ANCIENT_DUNGEON_VR
 )
 
+var ModLoaders = []struct {
+	Value  ModLoader
+	TSName string
+}{
+	{BEPINEX, "BEPINEX"},
+	{MELON, "MELON"},
+	{LOVELY, "LOVELY"},
+}
+
 // The actual package/mod for the loader. (BepInExPack etc.)
 type LoaderPackageInfo struct {
 	LoaderType         ModLoader

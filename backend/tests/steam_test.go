@@ -13,7 +13,7 @@ import (
 // Lethal Company: 1966720
 const testGame = 1966720
 
-func TestSteamDir(t *testing.T) {
+func TestSteamGetInstallDirectory(t *testing.T) {
 	path, err := steam.GetInstallDirectory()
 	if err != nil {
 		t.Fatalf("error getting steam directory: %v", err)
@@ -26,7 +26,7 @@ func TestSteamDir(t *testing.T) {
 	}
 }
 
-func TestLaunchSteamGameWindows(t *testing.T) {
+func TestWindowsSteamLaunchGame(t *testing.T) {
 	steamPath, err := steam.GetInstallDirectory()
 	if err != nil {
 		t.Fatalf("error launching game. failed to find path to Steam: %v", err)

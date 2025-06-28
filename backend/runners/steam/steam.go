@@ -69,12 +69,10 @@ func LaunchGame(installDir *string, ext string, id uint32, args []string) (*gocm
 	return cmd, err
 }
 
-// TODO: Try use a global settings instance instead of creating a new one.
-
 // Returns the path to the directory where Steam is installed.
 func GetInstallDirectory() (*string, error) {
 	// Try and return path if it already exists in settings.toml
-	settings := app.NewSettings()
+	settings := app.NewSettings() // TODO: Use a global settings instance instead of creating a new one each time?
 	if err := settings.Load(); err != nil {
 		return nil, fmt.Errorf("failed to load settings: %v", err)
 	}

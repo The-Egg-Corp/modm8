@@ -7,27 +7,36 @@ type LoaderInstructions struct {
 	VanillaParams []string
 }
 
-type ILoaderInstructions interface {
-	Generate(profileDir string) (*LoaderInstructions, error)
+type ILoader interface {
+	GenerateInstructions(profileDir string) (*LoaderInstructions, error)
 	GetModLinkPath(profileDir string) string
 }
 
-var LOADER_INSTRUCTIONS = map[ModLoader]ILoaderInstructions{
-	BEPINEX: &BepinexLoaderInstructions{},
-	MELON:   &MelonLoaderInstructions{},
-	LOVELY:  &LovelyLoaderInstructions{},
+var MOD_LOADERS = map[ModLoader]ILoader{
+	BEPINEX: &BepinexLoader{},
+	MELON:   &MelonLoader{},
+	LOVELY:  &LovelyLoader{},
 }
 
 func GetLoaderInstructions(loader ModLoader, profileDir string) (*LoaderInstructions, error) {
-	l, ok := LOADER_INSTRUCTIONS[loader]
+	l, ok := MOD_LOADERS[loader]
 	if !ok {
 		return nil, fmt.Errorf("failed to get instructions. invalid loader with index %d", loader.Index())
 	}
 
-	instructions, err := l.Generate(profileDir)
+	instructions, err := l.GenerateInstructions(profileDir)
 	if err != nil {
 		return nil, err
 	}
 
 	return instructions, nil
+}
+
+func GetModLinkPath(loader ModLoader, profileDir string) (string, error) {
+	l, ok := MOD_LOADERS[loader]
+	if !ok {
+		return "", fmt.Errorf("failed to get instructions. invalid loader with index %d", loader.Index())
+	}
+
+	return l.GetModLinkPath(profileDir), nil
 }

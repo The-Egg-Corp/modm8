@@ -5,14 +5,14 @@ import (
 	"path/filepath"
 )
 
-type LovelyLoaderInstructions struct {
+type LovelyLoader struct {
 }
 
 // TODO: Implement this
-func (instr LovelyLoaderInstructions) Generate(profileDir string) (*LoaderInstructions, error) {
+func (instr LovelyLoader) GenerateInstructions(profileDir string) (*LoaderInstructions, error) {
 	return &LoaderInstructions{}, fmt.Errorf("instructions for loader LOVELY not yet implemented")
 }
 
-func (instr LovelyLoaderInstructions) GetModLinkPath(profileDir string) string {
+func (instr LovelyLoader) GetModLinkPath(profileDir string) string {
 	return filepath.Join("lovely", "mods")
 }

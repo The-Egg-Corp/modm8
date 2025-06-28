@@ -2,6 +2,7 @@ package game
 
 import (
 	"modm8/backend/common/fileutil"
+	"modm8/backend/common/profile"
 	"modm8/backend/loaders"
 	"os"
 	"path/filepath"
@@ -29,6 +30,10 @@ func (gm *GameManager) GetLoaderInstructions(loader loaders.ModLoader, profileDi
 	return loaders.GetLoaderInstructions(loader, profileDir)
 }
 
+func (gm *GameManager) GetModLinkPath(loader loaders.ModLoader, profileDir string) (string, error) {
+	return loaders.GetModLinkPath(loader, profileDir)
+}
+
 // Creates a Symlink (uses Junction on Windows) at the target and links it to a mod which must exist in the cache.
 // The target should be the path of the mod in the profile directory.
 //
@@ -37,7 +42,13 @@ func (gm *GameManager) GetLoaderInstructions(loader loaders.ModLoader, profileDi
 //
 // For example, we can mirror target "../modm8/Games/GameTitle/Profiles/test/BepInEx/plugins/Owen3H-IntroTweaks-1.5.0" to the
 // source "../modm8/Games/GameTitle/ModCache/Owen3H-IntroTweaks-1.5.0" which would give us the desired behaviour.
-func (gm *GameManager) LinkModToProfile(gameTitle string, target string) error {
+func (gm *GameManager) LinkModToProfile(gameTitle string, profName string, loader loaders.ModLoader) error {
+	profDir := profile.PathToProfile(gameTitle, profName)
+	target, err := loaders.GetModLinkPath(loader, profDir)
+	if err != nil {
+		return err
+	}
+
 	return fileutil.LinkDir(target, ModCacheDir(gameTitle))
 }
 

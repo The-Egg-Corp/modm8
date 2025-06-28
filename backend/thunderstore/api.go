@@ -249,6 +249,16 @@ func (api *ThunderstoreAPI) InstallByName(gameTitle, community, fullName string)
 	latestVer := pkg.LatestVersion()
 	InstallWithDependencies(latestVer, api.Cache[community], &errs, &downloadCount)
 
+	if len(errs) > 0 {
+		var errBuilder strings.Builder
+		for _, err := range errs {
+			errBuilder.WriteString(err.Error())
+			errBuilder.WriteString("\n")
+		}
+
+		return &latestVer, fmt.Errorf("errors occurred installing %s:\n%s", latestVer.FullName, errBuilder.String())
+	}
+
 	return &latestVer, nil
 }
 

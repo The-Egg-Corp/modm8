@@ -103,5 +103,5 @@ func LinkDir(target, source string) error {
 		return fmt.Errorf("invalid source path. must be a dir")
 	}
 
-	return SymlinkOrJunction(target, source)
+	return CreateSymlinkOrJunction(target, source)
 }

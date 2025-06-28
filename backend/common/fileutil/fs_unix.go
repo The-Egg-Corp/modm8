@@ -6,6 +6,6 @@ import (
 	"os"
 )
 
-func SymlinkOrJunction(target, source string) error {
+func CreateSymlinkOrJunction(target, source string) error {
 	return os.Symlink(source, target)
 }

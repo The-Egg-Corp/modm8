@@ -66,7 +66,7 @@ const asBool = (str: string) => {
         </div>
     </div>
 
-    <div class="scroll-hidden">
+    <div class="scroll-hidden pb-4">
         <div v-for="(entries, section) in groupedEntries">
             <Divider v-if="section != '__root'" align="center" type="solid" class="mb-0 mt-0">
                 <p class="category-divider mb-1 mt-1">{{ section }}</p>
@@ -76,7 +76,7 @@ const asBool = (str: string) => {
             <div v-for="(entry, key) in entries" :key="key">
                 <div class="flex row pt-2 justify-content-between align-items-center">
                     <!-- Container of the key and comments -->
-                    <div class="mb-1" style="width: 45rem;">
+                    <div class="mb-1" style="width: 60%;">
                         <p class="entry-key mt-0 mb-1">{{ key }}</p>
                         
                         <div v-if="entry.comments">
@@ -85,9 +85,11 @@ const asBool = (str: string) => {
                         </div>
                     </div>
 
-                    <div class="flex align-items-center">
-                        <ToggleSwitch v-if="isBool(entry.default_value)" v-model="entry.checked"/>
-                        <InputText v-else class="ml-3 flex-grow-1" style="font-size: 16px;" :value="entry.value"/>
+                    <div v-if="isBool(entry.default_value)" class="flex align-items-center">
+                        <ToggleSwitch v-model="entry.checked"/>
+                    </div>
+                    <div v-else class="flex flex-grow-1 align-items-center">
+                        <InputText class="ml-3 flex-grow-1" style="font-size: 16px;" :value="entry.value"/>
                     </div>
                 </div>
             </div>

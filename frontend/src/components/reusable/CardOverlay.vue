@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 interface Props {
+    dialogContentStyle?: any
     dialogStyle?: any
     cardStyle?: any
     class?: string
@@ -26,6 +27,7 @@ const props = withDefaults(defineProps<Props>(), {
 <Dialog modal
     :class="props.class"
     :style="props.dialogStyle"
+    :content-style="props.dialogContentStyle"
     :block-scroll="true"
     :dismissable-mask="false"
     :show-header="false"
@@ -51,8 +53,9 @@ const props = withDefaults(defineProps<Props>(), {
     user-select: none;
     font-size: 42px;
     font-weight: 490;
-    margin-top: 15px;
-    margin-bottom: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
     -webkit-font-smoothing: antialiased;
+    text-wrap: nowrap;
 }
 </style>

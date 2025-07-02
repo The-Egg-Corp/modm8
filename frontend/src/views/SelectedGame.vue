@@ -53,7 +53,7 @@ const canStartModded = () => {
 // TODO: This is temporary and not reliable :)
 const gameThumbnail = () => selectedGame.value.value.imageURL
     ? `https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/${selectedGame.value.value.imageURL}` 
-    : "https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/Titanfall2.jpg"
+    : ""
 
 const launchSteamGame = async (modded: boolean, args?: string[]) => {
     // TODO: These returns should probably reject.

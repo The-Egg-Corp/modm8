@@ -7,8 +7,8 @@ const defaultGame: GameContainer = {
     platform: 'THUNDERSTORE',
     value: {
         title: 'Placeholder',
-        identifier: 'tf2',
-        steamID: 0
+        identifier: 'riskofrain2',
+        uuid: ""
     } satisfies ThunderstoreGame
 }
 

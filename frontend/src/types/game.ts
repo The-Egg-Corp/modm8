@@ -1,16 +1,17 @@
 import type { thunderstore } from "@backend/models.js"
 import type { ObjValues, Prettify } from "./index.js"
 
-export type GameRunnerType = ObjValues<typeof GameRunner>
-export const GameRunner = {
-    STEAM:   "STEAM",
-    EPIC:    "EPIC",
-    XBOX_GAME_PASS: "XBOX_GP",
-    DIRECT:  "DIRECT",
-    OTHER:   "OTHER"
-} as const
+// export type GameRunnerType = ObjValues<typeof GameRunner>
+// export const GameRunner = {
+//     STEAM:   "STEAM",
+//     EPIC:    "EPIC",
+//     XBOX_GAME_PASS: "XBOX_GP",
+//     DIRECT:  "DIRECT",
+//     OTHER:   "OTHER"
+// } as const
 
 export type BaseGame = {
+    uuid: string
     /** The game's full name. Nexus refers to this as `name`. */
     title: string
     description?: string

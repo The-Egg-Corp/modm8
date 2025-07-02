@@ -70,10 +70,7 @@ const filters = computed<FilterValueItem[]>(() => [{
 //#endregion
 
 //#region Search Filter (Search bar input box)
-const alphabetSort = (games: ThunderstoreGame[]) => {
-    const searchInputLen = searchInput.value?.length ?? 0
-    return searchInputLen < 1 ? games : games.sort((g1, g2) => g1.title.localeCompare(g2.title)) // TODO: .toLowerCase() the titles?
-}
+const alphabetSort = (games: ThunderstoreGame[]) => games.sort((g1, g2) => g1.title.localeCompare(g2.title))
 
 const filterBySearch = (games: ThunderstoreGame[]) => {
     if (!searchInput.value) return games
@@ -193,23 +190,22 @@ const handleScroll = (e: WheelEvent) => {
 // TODO: This is temporary and not reliable :)
 const gameThumbnail = (game: ThunderstoreGame) => game.imageURL
     ? `https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/${game.imageURL}` 
-    : "https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/Titanfall2.jpg"
+    : ""
 
 async function parseEcosystemGames() {
     const ecosys = await GetEcosystem()
-    const games = Object.values(ecosys.games).map(g => {
+    const games = Object.values(ecosys.games).filter(g => g.r2modman).map(g => {
         const steam = g.distributions.find(dis => dis.platform == "steam")
         const game = newThunderstoreGame({
-            identifier: g.uuid,
+            uuid: g.uuid,
+            identifier: g.label,
             title: g.meta.displayName,
-            imageURL: g.meta.iconUrl || (g.r2modman ? g.r2modman[0].meta.iconUrl : undefined),
+            imageURL: g.r2modman[0]?.meta.iconUrl || g.meta.iconUrl,
             steamID: steam?.identifier ? +steam.identifier : undefined
         })
 
         return game.value as ThunderstoreGame
     })
-
-    //games.sort((g1, g2) => g1.title.localeCompare(g2.title))
 
     return games
 }

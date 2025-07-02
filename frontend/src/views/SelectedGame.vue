@@ -51,8 +51,8 @@ const canStartModded = () => {
 }
 
 // TODO: This is temporary and not reliable :)
-const gameThumbnail = () => selectedGame.value.value.image
-    ? `https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/${selectedGame.value.value.image}` 
+const gameThumbnail = () => selectedGame.value.value.imageURL
+    ? `https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/${selectedGame.value.value.imageURL}` 
     : "https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/Titanfall2.jpg"
 
 const launchSteamGame = async (modded: boolean, args?: string[]) => {
@@ -74,7 +74,7 @@ const launchSteamGame = async (modded: boolean, args?: string[]) => {
     }
 
     const profPath = await GetPathToProfile(selectedGame.value.value.title, selectedProfile.value?.name)
-    const instructions = await GameManager.GetLoaderInstructions(loaders.ModLoader.BEPINEX, profPath)
+    const instructions = await GameManager.GetLoaderInstructions(loaders.ModLoaderType.BEPINEX, profPath)
 
     console.log(`Attempting to launch game '${selectedGame.value.value.title}'. Steam ID: ${id}`)
     return await Steam.LaunchGame(id, modded ? instructions.ModdedParams : instructions.VanillaParams)

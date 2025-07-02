@@ -1,5 +1,5 @@
 import type { thunderstore } from "@backend/models.js"
-import type { ObjValues } from "./index.js"
+import type { ObjValues, Prettify } from "./index.js"
 
 export type GameRunnerType = ObjValues<typeof GameRunner>
 export const GameRunner = {
@@ -14,7 +14,7 @@ export type BaseGame = {
     /** The game's full name. Nexus refers to this as `name`. */
     title: string
     description?: string
-    image?: string
+    imageURL?: string
     path?: string
     favourited?: boolean
     installed?: boolean
@@ -23,18 +23,26 @@ export type BaseGame = {
     steamID?: number
 }
 
-export type ThunderstoreGame = BaseGame & {
+export function newThunderstoreGame(game: ThunderstoreGame): GameContainer {
+  return { platform: 'THUNDERSTORE', value: game }
+}
+
+export function newNexusGame(game: NexusGame): GameContainer {
+  return { platform: 'NEXUS_MODS', value: game }
+}
+
+export type ThunderstoreGame = Prettify<BaseGame & {
     /** A unique short name for the game. Neither an ID or title. */
     identifier: string
     modCache?: thunderstore.StrippedPackage[]
-}
+}>
 
-export type NexusGame = BaseGame & {
+export type NexusGame = Prettify<BaseGame & {
     ID: number
     /** Equivalent to `identifier` in ThunderstoreGame. */
     domainName: string, 
     modCache?: any[] // TODO: Implement nexus package.
-}
+}>
 
 export type ModPlatform = ObjValues<typeof ModPlatforms>
 export const ModPlatforms = {

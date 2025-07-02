@@ -133,9 +133,11 @@ async function installTsMod(mod: thunderstore.StrippedPackage) {
         // Ex: ../GameName/Profiles/SelectedProfile/BepInEx/plugins
         
         // TODO: Replace ModLoader.BEPINEX with one the game actually uses.
-        await LinkModToProfile(loaders.ModLoader.BEPINEX, selectedGameTitle, selectedProfName, mod.latest_version.full_name)
+        const loader = loaders.ModLoaderType.BEPINEX
+
+        await LinkModToProfile(loader, selectedGameTitle, selectedProfName, mod.latest_version.full_name)
         for (const dep of mod.latest_version.dependencies) {
-            await LinkModToProfile(loaders.ModLoader.BEPINEX, selectedGameTitle, selectedProfName, dep)
+            await LinkModToProfile(loader, selectedGameTitle, selectedProfName, dep)
         }
     }
 
@@ -159,11 +161,14 @@ async function uninstallTsMod(mod: thunderstore.StrippedPackage) {
     await RemoveThunderstoreModFromProfile(selectedGameTitle, selectedProfName, mod.latest_version.full_name)
     // TODO: Delete from ModCache if no profile uses it?
     
-    // Drop every symlink/junction for the mod and its dependencies.
+
     // TODO: Replace ModLoader.BEPINEX with one the game actually uses.
-    await UnlinkModFromProfile(loaders.ModLoader.BEPINEX, selectedGameTitle, selectedProfName, mod.latest_version.full_name)
+    const loader = loaders.ModLoaderType.BEPINEX
+
+    // Drop every symlink/junction for the mod and its dependencies.
+    await UnlinkModFromProfile(loader, selectedGameTitle, selectedProfName, mod.latest_version.full_name)
     for (const dep in mod.latest_version.dependencies) {
-        await UnlinkModFromProfile(loaders.ModLoader.BEPINEX, selectedGameTitle, selectedProfName, dep)
+        await UnlinkModFromProfile(loader, selectedGameTitle, selectedProfName, dep)
     }
 
     // Keep profiles refreshed and in line with manifest.

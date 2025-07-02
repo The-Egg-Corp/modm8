@@ -11,13 +11,14 @@ import DataView from 'primevue/dataview'
 import SelectButton from 'primevue/selectbutton'
 
 // TODO: Replace with real external service. Use ecosystem logic we implemented in the backend.
-import { mockGameList } from '../mocks/GameService'
+//import { mockGameList } from '../mocks/GameService'
 
-import type { 
-    ThunderstoreGame, 
-    Layout, OptionItem, 
-    ValueItem, ValueItemLabeled,
-    Nullable,
+import { 
+    type ThunderstoreGame, 
+    type Layout, type OptionItem, 
+    type ValueItem, type ValueItemLabeled,
+    type Nullable,
+    newThunderstoreGame,
 } from '@types'
 
 import { t } from '@i18n'
@@ -25,6 +26,8 @@ import { tooltipOpts, openLink } from "../../src/util"
 
 import { useGameStore, useGameStoreTS } from '@stores'
 import { storeToRefs } from 'pinia'
+
+import { GetEcosystem } from '@backend/thunderstore/ThunderstoreSchema'
 
 import router from '../router'
 
@@ -187,23 +190,42 @@ const handleScroll = (e: WheelEvent) => {
     nextTick(() => scrollToGame(scrollIndex.value))
 }
 
-// TODO: Replace with better alternative. These could change at any time.
-const getThumbnail = (game: ThunderstoreGame) => game.image
-    ? `https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/${game.image}` 
+// TODO: This is temporary and not reliable :)
+const gameThumbnail = (game: ThunderstoreGame) => game.imageURL
+    ? `https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/${game.imageURL}` 
     : "https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/Titanfall2.jpg"
+
+async function parseEcosystemGames() {
+    const ecosys = await GetEcosystem()
+    const games = Object.values(ecosys.games).map(g => {
+        const steam = g.distributions.find(dis => dis.platform == "steam")
+        const game = newThunderstoreGame({
+            identifier: g.uuid,
+            title: g.meta.displayName,
+            imageURL: g.meta.iconUrl || (g.r2modman ? g.r2modman[0].meta.iconUrl : undefined),
+            steamID: steam?.identifier ? +steam.identifier : undefined
+        })
+
+        return game.value as ThunderstoreGame
+    })
+
+    //games.sort((g1, g2) => g1.title.localeCompare(g2.title))
+
+    return games
+}
 
 onBeforeMount(async () => {
     const t0 = performance.now()
 
     // NOTE: We currently need to initialize the game store cache every mount in-case properties (path, installed) change.
     //       This may be an issue in future, ignore it until we transition from our static mock list.
-    const tsGames = mockGameList.filter(g => g.platform == 'THUNDERSTORE').map(g => g.value)
+    const tsGames = await parseEcosystemGames()
     const size = await gameStoreTS.initGames(tsGames)
 
     loading.value = false
 
     console.info(`Populated GameStoreTS cache with ${size} games. Took: ${performance.now() - t0}ms`)
-    if (size != mockGameList.length) {
+    if (size != tsGames.length) {
         console.warn("Size of GameStoreTS cache does not match original input.")
     }
 })
@@ -331,7 +353,7 @@ onBeforeMount(async () => {
                             </div>
 
                             <div class="flex column relative mx-auto">
-                                <img class="game-grid-thumbnail" :src="getThumbnail(game)"/>
+                                <img class="game-grid-thumbnail" :src="gameThumbnail(game)"/>
 
                                 <!-- <div class="flex gap-2 justify-content-center align-items-baseline mt-2 mb-3">
                                     <p class="m-0" style="font-size: 16px">{{ t('game-selection.bepinex-setup') }}</p>
@@ -377,7 +399,7 @@ onBeforeMount(async () => {
                         :key="index" :ref="el => gameElements[index] = el"
                     >
                         <div class="flex flex-column sm:flex-row sm:align-items-center p-2 gap-4" :class="{ 'border-top-faint': index !== 0 }">
-                            <img class="game-list-thumbnail fadeinleft fadeinleft-thumbnail block xl:block mx-auto w-full" :src="getThumbnail(game)"/>
+                            <img class="game-list-thumbnail fadeinleft fadeinleft-thumbnail block xl:block mx-auto w-full" :src="gameThumbnail(game)"/>
 
                             <div class="flex flex-column md:flex-row justify-content-between md:align-items-center flex-1">
                                 <div class="fadeinleft fadeinleft-title flex flex-row md:flex-column justify-content-between align-items-start gap-1">

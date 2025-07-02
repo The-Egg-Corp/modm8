@@ -17,15 +17,18 @@ const CUSTOM_ZIP_EXT = ".m8z"
 // Alias for a map, where the key is the download URL and value is the associated output file info.
 type DownloadPool = map[string]fileutil.FileMetadata
 
-func DownloadZip(url, dirPath, fileName string) (*grab.Response, error) {
-	return DownloadFile(url, dirPath, fileutil.NewFileInfo(fileName, CUSTOM_ZIP_EXT, dirPath))
+func DownloadZip(url, filePath string) (*grab.Response, error) {
+	dir, file := filepath.Split(filePath)
+	fi := fileutil.NewFileInfo(file, CUSTOM_ZIP_EXT, dir)
+
+	return DownloadFile(url, dir, fi)
 }
 
 // Makes a GET request to a download URL and saves it to the specified directory (created if it doesn't exist).
 //
 // The directory path is normalized and cleaned to be platform-independent.
 func DownloadFile(url, dirPath string, fi fileutil.FileMetadata) (*grab.Response, error) {
-	outputPath := filepath.Join(filepath.Clean(dirPath), fi.GetCombined())
+	outputPath := filepath.Join(filepath.Clean(dirPath), fi.NameAndExt())
 	if exists, _ := fileutil.ExistsAtPath(outputPath); exists {
 		return nil, fmt.Errorf("file/dir already exists: %s", outputPath)
 	}

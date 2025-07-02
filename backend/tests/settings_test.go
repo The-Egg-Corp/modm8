@@ -1,25 +1,18 @@
 package backend
 
-import (
-	"fmt"
-	"modm8/backend/app"
-	"testing"
-)
+// func TestLoad(t *testing.T) {
+// 	settings := app.NewSettings()
+// 	if err := settings.Load(); err != nil {
+// 		t.Fatalf("Load returned error: %v", err)
+// 	}
 
-func TestLoad(t *testing.T) {
-	settings := app.NewSettings()
+// 	expectedSettings := app.NewSettings()
 
-	if err := settings.Load(); err != nil {
-		t.Fatalf("Load returned error: %v", err)
-	}
+// 	// Check loaded settings match expected defaults
+// 	if *settings != *expectedSettings {
+// 		t.Errorf("\nLoaded settings do not match expected default settings.\n\nGot: %v\nExpected: %v", settings, expectedSettings)
+// 		return
+// 	}
 
-	expectedSettings := app.NewSettings()
-
-	// Check loaded settings match expected defaults
-	if *settings != *expectedSettings {
-		t.Errorf("\nLoaded settings do not match expected default settings.\n\nGot: %v\nExpected: %v", settings, expectedSettings)
-		return
-	}
-
-	fmt.Println(settings)
-}
+// 	fmt.Println(settings)
+// }

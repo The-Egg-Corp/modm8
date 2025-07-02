@@ -70,9 +70,8 @@ func TestLinkDirFails(t *testing.T) {
 	os.RemoveAll(source)
 	os.RemoveAll(target)
 
-	// Should fail with source directory error.
 	err := fileutil.LinkDir(target, source)
-	if err != nil {
-		t.Fatalf("failed to link dir:\n%v", err)
+	if err == nil {
+		t.Fatalf("link dir did not fail. expected to fail with source directory error")
 	}
 }

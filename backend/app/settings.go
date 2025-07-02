@@ -19,14 +19,6 @@ const (
 	GameSelectionLayoutList GameSelectionLayout = "list"
 )
 
-var GameSelectionLayouts = []struct {
-	Value  GameSelectionLayout
-	TSName string
-}{
-	{GameSelectionLayoutGrid, "GRID"},
-	{GameSelectionLayoutList, "LIST"},
-}
-
 type AppSettings struct {
 	General     GeneralOptions     `json:"general" mapstructure:"general"`
 	Performance PerformanceOptions `json:"performance" mapstructure:"performance"`

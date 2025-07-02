@@ -196,7 +196,7 @@ func (api *ThunderstoreAPI) GetStrippedPackages(community string, skipCache bool
 	// Loops over all pkgs, stripping some unnecessary fields to avoid blocking frontend.
 	for _, pkg := range pkgs {
 		// Strip any apps/utils that aren't strictly mods.
-		if utils.ContainsEqualFold(modExclusions, pkg.FullName) {
+		if utils.ArrEqualFold(modExclusions, pkg.FullName) {
 			continue
 		}
 
@@ -294,7 +294,8 @@ func Install(pkg v1.PackageVersion, dir string) (*grab.Response, error) {
 		return nil, fmt.Errorf("%s is already installed", pkg.FullName)
 	}
 
-	resp, err := downloader.DownloadZip(pkg.DownloadURL, dir, pkg.FullName)
+	path := filepath.Join(dir, pkg.FullName)
+	resp, err := downloader.DownloadZip(pkg.DownloadURL, path)
 	if err != nil {
 		return resp, err
 	}
@@ -306,7 +307,6 @@ func Install(pkg v1.PackageVersion, dir string) (*grab.Response, error) {
 	// 		 installing the current zip, then also ensure it is deleted. Maybe when user next opens app?
 
 	// Unzip the package to the path (usually the current mod cache dir).
-	path := filepath.Join(dir, pkg.FullName)
 	err = fileutil.UnzipAndDelete(path+downloader.CUSTOM_ZIP_EXT, path)
 	if err != nil {
 		return resp, err

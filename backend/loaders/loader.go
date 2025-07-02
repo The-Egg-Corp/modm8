@@ -3,7 +3,9 @@ package loaders
 import (
 	"fmt"
 	"modm8/backend/utils"
-	"strconv"
+	"path/filepath"
+
+	"github.com/Masterminds/semver/v3"
 )
 
 const DOORSTOP_VER_FILE_NAME = ".doorstop_version"
@@ -13,14 +15,19 @@ const DOORSTOP_VER_FILE_NAME = ".doorstop_version"
 //
 // Even if the file content is malformed with spaces or other characters before or after, this func will try to find the first line with a valid semantic version.
 // If we dont find it or the version is somehow <= 3, defaults and returns 3.
-func GetUnityDoorstopVersion(dirPath string) (int, error) {
-	semverLine, err := utils.FindFirstSemverLine(dirPath)
+func GetUnityDoorstopVersion(dirPath string) (uint64, error) {
+	semverLine, err := utils.FindFirstSemverLine(filepath.Join(dirPath, DOORSTOP_VER_FILE_NAME))
 	if err != nil {
 		return 3, err
 	}
 
-	majorVer, err := strconv.Atoi(*semverLine)
-	if err != nil || majorVer <= 3 {
+	ver, err := semver.StrictNewVersion(*semverLine)
+	if err != nil {
+		return 3, err
+	}
+
+	majorVer := ver.Major()
+	if majorVer <= 3 {
 		return 3, err
 	}
 
@@ -69,27 +76,27 @@ type IModLoader interface {
 }
 
 var MOD_LOADERS = map[ModLoaderType]IModLoader{
-	BEPINEX: &BepinexLoader{},
-	MELON:   &MelonLoader{},
-	LOVELY:  &LovelyLoader{},
+	BEPINEX: &BepinexModLoader{},
+	MELON:   &MelonModLoader{},
+	LOVELY:  &LovelyModLoader{},
 }
 
-func GetLoader(loader ModLoaderType) (IModLoader, error) {
-	ml, ok := MOD_LOADERS[loader]
+func GetModLoader(loader ModLoaderType) (IModLoader, error) {
+	ldr, ok := MOD_LOADERS[loader]
 	if !ok {
 		return nil, fmt.Errorf("failed to get mod loader. no loader type exists with index %d", loader.Index())
 	}
 
-	return ml, nil
+	return ldr, nil
 }
 
 func GetLoaderInstructions(loader ModLoaderType, profileDir string) (*LoaderInstructions, error) {
-	ml, err := GetLoader(loader)
+	ldr, err := GetModLoader(loader)
 	if err != nil {
 		return nil, err
 	}
 
-	instructions, err := ml.GenerateInstructions(profileDir)
+	instructions, err := ldr.GenerateInstructions(profileDir)
 	if err != nil {
 		return nil, err
 	}
@@ -98,12 +105,12 @@ func GetLoaderInstructions(loader ModLoaderType, profileDir string) (*LoaderInst
 }
 
 func GetModLinkPath(loader ModLoaderType, profileDir string) (string, error) {
-	ml, err := GetLoader(loader)
+	ldr, err := GetModLoader(loader)
 	if err != nil {
 		return "", err
 	}
 
-	return ml.GetModLinkPath(profileDir), nil
+	return ldr.GetModLinkPath(profileDir), nil
 }
 
 // The actual loader's mod/pack. (BepInExPack etc.)

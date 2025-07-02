@@ -5,14 +5,14 @@ import (
 	"path/filepath"
 )
 
-type MelonLoader struct {
+type MelonModLoader struct {
 }
 
 // TODO: Implement this
-func (ldr MelonLoader) GenerateInstructions(profileDir string) (*LoaderInstructions, error) {
+func (ldr MelonModLoader) GenerateInstructions(profileDir string) (*LoaderInstructions, error) {
 	return &LoaderInstructions{}, fmt.Errorf("instructions for loader MELON not yet implemented")
 }
 
-func (ldr MelonLoader) GetModLinkPath(profileDir string) string {
+func (ldr MelonModLoader) GetModLinkPath(profileDir string) string {
 	return filepath.Join(profileDir, "Mods")
 }

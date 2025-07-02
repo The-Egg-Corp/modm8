@@ -3,6 +3,7 @@ package backend
 import (
 	"modm8/backend/common/profile"
 	"modm8/backend/game"
+	"modm8/backend/installing"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -41,7 +42,7 @@ const testBepinexPackURL = "https://thunderstore.io/package/download/BepInEx/Bep
 func TestInstallBepinexPack(t *testing.T) {
 	profDir := profile.PathToProfile("Lethal Company", "test")
 
-	_, err := game.InstallBepinexPack(testBepinexPackURL, profDir)
+	_, err := installing.InstallBepinexPack(testBepinexPackURL, profDir)
 	if err != nil {
 		t.Fatalf("failed to install BepInEx-Pack:\n%s", err)
 	}

@@ -27,6 +27,28 @@ import (
 //go:embed all:frontend/dist
 var assets embed.FS
 
+type EnumBinding[T any] []struct {
+	Value  T
+	TSName string
+}
+
+var ModLoaders = EnumBinding[loaders.ModLoaderType]{
+	{loaders.BEPINEX, "BEPINEX"},
+	{loaders.MELON, "MELON"},
+	{loaders.LOVELY, "LOVELY"},
+}
+
+var UpdateBehaviours = EnumBinding[app.UpdateBehaviour]{
+	{app.UpdateBehaviourOff, "OFF"},
+	{app.UpdateBehaviourNotify, "NOTIFY"},
+	{app.UpdateBehaviourAuto, "AUTO"},
+}
+
+var GameSelectionLayouts = EnumBinding[app.GameSelectionLayout]{
+	{app.GameSelectionLayoutGrid, "GRID"},
+	{app.GameSelectionLayoutList, "LIST"},
+}
+
 func NewWindowsOptions(gpuAccel bool) *windows.Options {
 	return &windows.Options{
 		WindowIsTranslucent:  true,
@@ -135,9 +157,9 @@ func main() {
 
 	// ENUM BINDINGS
 	enumBindings := []any{
-		app.UpdateBehaviours,
-		app.GameSelectionLayouts,
-		loaders.ModLoaders,
+		UpdateBehaviours,
+		GameSelectionLayouts,
+		ModLoaders,
 	}
 
 	// For now, avoid binding Nexus stuff in GH Actions since key file wont exist.

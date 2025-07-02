@@ -12,15 +12,6 @@ const (
 	UpdateBehaviourAuto
 )
 
-var UpdateBehaviours = []struct {
-	Value  UpdateBehaviour
-	TSName string
-}{
-	{UpdateBehaviourOff, "OFF"},
-	{UpdateBehaviourNotify, "NOTIFY"},
-	{UpdateBehaviourAuto, "AUTO"},
-}
-
 type GameSelectionLayout string
 
 const (

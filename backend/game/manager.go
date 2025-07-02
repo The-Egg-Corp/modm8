@@ -26,11 +26,11 @@ func NewGameManager() *GameManager {
 	return &GameManager{}
 }
 
-func (gm *GameManager) GetLoaderInstructions(loader loaders.ModLoader, profileDir string) (*loaders.LoaderInstructions, error) {
+func (gm *GameManager) GetLoaderInstructions(loader loaders.ModLoaderType, profileDir string) (*loaders.LoaderInstructions, error) {
 	return loaders.GetLoaderInstructions(loader, profileDir)
 }
 
-func (gm *GameManager) GetModLinkPath(loader loaders.ModLoader, profileDir string) (string, error) {
+func (gm *GameManager) GetModLinkPath(loader loaders.ModLoaderType, profileDir string) (string, error) {
 	return loaders.GetModLinkPath(loader, profileDir)
 }
 
@@ -42,7 +42,7 @@ func (gm *GameManager) GetModLinkPath(loader loaders.ModLoader, profileDir strin
 //
 // For example, we can mirror target "../modm8/Games/GameTitle/Profiles/test/BepInEx/plugins/Owen3H-IntroTweaks-1.5.0" to the
 // source "../modm8/Games/GameTitle/ModCache/Owen3H-IntroTweaks-1.5.0" which would give us the desired behaviour.
-func (gm *GameManager) LinkModToProfile(loader loaders.ModLoader, gameTitle, profileName, modFullName string) error {
+func (gm *GameManager) LinkModToProfile(loader loaders.ModLoaderType, gameTitle, profileName, modFullName string) error {
 	profileModsDir, err := loaders.GetModLinkPath(loader, profile.PathToProfile(gameTitle, profileName))
 	if err != nil {
 		return err
@@ -57,7 +57,7 @@ func (gm *GameManager) LinkModToProfile(loader loaders.ModLoader, gameTitle, pro
 	return fileutil.LinkDir(target, source)
 }
 
-func (gm *GameManager) UnlinkModFromProfile(loader loaders.ModLoader, gameTitle, profileName, modFullName string) error {
+func (gm *GameManager) UnlinkModFromProfile(loader loaders.ModLoaderType, gameTitle, profileName, modFullName string) error {
 	profileModsDir, err := loaders.GetModLinkPath(loader, profile.PathToProfile(gameTitle, profileName))
 	if err != nil {
 		return err

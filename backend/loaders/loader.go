@@ -1,10 +1,9 @@
 package loaders
 
 import (
+	"fmt"
 	"modm8/backend/utils"
 	"strconv"
-
-	"github.com/Masterminds/semver/v3"
 )
 
 const DOORSTOP_VER_FILE_NAME = ".doorstop_version"
@@ -29,14 +28,14 @@ func GetUnityDoorstopVersion(dirPath string) (int, error) {
 }
 
 // I'll probably be dead by the time there are >255 loaders.
-type ModLoader uint8
+type ModLoaderType uint8
 
-func (ml ModLoader) Index() int {
-	return int(ml)
+func (mlt ModLoaderType) Index() int {
+	return int(mlt)
 }
 
-func (ml ModLoader) Name() string {
-	switch ml {
+func (mlt ModLoaderType) Name() string {
+	switch mlt {
 	case BEPINEX:
 		return "BEPINEX"
 	case MELON:
@@ -49,50 +48,89 @@ func (ml ModLoader) Name() string {
 }
 
 const (
-	BEPINEX ModLoader = iota
+	BEPINEX ModLoaderType = iota
 	MELON
 	LOVELY
-	NORTHSTAR
-	SHIMLOADER
-	GODOT_ML
-	RETURN_OF_MODDING
-	ANCIENT_DUNGEON_VR
+	// NORTHSTAR
+	// SHIMLOADER
+	// GODOT_ML
+	// RETURN_OF_MODDING
+	// ANCIENT_DUNGEON_VR
 )
 
-var ModLoaders = []struct {
-	Value  ModLoader
-	TSName string
-}{
-	{BEPINEX, "BEPINEX"},
-	{MELON, "MELON"},
-	{LOVELY, "LOVELY"},
+type LoaderInstructions struct {
+	ModdedParams  []string
+	VanillaParams []string
 }
 
-// The actual package/mod for the loader. (BepInExPack etc.)
-type LoaderPackageInfo struct {
-	LoaderType         ModLoader
-	RecommendedVersion *semver.Version
-	RootDirName        *string
+type IModLoader interface {
+	GenerateInstructions(profileDir string) (*LoaderInstructions, error)
+	GetModLinkPath(profileDir string) string
 }
+
+var MOD_LOADERS = map[ModLoaderType]IModLoader{
+	BEPINEX: &BepinexLoader{},
+	MELON:   &MelonLoader{},
+	LOVELY:  &LovelyLoader{},
+}
+
+func GetLoader(loader ModLoaderType) (IModLoader, error) {
+	ml, ok := MOD_LOADERS[loader]
+	if !ok {
+		return nil, fmt.Errorf("failed to get mod loader. no loader type exists with index %d", loader.Index())
+	}
+
+	return ml, nil
+}
+
+func GetLoaderInstructions(loader ModLoaderType, profileDir string) (*LoaderInstructions, error) {
+	ml, err := GetLoader(loader)
+	if err != nil {
+		return nil, err
+	}
+
+	instructions, err := ml.GenerateInstructions(profileDir)
+	if err != nil {
+		return nil, err
+	}
+
+	return instructions, nil
+}
+
+func GetModLinkPath(loader ModLoaderType, profileDir string) (string, error) {
+	ml, err := GetLoader(loader)
+	if err != nil {
+		return "", err
+	}
+
+	return ml.GetModLinkPath(profileDir), nil
+}
+
+// The actual loader's mod/pack. (BepInExPack etc.)
+// type LoaderPackageInfo struct {
+// 	LoaderType         ModLoader
+// 	RecommendedVersion *semver.Version
+// 	RootDirName        *string
+// }
 
 // Note: Since Go can't do overloading, recommendedVer is kwargs - but only the first element will matter.
-func NewLoaderPackageInfo(loaderType ModLoader, rootDirName string, recommendedVer ...*semver.Version) LoaderPackageInfo {
-	var version *semver.Version
-	if len(recommendedVer) > 0 {
-		version = recommendedVer[0]
-	}
+// func NewLoaderPackageInfo(loaderType ModLoader, rootDirName string, recommendedVer ...*semver.Version) LoaderPackageInfo {
+// 	var version *semver.Version
+// 	if len(recommendedVer) > 0 {
+// 		version = recommendedVer[0]
+// 	}
 
-	var dir *string
-	if rootDirName != "" {
-		dir = &rootDirName
-	}
+// 	var dir *string
+// 	if rootDirName != "" {
+// 		dir = &rootDirName
+// 	}
 
-	return LoaderPackageInfo{
-		LoaderType:         loaderType,
-		RecommendedVersion: version,
-		RootDirName:        dir,
-	}
-}
+// 	return LoaderPackageInfo{
+// 		LoaderType:         loaderType,
+// 		RecommendedVersion: version,
+// 		RootDirName:        dir,
+// 	}
+// }
 
 // TODO: Finishing implementing and using this where necessary.
 // var ModLoaderPackages = map[string]LoaderPackageInfo{

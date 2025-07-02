@@ -19,6 +19,10 @@ var PRELOADER_NAMES = map[string]struct{}{
 type BepinexModLoader struct {
 }
 
+// func (ldr BepinexModLoader) IsLoaderPackage(fullName string) bool {
+// 	return strings.HasPrefix(fullName, "BepInEx-BepInExPack")
+// }
+
 func (ldr BepinexModLoader) GetModLinkPath(profileDir string) string {
 	return GetBepinexPluginsPath(profileDir)
 }

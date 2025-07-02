@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"modm8/backend/utils"
 	"path/filepath"
+	"strings"
 
 	"github.com/Masterminds/semver/v3"
 )
@@ -71,8 +72,9 @@ type LoaderInstructions struct {
 }
 
 type IModLoader interface {
-	GenerateInstructions(profileDir string) (*LoaderInstructions, error)
+	//IsLoaderPackage(fullName string) bool
 	GetModLinkPath(profileDir string) string
+	GenerateInstructions(profileDir string) (*LoaderInstructions, error)
 }
 
 var MOD_LOADERS = map[ModLoaderType]IModLoader{
@@ -111,6 +113,19 @@ func GetModLinkPath(loader ModLoaderType, profileDir string) (string, error) {
 	}
 
 	return ldr.GetModLinkPath(profileDir), nil
+}
+
+func IsLoaderPackage(loader ModLoaderType, fullName string) bool {
+	switch loader {
+	case BEPINEX:
+		return strings.HasPrefix(fullName, "BepInEx-BepInExPack")
+	case MELON:
+		return fullName == "LavaGang-MelonLoader"
+	case LOVELY:
+		return fullName == "Thunderstore-lovely"
+	default:
+		return false
+	}
 }
 
 // The actual loader's mod/pack. (BepInExPack etc.)

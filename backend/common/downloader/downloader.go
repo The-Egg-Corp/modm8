@@ -17,11 +17,22 @@ const CUSTOM_ZIP_EXT = ".m8z"
 // Alias for a map, where the key is the download URL and value is the associated output file info.
 type DownloadPool = map[string]fileutil.FileMetadata
 
-func DownloadZip(url, filePath string) (*grab.Response, error) {
-	dir, file := filepath.Split(filePath)
-	fi := fileutil.NewFileInfo(file, CUSTOM_ZIP_EXT, dir)
+// Like [DownloadFile], this func makes a GET request to a download URL and saves it to the specified directory (created if it doesn't exist),
+// however, it will block until the whole download it complete - meaning progress tracking isn't possible.
+//
+// The directory path is normalized and cleaned to be platform-independent.
+func DownloadFileBlocking(url, dirPath string, fi fileutil.FileMetadata) (*grab.Response, error) {
+	outputPath := filepath.Join(filepath.Clean(dirPath), fi.NameAndExt())
+	if exists, _ := fileutil.ExistsAtPath(outputPath); exists {
+		return nil, fmt.Errorf("file/dir already exists: %s", outputPath)
+	}
 
-	return DownloadFile(url, dir, fi)
+	res, err := grab.Get(outputPath, url)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %v", err)
+	}
+
+	return res, nil
 }
 
 // Makes a GET request to a download URL and saves it to the specified directory (created if it doesn't exist).
@@ -33,11 +44,13 @@ func DownloadFile(url, dirPath string, fi fileutil.FileMetadata) (*grab.Response
 		return nil, fmt.Errorf("file/dir already exists: %s", outputPath)
 	}
 
-	res, err := grab.Get(outputPath, url)
+	client := grab.NewClient()
+	req, err := grab.NewRequest(outputPath, url)
 	if err != nil {
 		return nil, fmt.Errorf("error creating request: %v", err)
 	}
 
+	res := client.Do(req)
 	return res, nil
 }
 
@@ -87,6 +100,40 @@ func DownloadMultipleFiles(destPath string, pool DownloadPool) (map[string]error
 	}
 
 	return errs, nil
+}
+
+func DownloadZip(url, filePath string) (*grab.Response, error) {
+	dir, file := filepath.Split(filePath)
+	fi := fileutil.NewFileInfo(dir, file, CUSTOM_ZIP_EXT)
+
+	return DownloadFile(url, dir, fi)
+}
+
+// Downloads, unzips contents as is and then deletes unneeded zip.
+func DownloadUnzipDelete(filePath, downloadURL string) (*grab.Response, error) {
+	dir, file := filepath.Split(filePath)
+	if exists, _ := fileutil.ExistsInDir(dir, file); exists {
+		return nil, fmt.Errorf("%s is already installed", file)
+	}
+
+	resp, err := DownloadZip(downloadURL, filePath)
+	if err != nil {
+		return resp, err
+	}
+	if err = resp.Err(); err != nil {
+		return resp, err
+	}
+
+	// TODO: If the program closes for any reason, we need to be able to cancel (and possibly resume)
+	// 		 installing the current zip, then also ensure it is deleted. Maybe when user next opens app?
+
+	// Unzip the package to the path (usually the current mod cache dir).
+	err = fileutil.UnzipAndDelete(filePath+CUSTOM_ZIP_EXT, filePath)
+	if err != nil {
+		return resp, err
+	}
+
+	return resp, nil
 }
 
 // ================================ ARCHIVED =====================================

@@ -295,24 +295,7 @@ func Install(pkg v1.PackageVersion, dir string) (*grab.Response, error) {
 	}
 
 	path := filepath.Join(dir, pkg.FullName)
-	resp, err := downloader.DownloadZip(pkg.DownloadURL, path)
-	if err != nil {
-		return resp, err
-	}
-	if err = resp.Err(); err != nil {
-		return resp, err
-	}
-
-	// TODO: If the program closes for any reason, we need to be able to cancel (and possibly resume)
-	// 		 installing the current zip, then also ensure it is deleted. Maybe when user next opens app?
-
-	// Unzip the package to the path (usually the current mod cache dir).
-	err = fileutil.UnzipAndDelete(path+downloader.CUSTOM_ZIP_EXT, path)
-	if err != nil {
-		return resp, err
-	}
-
-	return resp, nil
+	return downloader.DownloadUnzipDelete(path, pkg.DownloadURL)
 }
 
 // Downloads the specified package as a zip file and unpacks it under the specified directory (absolute path).

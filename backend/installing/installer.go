@@ -7,7 +7,7 @@ import (
 
 type IModInstaller interface {
 	Extract() error
-	Install() error
+	Install(dir, fullName, downloadURL string) error
 	Uninstall() error
 }
 
@@ -22,13 +22,4 @@ func GetModInstaller(loader loaders.ModLoaderType) (IModInstaller, error) {
 	}
 
 	return ins, nil
-}
-
-func InstallMod(loader loaders.ModLoaderType) error {
-	ins, err := GetModInstaller(loader)
-	if err != nil {
-		return err
-	}
-
-	return ins.Install()
 }

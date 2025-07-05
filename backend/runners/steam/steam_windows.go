@@ -2,7 +2,9 @@
 
 package steam
 
-import "golang.org/x/sys/windows/registry"
+import (
+	"golang.org/x/sys/windows/registry"
+)
 
 const platformExecName = "Steam.exe"
 

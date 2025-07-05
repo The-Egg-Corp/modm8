@@ -4,10 +4,12 @@ import (
 	"errors"
 	"fmt"
 	"modm8/backend/app"
+	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
 
+	"github.com/andygrunwald/vdf"
 	gocmd "github.com/go-cmd/cmd"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
@@ -37,6 +39,10 @@ func (runner SteamRunner) LaunchGame(id uint32, args []string) error {
 	}
 
 	return err
+}
+
+func (runner SteamRunner) GetLibPaths() {
+
 }
 
 func LaunchGame(installDir *string, ext string, id uint32, args []string) (*gocmd.Cmd, error) {
@@ -93,4 +99,52 @@ func GetInstallDirectory() (*string, error) {
 	settings.Save()
 
 	return dir, nil
+}
+
+func GetSteamLibVDF() (*string, error) {
+	steamPath, err := GetInstallDirectory()
+	if err != nil {
+		return nil, err
+	}
+
+	path := filepath.Join(*steamPath, "steamapps", "libraryfolders.vdf")
+	return &path, nil
+}
+
+func GetSteamLibPaths() ([]string, error) {
+	vdfPath, err := GetSteamLibVDF()
+	if err != nil {
+		return nil, err
+	}
+
+	file, err := os.Open(*vdfPath)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	m, err := vdf.NewParser(file).Parse()
+	if err != nil {
+		return nil, err
+	}
+
+	libFolders, ok := m["libraryfolders"].(map[string]any)
+	if !ok {
+		return nil, errors.New("failed to parse steam libraryfolders.vdf file: invalid structure")
+	}
+
+	paths := []string{}
+	for _, raw := range libFolders {
+		entry, ok := raw.(map[string]any) // Can't rly marshal since its not JSON.
+		if !ok {
+			continue
+		}
+
+		// We managed to get the path and cast it to a string.
+		if path, ok := entry["path"].(string); ok {
+			paths = append(paths, path)
+		}
+	}
+
+	return paths, nil
 }

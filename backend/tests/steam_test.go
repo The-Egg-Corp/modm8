@@ -13,7 +13,7 @@ import (
 // Lethal Company: 1966720
 const testGame = 1966720
 
-func TestSteamGetInstallDirectory(t *testing.T) {
+func TestGetInstallDirectory(t *testing.T) {
 	path, err := steam.GetInstallDirectory()
 	if err != nil {
 		t.Fatalf("error getting steam directory: %v", err)
@@ -26,7 +26,7 @@ func TestSteamGetInstallDirectory(t *testing.T) {
 	}
 }
 
-func TestWindowsSteamLaunchGame(t *testing.T) {
+func TestLaunchGameWindows(t *testing.T) {
 	steamPath, err := steam.GetInstallDirectory()
 	if err != nil {
 		t.Fatalf("error launching game. failed to find path to Steam: %v", err)
@@ -46,4 +46,16 @@ func TestWindowsSteamLaunchGame(t *testing.T) {
 
 	fullCmd := fmt.Sprint(cmd.Name, " ", strings.Join(cmd.Args, " "))
 	fmt.Printf("[PID: %d] Executing '%s'\n", cmd.Status().PID, fullCmd)
+}
+
+func TestGetLibs(t *testing.T) {
+	libPaths, err := steam.GetSteamLibPaths()
+	if err != nil {
+		t.Fatalf("error getting steam libs:\n%v", err)
+	}
+
+	fmt.Print("steam lib paths:\n")
+	for _, path := range libPaths {
+		fmt.Printf("%s\n", path)
+	}
 }

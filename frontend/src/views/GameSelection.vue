@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { 
     ref, computed, 
-    nextTick, onMounted,
+    nextTick,
     onBeforeMount
 } from 'vue'
 
@@ -9,9 +9,6 @@ import { Viewport } from '@components'
 
 import DataView from 'primevue/dataview'
 import SelectButton from 'primevue/selectbutton'
-
-// TODO: Replace with real external service. Use ecosystem logic we implemented in the backend.
-//import { mockGameList } from '../mocks/GameService'
 
 import { 
     type ThunderstoreGame, 
@@ -201,7 +198,8 @@ async function parseEcosystemGames() {
             identifier: g.label,
             title: g.meta.displayName,
             imageURL: g.r2modman[0]?.meta.iconUrl || g.meta.iconUrl,
-            steamID: steam?.identifier ? +steam.identifier : undefined
+            steamID: steam?.identifier ? +steam.identifier : undefined,
+            modLoader: g.r2modman[0].packageLoader
         })
 
         return game.value as ThunderstoreGame

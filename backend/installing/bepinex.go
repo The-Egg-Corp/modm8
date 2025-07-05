@@ -53,7 +53,7 @@ func InstallBepinexPack(downloadURL, dir string) (*grab.Response, error) {
 		return res, err
 	}
 
-	// Take everything from the BepInExPack dir and move it up two outside of
+	// Take everything in BepInExPack and move it up two into `dir`.
 	for _, entry := range entries {
 		srcPath := filepath.Join(bepinexPackDir, entry.Name())
 		dstPath := filepath.Join(dir, entry.Name())

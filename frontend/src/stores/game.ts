@@ -6,9 +6,10 @@ import type { GameContainer, ThunderstoreGame } from "@types"
 const defaultGame: GameContainer = { 
     platform: 'THUNDERSTORE',
     value: {
-        title: 'Placeholder',
+        uuid: "",
         identifier: 'riskofrain2',
-        uuid: ""
+        title: 'Placeholder',
+        modLoader: "bepinex"
     } satisfies ThunderstoreGame
 }
 
@@ -18,7 +19,7 @@ export const useGameStore = defineStore('GameStore', () => {
     //#region State
     const selectedGame = ref<GameContainer>(defaultGame)
     //#endregion
-
+    
     //#region Getters
 
     //#endregion

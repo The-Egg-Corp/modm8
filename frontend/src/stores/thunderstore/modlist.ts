@@ -22,6 +22,11 @@ import {
 
 import type { thunderstore, v1 } from "@backend/models"
 
+type ModOptions = {
+    searchFilter: boolean
+    defaultSort?: boolean
+}
+
 export const useModListStoreTS = defineStore('ModListStoreTS', () => {
     //#region Stores
     const modListStore = useModListStore()
@@ -96,12 +101,9 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
      */
     async function refreshMods(
         fetchIfEmpty: boolean, 
-        options: { searchFilter: boolean, defaultSort?: boolean } = { searchFilter: true, defaultSort: true }
+        options: ModOptions = { searchFilter: true, defaultSort: true }
     ) {
-        if (loading.value) {
-            return // Already loading, no need to do it again.
-        }
-
+        if (loading.value) return // Already loading, no need to do it again.
         if (selectedGame.value.platform != 'THUNDERSTORE') {
             throw new Error('[TS/modlist] Could not refresh mods. Selected game is not of type `THUNDERSTORE`.')
         }
@@ -130,7 +132,7 @@ export const useModListStoreTS = defineStore('ModListStoreTS', () => {
         await refreshPage()
     }
 
-    function getMods(options: { searchFilter: boolean, defaultSort?: boolean }) {
+    function getMods(options: ModOptions) {
         const cache = selectedGame.value.value.modCache
         if (!cache) return []
 

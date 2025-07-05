@@ -57,15 +57,15 @@ type R2MMConfig struct {
 	AdditionalSearchStrings  []string           `json:"additionalSearchStrings"`
 	PackageLoader            string             `json:"packageLoader"`
 	InstallRules             []InstallRule      `json:"installRules"`
-	RelativeFileExclusions   any                `json:"relativeFileExclusions"` // TODO: Figure out proper type.
+	RelativeFileExclusions   *[]string          `json:"relativeFileExclusions"`
 }
 
 type InstallRule struct {
-	Route                 string   `json:"route"`
-	DefaultFileExtensions []string `json:"defaultFileExtensions"`
-	TrackingMethod        string   `json:"trackingMethod"`
-	SubRoutes             []any    `json:"subRoutes"` // TODO: Figure out proper type.
-	IsDefaultLocation     bool     `json:"isDefaultLocation"`
+	Route                 string        `json:"route"`
+	DefaultFileExtensions []string      `json:"defaultFileExtensions"`
+	TrackingMethod        string        `json:"trackingMethod"`
+	SubRoutes             []InstallRule `json:"subRoutes"`
+	IsDefaultLocation     bool          `json:"isDefaultLocation"`
 }
 
 func NewThunderstoreSchema() *ThunderstoreSchema {

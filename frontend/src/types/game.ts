@@ -22,6 +22,7 @@ export type BaseGame = {
     bepinexSetup?: boolean
     aliases?: string[]
     steamID?: number
+    modLoader: string
 }
 
 export function newThunderstoreGame(game: ThunderstoreGame): GameContainer {

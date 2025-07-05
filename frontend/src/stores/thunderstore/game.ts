@@ -66,7 +66,7 @@ export const useGameStoreTS = defineStore('GameStoreTS', () => {
     }
 
     async function initGames(gameList: ThunderstoreGame[]) {
-        const persistence = await GetPersistence()
+        const { favourite_games } = await GetPersistence()
         games.value = new Map<string, ThunderstoreGame>()
 
         // Init game props.
@@ -76,13 +76,13 @@ export const useGameStoreTS = defineStore('GameStoreTS', () => {
             
             // TODO: Check game executable exists. For now, assume installed if game path is specified and exists.
             game.installed = !game.path ? false : await ExistsAtPath(game.path, true)
-            game.favourited = persistence.favourite_games.includes(game.identifier)
+            game.favourited = favourite_games.includes(game.identifier)
 
             if (game.path) {
                 game.bepinexSetup = await BepinexInstalled(game.path)
             }
 
-            // Ensure modCache is kept between mounts.
+            // Ensure modCache is kept between mounts by using existing one if set.
             const cachedGame = gameByID(game.identifier)
             if (cachedGame?.modCache) {
                 game.modCache = cachedGame.modCache

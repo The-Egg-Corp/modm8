@@ -189,37 +189,43 @@ const gameThumbnail = (game: ThunderstoreGame) => game.imageURL
     ? `https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/${game.imageURL}` 
     : ""
 
-async function parseEcosystemGames() {
+const parseEcosystemGames = async () => {
     const ecosys = await GetEcosystem()
-    const games = Object.values(ecosys.games).filter(g => g.r2modman).map(g => {
+    return Object.values(ecosys.games).filter(g => g.r2modman).map(g => {
         const steam = g.distributions.find(dis => dis.platform == "steam")
+        const r2mm = g.r2modman[0]
+        
         const game = newThunderstoreGame({
             uuid: g.uuid,
             identifier: g.label,
             title: g.meta.displayName,
-            imageURL: g.r2modman[0]?.meta.iconUrl || g.meta.iconUrl,
+            imageURL: r2mm?.meta.iconUrl || g.meta.iconUrl,
             steamID: steam?.identifier ? +steam.identifier : undefined,
-            modLoader: g.r2modman[0].packageLoader
+            modLoader: r2mm.packageLoader
         })
 
-        return game.value as ThunderstoreGame
-    })
-
-    return games
+        return game.value
+    }) as ThunderstoreGame[]
 }
 
 onBeforeMount(async () => {
+    let tsGames: ThunderstoreGame[] = []
+    if (gamesAsArray.value.length < 1) {
+        const t0 = performance.now()
+        tsGames = await parseEcosystemGames()
+        console.info(`Parsed games from TS Ecosystem. Took: ${performance.now() - t0}ms`)
+    }
+
     const t0 = performance.now()
+    const list = tsGames.length > 1 ? tsGames : gamesAsArray.value
 
     // NOTE: We currently need to initialize the game store cache every mount in-case properties (path, installed) change.
     //       This may be an issue in future, ignore it until we transition from our static mock list.
-    const tsGames = await parseEcosystemGames()
-    const size = await gameStoreTS.initGames(tsGames)
-
+    const size = await gameStoreTS.initGames(list)
     loading.value = false
 
     console.info(`Populated GameStoreTS cache with ${size} games. Took: ${performance.now() - t0}ms`)
-    if (size != tsGames.length) {
+    if (size != list.length) {
         console.warn("Size of GameStoreTS cache does not match original input.")
     }
 })

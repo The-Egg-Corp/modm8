@@ -1,12 +1,9 @@
 package nexus
 
 import (
-	"bufio"
 	"context"
-	"fmt"
 	"modm8/backend/app"
-	"os"
-	"strings"
+	"modm8/backend/utils"
 
 	v1 "github.com/the-egg-corp/gonexus/v1"
 )
@@ -27,12 +24,17 @@ func NewAPI(ctx context.Context) (*API, error) {
 	// TODO: A single file for a key is a bit odd. Store it in a better way. Win/Linux registry maybe?
 
 	// Grab nexus key from `<configDir>/modm8/nex.key` file.
-	key, err := ScanFileForValidLine(app.KeyPath())
+	key, err := utils.FindFirstValidLine(app.KeyPath())
 	if err != nil {
 		return nil, err
 	}
 
-	client, err := v1.NewNexusClient(key)
+	nexKey := ""
+	if key != nil {
+		nexKey = *key
+	}
+
+	client, err := v1.NewNexusClient(nexKey)
 	if err != nil {
 		return nil, err
 	}
@@ -42,30 +44,4 @@ func NewAPI(ctx context.Context) (*API, error) {
 		Cache:  NewCache(),
 		Client: *client,
 	}, nil
-}
-
-// Scans the contents of the file at the given path line by line. At the first instance of a non-blank line,
-// the line is returned with no line endings or carriage return, making this function platform-independent.
-func ScanFileForValidLine(path string) (string, error) {
-	file, err := os.Open(path)
-	if err != nil {
-		return "", err
-	}
-	defer file.Close()
-
-	s := bufio.NewScanner(file)
-	for s.Scan() {
-		line := s.Text()
-		line = strings.TrimSpace(line)
-
-		if line != "" {
-			return line, nil // Scan should have already removed \n and \r.
-		}
-	}
-
-	if err := s.Err(); err != nil {
-		return "", err
-	}
-
-	return "", fmt.Errorf("%s: file exists, but found no valid line found inside", path)
 }

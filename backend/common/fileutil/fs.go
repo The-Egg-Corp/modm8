@@ -60,6 +60,8 @@ func ExistsInDir(targetDir string, item string) (bool, error) {
 	return ExistsAtPath(path)
 }
 
+// Checks whether something exists at the given absolute path (dir or file).
+// This func will follow symbolic links and return true if the link source is existent.
 func ExistsAtPath(absPath string) (bool, error) {
 	_, err := os.Stat(absPath)
 	if os.IsNotExist(err) {

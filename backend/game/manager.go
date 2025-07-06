@@ -3,22 +3,11 @@ package game
 import (
 	"modm8/backend/common/fileutil"
 	"modm8/backend/common/profile"
+	"modm8/backend/installing"
 	"modm8/backend/loaders"
 	"os"
 	"path/filepath"
 )
-
-// type StorePlatform string
-
-// const (
-// 	STEAM            StorePlatform = "Steam"
-// 	STEAM_DIRECT     StorePlatform = "Steam "
-// 	EPIC_GAMES_STORE StorePlatform = "Epic Games Store"
-// 	OCULUS_STORE     StorePlatform = "Oculus Store"
-// 	ORIGIN           StorePlatform = "Origin / EA Desktop"
-// 	XBOX_GAME_PASS   StorePlatform = "Xbox Game Pass"
-// 	OTHER            StorePlatform = "Other"
-// )
 
 type GameManager struct{}
 
@@ -26,8 +15,12 @@ func NewGameManager() *GameManager {
 	return &GameManager{}
 }
 
-func (gm *GameManager) GetLoaderInstructions(loader loaders.ModLoaderType, profileDir string) (*loaders.LoaderInstructions, error) {
-	return loaders.GetLoaderInstructions(loader, profileDir)
+func (gm *GameManager) GetModInstaller(loader loaders.ModLoaderType) (installing.IModInstaller, error) {
+	return installing.GetModInstaller(loader)
+}
+
+func (gm *GameManager) GetModLoader(loader loaders.ModLoaderType) (loaders.IModLoader, error) {
+	return loaders.GetModLoader(loader)
 }
 
 func (gm *GameManager) GetModLinkPath(loader loaders.ModLoaderType, profileDir string) (string, error) {

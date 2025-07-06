@@ -7,7 +7,8 @@ import (
 
 type IModInstaller interface {
 	Extract() error
-	Install(dir, fullName, downloadURL string) error
+	Install(downloadURL, dir, fullName string) error
+	//InstallSelf(downloadURL, dir string) error
 	Uninstall() error
 }
 

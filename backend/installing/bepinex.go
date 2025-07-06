@@ -13,11 +13,13 @@ import (
 type BepinexModInstaller struct {
 }
 
+const BEPINEX_ZIP_OUTPUT_NAME = "BepInEx-Setup"
+
 func (ins *BepinexModInstaller) Extract() error {
 	return nil
 }
 
-func (ins *BepinexModInstaller) Install(dir, fullName, downloadURL string) error {
+func (ins *BepinexModInstaller) Install(downloadURL, dir, fullName string) error {
 	// Install own loader package
 	if loaders.IsLoaderPackage(loaders.BEPINEX, fullName) {
 		_, err := InstallBepinexPack(downloadURL, dir)
@@ -32,8 +34,6 @@ func (ins *BepinexModInstaller) Install(dir, fullName, downloadURL string) error
 func (ins *BepinexModInstaller) Uninstall() error {
 	return nil
 }
-
-const BEPINEX_ZIP_OUTPUT_NAME = "BepInEx-Setup"
 
 func InstallBepinexPack(downloadURL, dir string) (*grab.Response, error) {
 	outputPath := filepath.Join(dir, BEPINEX_ZIP_OUTPUT_NAME)

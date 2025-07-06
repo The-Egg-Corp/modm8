@@ -7,13 +7,6 @@ import (
 	"strings"
 )
 
-type PlatformArch string
-
-const (
-	X64 PlatformArch = "x64"
-	X86 PlatformArch = "x86"
-)
-
 type BepinexConfig struct {
 	RootComments []string                      `json:"root_comments" mapstructure:"root_comments"`
 	Entries      map[string]BepinexConfigEntry `json:"entries" mapstructure:"entries"`
@@ -25,6 +18,20 @@ type BepinexConfigEntry struct {
 	DefaultValue     string   `json:"default_value" mapstructure:"default_value"`
 	Comments         []string `json:"comments" mapstructure:"comments"`
 	AcceptableValues []string `json:"acceptable_values" mapstructure:"acceptable_values"`
+}
+
+type PlatformArch string
+
+const (
+	X64 PlatformArch = "x64"
+	X86 PlatformArch = "x86"
+)
+
+var BEPINEX_REQUIRED_PATHS = []string{
+	"BepInEx",
+	"BepInEx/core",
+	"BepInEx/core/BepInEx.dll",
+	"BepInEx/core/BepInEx.Preloader.dll",
 }
 
 func ParseBepinexConfig(path string) (*BepinexConfig, error) {
@@ -125,24 +132,17 @@ func ParseBepinexConfig(path string) (*BepinexConfig, error) {
 }
 
 func BepinexInstalled(absPath string) (bool, []string) {
-	required := []string{
-		"BepInEx",
-		"BepInEx/core",
-		"BepInEx/core/BepInEx.dll",
-		"BepInEx/core/BepInEx.Preloader.dll",
-	}
-
 	missing := []string{}
-	for _, fileName := range required {
-		// Use abs path to get path to current required file.
-		path := filepath.Join(absPath, fileName)
+	for _, relPath := range BEPINEX_REQUIRED_PATHS {
+		// Use abs path to get path to current required file/dir.
+		path := filepath.Join(absPath, relPath)
 
-		// Check if file exists, add to missing slice if not.
+		// Check if file/dir exists, add to missing slice if not.
 		if exists, _ := fileutil.ExistsAtPath(path); !exists {
-			missing = append(missing, fileName)
+			missing = append(missing, relPath)
 		}
 	}
 
-	// If no missing files, BepInEx is likely installed.
+	// If no missing files/dirs, BepInEx is likely installed.
 	return len(missing) == 0, missing
 }

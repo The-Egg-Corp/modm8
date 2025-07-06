@@ -15,8 +15,6 @@ const (
 	MANIFEST_OP_MOD_REMOVE
 )
 
-// type ModStore map[string]IMod
-
 // This struct is responsible for the management of profiles such as retreiving, creating, deleting and saving manifests.
 //
 // NOTE: All methods call regular functions so we can test said regular functions easily (since they aren't bound to the struct),

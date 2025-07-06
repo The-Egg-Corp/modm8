@@ -148,3 +148,43 @@ func GetSteamLibPaths() ([]string, error) {
 
 	return paths, nil
 }
+
+// Searches through every SteamLibrary and consolidates each game path into single array like so:
+//
+//	"H:\Program Files (x86)\Steam\steamapps\common\Lethal Company",
+//	"F:\SteamLibrary\steamapps\common\Risk of Rain 2"
+func GetSteamGamePaths() ([]string, error) {
+	libPaths, err := GetSteamLibPaths()
+	if err != nil {
+		return nil, err
+	}
+
+	allPaths := []string{}
+	for _, lib := range libPaths {
+		libPaths, err := GetGamesInSteamLib(lib)
+		if err != nil {
+			continue
+		}
+
+		allPaths = append(allPaths, libPaths...)
+	}
+
+	return allPaths, nil
+}
+
+func GetGamesInSteamLib(libPath string) ([]string, error) {
+	common := filepath.Join(libPath, "steamapps", "common")
+	entries, err := os.ReadDir(common)
+	if err != nil {
+		return nil, err
+	}
+
+	games := []string{}
+	for _, e := range entries {
+		if e.IsDir() {
+			games = append(games, filepath.Join(common, e.Name()))
+		}
+	}
+
+	return games, nil
+}

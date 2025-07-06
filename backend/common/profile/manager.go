@@ -63,12 +63,12 @@ func (pm *ProfileManager) AddThunderstoreModToProfile(gameTitle string, profileN
 	return UpdateThunderstoreProfileMods(MANIFEST_OP_MOD_ADD, gameTitle, profileName, verFullName)
 }
 
-func (pm *ProfileManager) AddNexusModToProfile(gameTitle string, profileName string, verFullName string) error {
-	return UpdateNexusProfileMods(MANIFEST_OP_MOD_ADD, gameTitle, profileName, verFullName)
-}
-
 func (pm *ProfileManager) RemoveThunderstoreModFromProfile(gameTitle string, profileName string, verFullName string) error {
 	return UpdateThunderstoreProfileMods(MANIFEST_OP_MOD_REMOVE, gameTitle, profileName, verFullName)
+}
+
+func (pm *ProfileManager) AddNexusModToProfile(gameTitle string, profileName string, verFullName string) error {
+	return UpdateNexusProfileMods(MANIFEST_OP_MOD_ADD, gameTitle, profileName, verFullName)
 }
 
 func (pm *ProfileManager) RemoveNexusModFromProfile(gameTitle string, profileName string, verFullName string) error {

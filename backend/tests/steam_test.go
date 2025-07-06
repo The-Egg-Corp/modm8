@@ -51,11 +51,23 @@ func TestLaunchGameWindows(t *testing.T) {
 func TestGetLibs(t *testing.T) {
 	libPaths, err := steam.GetSteamLibPaths()
 	if err != nil {
-		t.Fatalf("error getting steam libs:\n%v", err)
+		t.Fatalf("error getting steam lib paths:\n%v", err)
 	}
 
 	fmt.Print("steam lib paths:\n")
 	for _, path := range libPaths {
+		fmt.Printf("%s\n", path)
+	}
+}
+
+func TestGetGamePaths(t *testing.T) {
+	gamePaths, err := steam.GetSteamGamePaths()
+	if err != nil {
+		t.Fatalf("error getting steam game paths:\n%s", err)
+	}
+
+	fmt.Printf("steam game paths:\n")
+	for _, path := range gamePaths {
 		fmt.Printf("%s\n", path)
 	}
 }

@@ -295,7 +295,7 @@ func Install(pkg v1.PackageVersion, dir string) (*grab.Response, error) {
 	}
 
 	path := filepath.Join(dir, pkg.FullName)
-	return downloader.DownloadUnzipDelete(path, pkg.DownloadURL)
+	return downloader.DownloadAndUnzip(path, pkg.DownloadURL, true)
 }
 
 // Downloads the specified package as a zip file and unpacks it under the specified directory (absolute path).

@@ -17,11 +17,10 @@ import (
 	"modm8/backend/app"
 	"modm8/backend/common/profile"
 	"modm8/backend/game"
+	"modm8/backend/launchers/steam"
 	"modm8/backend/loaders"
 	"modm8/backend/nexus"
 	"modm8/backend/thunderstore"
-
-	"modm8/backend/runners/steam"
 )
 
 //go:embed all:frontend/dist

@@ -38,7 +38,7 @@ func (ins *BepinexModInstaller) Uninstall() error {
 func InstallBepinexPack(downloadURL, dir string) (*grab.Response, error) {
 	outputPath := filepath.Join(dir, BEPINEX_ZIP_OUTPUT_NAME)
 
-	res, err := downloader.DownloadUnzipDelete(outputPath, downloadURL)
+	res, err := downloader.DownloadAndUnzip(outputPath, downloadURL, true)
 	if err != nil {
 		return res, err
 	}

@@ -12,7 +12,7 @@ import (
 )
 
 // Opens a zip file and extracts its contents via a background operation.
-func Unzip(path, dest string) error {
+func DoUnzip(path, dest string) error {
 	// Initialize an extractor
 	e, err := fastzip.NewExtractor(path, dest)
 	if err != nil {
@@ -29,9 +29,13 @@ func Unzip(path, dest string) error {
 }
 
 // Does the same as Unzip (opens a zip file and extracts its contents via a background operation).
-// However, this function subsequently deletes the zip after extraction finishes, regardless of whether it succeeded.
-func UnzipAndDelete(path, dest string) error {
-	err := Unzip(path, dest)
+//
+// However, if delete is true, this func will delete the original zip after extraction, regardless of whether it succeeded.
+func Unzip(path, dest string, delete bool) error {
+	err := DoUnzip(path, dest)
+	if !delete {
+		return err
+	}
 
 	if delErr := os.Remove(path); delErr != nil {
 		if err != nil {

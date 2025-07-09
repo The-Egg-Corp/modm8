@@ -9,7 +9,9 @@ import (
 	"path/filepath"
 )
 
-type GameManager struct{}
+type GameManager struct {
+	//SelectedProfile *profile.Profile
+}
 
 func NewGameManager() *GameManager {
 	return &GameManager{}

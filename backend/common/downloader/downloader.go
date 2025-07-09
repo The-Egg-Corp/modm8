@@ -109,8 +109,8 @@ func DownloadZip(url, filePath string) (*grab.Response, error) {
 	return DownloadFile(url, dir, fi)
 }
 
-// Downloads, unzips contents as is and then deletes unneeded zip.
-func DownloadUnzipDelete(filePath, downloadURL string) (*grab.Response, error) {
+// Downloads, unzips contents as is. If delete is true, the leftover zip will be subsequently deleted.
+func DownloadAndUnzip(filePath, downloadURL string, delete bool) (*grab.Response, error) {
 	dir, file := filepath.Split(filePath)
 	if exists, _ := fileutil.ExistsInDir(dir, file); exists {
 		return nil, fmt.Errorf("%s is already installed", file)
@@ -128,7 +128,7 @@ func DownloadUnzipDelete(filePath, downloadURL string) (*grab.Response, error) {
 	// 		 installing the current zip, then also ensure it is deleted. Maybe when user next opens app?
 
 	// Unzip the package to the path (usually the current mod cache dir).
-	err = fileutil.UnzipAndDelete(filePath+CUSTOM_ZIP_EXT, filePath)
+	err = fileutil.Unzip(filePath+CUSTOM_ZIP_EXT, filePath, delete)
 	if err != nil {
 		return resp, err
 	}

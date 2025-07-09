@@ -2,7 +2,7 @@ package backend
 
 import (
 	"fmt"
-	epic "modm8/backend/runners/epic"
+	"modm8/backend/launchers/epic"
 	"strings"
 	"testing"
 )

@@ -15,6 +15,11 @@ const (
 	MANIFEST_OP_MOD_REMOVE
 )
 
+type Profile struct {
+	Name string
+	Path string
+}
+
 // This struct is responsible for the management of profiles such as retreiving, creating, deleting and saving manifests.
 //
 // NOTE: All methods call regular functions so we can test said regular functions easily (since they aren't bound to the struct),
@@ -200,7 +205,11 @@ func DeleteProfile(gameTitle, profileName string) error {
 }
 
 func GetManifest(gameTitle, profileName string) (*ProfileManifest, error) {
-	contents, err := fileutil.ReadFile(PathToManifest(gameTitle, profileName))
+	return GetManifestAtPath(PathToManifest(gameTitle, profileName))
+}
+
+func GetManifestAtPath(manifestPath string) (*ProfileManifest, error) {
+	contents, err := fileutil.ReadFile(manifestPath)
 	if err != nil {
 		return nil, err
 	}

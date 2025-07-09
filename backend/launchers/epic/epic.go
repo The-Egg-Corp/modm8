@@ -8,14 +8,14 @@ import (
 
 const launchCmd = "com.epicgames.launcher://apps/%s?action=launch&silent=true"
 
-type EpicRunner struct {
+type EpicLauncher struct {
 }
 
-func NewRunner() *EpicRunner {
-	return &EpicRunner{}
+func NewRunner() *EpicLauncher {
+	return &EpicLauncher{}
 }
 
-func (runner *EpicRunner) LaunchGame(id string) (*gocmd.Cmd, error) {
+func (el *EpicLauncher) LaunchGame(id string) (*gocmd.Cmd, error) {
 	return LaunchGame(id)
 }
 

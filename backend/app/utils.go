@@ -17,7 +17,7 @@ func (u *Utils) ExistsInDir(dir, item string) (bool, error) {
 	return fileutil.ExistsInDir(dir, item)
 }
 
-func (u Utils) ExistsAtPath(path string, clean bool) (bool, error) {
+func (u *Utils) ExistsAtPath(path string, clean bool) (bool, error) {
 	if clean {
 		path = filepath.Clean(path)
 	}

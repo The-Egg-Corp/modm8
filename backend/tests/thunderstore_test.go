@@ -53,7 +53,7 @@ func TestUnzipAndDelete(t *testing.T) {
 	path := filepath.Join(game.ModCacheDir("Lethal Company"), testPkg1)
 	zipPath := path + downloader.CUSTOM_ZIP_EXT
 
-	err := fileutil.UnzipAndDelete(zipPath, path)
+	err := fileutil.Unzip(zipPath, path, true)
 	if err != nil {
 		t.Fatalf("\nerror unpacking zip:\n\n%v", err)
 	}

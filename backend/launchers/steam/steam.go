@@ -15,17 +15,17 @@ import (
 	"golang.org/x/text/language"
 )
 
-type SteamRunner struct {
+type SteamLauncher struct {
 	// InstallPath    *string
 	// InstallPathErr error
 }
 
-func NewSteamRunner() *SteamRunner {
-	return &SteamRunner{}
+func NewSteamRunner() *SteamLauncher {
+	return &SteamLauncher{}
 }
 
 // Attach to struct so Wails is aware of it.
-func (runner SteamRunner) LaunchGame(id uint32, args []string) error {
+func (sl SteamLauncher) LaunchGame(id uint32, args []string) error {
 	installDir, err := GetInstallDirectory()
 	if err != nil {
 		return err
@@ -41,7 +41,7 @@ func (runner SteamRunner) LaunchGame(id uint32, args []string) error {
 	return err
 }
 
-func (runner SteamRunner) GetLibPaths() ([]string, error) {
+func (sl SteamLauncher) GetLibPaths() ([]string, error) {
 	return GetSteamLibPaths()
 }
 

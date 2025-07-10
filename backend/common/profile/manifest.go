@@ -1,7 +1,8 @@
 package profile
 
 import (
-	"errors"
+	"fmt"
+	"modm8/backend/game/platform"
 	"slices"
 	"strings"
 
@@ -10,58 +11,38 @@ import (
 
 const manifestName = "profinfo.json"
 
+type ProfileMods map[platform.ModPlatform][]string
 type ProfileManifest struct {
-	Mods ProfileMods `json:"mods"`
-}
-
-type ProfileMods struct {
-	Thunderstore []string `json:"thunderstore"`
-	Nexus        []string `json:"nexus"`
+	Mods ProfileMods
 }
 
 func NewProfileManifest() ProfileManifest {
 	return ProfileManifest{
 		Mods: ProfileMods{
-			Thunderstore: []string{},
-			Nexus:        []string{},
+			platform.NEXUS:        []string{},
+			platform.THUNDERSTORE: []string{},
 		},
 	}
 }
 
-func (manifest *ProfileManifest) AddThunderstoreMod(verFullName string) error {
-	if !slices.Contains(manifest.Mods.Thunderstore, verFullName) {
-		manifest.Mods.Thunderstore = append(manifest.Mods.Thunderstore, verFullName)
+func (manifest *ProfileManifest) AddMod(platform platform.ModPlatform, verFullName string) error {
+	if !slices.Contains(manifest.Mods[platform], verFullName) {
+		manifest.Mods[platform] = append(manifest.Mods[platform], verFullName)
 	}
 
-	// This should never happen in a perfect-world, but this exists for the eventuality where
+	// This should never happen in a perfect world, but this exists for the eventuality where
 	// the frontend shits itself or some how, some way, the user is able to press install more than once.
-	return errors.New("could not add ts mod to profile manifest. already exists")
+	return fmt.Errorf("could not add mod from platform %s to profile manifest. already exists", platform)
 }
 
-func (manifest *ProfileManifest) AddNexusMod(verFullName string) error {
-	if !slices.Contains(manifest.Mods.Nexus, verFullName) {
-		manifest.Mods.Nexus = append(manifest.Mods.Nexus, verFullName)
-	}
-
-	return errors.New("could not add nexus mod to profile manifest. already exists")
-}
-
-func (manifest *ProfileManifest) RemoveThunderstoreMod(verFullName string) uint {
-	prev := len(manifest.Mods.Thunderstore)
-	manifest.Mods.Thunderstore = lo.Filter(manifest.Mods.Thunderstore, func(el string, idx int) bool {
+func (manifest *ProfileManifest) RemoveMod(platform platform.ModPlatform, verFullName string) uint {
+	prevLen := len(manifest.Mods[platform])
+	manifest.Mods[platform] = lo.Filter(manifest.Mods[platform], func(el string, idx int) bool {
 		return !strings.EqualFold(el, verFullName)
 	})
 
-	return clampL(0, prev-len(manifest.Mods.Thunderstore))
-}
-
-func (manifest *ProfileManifest) RemoveNexusMod(verFullName string) uint {
-	prev := len(manifest.Mods.Nexus)
-	manifest.Mods.Nexus = lo.Filter(manifest.Mods.Nexus, func(el string, idx int) bool {
-		return !strings.EqualFold(el, verFullName)
-	})
-
-	return clampL(0, prev-len(manifest.Mods.Nexus))
+	newLen := len(manifest.Mods[platform])
+	return clampL(0, prevLen-newLen)
 }
 
 func clampL(min int, x int) uint {

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { onBeforeMount, onBeforeUnmount } from "vue"
 
-import * as Steam from '@backend/steam/SteamRunner'
+import * as Steam from '@backend/steam/SteamLauncher'
 import * as GameManager from "@backend/game/GameManager"
 import { GetPathToProfile } from "@backend/profile/ProfileManager"
 import { loaders } from "@frontend/wailsjs/go/models"
@@ -74,7 +74,7 @@ const launchSteamGame = async (modded: boolean, args?: string[]) => {
     }
 
     const profPath = await GetPathToProfile(selectedGame.value.value.title, selectedProfile.value?.name)
-    const instructions = await GameManager.GetLoaderInstructions(loaders.ModLoaderType.BEPINEX, profPath)
+    const instructions = await GameManager.GetModLoaderInstructions(loaders.ModLoaderType.BEPINEX, profPath)
 
     console.log(`Attempting to launch game '${selectedGame.value.value.title}'. Steam ID: ${id}`)
     return await Steam.LaunchGame(id, modded ? instructions.ModdedParams : instructions.VanillaParams)

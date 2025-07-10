@@ -3,6 +3,7 @@ package backend
 import (
 	"fmt"
 	"modm8/backend/common/profile"
+	"modm8/backend/game/platform"
 	"testing"
 
 	"github.com/the-egg-corp/thundergo/util"
@@ -30,8 +31,8 @@ func TestGetProfiles(t *testing.T) {
 
 func TestSaveManifest(t *testing.T) {
 	manifest := profile.NewProfileManifest()
-	manifest.AddThunderstoreMod("Owen3H-IntroTweaks-1.5.0")
-	manifest.AddThunderstoreMod("Owen3H-CSync-3.0.0")
+	manifest.AddMod(platform.THUNDERSTORE, "Owen3H-IntroTweaks-1.5.0")
+	manifest.AddMod(platform.THUNDERSTORE, "Owen3H-CSync-3.0.0")
 
 	err := profile.SaveManifest(testGameTitle, "default", manifest)
 	if err != nil {

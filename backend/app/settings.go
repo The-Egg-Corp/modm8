@@ -7,16 +7,16 @@ import (
 type UpdateBehaviour uint8
 
 const (
-	UpdateBehaviourOff UpdateBehaviour = iota
-	UpdateBehaviourNotify
-	UpdateBehaviourAuto
+	UPDATE_BEHAVIOUR_OFF UpdateBehaviour = iota
+	UPDATE_BEHAVIOUR_NOTIFY
+	UPDATE_BEHAVIOUR_AUTO
 )
 
 type GameSelectionLayout string
 
 const (
-	GameSelectionLayoutGrid GameSelectionLayout = "grid"
-	GameSelectionLayoutList GameSelectionLayout = "list"
+	GAME_SELECTION_LAYOUT_GRID GameSelectionLayout = "grid"
+	GAME_SELECTION_LAYOUT_LIST GameSelectionLayout = "list"
 )
 
 type AppSettings struct {
@@ -51,7 +51,7 @@ func NewSettings() *AppSettings {
 			Locale:            "en",
 			Theme:             "aura-dark-purple",
 			AnimationsEnabled: true,
-			UpdateBehaviour:   UpdateBehaviourAuto,
+			UpdateBehaviour:   UPDATE_BEHAVIOUR_AUTO,
 		},
 		Performance: PerformanceOptions{
 			ThreadCount:     NumCPU(),

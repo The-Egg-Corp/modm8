@@ -17,6 +17,7 @@ import (
 	"modm8/backend/app"
 	"modm8/backend/common/profile"
 	"modm8/backend/game"
+	"modm8/backend/game/platform"
 	"modm8/backend/launchers/steam"
 	"modm8/backend/loaders"
 	"modm8/backend/nexus"
@@ -31,6 +32,11 @@ type EnumBinding[T any] []struct {
 	TSName string
 }
 
+var ModPlatforms = EnumBinding[platform.ModPlatform]{
+	{platform.NEXUS, "NEXUS_MODS"},
+	{platform.THUNDERSTORE, "THUNDERSTORE"},
+}
+
 var ModLoaders = EnumBinding[loaders.ModLoaderType]{
 	{loaders.BEPINEX, "BEPINEX"},
 	{loaders.MELON, "MELON"},
@@ -38,14 +44,14 @@ var ModLoaders = EnumBinding[loaders.ModLoaderType]{
 }
 
 var UpdateBehaviours = EnumBinding[app.UpdateBehaviour]{
-	{app.UpdateBehaviourOff, "OFF"},
-	{app.UpdateBehaviourNotify, "NOTIFY"},
-	{app.UpdateBehaviourAuto, "AUTO"},
+	{app.UPDATE_BEHAVIOUR_OFF, "OFF"},
+	{app.UPDATE_BEHAVIOUR_NOTIFY, "NOTIFY"},
+	{app.UPDATE_BEHAVIOUR_AUTO, "AUTO"},
 }
 
 var GameSelectionLayouts = EnumBinding[app.GameSelectionLayout]{
-	{app.GameSelectionLayoutGrid, "GRID"},
-	{app.GameSelectionLayoutList, "LIST"},
+	{app.GAME_SELECTION_LAYOUT_GRID, "GRID"},
+	{app.GAME_SELECTION_LAYOUT_LIST, "LIST"},
 }
 
 func NewWindowsOptions(gpuAccel bool) *windows.Options {
@@ -159,6 +165,7 @@ func main() {
 		UpdateBehaviours,
 		GameSelectionLayouts,
 		ModLoaders,
+		ModPlatforms,
 	}
 
 	// For now, avoid binding Nexus stuff in GH Actions since key file wont exist.

@@ -17,6 +17,10 @@ func NewGameManager() *GameManager {
 	return &GameManager{}
 }
 
+func (gm *GameManager) GetModLinkPath(loader loaders.ModLoaderType, profileDir string) (string, error) {
+	return loaders.GetModLinkPath(loader, profileDir)
+}
+
 func (gm *GameManager) GetModInstaller(loader loaders.ModLoaderType) (installing.IModInstaller, error) {
 	return installing.GetModInstaller(loader)
 }
@@ -25,8 +29,8 @@ func (gm *GameManager) GetModLoader(loader loaders.ModLoaderType) (loaders.IModL
 	return loaders.GetModLoader(loader)
 }
 
-func (gm *GameManager) GetModLinkPath(loader loaders.ModLoaderType, profileDir string) (string, error) {
-	return loaders.GetModLinkPath(loader, profileDir)
+func (gm *GameManager) GetModLoaderInstructions(loader loaders.ModLoaderType, profPath string) (*loaders.LoaderInstructions, error) {
+	return loaders.GetLoaderInstructions(loader, profPath)
 }
 
 // Creates a Symlink (uses Junction on Windows) in the respective loader's mod path and links it to a mod which must exist in the mod cache.

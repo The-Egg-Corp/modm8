@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"modm8/backend/common/fileutil"
+	"modm8/backend/game/platform"
 	"os"
 	"path/filepath"
 )
@@ -11,8 +12,8 @@ import (
 type ManifestOperation int
 
 const (
-	MANIFEST_OP_MOD_ADD ManifestOperation = iota
-	MANIFEST_OP_MOD_REMOVE
+	MANIFEST_OP_MOD_REMOVE ManifestOperation = -1
+	MANIFEST_OP_MOD_ADD    ManifestOperation = 1
 )
 
 type Profile struct {
@@ -62,55 +63,30 @@ func (pm *ProfileManager) DeleteProfile(gameTitle, profileName string) error {
 	return DeleteProfile(gameTitle, profileName)
 }
 
-func (pm *ProfileManager) AddThunderstoreModToProfile(gameTitle string, profileName string, verFullName string) error {
-	return UpdateThunderstoreProfileMods(MANIFEST_OP_MOD_ADD, gameTitle, profileName, verFullName)
+func (pm *ProfileManager) AddModToProfile(platform platform.ModPlatform, gameTitle, profileName, verFullName string) error {
+	return UpdateProfileMods(MANIFEST_OP_MOD_ADD, platform, gameTitle, profileName, verFullName)
 }
 
-func (pm *ProfileManager) RemoveThunderstoreModFromProfile(gameTitle string, profileName string, verFullName string) error {
-	return UpdateThunderstoreProfileMods(MANIFEST_OP_MOD_REMOVE, gameTitle, profileName, verFullName)
+func (pm *ProfileManager) RemoveModFromProfile(platform platform.ModPlatform, gameTitle, profileName, verFullName string) error {
+	return UpdateProfileMods(MANIFEST_OP_MOD_REMOVE, platform, gameTitle, profileName, verFullName)
 }
 
-func (pm *ProfileManager) AddNexusModToProfile(gameTitle string, profileName string, verFullName string) error {
-	return UpdateNexusProfileMods(MANIFEST_OP_MOD_ADD, gameTitle, profileName, verFullName)
-}
-
-func (pm *ProfileManager) RemoveNexusModFromProfile(gameTitle string, profileName string, verFullName string) error {
-	return UpdateNexusProfileMods(MANIFEST_OP_MOD_REMOVE, gameTitle, profileName, verFullName)
-}
-
-func UpdateThunderstoreProfileMods(op ManifestOperation, gameTitle string, profileName string, verFullName string) error {
-	prof, err := GetManifest(gameTitle, profileName)
+func UpdateProfileMods(op ManifestOperation, platform platform.ModPlatform, gameTitle, profileName, verFullName string) error {
+	pman, err := GetManifest(gameTitle, profileName)
 	if err != nil {
 		return err
 	}
 
-	if op == MANIFEST_OP_MOD_ADD {
-		prof.AddThunderstoreMod(verFullName)
+	switch op {
+	case MANIFEST_OP_MOD_ADD:
+		pman.AddMod(platform, verFullName)
+	case MANIFEST_OP_MOD_REMOVE:
+		pman.RemoveMod(platform, verFullName)
+	default:
+		return fmt.Errorf("unknown manifest operation with index %d", op)
 	}
 
-	if op == MANIFEST_OP_MOD_REMOVE {
-		prof.RemoveThunderstoreMod(verFullName)
-	}
-
-	SaveManifest(gameTitle, profileName, *prof)
-	return nil
-}
-
-func UpdateNexusProfileMods(op ManifestOperation, gameTitle string, profileName string, verFullName string) error {
-	prof, err := GetManifest(gameTitle, profileName)
-	if err != nil {
-		return err
-	}
-
-	if op == MANIFEST_OP_MOD_ADD {
-		prof.AddNexusMod(verFullName)
-	}
-
-	if op == MANIFEST_OP_MOD_REMOVE {
-		prof.RemoveNexusMod(verFullName)
-	}
-
-	SaveManifest(gameTitle, profileName, *prof)
+	SaveManifest(gameTitle, profileName, *pman)
 	return nil
 }
 

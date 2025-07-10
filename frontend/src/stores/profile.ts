@@ -5,6 +5,7 @@ import type { Nullable, Profile } from "@types"
 import { useGameStore } from "@stores"
 
 import { GetProfiles } from "@backend/profile/ProfileManager"
+import { platform } from "@backend/models"
 
 export const useProfileStore = defineStore("ProfileStore", () => {
     //#region Stores
@@ -30,7 +31,13 @@ export const useProfileStore = defineStore("ProfileStore", () => {
         try {
             // Convert go map to array of profiles.
             const profs = await GetProfiles(selectedGame.value.value.title)
-            profiles.value = Object.entries(profs).map(([name, manifest]) => ({ name, ...manifest }))
+            profiles.value = Object.entries(profs).map(([name, manifest]) => ({ 
+                name, 
+                mods: {
+                    thunderstore: manifest.Mods[platform.ModPlatform.THUNDERSTORE],
+                    nexus: manifest.Mods[platform.ModPlatform.NEXUS_MODS]
+                }
+            }))
 
             if (selectedProfile.value?.name) {
                 setSelectedProfile(selectedProfile.value)

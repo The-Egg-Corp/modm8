@@ -16,17 +16,14 @@ import {
 import { ModListTabs, Nullable, Profile } from '@types'
 import { Dialog } from '@composables'
 
-import {
-    AddThunderstoreModToProfile,
-    RemoveThunderstoreModFromProfile
-} from '@backend/profile/ProfileManager'
+import * as ProfileManager from '@backend/profile/ProfileManager'
 
 import {
     LinkModToProfile,
     UnlinkModFromProfile
 } from '@backend/game/GameManager'
 
-import { loaders, thunderstore } from '@backend/models'
+import { loaders, platform, thunderstore } from '@backend/models'
 import { debounce } from "../../util"
 
 const profileStore = useProfileStore()
@@ -121,10 +118,11 @@ async function installTsMod(mod: thunderstore.StrippedPackage) {
 
     const selectedGameTitle = selectedGame.value.value.title
     const selectedProfName = selectedProfile.value.name
+    const verFullName = mod.latest_version.full_name
 
     // The user wants this mod. Update manifest regardless of whether mod will successfully install.
     // We can notify them in the profile tab if something is wrong and provide the option to start without it.
-    await AddThunderstoreModToProfile(selectedGameTitle, selectedProfName, mod.latest_version.full_name)
+    await ProfileManager.AddModToProfile(platform.ModPlatform.THUNDERSTORE, selectedGameTitle, selectedProfName, verFullName)
     
     // We installed the mod to ../GameName/ModCache. 
     const success = await modListStoreTS.installMod(mod.full_name, selectedGame.value.value, props.installingModDialog)
@@ -157,8 +155,9 @@ async function uninstallTsMod(mod: thunderstore.StrippedPackage) {
 
     const selectedGameTitle = selectedGame.value.value.title
     const selectedProfName = selectedProfile.value.name
+    const verFullName = mod.latest_version.full_name
 
-    await RemoveThunderstoreModFromProfile(selectedGameTitle, selectedProfName, mod.latest_version.full_name)
+    await ProfileManager.RemoveModFromProfile(platform.ModPlatform.THUNDERSTORE, selectedGameTitle, selectedProfName, verFullName)
     // TODO: Delete from ModCache if no profile uses it?
     
 

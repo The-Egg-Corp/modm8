@@ -23,8 +23,7 @@ var (
 )
 
 type Application struct {
-	Ctx context.Context
-
+	Ctx         context.Context
 	Utils       *Utils       `json:"utils"`
 	Settings    *AppSettings `json:"settings"`
 	Persistence *Persistence `json:"persistence"`
@@ -144,6 +143,12 @@ func SetMaxProcs(num uint8) int {
 func ConfigDir() string {
 	dir, _ := os.UserConfigDir()
 	return filepath.Join(dir, "modm8")
+}
+
+// Uses the users config dir and returns a path to the mod cache.
+func ModCacheDir() string {
+	cacheDir, _ := os.UserConfigDir()
+	return filepath.Join(cacheDir, "modm8", "ModCache")
 }
 
 func KeyPath() string {

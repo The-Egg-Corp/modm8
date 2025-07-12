@@ -20,7 +20,7 @@ type SteamLauncher struct {
 	// InstallPathErr error
 }
 
-func NewSteamRunner() *SteamLauncher {
+func NewSteamLauncher() *SteamLauncher {
 	return &SteamLauncher{}
 }
 

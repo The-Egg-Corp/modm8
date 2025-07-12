@@ -2,9 +2,9 @@ package backend
 
 import (
 	"fmt"
+	"modm8/backend/app"
 	"modm8/backend/common/downloader"
 	"modm8/backend/common/fileutil"
-	"modm8/backend/game"
 	"strings"
 	"testing"
 	"time"
@@ -13,9 +13,8 @@ import (
 const ZIP_EXT = ".zip"
 const RAR_EXT = ".rar"
 
-var TestDir = game.ModCacheDir("Lethal Company")
-
-var testPool = downloader.DownloadPool{
+var TestDir = app.ModCacheDir()
+var TestPool = downloader.DownloadPool{
 	"https://thunderstore.io/package/download/Owen3H/CSync/3.0.1": fileutil.FileMetadata{
 		Name:      "CSync-v3.0.1",
 		Extension: ZIP_EXT,
@@ -35,7 +34,7 @@ var testPool = downloader.DownloadPool{
 }
 
 func TestDownloadMultipleFiles(t *testing.T) {
-	errs, err := downloader.DownloadMultipleFiles(TestDir, testPool)
+	errs, err := downloader.DownloadMultipleFiles(TestDir, TestPool)
 	if err != nil {
 		t.Fatal(err)
 	}

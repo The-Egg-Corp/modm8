@@ -4,19 +4,18 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"modm8/backend/common/downloader"
-	"modm8/backend/common/fileutil"
-	"modm8/backend/game"
+	"modm8/backend/app"
+	"modm8/backend/installing"
+	"modm8/backend/loaders"
 	"modm8/backend/utils"
-	"path/filepath"
 	"strings"
 
 	"github.com/cavaliergopher/grab/v3"
 	"github.com/samber/lo"
 
 	exp "github.com/the-egg-corp/thundergo/experimental"
-	tsgoUtil "github.com/the-egg-corp/thundergo/util"
-	v1 "github.com/the-egg-corp/thundergo/v1"
+	TSGOUtil "github.com/the-egg-corp/thundergo/util"
+	TSGOV1 "github.com/the-egg-corp/thundergo/v1"
 )
 
 var modExclusions = []string{
@@ -50,28 +49,28 @@ var modExclusions = []string{
 }
 
 // The dir where the mod cache is located for the current game.
-var CurModCacheDir string
+var ModCacheDir = app.ModCacheDir()
 
 // Same as a thundergo `Package` but the 'Versions' field is replaced with only a single 'LatestVersion' field
 // and the following fields are completely removed: [DonationLink, Pinned].
 type StrippedPackage struct {
-	Name           string            `json:"name"`
-	FullName       string            `json:"full_name"`
-	Owner          string            `json:"owner"`
-	UUID           string            `json:"uuid4"`
-	PackageURL     string            `json:"package_url"`
-	DateCreated    tsgoUtil.DateTime `json:"date_created"`
-	DateUpdated    tsgoUtil.DateTime `json:"date_updated"`
-	Rating         uint16            `json:"rating_score"`
-	Deprecated     bool              `json:"is_deprecated"`
-	HasNsfwContent bool              `json:"has_nsfw_content"`
-	Categories     []string          `json:"categories"`
-	LatestVersion  v1.PackageVersion `json:"latest_version"`
+	Name           string                `json:"name"`
+	FullName       string                `json:"full_name"`
+	Owner          string                `json:"owner"`
+	UUID           string                `json:"uuid4"`
+	PackageURL     string                `json:"package_url"`
+	DateCreated    TSGOUtil.DateTime     `json:"date_created"`
+	DateUpdated    TSGOUtil.DateTime     `json:"date_updated"`
+	Rating         uint16                `json:"rating_score"`
+	Deprecated     bool                  `json:"is_deprecated"`
+	HasNsfwContent bool                  `json:"has_nsfw_content"`
+	Categories     []string              `json:"categories"`
+	LatestVersion  TSGOV1.PackageVersion `json:"latest_version"`
 }
 
 type ThunderstoreAPI struct {
 	Ctx   context.Context
-	Cache map[string]v1.PackageList // Cached packages for every community. Not related in any way to the ModCache dir.
+	Cache map[string]TSGOV1.PackageList // Cached packages for every community. Not related in any way to the ModCache dir.
 }
 
 func NewThunderstoreAPI(ctx context.Context) *ThunderstoreAPI {
@@ -81,8 +80,8 @@ func NewThunderstoreAPI(ctx context.Context) *ThunderstoreAPI {
 	}
 }
 
-func NewCache() map[string]v1.PackageList {
-	return make(map[string]v1.PackageList, 0)
+func NewCache() map[string]TSGOV1.PackageList {
+	return make(map[string]TSGOV1.PackageList, 0)
 }
 
 func (api *ThunderstoreAPI) ClearCache() {
@@ -94,7 +93,7 @@ func (api *ThunderstoreAPI) RemoveFromCache(community string) {
 	delete(api.Cache, community)
 }
 
-func (api *ThunderstoreAPI) getCachedPackageList(community string) (v1.PackageList, error) {
+func (api *ThunderstoreAPI) getCachedPackageList(community string) (TSGOV1.PackageList, error) {
 	pkgs, exists := api.Cache[community]
 	if !exists {
 		return nil, errors.New("specified community has not been cached")
@@ -103,7 +102,7 @@ func (api *ThunderstoreAPI) getCachedPackageList(community string) (v1.PackageLi
 	return pkgs, nil
 }
 
-func (api *ThunderstoreAPI) GetCachedPackages(community string) ([]v1.Package, error) {
+func (api *ThunderstoreAPI) GetCachedPackages(community string) ([]TSGOV1.Package, error) {
 	return api.getCachedPackageList(community)
 }
 
@@ -111,7 +110,7 @@ func (api *ThunderstoreAPI) GetCommunities() (exp.CommunityList, error) {
 	return exp.GetCommunities()
 }
 
-func (api *ThunderstoreAPI) GetLatestPackageVersion(community string, owner string, name string) (*v1.PackageVersion, error) {
+func (api *ThunderstoreAPI) GetLatestPackageVersion(community string, owner string, name string) (*TSGOV1.PackageVersion, error) {
 	versions, err := api.GetPackageVersions(community, owner, name)
 	if err != nil {
 		return nil, err
@@ -120,7 +119,7 @@ func (api *ThunderstoreAPI) GetLatestPackageVersion(community string, owner stri
 	return &versions[0], nil
 }
 
-func (api *ThunderstoreAPI) GetPackageVersions(community, owner, name string) ([]v1.PackageVersion, error) {
+func (api *ThunderstoreAPI) GetPackageVersions(community, owner, name string) ([]TSGOV1.PackageVersion, error) {
 	pkgs, exists := api.Cache[community]
 	if !exists {
 		return nil, errors.New("specified community has not been cached")
@@ -136,7 +135,7 @@ func (api *ThunderstoreAPI) GetPackageVersions(community, owner, name string) ([
 
 // Get packages for a specific community given its identifier.
 // If the cache is not hit, it will be populated automatically.
-func (api *ThunderstoreAPI) GetPackagesInCommunity(community string, skipCache bool) ([]v1.Package, error) {
+func (api *ThunderstoreAPI) GetPackagesInCommunity(community string, skipCache bool) ([]TSGOV1.Package, error) {
 	if !skipCache {
 		pkgs, exists := api.Cache[community]
 		if exists {
@@ -144,7 +143,7 @@ func (api *ThunderstoreAPI) GetPackagesInCommunity(community string, skipCache b
 		}
 	}
 
-	pkgs, err := v1.PackagesFromCommunity(community)
+	pkgs, err := TSGOV1.PackagesFromCommunity(community)
 	if err != nil {
 		return nil, err
 	}
@@ -158,12 +157,12 @@ func (api *ThunderstoreAPI) GetPackagesByUser(communities []string, owner string
 }
 
 func GetPackagesByUser(communities []string, owner string) string {
-	pkgs, err := v1.PackagesFromCommunities(v1.NewCommunityList(communities...))
+	pkgs, err := TSGOV1.PackagesFromCommunities(TSGOV1.NewCommunityList(communities...))
 	if err != nil {
 		return "An error occurred getting packages!"
 	}
 
-	pkgs = lo.Filter(pkgs, func(pkg v1.Package, index int) bool {
+	pkgs = lo.Filter(pkgs, func(pkg TSGOV1.Package, index int) bool {
 		return strings.EqualFold(pkg.Owner, owner)
 	})
 
@@ -222,16 +221,24 @@ func (api *ThunderstoreAPI) GetStrippedPackages(community string, skipCache bool
 // Installs the latest version of a package by its full name (Owner-PkgName) and all of its dependencies.
 //
 // The game identifier (aka community) must be correctly specified for the package to be found.
-func (api *ThunderstoreAPI) InstallByName(gameTitle, community, fullName string) (*v1.PackageVersion, error) {
+func (api *ThunderstoreAPI) InstallByName(gameTitle, commIdent, fullName string) (*TSGOV1.PackageVersion, error) {
+	ecosys, err := GetSchema().GetEcosystem()
+	if err != nil {
+		return nil, fmt.Errorf("could not get Thunderstore ecosystem")
+	}
+
+	r2mapping := ecosys.Games[commIdent].R2Modman[0]
+	loader := loaders.GetModLoaderType(r2mapping.PackageLoader)
+
 	// Get cached package list, if empty, try to fill it.
-	pkgs, _ := api.getCachedPackageList(community)
+	pkgs, _ := api.getCachedPackageList(commIdent)
 	if pkgs == nil {
-		commPkgs, err := v1.PackagesFromCommunity(community)
+		commPkgs, err := TSGOV1.PackagesFromCommunity(commIdent)
 		if err != nil {
 			return nil, fmt.Errorf("error getting packages: %s", err)
 		}
 
-		api.Cache[community] = commPkgs
+		api.Cache[commIdent] = commPkgs
 	}
 
 	pkg := pkgs.GetExact(fullName)
@@ -242,12 +249,15 @@ func (api *ThunderstoreAPI) InstallByName(gameTitle, community, fullName string)
 	var errs []error
 	var downloadCount int
 
-	// Used in subsequent call to InstallWithDependencies().
-	// TODO: Maybe this should just be a param instead then?
-	CurModCacheDir = game.ModCacheDir(gameTitle)
-
 	latestVer := pkg.LatestVersion()
-	InstallWithDependencies(latestVer, api.Cache[community], &errs, &downloadCount)
+	meta := installing.PackageInstallMeta{
+		Loader:       loader,
+		FullName:     latestVer.FullName,
+		DownloadURL:  latestVer.DownloadURL,
+		Dependencies: latestVer.Dependencies,
+	}
+
+	InstallWithDependencies(meta, api.Cache[commIdent], &errs, &downloadCount)
 
 	if len(errs) > 0 {
 		var errBuilder strings.Builder
@@ -267,14 +277,14 @@ func (api *ThunderstoreAPI) InstallByName(gameTitle, community, fullName string)
 //
 // This function is recursive and calls [Install] for each dependency, any errors are accumulated into a slice and
 // the install count is incremented if no error occurred - both of which are available once this func has fully finished.
-func InstallWithDependencies(pkg v1.PackageVersion, pkgs v1.PackageList, errs *[]error, installCount *int) {
-	_, err := Install(pkg, CurModCacheDir)
+func InstallWithDependencies(pkgInsMeta installing.PackageInstallMeta, pkgs TSGOV1.PackageList, errs *[]error, installCount *int) {
+	_, err := Install(pkgInsMeta, ModCacheDir)
 	if err == nil {
 		*installCount += 1
 	}
 
 	// Install dependencies of dependencies and so forth, until no more left.
-	for _, dependency := range pkg.Dependencies {
+	for _, dependency := range pkgInsMeta.Dependencies {
 		// Split the dependency string into 3 elements: Author, Package Name, Version
 		split := strings.Split(dependency, "-")
 
@@ -284,18 +294,26 @@ func InstallWithDependencies(pkg v1.PackageVersion, pkgs v1.PackageList, errs *[
 			continue
 		}
 
-		InstallWithDependencies(*pkg.GetVersion(split[2]), pkgs, errs, installCount)
+		ver := pkg.GetVersion(split[2])
+		meta := installing.PackageInstallMeta{
+			Loader:       pkgInsMeta.Loader,
+			FullName:     ver.FullName,
+			DownloadURL:  ver.DownloadURL,
+			Dependencies: ver.Dependencies,
+		}
+
+		InstallWithDependencies(meta, pkgs, errs, installCount)
 	}
 }
 
-// Downloads the given package version as a zip and unpacks it to the specified directory (expected to be absolute).
-func Install(pkg v1.PackageVersion, dir string) (*grab.Response, error) {
-	if exists, _ := fileutil.ExistsInDir(dir, pkg.FullName); exists {
-		return nil, fmt.Errorf("%s is already installed", pkg.FullName)
+// Downloads the given package version as a zip and unpacks it to the specified dir path (expected to be absolute).
+func Install(pkgInsMeta installing.PackageInstallMeta, dirPath string) (*grab.Response, error) {
+	ins, err := installing.GetModInstaller(pkgInsMeta.Loader)
+	if err != nil {
+		return nil, err
 	}
 
-	path := filepath.Join(dir, pkg.FullName)
-	return downloader.DownloadAndUnzip(path, pkg.DownloadURL, true)
+	return ins.Install(pkgInsMeta.DownloadURL, pkgInsMeta.FullName, dirPath)
 }
 
 // Downloads the specified package as a zip file and unpacks it under the specified directory (absolute path).

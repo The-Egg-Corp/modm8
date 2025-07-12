@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"modm8/backend/common/fileutil"
+	"modm8/backend/utils"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -25,12 +26,19 @@ type ThunderstoreEcosystem struct {
 	Games         map[string]ThunderstoreEcosystemGame `json:"games"`
 }
 
+func (ecosys *ThunderstoreEcosystem) GetR2Games(commIdent string) map[string]R2GameMapping {
+	r2mappings := ecosys.Games[commIdent].R2Modman
+	return utils.FromEntries(r2mappings, func(r2 R2GameMapping) string {
+		return r2.Meta.DisplayName
+	})
+}
+
 type ThunderstoreEcosystemGame struct {
 	UUID          string             `json:"uuid"`
 	Label         string             `json:"label"`
 	Meta          GameMeta           `json:"meta"`
 	Distributions []GameDistribution `json:"distributions"`
-	R2Modman      []R2MMConfig       `json:"r2modman"`
+	R2Modman      []R2GameMapping    `json:"r2modman"`
 }
 
 type GameMeta struct {
@@ -43,7 +51,7 @@ type GameDistribution struct {
 	Identifier string `json:"identifier"`
 }
 
-type R2MMConfig struct {
+type R2GameMapping struct {
 	Meta                     GameMeta           `json:"meta"`
 	InternalFolderName       string             `json:"internalFolderName"`
 	DataFolderName           string             `json:"dataFolderName"`
@@ -66,6 +74,12 @@ type InstallRule struct {
 	TrackingMethod        string        `json:"trackingMethod"`
 	SubRoutes             []InstallRule `json:"subRoutes"`
 	IsDefaultLocation     bool          `json:"isDefaultLocation"`
+}
+
+var tsSchema = NewThunderstoreSchema()
+
+func GetSchema() *ThunderstoreSchema {
+	return tsSchema
 }
 
 func NewThunderstoreSchema() *ThunderstoreSchema {

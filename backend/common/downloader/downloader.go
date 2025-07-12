@@ -109,14 +109,14 @@ func DownloadZip(url, filePath string) (*grab.Response, error) {
 	return DownloadFile(url, dir, fi)
 }
 
-// Downloads, unzips contents as is. If delete is true, the leftover zip will be subsequently deleted.
-func DownloadAndUnzip(filePath, downloadURL string, delete bool) (*grab.Response, error) {
+// Downloads, unzips contents as is at filePath. If delete is true, the leftover zip will be subsequently deleted.
+func DownloadAndUnzip(url, filePath string, delete bool) (*grab.Response, error) {
 	dir, file := filepath.Split(filePath)
 	if exists, _ := fileutil.ExistsInDir(dir, file); exists {
-		return nil, fmt.Errorf("%s is already installed", file)
+		return nil, fmt.Errorf("package '%s' already installed in %s", file, dir)
 	}
 
-	resp, err := DownloadZip(downloadURL, filePath)
+	resp, err := DownloadZip(url, filePath)
 	if err != nil {
 		return resp, err
 	}

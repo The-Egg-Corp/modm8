@@ -43,3 +43,6 @@ build/**/*/wails_tools.nsh
 # Temporary
 README-release.md
 upload-artifacts.yml
+
+# Custom
+archive/

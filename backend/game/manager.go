@@ -1,6 +1,7 @@
 package game
 
 import (
+	"modm8/backend/app"
 	"modm8/backend/common/fileutil"
 	"modm8/backend/common/profile"
 	"modm8/backend/installing"
@@ -50,8 +51,8 @@ func (gm *GameManager) LinkModToProfile(loader loaders.ModLoaderType, gameTitle,
 	// TODO: Read manifest.json in the mod's folder and call this function recursively for
 	// 		 each mod specified within the `dependencies` field.
 
-	target := filepath.Join(profileModsDir, modFullName)         // Path to mod in given profile dir
-	source := filepath.Join(ModCacheDir(gameTitle), modFullName) // Path to mod in mod cache.
+	target := filepath.Join(profileModsDir, modFullName)    // Path to mod in given profile dir
+	source := filepath.Join(app.ModCacheDir(), modFullName) // Path to mod in mod cache.
 
 	return fileutil.LinkDir(target, source)
 }
@@ -91,13 +92,4 @@ func (gm *GameManager) BepinexConfigFiles(dirs []string) ([]string, error) {
 
 func (gm *GameManager) ParseBepinexConfig(path string) (*BepinexConfig, error) {
 	return ParseBepinexConfig(path)
-}
-
-// Uses the users config dir and returns a path to the mod cache for the input game.
-// For example, input "Lethal Company" would return "%AppData%/Roaming/modm8/Games/Lethal Company/ModCache" on Windows.
-//
-// This function solely relys on `os` and `filepath` and should be platform-independent.
-func ModCacheDir(gameTitle string) string {
-	cacheDir, _ := os.UserConfigDir()
-	return filepath.Join(cacheDir, "modm8", "Games", gameTitle, "ModCache")
 }

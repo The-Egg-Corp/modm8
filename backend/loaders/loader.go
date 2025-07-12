@@ -38,6 +38,20 @@ func GetUnityDoorstopVersion(dirPath string) (uint64, error) {
 // I'll probably be dead by the time there are >255 loaders.
 type ModLoaderType uint8
 
+func GetModLoaderType(loaderName string) ModLoaderType {
+	switch loaderName {
+	case "bepinex":
+		return ModLoaderType(BEPINEX)
+	case "lovely":
+		return ModLoaderType(LOVELY)
+	case "melonloader":
+	case "recursive-melonloader":
+		return ModLoaderType(MELON)
+	}
+
+	return ModLoaderType(0)
+}
+
 func (mlt ModLoaderType) Index() int {
 	return int(mlt)
 }
@@ -46,19 +60,19 @@ func (mlt ModLoaderType) Name() string {
 	switch mlt {
 	case BEPINEX:
 		return "BEPINEX"
-	case MELON:
-		return "MELON"
 	case LOVELY:
 		return "LOVELY"
+	case MELON:
+		return "MELON"
 	default:
 		return "UNKNOWN"
 	}
 }
 
 const (
-	BEPINEX ModLoaderType = iota
-	MELON
+	BEPINEX ModLoaderType = iota + 1
 	LOVELY
+	MELON
 	// NORTHSTAR
 	// SHIMLOADER
 	// GODOT_ML

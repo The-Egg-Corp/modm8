@@ -2,7 +2,7 @@ package profile
 
 import (
 	"fmt"
-	"modm8/backend/game/platform"
+	"modm8/backend/platform"
 	"slices"
 	"strings"
 

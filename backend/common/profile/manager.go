@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"modm8/backend/common/fileutil"
-	"modm8/backend/game/platform"
+	"modm8/backend/platform"
 	"os"
 	"path/filepath"
 )

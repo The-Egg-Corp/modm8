@@ -24,7 +24,7 @@ type Command struct {
 }
 
 type Application struct {
-	Ctx      context.Context
+	WailsCtx context.Context
 	Core     *appctx.AppCore // TODO: Maybe just rename to Env and make Utils a service.
 	Services *AppServices
 }
@@ -43,7 +43,7 @@ func NewApplication() *Application {
 	services := NewAppServices(core)
 
 	return &Application{
-		Ctx:      nil,
+		WailsCtx: nil,
 		Core:     core,
 		Services: services,
 	}
@@ -107,11 +107,11 @@ func (app *Application) Init() (errs []error) {
 }
 
 // Called when the app starts. The context is saved so we can call the runtime methods.
-func (app *Application) Startup(ctx context.Context) {
-	app.Ctx = ctx
+func (app *Application) Startup(wailsCtx context.Context) {
+	app.WailsCtx = wailsCtx
 
 	if app.GetPersistence().WindowState.Maximized {
-		wuntime.WindowMaximise(ctx)
+		wuntime.WindowMaximise(wailsCtx)
 		return
 	}
 

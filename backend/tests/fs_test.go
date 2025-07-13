@@ -3,7 +3,7 @@ package backend
 import (
 	"fmt"
 	"modm8/backend/common/fileutil"
-	"modm8/backend/common/profile"
+	"modm8/backend/profile"
 	"os"
 	"path/filepath"
 	"testing"

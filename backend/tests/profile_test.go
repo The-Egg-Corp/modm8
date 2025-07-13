@@ -2,8 +2,8 @@ package backend
 
 import (
 	"fmt"
-	"modm8/backend/common/profile"
 	"modm8/backend/platform"
+	"modm8/backend/profile"
 	"testing"
 
 	"github.com/the-egg-corp/thundergo/util"

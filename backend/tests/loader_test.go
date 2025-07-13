@@ -2,8 +2,8 @@ package backend
 
 import (
 	"fmt"
-	"modm8/backend/common/profile"
 	"modm8/backend/loaders"
+	"modm8/backend/profile"
 	"testing"
 )
 

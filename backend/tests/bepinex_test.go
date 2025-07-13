@@ -1,9 +1,9 @@
 package backend
 
 import (
-	"modm8/backend/common/profile"
 	"modm8/backend/game"
 	"modm8/backend/installing"
+	"modm8/backend/profile"
 	"path/filepath"
 	"strings"
 	"testing"

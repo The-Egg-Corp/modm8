@@ -1,4 +1,4 @@
-import { OpenExternal } from "@backend/app/Application.js"
+import { OpenExternal } from "@backend/app/Application"
 
 import type { PresetOptions } from "@types"
 import { type TooltipOptions } from "primevue/tooltip"

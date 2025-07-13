@@ -13,12 +13,10 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options/windows"
 
 	"modm8/backend/app"
-	"modm8/backend/common/profile"
-	"modm8/backend/game"
-	"modm8/backend/launchers/steam"
+	"modm8/backend/app/appctx"
+	"modm8/backend/common/paths"
 	"modm8/backend/loaders"
 	"modm8/backend/platform"
-	"modm8/backend/thunderstore"
 )
 
 //go:embed all:frontend/dist
@@ -40,15 +38,15 @@ var ModLoaders = EnumBinding[loaders.ModLoaderType]{
 	{loaders.LOVELY, "LOVELY"},
 }
 
-var UpdateBehaviours = EnumBinding[app.UpdateBehaviour]{
-	{app.UPDATE_BEHAVIOUR_OFF, "OFF"},
-	{app.UPDATE_BEHAVIOUR_NOTIFY, "NOTIFY"},
-	{app.UPDATE_BEHAVIOUR_AUTO, "AUTO"},
+var UpdateBehaviours = EnumBinding[appctx.UpdateBehaviour]{
+	{appctx.UPDATE_BEHAVIOUR_OFF, "OFF"},
+	{appctx.UPDATE_BEHAVIOUR_NOTIFY, "NOTIFY"},
+	{appctx.UPDATE_BEHAVIOUR_AUTO, "AUTO"},
 }
 
-var GameSelectionLayouts = EnumBinding[app.GameSelectionLayout]{
-	{app.GAME_SELECTION_LAYOUT_GRID, "GRID"},
-	{app.GAME_SELECTION_LAYOUT_LIST, "LIST"},
+var GameSelectionLayouts = EnumBinding[appctx.GameSelectionLayout]{
+	{appctx.GAME_SELECTION_LAYOUT_GRID, "GRID"},
+	{appctx.GAME_SELECTION_LAYOUT_LIST, "LIST"},
 }
 
 func NewWindowsOptions(gpuAccel bool) *windows.Options {
@@ -57,7 +55,7 @@ func NewWindowsOptions(gpuAccel bool) *windows.Options {
 		WebviewIsTransparent: true,
 		BackdropType:         windows.Mica,
 		ResizeDebounceMS:     1,
-		WebviewUserDataPath:  app.ConfigDir(),
+		WebviewUserDataPath:  paths.ConfigDir(),
 		WebviewGpuIsDisabled: !gpuAccel,
 	}
 }
@@ -124,8 +122,8 @@ func NewMacOptions() *mac.Options {
 // }
 
 func main() {
-	modm8 := app.NewApp()
-	errs := modm8.Init()
+	application := app.NewApplication()
+	errs := application.Init()
 
 	if len(errs) > 0 {
 		for _, err := range errs {
@@ -133,28 +131,20 @@ func main() {
 		}
 	}
 
-	modm8.Settings.Apply()
-
-	tsSchema := thunderstore.GetSchema()
-	tsAPI := thunderstore.NewThunderstoreAPI(modm8.Ctx)
-	tsTools := thunderstore.NewThunderstoreTools()
-
-	profileManager := profile.NewProfileManager()
-	gameManager := game.NewGameManager()
-	steamLauncher := steam.NewSteamLauncher()
+	application.GetSettings().Apply()
 
 	// STRUCT BINDINGS
 	bindings := []any{
-		modm8,
-		modm8.Settings,
-		modm8.Persistence,
-		modm8.Utils,
-		profileManager,
-		gameManager,
-		steamLauncher,
-		tsAPI,
-		tsSchema,
-		tsTools,
+		application,
+		application.Core.Settings,
+		application.Core.Persistence,
+		application.Core.Utils,
+		application.Services.GameManager,
+		application.Services.ProfileManager,
+		application.Services.SteamLauncher,
+		application.Services.TSSchema,
+		application.Services.TSAPI,
+		//application.Services.TSDevTools.PackageValidator,
 	}
 
 	// ENUM BINDINGS
@@ -175,10 +165,13 @@ func main() {
 	// 	bindings = append(bindings, nexusAPI)
 	// }
 
+	persistence := application.GetPersistence()
+	settings := application.GetSettings()
+
 	err := wails.Run(&options.App{
 		Title:     "modm8",
-		Width:     int(modm8.Persistence.Window.Width),
-		Height:    int(modm8.Persistence.Window.Height),
+		Width:     int(persistence.WindowState.Width),
+		Height:    int(persistence.WindowState.Height),
 		MinWidth:  640, // God's resolution.
 		MinHeight: 480,
 		AssetServer: &assetserver.Options{
@@ -186,15 +179,15 @@ func main() {
 		},
 		Frameless:                true,
 		EnableDefaultContextMenu: false,
-		OnStartup:                modm8.Startup,
-		OnBeforeClose:            modm8.OnBeforeClose,
-		OnShutdown:               modm8.Shutdown,
+		OnStartup:                application.Startup,
+		OnBeforeClose:            application.OnBeforeClose,
+		OnShutdown:               application.Shutdown,
 		SingleInstanceLock: &options.SingleInstanceLock{
 			UniqueId: "7465fe36-08e3-478b-853b-0f8676f724b7",
 		},
 		Mac:      NewMacOptions(),
 		Linux:    NewLinuxOptions(),
-		Windows:  NewWindowsOptions(modm8.Settings.Performance.GPUAcceleration),
+		Windows:  NewWindowsOptions(settings.Performance.GPUAcceleration),
 		LogLevel: logger.INFO,
 		Bind:     bindings,
 		EnumBind: enumBindings,

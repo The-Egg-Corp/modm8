@@ -4,18 +4,11 @@ import { computed, ref } from 'vue'
 import FileUpload, { FileUploadUploaderEvent } from 'primevue/fileupload'
 
 import { Viewport } from '@components'
-import { TSPackageManifest, TSPackageFile } from '@types'
-import { experimental } from '@backend/models'
 
 // TODO: Finish implementing pack/unpack functionality
-import { 
-    //UnpackZip, 
-    ValidateIcon, 
-    ValidateManifest, 
-    ValidateReadme,
-} from '@backend/thunderstore/ThunderstoreTools'
+//import * as PackageValidator from "@backend/thunderstore/PackageValidator"
 
-import { GetFilesInZip } from '@backend/app/Utils'
+import { GetFilesInZip } from '@backend/appctx/Utils'
 
 // Validates each required file for uploading a Thunderstore mod.
 // function ValidateFiles(icon: experimental.IconValidatorParams, readme: TSPackageFile, manifest: TSPackageManifest) {

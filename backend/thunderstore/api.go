@@ -1,13 +1,12 @@
 package thunderstore
 
 import (
-	"context"
 	"errors"
 	"fmt"
-	"modm8/backend/app"
+	"modm8/backend/common/paths"
+	"modm8/backend/common/util"
 	"modm8/backend/installing"
 	"modm8/backend/loaders"
-	"modm8/backend/utils"
 	"strings"
 
 	"github.com/cavaliergopher/grab/v3"
@@ -49,7 +48,7 @@ var modExclusions = []string{
 }
 
 // The dir where the mod cache is located for the current game.
-var ModCacheDir = app.ModCacheDir()
+var ModCacheDir = paths.ModCacheDir()
 
 // Same as a thundergo `Package` but the 'Versions' field is replaced with only a single 'LatestVersion' field
 // and the following fields are completely removed: [DonationLink, Pinned].
@@ -69,15 +68,19 @@ type StrippedPackage struct {
 }
 
 type ThunderstoreAPI struct {
-	Ctx   context.Context
-	Cache map[string]TSGOV1.PackageList // Cached packages for every community. Not related in any way to the ModCache dir.
+	Schema *ThunderstoreSchema
+	Cache  map[string]TSGOV1.PackageList // Cached packages for every community. Not related in any way to the ModCache dir.
 }
 
-func NewThunderstoreAPI(ctx context.Context) *ThunderstoreAPI {
+func NewThunderstoreAPI() *ThunderstoreAPI {
 	return &ThunderstoreAPI{
-		Ctx:   ctx,
-		Cache: NewCache(),
+		Schema: nil,
+		Cache:  NewCache(),
 	}
+}
+
+func (api *ThunderstoreAPI) SetSchema(schema *ThunderstoreSchema) {
+	api.Schema = schema
 }
 
 func NewCache() map[string]TSGOV1.PackageList {
@@ -195,7 +198,7 @@ func (api *ThunderstoreAPI) GetStrippedPackages(community string, skipCache bool
 	// Loops over all pkgs, stripping some unnecessary fields to avoid blocking frontend.
 	for _, pkg := range pkgs {
 		// Strip any apps/utils that aren't strictly mods.
-		if utils.ArrEqualFold(modExclusions, pkg.FullName) {
+		if util.ArrEqualFold(modExclusions, pkg.FullName) {
 			continue
 		}
 
@@ -222,7 +225,7 @@ func (api *ThunderstoreAPI) GetStrippedPackages(community string, skipCache bool
 //
 // The game identifier (aka community) must be correctly specified for the package to be found.
 func (api *ThunderstoreAPI) InstallByName(gameTitle, commIdent, fullName string) (*TSGOV1.PackageVersion, error) {
-	ecosys, err := GetSchema().GetEcosystem()
+	ecosys, err := api.Schema.GetEcosystem()
 	if err != nil {
 		return nil, fmt.Errorf("could not get Thunderstore ecosystem")
 	}

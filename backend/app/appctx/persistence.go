@@ -1,14 +1,15 @@
-package app
+package appctx
 
 import (
 	"context"
+	"modm8/backend/common/paths"
 
 	"github.com/spf13/viper"
 	wuntime "github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 type Persistence struct {
-	Window         WindowState `json:"window" mapstructure:"window"`
+	WindowState    WindowState `json:"window" mapstructure:"window"`
 	FavouriteGames []string    `json:"favourite_games" mapstructure:"favourite_games"`
 }
 
@@ -25,7 +26,7 @@ var persistenceCfg = viper.New()
 func NewPersistence() *Persistence {
 	return &Persistence{
 		FavouriteGames: []string{},
-		Window: WindowState{
+		WindowState: WindowState{
 			Maximized: false,
 			Width:     1380,
 			Height:    930,
@@ -41,11 +42,11 @@ func (persistence *Persistence) WriteToConfig() error {
 
 func (persistence *Persistence) Load() error {
 	SetupConfig(persistenceCfg, "persistence", "toml")
-	return ReadOrCreate(persistenceCfg, persistence, PersistencePath())
+	return ReadOrCreate(persistenceCfg, persistence, paths.PersistencePath())
 }
 
 func (persistence *Persistence) Save() error {
-	return Save(persistenceCfg, persistence, PersistencePath())
+	return Save(persistenceCfg, persistence, paths.PersistencePath())
 }
 
 // The frontend must still be loaded to call these runtime methods.
@@ -65,23 +66,23 @@ func (persistence *Persistence) ApplyCurrentWindowState(ctx context.Context) {
 }
 
 func (persistence *Persistence) SetWindowWidth(width uint16) {
-	persistence.Window.Width = width
+	persistence.WindowState.Width = width
 }
 
 func (persistence *Persistence) SetWindowHeight(height uint16) {
-	persistence.Window.Height = height
+	persistence.WindowState.Height = height
 }
 
 func (persistence *Persistence) SetWindowX(xPos int) {
-	persistence.Window.X = xPos
+	persistence.WindowState.X = xPos
 }
 
 func (persistence *Persistence) SetWindowY(yPos int) {
-	persistence.Window.Y = yPos
+	persistence.WindowState.Y = yPos
 }
 
 func (persistence *Persistence) SetMaximized(maximized bool) {
-	persistence.Window.Maximized = maximized
+	persistence.WindowState.Maximized = maximized
 }
 
 func (persistence *Persistence) SetFavouriteGames(identifiers []string) {

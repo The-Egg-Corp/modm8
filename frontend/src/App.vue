@@ -1,11 +1,9 @@
 <script lang="ts" setup>
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted } from 'vue'
 import { changeLocale } from '@i18n'
 
-import { 
-    NumCPU,
-    GetSettings
-} from '@backend/app/Application'
+import { GetSettings } from '@backend/app/Application'
+import { NumCPU } from '@backend/appctx/Utils'
 
 import { 
     Sidebar, ControlButtons,

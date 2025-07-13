@@ -2,7 +2,7 @@ package loaders
 
 import (
 	"fmt"
-	"modm8/backend/utils"
+	"modm8/backend/common/fileutil"
 	"path/filepath"
 	"strings"
 
@@ -17,7 +17,7 @@ const DOORSTOP_VER_FILE_NAME = ".doorstop_version"
 // Even if the file content is malformed with spaces or other characters before or after, this func will try to find the first line with a valid semantic version.
 // If we dont find it or the version is somehow <= 3, defaults and returns 3.
 func GetUnityDoorstopVersion(dirPath string) (uint64, error) {
-	semverLine, err := utils.FindFirstSemverLine(filepath.Join(dirPath, DOORSTOP_VER_FILE_NAME))
+	semverLine, err := fileutil.FindFirstSemverLine(filepath.Join(dirPath, DOORSTOP_VER_FILE_NAME))
 	if err != nil {
 		return 3, err
 	}

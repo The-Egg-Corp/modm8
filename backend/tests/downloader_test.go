@@ -2,9 +2,10 @@ package backend
 
 import (
 	"fmt"
-	"modm8/backend/app"
 	"modm8/backend/common/downloader"
 	"modm8/backend/common/fileutil"
+	"modm8/backend/common/paths"
+	"path/filepath"
 	"strings"
 	"testing"
 	"time"
@@ -13,7 +14,7 @@ import (
 const ZIP_EXT = ".zip"
 const RAR_EXT = ".rar"
 
-var TestDir = app.ModCacheDir()
+var TestDir = paths.ModCacheDir()
 var TestPool = downloader.DownloadPool{
 	"https://thunderstore.io/package/download/Owen3H/CSync/3.0.1": fileutil.FileMetadata{
 		Name:      "CSync-v3.0.1",
@@ -86,4 +87,16 @@ Loop:
 
 	elapsed := time.Since(startTime)
 	t.Logf("\nDownload completed!\n\nSaved to: %v \nTook: %v\n", resp.Filename, elapsed)
+}
+
+func TestUnzipAndDelete(t *testing.T) {
+	path := filepath.Join(paths.ModCacheDir(), testPkg1)
+	zipPath := path + downloader.CUSTOM_ZIP_EXT
+
+	err := fileutil.Unzip(zipPath, path, true)
+	if err != nil {
+		t.Fatalf("\nerror unpacking zip:\n\n%v", err)
+	}
+
+	t.Logf("\n\nSuccessfully unpacked and deleted:\n  %s", zipPath)
 }

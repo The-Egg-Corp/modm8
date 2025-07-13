@@ -2,9 +2,9 @@ package backend
 
 import (
 	"fmt"
-	"modm8/backend/common/profile"
 	"modm8/backend/launchers/steam"
 	"modm8/backend/loaders"
+	"modm8/backend/profile"
 	"strings"
 	"testing"
 )

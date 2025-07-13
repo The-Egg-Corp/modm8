@@ -11,7 +11,7 @@ const launchCmd = "com.epicgames.launcher://apps/%s?action=launch&silent=true"
 type EpicLauncher struct {
 }
 
-func NewRunner() *EpicLauncher {
+func NewEpicLauncher() *EpicLauncher {
 	return &EpicLauncher{}
 }
 

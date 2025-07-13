@@ -10,9 +10,9 @@ import {
     SetThreads,
     SetUpdateBehaviour,
     SetGameSelectionLayout
-} from '@backend/app/AppSettings.js'
+} from '@backend/appctx/AppSettings.js'
 
-import type { app } from "@backend/models.js"
+import type { appctx } from "@backend/models"
 
 export const useSettingsStore = defineStore("SettingsStore", () => {
     //#region State
@@ -53,7 +53,7 @@ export const useSettingsStore = defineStore("SettingsStore", () => {
         if (update) SetAnimationsEnabled(value)
     }
 
-    function setUpdateBehaviour(behaviour: app.UpdateBehaviour, update = true) {
+    function setUpdateBehaviour(behaviour: appctx.UpdateBehaviour, update = true) {
         general.value.update_behaviour = behaviour
         if (update) SetUpdateBehaviour(behaviour)
     }
@@ -78,7 +78,7 @@ export const useSettingsStore = defineStore("SettingsStore", () => {
         if (update) SetNexusPersonalKey(key)
     }
 
-    function setGameSelectionLayout(layout: app.GameSelectionLayout, update = true) {
+    function setGameSelectionLayout(layout: appctx.GameSelectionLayout, update = true) {
         misc.value.game_selection_layout = layout
         if (update) SetGameSelectionLayout(layout)
     }

@@ -1,6 +1,8 @@
-package app
+package appctx
 
 import (
+	"modm8/backend/common/paths"
+
 	"github.com/spf13/viper"
 )
 
@@ -71,11 +73,11 @@ func NewSettings() *AppSettings {
 
 func (settings *AppSettings) Load() error {
 	SetupConfig(settingsCfg, "settings", "toml")
-	return ReadOrCreate(settingsCfg, settings, SettingsPath())
+	return ReadOrCreate(settingsCfg, settings, paths.SettingsPath())
 }
 
 func (settings *AppSettings) Save() error {
-	return Save(settingsCfg, settings, SettingsPath())
+	return Save(settingsCfg, settings, paths.SettingsPath())
 }
 
 func (settings *AppSettings) SaveAndApply() error {

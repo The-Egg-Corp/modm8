@@ -3,7 +3,7 @@ package steam
 import (
 	"errors"
 	"fmt"
-	"modm8/backend/app"
+	"modm8/backend/app/appctx"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -16,12 +16,13 @@ import (
 )
 
 type SteamLauncher struct {
+	appSettings *appctx.AppSettings
 	// InstallPath    *string
 	// InstallPathErr error
 }
 
-func NewSteamLauncher() *SteamLauncher {
-	return &SteamLauncher{}
+func NewSteamLauncher(appSettings *appctx.AppSettings) *SteamLauncher {
+	return &SteamLauncher{appSettings: appSettings}
 }
 
 // Attach to struct so Wails is aware of it.
@@ -77,12 +78,13 @@ func LaunchGame(installDir *string, ext string, id uint32, args []string) (*gocm
 
 // Returns the path to the directory where Steam is installed.
 func GetInstallDirectory() (*string, error) {
-	// Try and return path if it already exists in settings.toml
-	settings := app.NewSettings() // TODO: Use a global settings instance instead of creating a new one each time?
+	// TODO: Instead of NewSettings(), use AppSettings from SteamLauncher in a way that is testable.
+	settings := appctx.NewSettings()
 	if err := settings.Load(); err != nil {
 		return nil, fmt.Errorf("failed to load settings: %v", err)
 	}
 
+	// Try and return path if it already exists in ../modm8/settings.toml
 	settingsSteamPath := settings.Misc.SteamInstallPath
 	if settingsSteamPath != nil && strings.TrimSpace(*settingsSteamPath) != "" {
 		return settingsSteamPath, nil

@@ -1,8 +1,11 @@
-package app
+package appctx
 
 import (
 	"modm8/backend/common/fileutil"
 	"path/filepath"
+	"runtime"
+
+	"github.com/samber/lo"
 )
 
 // This struct is bound to Wails and is responsible for providing utility functions relating to
@@ -35,4 +38,22 @@ func (u *Utils) GetFilesWithExts(path string, exts []string) ([]string, error) {
 
 func (u *Utils) GetFilesInZip(data []byte) (map[string][]byte, error) {
 	return fileutil.GetFilesInZip(data)
+}
+
+func (u *Utils) NumCPU() uint8 {
+	return NumCPU()
+}
+
+func (u *Utils) GetMaxProcs() int {
+	return runtime.GOMAXPROCS(0)
+}
+
+func NumCPU() uint8 {
+	return uint8(runtime.NumCPU())
+}
+
+// Sets GOMAXPROCS to given value and ensures it is clamped between 1 and NumCPU*2 as any further may degrade performance due to context switching.
+// Note that blocking syscalls can have their own threads regardless of the limit set here.
+func SetMaxProcs(num uint8) int {
+	return runtime.GOMAXPROCS(lo.Clamp(int(num), 1, runtime.NumCPU()*2))
 }

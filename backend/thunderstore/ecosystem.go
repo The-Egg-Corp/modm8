@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 	"modm8/backend/common/fileutil"
-	"modm8/backend/utils"
+	"modm8/backend/common/util"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -28,7 +28,7 @@ type ThunderstoreEcosystem struct {
 
 func (ecosys *ThunderstoreEcosystem) GetR2Games(commIdent string) map[string]R2GameMapping {
 	r2mappings := ecosys.Games[commIdent].R2Modman
-	return utils.FromEntries(r2mappings, func(r2 R2GameMapping) string {
+	return util.FromEntries(r2mappings, func(r2 R2GameMapping) string {
 		return r2.Meta.DisplayName
 	})
 }
@@ -74,12 +74,6 @@ type InstallRule struct {
 	TrackingMethod        string        `json:"trackingMethod"`
 	SubRoutes             []InstallRule `json:"subRoutes"`
 	IsDefaultLocation     bool          `json:"isDefaultLocation"`
-}
-
-var tsSchema = NewThunderstoreSchema()
-
-func GetSchema() *ThunderstoreSchema {
-	return tsSchema
 }
 
 func NewThunderstoreSchema() *ThunderstoreSchema {

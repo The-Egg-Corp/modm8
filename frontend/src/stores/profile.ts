@@ -4,7 +4,7 @@ import { ref } from "vue"
 import type { Nullable, Profile } from "@types"
 import { useGameStore } from "@stores"
 
-import { GetProfiles } from "@backend/profile/ProfileManager"
+import * as ProfileService from "@backend/profile/ProfileManager.js"
 import { platform } from "@backend/models"
 
 export const useProfileStore = defineStore("ProfileStore", () => {
@@ -30,7 +30,7 @@ export const useProfileStore = defineStore("ProfileStore", () => {
     async function initProfiles() {
         try {
             // Convert go map to array of profiles.
-            const profs = await GetProfiles(selectedGame.value.value.title)
+            const profs = await ProfileService.GetProfiles(selectedGame.value.value.title)
             profiles.value = Object.entries(profs).map(([name, manifest]) => ({ 
                 name, 
                 mods: {

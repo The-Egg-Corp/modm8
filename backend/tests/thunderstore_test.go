@@ -1,13 +1,10 @@
 package backend
 
 import (
-	"modm8/backend/app"
-	"modm8/backend/common/downloader"
-	"modm8/backend/common/fileutil"
 	"modm8/backend/installing"
 	"modm8/backend/loaders"
 	"modm8/backend/thunderstore"
-	"path/filepath"
+	"os"
 	"testing"
 	"time"
 
@@ -21,8 +18,29 @@ var comm = v1.Community{
 	Identifier: "lethal-company",
 }
 
+var schema = thunderstore.NewThunderstoreSchema()
+
+func TestGetEcosystem(t *testing.T) {
+	ecosys, err := schema.GetEcosystem()
+	if err != nil {
+		t.Fatalf("GetEcosystem returned error:\n%v", err)
+	}
+	if ecosys == nil {
+		t.Fatal("GetEcosystem returned nil ecosystem")
+	}
+
+	path, err := thunderstore.GetFallbackEcosystemPath()
+	if err != nil {
+		t.Fatalf("failed to get fallback path:\n%v", err)
+	}
+
+	if _, err := os.Stat(*path); err != nil {
+		t.Fatalf("expected fallback file to exist at %s, but got error: %v", *path, err)
+	}
+}
+
 func TestInstallWithDependencies(t *testing.T) {
-	ecosys, err := thunderstore.GetSchema().GetEcosystem()
+	ecosys, err := schema.GetEcosystem()
 	if err != nil {
 		t.Fatalf("failed to get ecosystem:\n%v", err)
 	}
@@ -63,16 +81,4 @@ func TestInstallWithDependencies(t *testing.T) {
 	thunderstore.InstallWithDependencies(meta, pkgs, &errs, &downloadCount)
 
 	t.Logf("\nDownloaded %v packages in %v\n", downloadCount, time.Since(startTime))
-}
-
-func TestUnzipAndDelete(t *testing.T) {
-	path := filepath.Join(app.ModCacheDir(), testPkg1)
-	zipPath := path + downloader.CUSTOM_ZIP_EXT
-
-	err := fileutil.Unzip(zipPath, path, true)
-	if err != nil {
-		t.Fatalf("\nerror unpacking zip:\n\n%v", err)
-	}
-
-	t.Logf("\n\nSuccessfully unpacked and deleted:\n  %s", zipPath)
 }

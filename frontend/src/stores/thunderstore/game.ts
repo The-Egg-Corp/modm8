@@ -1,11 +1,11 @@
 import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
 
-import { Save, SetFavouriteGames } from '@backend/app/Persistence'
-import { GetPersistence } from '@backend/app/Application.js'
-import { ExistsAtPath } from '@backend/app/Utils.js'
-import { BepinexInstalled } from '@backend/game/GameManager.js'
-import type { thunderstore } from '@backend/models.js'
+import { GetPersistence } from '@backend/app/Application'
+import { Save, SetFavouriteGames } from '@backend/appctx/Persistence'
+import { ExistsAtPath } from '@backend/appctx/Utils'
+import { BepinexInstalled } from '@backend/game/GameManager'
+import type { thunderstore } from '@backend/models'
 
 import type { Nullable, ThunderstoreGame } from '@types'
 import { useGameStore } from '@stores'

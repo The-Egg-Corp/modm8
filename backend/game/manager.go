@@ -1,17 +1,17 @@
 package game
 
 import (
-	"modm8/backend/app"
 	"modm8/backend/common/fileutil"
-	"modm8/backend/common/profile"
+	"modm8/backend/common/paths"
 	"modm8/backend/installing"
 	"modm8/backend/loaders"
+	"modm8/backend/profile"
 	"os"
 	"path/filepath"
 )
 
 type GameManager struct {
-	//SelectedProfile *profile.Profile
+	//SelectedGame
 }
 
 func NewGameManager() *GameManager {
@@ -51,8 +51,8 @@ func (gm *GameManager) LinkModToProfile(loader loaders.ModLoaderType, gameTitle,
 	// TODO: Read manifest.json in the mod's folder and call this function recursively for
 	// 		 each mod specified within the `dependencies` field.
 
-	target := filepath.Join(profileModsDir, modFullName)    // Path to mod in given profile dir
-	source := filepath.Join(app.ModCacheDir(), modFullName) // Path to mod in mod cache.
+	target := filepath.Join(profileModsDir, modFullName)      // Path to mod in given profile dir
+	source := filepath.Join(paths.ModCacheDir(), modFullName) // Path to mod in mod cache.
 
 	return fileutil.LinkDir(target, source)
 }

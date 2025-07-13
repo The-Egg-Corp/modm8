@@ -3,7 +3,7 @@ package steam
 import (
 	"errors"
 	"fmt"
-	"modm8/backend/app/appctx"
+	"modm8/backend/app/appcore"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -16,12 +16,12 @@ import (
 )
 
 type SteamLauncher struct {
-	appSettings *appctx.AppSettings
+	appSettings *appcore.AppSettings
 	// InstallPath    *string
 	// InstallPathErr error
 }
 
-func NewSteamLauncher(appSettings *appctx.AppSettings) *SteamLauncher {
+func NewSteamLauncher(appSettings *appcore.AppSettings) *SteamLauncher {
 	return &SteamLauncher{appSettings: appSettings}
 }
 
@@ -79,7 +79,7 @@ func LaunchGame(installDir *string, ext string, id uint32, args []string) (*gocm
 // Returns the path to the directory where Steam is installed.
 func GetInstallDirectory() (*string, error) {
 	// TODO: Instead of NewSettings(), use AppSettings from SteamLauncher in a way that is testable.
-	settings := appctx.NewSettings()
+	settings := appcore.NewSettings()
 	if err := settings.Load(); err != nil {
 		return nil, fmt.Errorf("failed to load settings: %v", err)
 	}

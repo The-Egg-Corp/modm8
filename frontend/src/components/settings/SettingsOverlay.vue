@@ -3,8 +3,8 @@ import { computed, onBeforeMount, ref, watch } from "vue"
 import { storeToRefs } from "pinia"
 
 import { GetSettings } from "@backend/app/Application"
-import { Load, SaveAndApply } from "@backend/appctx/AppSettings"
-import { appctx } from "@backend/models"
+import { Load, SaveAndApply } from "@backend/appcore/AppSettings"
+import { appcore } from "@backend/models"
 
 import { 
     CardOverlay, 
@@ -56,17 +56,17 @@ const setAccel = (value: boolean) => {
 }
 
 //#region Update Behaviour
-type Behaviour = ValueItemLabeled<appctx.UpdateBehaviour>
+type Behaviour = ValueItemLabeled<appcore.UpdateBehaviour>
 
 const behaviours = computed<Behaviour[]>(() => [{
     label: t('settings.update-behaviour.option-1'),
-    value: appctx.UpdateBehaviour.AUTO
+    value: appcore.UpdateBehaviour.AUTO
 }, {
     label: t('settings.update-behaviour.option-2'),
-    value: appctx.UpdateBehaviour.NOTIFY
+    value: appcore.UpdateBehaviour.NOTIFY
 }, {
     label: t('settings.update-behaviour.option-3'),
-    value: appctx.UpdateBehaviour.OFF
+    value: appcore.UpdateBehaviour.OFF
 }])
 
 const behaviour = computed(() => {

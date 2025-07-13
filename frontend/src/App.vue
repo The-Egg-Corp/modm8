@@ -3,7 +3,7 @@ import { onBeforeUnmount, onMounted } from 'vue'
 import { changeLocale } from '@i18n'
 
 import { GetSettings } from '@backend/app/Application'
-import { NumCPU } from '@backend/appctx/Utils'
+import { NumCPU } from '@backend/appcore/Utils'
 
 import { 
     Sidebar, ControlButtons,

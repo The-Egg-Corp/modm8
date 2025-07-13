@@ -3,11 +3,8 @@ package app
 import (
 	"context"
 	"errors"
-	"modm8/backend/app/appctx"
-	"modm8/backend/game"
-	"modm8/backend/launchers/steam"
-	"modm8/backend/profile"
-	"modm8/backend/thunderstore"
+	"modm8/backend/app/appcore"
+	"modm8/backend/app/appservices"
 
 	gocmd "github.com/go-cmd/cmd"
 	wuntime "github.com/wailsapp/wails/v2/pkg/runtime"
@@ -25,55 +22,43 @@ type Command struct {
 
 type Application struct {
 	WailsCtx context.Context
-	Core     *appctx.AppCore // TODO: Maybe just rename to Env and make Utils a service.
-	Services *AppServices
-}
-
-type AppServices struct {
-	ProfileManager *profile.ProfileManager
-	GameManager    *game.GameManager
-	SteamLauncher  *steam.SteamLauncher
-	TSAPI          *thunderstore.ThunderstoreAPI
-	TSSchema       *thunderstore.ThunderstoreSchema
-	TSDevTools     *thunderstore.ThunderstoreDevTools
+	core     *appcore.AppCore // TODO: Maybe just rename to Env and make Utils a service.
+	services *appservices.AppServices
 }
 
 func NewApplication() *Application {
-	core := appctx.NewAppCore()
-	services := NewAppServices(core)
+	core := appcore.NewAppCore()
+	services := appservices.NewAppServices(core)
 
 	return &Application{
-		WailsCtx: nil,
-		Core:     core,
-		Services: services,
+		WailsCtx: context.TODO(),
+		core:     core,
+		services: services,
 	}
 }
 
-func NewAppServices(core *appctx.AppCore) *AppServices {
-	services := &AppServices{
-		GameManager:    game.NewGameManager(),
-		ProfileManager: profile.NewProfileManager(),
-		SteamLauncher:  steam.NewSteamLauncher(core.Settings),
-		TSAPI:          thunderstore.NewThunderstoreAPI(),
-		TSSchema:       thunderstore.NewThunderstoreSchema(),
-		TSDevTools:     thunderstore.NewThunderstoreDevTools(),
-	}
-
-	services.TSAPI.SetSchema(services.TSSchema)
-
-	return services
+func (app *Application) GetWailsContext() context.Context {
+	return app.WailsCtx
 }
 
-func (app *Application) GetSettings() *appctx.AppSettings {
-	return app.Core.Settings
+func (app *Application) GetCore() *appcore.AppCore {
+	return app.core
 }
 
-func (app *Application) GetPersistence() *appctx.Persistence {
-	return app.Core.Persistence
+func (app *Application) GetServices() *appservices.AppServices {
+	return app.services
 }
 
-func (app *Application) GetUtils() *appctx.Utils {
-	return app.Core.Utils
+func (app *Application) GetSettings() *appcore.AppSettings {
+	return app.GetCore().Settings
+}
+
+func (app *Application) GetPersistence() *appcore.Persistence {
+	return app.GetCore().Persistence
+}
+
+func (app *Application) GetUtils() *appcore.Utils {
+	return app.GetCore().Utils
 }
 
 func (app *Application) IsWindowsAdmin() bool {

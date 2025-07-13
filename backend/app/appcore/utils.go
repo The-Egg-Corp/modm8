@@ -1,4 +1,4 @@
-package appctx
+package appcore
 
 import (
 	"modm8/backend/common/fileutil"

@@ -1,10 +1,12 @@
-package appctx
+package appcore
 
 import (
 	"modm8/backend/common/paths"
 
 	"github.com/spf13/viper"
 )
+
+var settingsCfg = viper.New()
 
 type UpdateBehaviour uint8
 
@@ -20,12 +22,6 @@ const (
 	GAME_SELECTION_LAYOUT_GRID GameSelectionLayout = "grid"
 	GAME_SELECTION_LAYOUT_LIST GameSelectionLayout = "list"
 )
-
-type AppSettings struct {
-	General     GeneralOptions     `json:"general" mapstructure:"general"`
-	Performance PerformanceOptions `json:"performance" mapstructure:"performance"`
-	Misc        MiscOptions        `json:"misc" mapstructure:"misc"`
-}
 
 type GeneralOptions struct {
 	Locale            string          `json:"locale" mapstructure:"locale"`
@@ -45,7 +41,11 @@ type MiscOptions struct {
 	GameSelectionLayout GameSelectionLayout `json:"game_selection_layout" mapstructure:"game_selection_layout"`
 }
 
-var settingsCfg = viper.New()
+type AppSettings struct {
+	General     GeneralOptions     `json:"general" mapstructure:"general"`
+	Performance PerformanceOptions `json:"performance" mapstructure:"performance"`
+	Misc        MiscOptions        `json:"misc" mapstructure:"misc"`
+}
 
 func NewSettings() *AppSettings {
 	return &AppSettings{

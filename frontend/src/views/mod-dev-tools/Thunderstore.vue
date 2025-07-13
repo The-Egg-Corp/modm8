@@ -8,7 +8,7 @@ import { Viewport } from '@components'
 // TODO: Finish implementing pack/unpack functionality
 //import * as PackageValidator from "@backend/thunderstore/PackageValidator"
 
-import { GetFilesInZip } from '@backend/appctx/Utils'
+import { GetFilesInZip } from '@backend/appcore/Utils'
 
 // Validates each required file for uploading a Thunderstore mod.
 // function ValidateFiles(icon: experimental.IconValidatorParams, readme: TSPackageFile, manifest: TSPackageManifest) {

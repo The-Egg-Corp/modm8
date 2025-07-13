@@ -2,8 +2,8 @@ import { defineStore, storeToRefs } from 'pinia'
 import { ref, computed } from 'vue'
 
 import { GetPersistence } from '@backend/app/Application'
-import { Save, SetFavouriteGames } from '@backend/appctx/Persistence'
-import { ExistsAtPath } from '@backend/appctx/Utils'
+import { Save, SetFavouriteGames } from '@backend/appcore/Persistence'
+import { ExistsAtPath } from '@backend/appcore/Utils'
 import { BepinexInstalled } from '@backend/game/GameManager'
 import type { thunderstore } from '@backend/models'
 

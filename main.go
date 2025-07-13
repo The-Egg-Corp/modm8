@@ -13,7 +13,7 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options/windows"
 
 	"modm8/backend/app"
-	"modm8/backend/app/appctx"
+	"modm8/backend/app/appcore"
 	"modm8/backend/common/paths"
 	"modm8/backend/loaders"
 	"modm8/backend/platform"
@@ -38,15 +38,15 @@ var ModLoaders = EnumBinding[loaders.ModLoaderType]{
 	{loaders.LOVELY, "LOVELY"},
 }
 
-var UpdateBehaviours = EnumBinding[appctx.UpdateBehaviour]{
-	{appctx.UPDATE_BEHAVIOUR_OFF, "OFF"},
-	{appctx.UPDATE_BEHAVIOUR_NOTIFY, "NOTIFY"},
-	{appctx.UPDATE_BEHAVIOUR_AUTO, "AUTO"},
+var UpdateBehaviours = EnumBinding[appcore.UpdateBehaviour]{
+	{appcore.UPDATE_BEHAVIOUR_OFF, "OFF"},
+	{appcore.UPDATE_BEHAVIOUR_NOTIFY, "NOTIFY"},
+	{appcore.UPDATE_BEHAVIOUR_AUTO, "AUTO"},
 }
 
-var GameSelectionLayouts = EnumBinding[appctx.GameSelectionLayout]{
-	{appctx.GAME_SELECTION_LAYOUT_GRID, "GRID"},
-	{appctx.GAME_SELECTION_LAYOUT_LIST, "LIST"},
+var GameSelectionLayouts = EnumBinding[appcore.GameSelectionLayout]{
+	{appcore.GAME_SELECTION_LAYOUT_GRID, "GRID"},
+	{appcore.GAME_SELECTION_LAYOUT_LIST, "LIST"},
 }
 
 func NewWindowsOptions(gpuAccel bool) *windows.Options {
@@ -131,20 +131,21 @@ func main() {
 		}
 	}
 
-	application.GetSettings().Apply()
+	core := application.GetCore()
+	services := application.GetServices()
 
 	// STRUCT BINDINGS
 	bindings := []any{
 		application,
-		application.Core.Settings,
-		application.Core.Persistence,
-		application.Core.Utils,
-		application.Services.GameManager,
-		application.Services.ProfileManager,
-		application.Services.SteamLauncher,
-		application.Services.TSSchema,
-		application.Services.TSAPI,
-		//application.Services.TSDevTools.PackageValidator,
+		core.Settings,
+		core.Persistence,
+		core.Utils,
+		services.GameManager,
+		services.ProfileManager,
+		services.SteamLauncher,
+		services.TSSchema,
+		services.TSAPI,
+		//services.TSDevTools.PackageValidator,
 	}
 
 	// ENUM BINDINGS

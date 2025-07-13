@@ -1,4 +1,4 @@
-package appctx
+package appcore
 
 type AppCore struct {
 	Settings    *AppSettings
@@ -7,9 +7,12 @@ type AppCore struct {
 }
 
 func NewAppCore() *AppCore {
-	return &AppCore{
+	core := &AppCore{
 		Settings:    NewSettings(),
 		Persistence: NewPersistence(),
 		Utils:       NewUtils(),
 	}
+
+	core.Settings.Apply()
+	return core
 }

@@ -122,7 +122,7 @@ func NewMacOptions() *mac.Options {
 // }
 
 func main() {
-	application := app.NewApplication()
+	application := app.New()
 	errs := application.Init()
 
 	if len(errs) > 0 {

@@ -137,7 +137,7 @@ onBeforeUnmount(() => {
     --wails-draggable: no-drag;
 }
 
-.no-drag-all-children > * {
+.no-drag-children > * {
     --wails-draggable: no-drag;
 }
 

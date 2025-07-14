@@ -17,7 +17,7 @@ type AppServices struct {
 	TSDevTools     *thunderstore.ThunderstoreDevTools
 }
 
-func NewAppServices(core *appcore.AppCore) *AppServices {
+func New(core *appcore.AppCore) *AppServices {
 	services := &AppServices{
 		GameManager:    game.NewGameManager(),
 		ProfileManager: profile.NewProfileManager(),

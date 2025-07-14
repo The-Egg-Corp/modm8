@@ -12,8 +12,7 @@ func ConfigDir() string {
 
 // Uses the users config dir and returns a path to the mod cache.
 func ModCacheDir() string {
-	cacheDir, _ := os.UserConfigDir()
-	return filepath.Join(cacheDir, "modm8", "ModCache")
+	return filepath.Join(ConfigDir(), "ModCache")
 }
 
 func NexusKeyPath() string {

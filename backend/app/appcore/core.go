@@ -6,7 +6,7 @@ type AppCore struct {
 	Utils       *Utils
 }
 
-func NewAppCore() *AppCore {
+func New() *AppCore {
 	core := &AppCore{
 		Settings:    NewSettings(),
 		Persistence: NewPersistence(),

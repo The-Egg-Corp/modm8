@@ -12,11 +12,11 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/options/mac"
 	"github.com/wailsapp/wails/v2/pkg/options/windows"
 
-	"modm8/backend/app"
-	"modm8/backend/app/appcore"
-	"modm8/backend/common/paths"
-	"modm8/backend/loaders"
-	"modm8/backend/platform"
+	"modm8/internal/app"
+	"modm8/internal/app/appcore"
+	"modm8/internal/common/paths"
+	"modm8/internal/loaders"
+	"modm8/internal/platform"
 )
 
 //go:embed all:frontend/dist

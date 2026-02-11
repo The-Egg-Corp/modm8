@@ -11,13 +11,12 @@ func FromEntries[T any, K comparable](entries []T, keyFn func(T) K) map[K]T {
 	return m
 }
 
-// Reports whether the item is contained with. Ignores case-sensitivity - both item and arr elements are lower cased automatically.
-//
-// Like [strings.EqualFold], however this function takes an an array of strings instead of a single string.
-func ArrEqualFold(arr []string, item string) bool {
-	lowerItem := strings.ToLower(item)
-	for _, str := range arr {
-		if strings.ToLower(str) == lowerItem {
+// Reports whether the item is contained within s.
+// Ignores case-sensitivity - both item and elements of slice s are lower cased automatically.
+// Similar to [strings.EqualFold], but takes an a slice of strings instead of a single string.
+func SliceEqualFold(s []string, item string) bool {
+	for _, str := range s {
+		if strings.EqualFold(str, item) {
 			return true
 		}
 	}

@@ -8,25 +8,22 @@ import (
 
 const platformExecName = "Steam.exe"
 
-var regPaths = []string{
+var regPaths = [...]string{
 	`Software\Valve\Steam`,
 	`Software\WOW6432Node\Valve\Steam`,
 }
 
+// Checks Windows Registry for the Steam installation path in both 32 and 64 bit paths.
 func TryFindSteam() (*string, error) {
-	// Check Windows Registry for Steam installation path in both 32 and 64 bit paths.
 	for _, path := range regPaths {
 		key, err := registry.OpenKey(registry.LOCAL_MACHINE, path, registry.QUERY_VALUE)
 		if err != nil {
 			continue
 		}
+		defer key.Close()
 
 		installPath, _, err := key.GetStringValue("InstallPath")
-		key.Close()
-
-		if err == nil {
-			return &installPath, nil
-		}
+		return &installPath, err
 	}
 
 	return nil, nil

@@ -27,7 +27,7 @@ const (
 	X86 PlatformArch = "x86"
 )
 
-var BEPINEX_REQUIRED_PATHS = []string{
+var BEPINEX_REQUIRED_PATHS = [...]string{
 	"BepInEx",
 	"BepInEx/core",
 	"BepInEx/core/BepInEx.dll",
@@ -74,11 +74,9 @@ func ParseBepinexConfig(path string) (*BepinexConfig, error) {
 		//#region Parse comments
 		if strings.HasPrefix(line, "#") || strings.HasPrefix(line, ";") {
 			comments = append(comments, line)
-
 			if strings.Contains(line, "Setting type: Boolean") {
 				acceptableValues = []string{"true", "false"}
 			}
-
 			if strings.Contains(line, "Default value: ") {
 				currentDefaultValue = strings.TrimSpace(line[len("# Default value:"):])
 			}
@@ -112,7 +110,6 @@ func ParseBepinexConfig(path string) (*BepinexConfig, error) {
 
 			// Put the section within the key to avoid map nesting.
 			flatKey := fmt.Sprintf("%s.%s", currentSection, key)
-
 			entries[flatKey] = BepinexConfigEntry{
 				Value:            value,
 				DefaultValue:     currentDefaultValue,

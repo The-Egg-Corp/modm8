@@ -16,13 +16,13 @@ import (
 )
 
 type SteamLauncher struct {
-	appSettings *appcore.AppSettings
+	//appSettings *appcore.AppSettings
 	// InstallPath    *string
 	// InstallPathErr error
 }
 
-func NewSteamLauncher(appSettings *appcore.AppSettings) *SteamLauncher {
-	return &SteamLauncher{appSettings: appSettings}
+func NewSteamLauncher() *SteamLauncher {
+	return &SteamLauncher{}
 }
 
 // Attach to struct so Wails is aware of it.
@@ -68,17 +68,15 @@ func LaunchGame(installDir *string, ext string, id uint32, args []string) (*gocm
 
 	// Clean that bitch up properly.
 	// See -> https://github.com/go-cmd/cmd?tab=readme-ov-file#proper-process-termination
-	err := cmd.Stop()
-	if status.Error != nil {
-		err = status.Error
+	if err := cmd.Stop(); status.Error == nil {
+		return cmd, err
 	}
 
-	return cmd, err
+	return cmd, status.Error
 }
 
 // Returns the path to the directory where Steam is installed.
 func GetInstallDirectory() (*string, error) {
-	// TODO: Instead of NewSettings(), use AppSettings from SteamLauncher in a way that is testable.
 	settings := appcore.NewSettings()
 	if err := settings.Load(); err != nil {
 		return nil, fmt.Errorf("failed to load settings: %v", err)
@@ -125,12 +123,12 @@ func GetSteamLibPaths() ([]string, error) {
 	}
 	defer file.Close()
 
-	m, err := vdf.NewParser(file).Parse()
+	vdfEntries, err := vdf.NewParser(file).Parse()
 	if err != nil {
 		return nil, err
 	}
 
-	libFolders, ok := m["libraryfolders"].(map[string]any)
+	libFolders, ok := vdfEntries["libraryfolders"].(map[string]any)
 	if !ok {
 		return nil, errors.New("failed to parse steam libraryfolders.vdf file: invalid structure")
 	}

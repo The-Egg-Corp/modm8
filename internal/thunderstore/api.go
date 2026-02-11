@@ -17,7 +17,10 @@ import (
 	TSGOV1 "github.com/the-egg-corp/thundergo/v1"
 )
 
-var modExclusions = []string{
+// The dir where the mod cache is located for the current game.
+var ModCacheDir = paths.ModCacheDir()
+
+var modExclusions = [...]string{
 	"ebkr-r2modman",
 	"ebkr-r2modman_dsp",
 	"ebkr-BT2TS",
@@ -46,9 +49,6 @@ var modExclusions = []string{
 	"Pyoid-Hook_Line_and_Sinker",
 	"GardenGals-Hatchery",
 }
-
-// The dir where the mod cache is located for the current game.
-var ModCacheDir = paths.ModCacheDir()
 
 // Same as a thundergo `Package` but the 'Versions' field is replaced with only a single 'LatestVersion' field
 // and the following fields are completely removed: [DonationLink, Pinned].
@@ -198,7 +198,7 @@ func (api *ThunderstoreAPI) GetStrippedPackages(community string, skipCache bool
 	// Loops over all pkgs, stripping some unnecessary fields to avoid blocking frontend.
 	for _, pkg := range pkgs {
 		// Strip any apps/utils that aren't strictly mods.
-		if util.ArrEqualFold(modExclusions, pkg.FullName) {
+		if util.SliceEqualFold(modExclusions[:], pkg.FullName) {
 			continue
 		}
 

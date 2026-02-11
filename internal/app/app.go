@@ -28,7 +28,7 @@ type Application struct {
 
 func New() *Application {
 	core := appcore.New()
-	services := appservices.New(core)
+	services := appservices.New()
 
 	return &Application{
 		WailsCtx: context.TODO(),

@@ -39,6 +39,8 @@ const { installing, lastInstalledMod } = storeToRefs(modListStoreTS)
 const configEditorDialog = useDialog('selected-game-config-editor')
 const installingModDialog = useDialog('selected-game-installing-mod')
 
+const isGameInstalled = () => selectedGame.value?.value.installed
+
 const canStartModded = () => {
     const profileMods = selectedProfile.value?.mods
     if (!profileMods) return false
@@ -61,6 +63,7 @@ const launchSteamGame = async (modded: boolean, args?: string[]) => {
 
     const id = selectedGame.value.value.steamID
     if (!id || id < 10) {
+        // TODO: Show an error toast here. They probably don't have the game installed.
         return console.error(`Error launching Steam game!\n\nCannot use invalid ID \`${id}\`.`)
     }
 
@@ -125,16 +128,17 @@ onBeforeMount(async () => {
                         
                         <div class="flex column mt-2 flex-grow-1">
                             <div class="flex row gap-2">
-                                <Button plain class="btn flex-1" 
+                                <Button plain class="btn flex-1" :severity="!isGameInstalled() ? 'danger' : 'primary'"
                                     icon="pi pi-caret-right"
                                     :label="$t('selected-game.start-modded-button')"
-                                    :disabled="!canStartModded()"
+                                    :disabled="!isGameInstalled() || !canStartModded()"
                                     @click="launchSteamGame(true)"
                                 />
         
-                                <Button plain class="btn" severity="secondary"
+                                <Button plain class="btn" :severity="!isGameInstalled() ? 'danger' : 'secondary'"
                                     icon="pi pi-caret-right"
                                     :label="$t('selected-game.start-vanilla-button')"
+                                    :disabled="!isGameInstalled()"
                                     @click="launchSteamGame(false)"
                                 />
                             </div>

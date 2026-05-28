@@ -423,7 +423,7 @@ const props = defineProps<{
                                                 @click=""
                                             />
                                             
-                                            <div class="mod-list-rating">{{ mod.rating_score }}</div>
+                                            <div class="mod-list-rating" style="margin-right: 6.5px;">{{ mod.rating_score }}</div>
                                         </div>
                                     </div>
 
@@ -468,7 +468,7 @@ const props = defineProps<{
 }
 
 .mod-list-title {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 460;
     padding-right: 5px;
 }
@@ -479,7 +479,7 @@ const props = defineProps<{
 }
 
 .mod-list-description {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 220;
     padding-bottom: 6px;
     padding-top: 3px;

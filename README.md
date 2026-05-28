@@ -17,13 +17,13 @@ Built with [Wails](https://wails.io) for an Electron-like experience but without
   - Language PRs are greatly appreciated as some keys may have been wrongly translated!
 
 ## Showcase
-<details>
+<details open>
   <summary>Game Selection</summary>
   
   <img src="./screenshots/game-selection-grid.png"/>
 </details>
 
-<details>
+<details open>
   <summary>Selected Game Screen</summary>
 
   <img src="./screenshots/selected-game.png"/>

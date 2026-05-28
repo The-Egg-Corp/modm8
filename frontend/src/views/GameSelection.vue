@@ -186,7 +186,7 @@ const handleScroll = (e: WheelEvent) => {
 
 // TODO: This is temporary and not reliable :)
 const gameThumbnail = (game: ThunderstoreGame) => game.imageURL
-    ? `https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/src/assets/images/game_selection/${game.imageURL}` 
+    ? `https://raw.githubusercontent.com/ebkr/r2modmanPlus/develop/public/images/game_selection/${game.imageURL}` 
     : ""
 
 const parseEcosystemGames = async () => {
